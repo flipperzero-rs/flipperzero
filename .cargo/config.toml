@@ -1,0 +1,4 @@
+[build]
+target = "thumbv7em-none-eabihf"
+# Need to use `long-calls` or else external function calls crash the device
+rustflags = ["-C", "target-feature=+long-calls"]

@@ -1,0 +1,13 @@
+[workspace]
+members = [
+    "crates/flipperzero",
+    "crates/sys",
+]
+
+[profile.dev]
+opt-level = "z"
+panic = "abort"
+
+[profile.release]
+opt-level = "z"
+panic = "abort"
