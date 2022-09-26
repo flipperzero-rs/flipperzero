@@ -1,8 +1,8 @@
 # Rust for Flipper Zero
 
-![crates.io](https://img.shields.io/crates/v/flipperzero)
-![docs.rs](https://img.shields.io/docsrs/flipperzero)
-![MIT license](https://img.shields.io/crates/l/flipperzero)
+[![crates.io](https://img.shields.io/crates/v/flipperzero)](https://crates.io/crates/flipperzero)
+[![docs.rs](https://img.shields.io/docsrs/flipperzero)](https://docs.rs/flipperzero)
+[![MIT license](https://img.shields.io/crates/l/flipperzero)](LICENSE)
 
 Rust application support for the [Flipper Zero](https://flipperzero.one/).
 
