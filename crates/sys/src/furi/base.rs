@@ -30,6 +30,11 @@ impl Status {
     pub fn is_ok(self) -> bool {
         self == status::OK
     }
+
+    /// Did the operation error?
+    pub fn is_err(self) -> bool {
+        self != status::OK
+    }
 }
 
 impl Display for Status {

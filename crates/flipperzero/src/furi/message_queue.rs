@@ -8,9 +8,11 @@ pub struct MessageQueue<M: Sized> {
     _marker: core::marker::PhantomData<M>,
 }
 
+pub const TIMEOUT_NEVER: u32 = 0xFFFFFFFF; // corresponds to FuriWaitForever
+
 impl<M: Sized> MessageQueue<M> {
     /// Constructs a message queue with the given capacity.
-    pub fn new(capacity: u32) -> Self {
+    pub fn new(capacity: usize) -> Self {
         Self {
             hnd: unsafe { message_queue::alloc(capacity, core::mem::size_of::<M>()) },
             _marker: core::marker::PhantomData::<M>,
@@ -18,14 +20,17 @@ impl<M: Sized> MessageQueue<M> {
     }
 
     // Attempts to add the message to the end of the queue, waiting up to timeout ticks.
-    pub fn put(&self, mut msg: M, timeout_ticks: u32) -> Result<()> {
+    pub fn put(&self, msg: M, timeout_ticks: u32) -> Result<()> {
+        let mut msg = core::mem::ManuallyDrop::new(msg);
+
         let status = unsafe {
             message_queue::put(self.hnd, &mut msg as *mut _ as *const c_void, timeout_ticks)
         };
 
-        match status.is_ok() {
-            true => Ok(()),
-            _ => Err(status),
+        if status.is_ok() {
+            Ok(())
+        } else {
+            Err(status)
         }
     }
 
@@ -36,9 +41,10 @@ impl<M: Sized> MessageQueue<M> {
             message_queue::get(self.hnd, out.as_mut_ptr() as *mut c_void, timeout_ticks)
         };
 
-        match status.is_ok() {
-            true => Ok(unsafe { out.assume_init() }),
-            _ => Err(status),
+        if status.is_ok() {
+            Ok(unsafe { out.assume_init() })
+        } else {
+            Err(status)
         }
     }
 
@@ -60,6 +66,15 @@ impl<M: Sized> MessageQueue<M> {
 
 impl<M: Sized> Drop for MessageQueue<M> {
     fn drop(&mut self) {
+        // Drain any elements from the message queue, so any
+        // drop handlers on the message element get called.
+        while self.len() > 0 {
+            match self.get(TIMEOUT_NEVER) {
+                Ok(msg) => drop(msg),
+                Err(_) => break, // we tried
+            }
+        }
+
         unsafe {
             message_queue::free(self.hnd)
         }
