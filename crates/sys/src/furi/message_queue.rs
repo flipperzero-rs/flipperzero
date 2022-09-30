@@ -9,7 +9,7 @@ opaque!(FuriMessageQueue);
 
 extern "C" {
     #[link_name = "furi_message_queue_alloc"]
-    pub fn alloc(count: u32, size: usize) -> *const FuriMessageQueue;
+    pub fn alloc(count: usize, size: usize) -> *const FuriMessageQueue;
 
     #[link_name = "furi_message_queue_free"]
     pub fn free(queue: *const FuriMessageQueue);

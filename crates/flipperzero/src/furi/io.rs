@@ -18,7 +18,7 @@ impl core::fmt::Write for Stdout {
 impl Stdout {
     pub fn flush(&mut self) -> core::fmt::Result {
         unsafe {
-            if !sys::furi::thread::stdout_flush().is_ok() {
+            if sys::furi::thread::stdout_flush().is_err() {
                 return Err(core::fmt::Error);
             }
         }
