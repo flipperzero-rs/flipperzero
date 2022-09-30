@@ -20,4 +20,4 @@ bench = false
 test = false
 
 [dependencies]
-flipperzero-sys = { path = "../sys", version = "0.1.0" }
+flipperzero-sys = { path = "../sys", version = "0.2.0-alpha" }

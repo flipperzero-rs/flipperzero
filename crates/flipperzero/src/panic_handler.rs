@@ -9,15 +9,15 @@ use core::str;
 use flipperzero_sys::c_string;
 use flipperzero_sys::furi;
 
-use crate::furi::Stdout;
+use crate::furi::io::Stdout;
 
 #[panic_handler]
 pub fn panic(panic_info: &PanicInfo<'_>) -> ! {
     let mut stdout = Stdout;
 
     let thread_name = unsafe {
-        let thread_id = furi::thread_get_current_id();
-        let thread_name = furi::thread_get_name(thread_id);
+        let thread_id = furi::thread::get_current_id();
+        let thread_name = furi::thread::get_name(thread_id);
 
         if thread_name.is_null() {
             "<unknown>"
@@ -31,7 +31,7 @@ pub fn panic(panic_info: &PanicInfo<'_>) -> ! {
     let _ = stdout.flush();
 
     unsafe {
-        furi::thread_yield(); // Allow console to flush
-        furi::crash(c_string!("Rust panic\r\n"))
+        furi::thread::yield_(); // Allow console to flush
+        furi::check::crash(c_string!("Rust panic\r\n"))
     }
 }

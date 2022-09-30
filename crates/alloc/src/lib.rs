@@ -7,28 +7,20 @@
 use core::alloc::{GlobalAlloc, Layout};
 use core::ffi::c_void;
 
-use flipperzero_sys::c_string;
-use flipperzero_sys::furi;
-
-extern "C" {
-    fn aligned_free(p: *mut c_void);
-    fn aligned_malloc(size: usize, align: usize) -> *mut c_void;
-    fn memmgr_get_total_heap() -> usize;
-    fn memmgr_get_free_heap() -> usize;
-    fn memmgr_get_minimum_free_heap() -> usize;
-}
+use flipperzero_sys as sys;
+use sys::c_string;
 
 pub struct FuriAlloc;
 
 unsafe impl GlobalAlloc for FuriAlloc {
     #[inline]
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        aligned_malloc(layout.size(), layout.align()) as *mut u8
+        sys::furi::memmgr::aligned_malloc(layout.size(), layout.align()) as *mut u8
     }
 
     #[inline]
     unsafe fn dealloc(&self, ptr: *mut u8, _layout: Layout) {
-        aligned_free(ptr as *mut c_void);
+        sys::furi::memmgr::aligned_free(ptr as *mut c_void);
     }
 
     #[inline]
@@ -44,19 +36,7 @@ static ALLOCATOR: FuriAlloc = FuriAlloc;
 #[alloc_error_handler]
 fn on_oom(_layout: Layout) -> ! {
     unsafe {
-        furi::thread_yield();
-        furi::crash(c_string!("Rust: Out of Memory\r\n"))
+        sys::furi::thread::yield_();
+        sys::furi::check::crash(c_string!("Rust: Out of Memory\r\n"))
     }
-}
-
-pub fn get_total_heap() -> usize {
-    unsafe { memmgr_get_total_heap() }
-}
-
-pub fn get_free_heap() -> usize {
-    unsafe { memmgr_get_free_heap() }
-}
-
-pub fn get_minimum_free_heap() -> usize {
-    unsafe { memmgr_get_minimum_free_heap() }
 }
