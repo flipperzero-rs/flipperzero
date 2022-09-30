@@ -5,6 +5,7 @@
 pub mod canvas;
 pub mod furi;
 pub mod gui;
+pub mod message_queue;
 pub mod view_port;
 
 /// Declare an opaque type.
