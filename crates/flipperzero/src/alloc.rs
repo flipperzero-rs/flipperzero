@@ -5,13 +5,8 @@ use flipperzero_sys::c_string;
 use flipperzero_sys::furi;
 
 extern "C" {
-    #[link_name = "free"]
-    pub fn free(p: *mut c_void);
-
-    #[link_name = "aligned_malloc"]
-    pub fn aligned_malloc(size: usize, align: usize) -> *mut *mut c_void;
-
-    #[link_name = "realloc"]
+    pub fn aligned_free(p: *mut c_void);
+    pub fn aligned_malloc(size: usize, align: usize) -> *mut c_void;
     pub fn realloc(p: *mut c_void, size: usize) -> *mut c_void;
 }
 
@@ -20,15 +15,12 @@ pub struct FuriAlloc;
 unsafe impl GlobalAlloc for FuriAlloc {
     #[inline]
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        aligned_malloc(
-            layout.size(),
-            layout.align().max(core::mem::size_of::<usize>()),
-        ) as *mut u8
+        aligned_malloc(layout.size(), layout.align()) as *mut u8
     }
 
     #[inline]
     unsafe fn dealloc(&self, ptr: *mut u8, _layout: Layout) {
-        free(ptr as *mut c_void);
+        aligned_free(ptr as *mut c_void);
     }
 
     #[inline]
