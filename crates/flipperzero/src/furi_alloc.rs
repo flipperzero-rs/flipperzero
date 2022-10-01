@@ -5,9 +5,12 @@ use flipperzero_sys::c_string;
 use flipperzero_sys::furi;
 
 extern "C" {
-    pub fn aligned_free(p: *mut c_void);
-    pub fn aligned_malloc(size: usize, align: usize) -> *mut c_void;
-    pub fn realloc(p: *mut c_void, size: usize) -> *mut c_void;
+    fn aligned_free(p: *mut c_void);
+    fn aligned_malloc(size: usize, align: usize) -> *mut c_void;
+    fn realloc(p: *mut c_void, size: usize) -> *mut c_void;
+    fn memmgr_get_total_heap() -> usize;
+    fn memmgr_get_free_heap() -> usize;
+    fn memmgr_get_minimum_free_heap() -> usize;
 }
 
 pub struct FuriAlloc;
@@ -45,3 +48,16 @@ fn on_oom(_layout: Layout) -> ! {
         furi::crash(c_string!("Rust: Out of Memory\r\n"))
     }
 }
+
+pub fn get_total_heap() -> usize {
+    unsafe { memmgr_get_total_heap() }
+}
+
+pub fn get_free_heap() -> usize {
+    unsafe { memmgr_get_free_heap() }
+}
+
+pub fn get_minimum_free_heap() -> usize {
+    unsafe { memmgr_get_minimum_free_heap() }
+}
+

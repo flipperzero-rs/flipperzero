@@ -5,4 +5,4 @@
 
 pub mod furi;
 pub mod panic_handler;
-pub mod alloc;
+pub mod furi_alloc;
