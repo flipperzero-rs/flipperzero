@@ -1,5 +1,6 @@
 use core::alloc::{GlobalAlloc, Layout};
 use core::ffi::c_void;
+use core::{cmp, ptr};
 
 use flipperzero_sys::c_string;
 use flipperzero_sys::furi;
@@ -7,7 +8,6 @@ use flipperzero_sys::furi;
 extern "C" {
     fn aligned_free(p: *mut c_void);
     fn aligned_malloc(size: usize, align: usize) -> *mut c_void;
-    fn realloc(p: *mut c_void, size: usize) -> *mut c_void;
     fn memmgr_get_total_heap() -> usize;
     fn memmgr_get_free_heap() -> usize;
     fn memmgr_get_minimum_free_heap() -> usize;
@@ -30,11 +30,6 @@ unsafe impl GlobalAlloc for FuriAlloc {
     unsafe fn alloc_zeroed(&self, layout: Layout) -> *mut u8 {
         // https://github.com/flipperdevices/flipperzero-firmware/issues/1747#issuecomment-1253636552
         self.alloc(layout)
-    }
-
-    #[inline]
-    unsafe fn realloc(&self, ptr: *mut u8, _layout: Layout, new_size: usize) -> *mut u8 {
-        realloc(ptr as *mut c_void, new_size) as *mut u8
     }
 }
 
