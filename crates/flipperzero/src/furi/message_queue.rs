@@ -1,5 +1,7 @@
 use core::ffi::c_void;
+use core::time::Duration;
 use flipperzero_sys::furi::message_queue;
+use flipperzero_sys::furi::kernel::duration_to_ticks;
 use crate::furi::Result;
 
 /// MessageQueue provides a safe wrapper around the furi message queue primitive.
@@ -20,8 +22,9 @@ impl<M: Sized> MessageQueue<M> {
     }
 
     // Attempts to add the message to the end of the queue, waiting up to timeout ticks.
-    pub fn put(&self, msg: M, timeout_ticks: u32) -> Result<()> {
+    pub fn put(&self, msg: M, timeout: Duration) -> Result<()> {
         let mut msg = core::mem::ManuallyDrop::new(msg);
+        let timeout_ticks = duration_to_ticks(timeout);
 
         let status = unsafe {
             message_queue::put(self.hnd, &mut msg as *mut _ as *const c_void, timeout_ticks)
@@ -35,7 +38,8 @@ impl<M: Sized> MessageQueue<M> {
     }
 
     // Attempts to read a message from the front of the queue within timeout ticks.
-    pub fn get(&self, timeout_ticks: u32) -> Result<M> {
+    pub fn get(&self, timeout: Duration) -> Result<M> {
+        let timeout_ticks = duration_to_ticks(timeout);
         let mut out = core::mem::MaybeUninit::<M>::uninit();
         let status = unsafe {
             message_queue::get(self.hnd, out.as_mut_ptr() as *mut c_void, timeout_ticks)
@@ -69,7 +73,7 @@ impl<M: Sized> Drop for MessageQueue<M> {
         // Drain any elements from the message queue, so any
         // drop handlers on the message element get called.
         while self.len() > 0 {
-            match self.get(TIMEOUT_NEVER) {
+            match self.get(Duration::MAX) {
                 Ok(msg) => drop(msg),
                 Err(_) => break, // we tried
             }
