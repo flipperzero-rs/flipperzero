@@ -1,6 +1,5 @@
 use core::alloc::{GlobalAlloc, Layout};
 use core::ffi::c_void;
-use core::{cmp, ptr};
 
 use flipperzero_sys::c_string;
 use flipperzero_sys::furi;
