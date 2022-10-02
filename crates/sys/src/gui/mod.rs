@@ -1,12 +1,31 @@
-//! Low-level bindings to ViewPort API.
+//! Low-level bindings to GUI service.
 
-use core::ffi::c_void;
+use crate::{c_string, opaque};
+use core::ffi::c_char;
 use core::fmt::Display;
 
-use super::canvas::Canvas;
-use crate::opaque;
+pub mod canvas;
+pub mod view;
+pub mod view_dispatcher;
+pub mod view_port;
 
-opaque!(ViewPort);
+pub const RECORD_GUI: *const c_char = c_string!("gui");
+
+opaque!(Gui);
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum GuiLayer {
+    Desktop,
+    Window,
+    StatusBarLeft,
+    StatusBarRight,
+    Fullscreen,
+
+    /// Do not use/move, special value
+    MAX,
+}
 
 #[repr(C)]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -102,28 +121,9 @@ pub mod input_types {
     pub const REPEAT: InputType = InputType(4);
 }
 
-pub type ViewPortDrawCallback = extern "C" fn(*mut Canvas, *mut c_void);
-pub type ViewPortInputCallback = extern "C" fn(*mut InputEvent, *mut c_void);
-
 extern "C" {
-    #[link_name = "view_port_alloc"]
-    pub fn alloc() -> *mut ViewPort;
-    #[link_name = "view_port_free"]
-    pub fn free(view_port: *mut ViewPort);
-    #[link_name = "view_port_enabled_set"]
-    pub fn enabled_set(view_port: *mut ViewPort, enabled: bool);
-    #[link_name = "view_port_draw_callback_set"]
-    pub fn draw_callback_set(
-        view_port: *mut ViewPort,
-        callback: ViewPortDrawCallback,
-        context: *mut c_void,
-    );
-    #[link_name = "view_port_input_callback_set"]
-    pub fn input_callback_set(
-        view_port: *mut ViewPort,
-        callback: ViewPortInputCallback,
-        context: *mut c_void,
-    );
-    #[link_name = "view_port_update"]
-    pub fn update(view_port: *mut ViewPort);
+    #[link_name = "gui_add_view_port"]
+    pub fn add_view_port(gui: *mut Gui, view_port: *mut view_port::ViewPort, layer: GuiLayer);
+    #[link_name = "gui_remove_view_port"]
+    pub fn remove_view_port(gui: *mut Gui, view_port: *mut view_port::ViewPort);
 }
