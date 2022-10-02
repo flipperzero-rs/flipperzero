@@ -1,16 +1,16 @@
 use core::ffi::c_void;
 use core::time::Duration;
+
 use flipperzero_sys::furi::message_queue;
 use flipperzero_sys::furi::kernel::duration_to_ticks;
-use crate::furi::Result;
+
+use crate::furi;
 
 /// MessageQueue provides a safe wrapper around the furi message queue primitive.
 pub struct MessageQueue<M: Sized> {
     hnd: *const message_queue::FuriMessageQueue,
     _marker: core::marker::PhantomData<M>,
 }
-
-pub const TIMEOUT_NEVER: u32 = 0xFFFFFFFF; // corresponds to FuriWaitForever
 
 impl<M: Sized> MessageQueue<M> {
     /// Constructs a message queue with the given capacity.
@@ -22,7 +22,7 @@ impl<M: Sized> MessageQueue<M> {
     }
 
     // Attempts to add the message to the end of the queue, waiting up to timeout ticks.
-    pub fn put(&self, msg: M, timeout: Duration) -> Result<()> {
+    pub fn put(&self, msg: M, timeout: Duration) -> furi::Result<()> {
         let mut msg = core::mem::ManuallyDrop::new(msg);
         let timeout_ticks = duration_to_ticks(timeout);
 
@@ -34,7 +34,7 @@ impl<M: Sized> MessageQueue<M> {
     }
 
     // Attempts to read a message from the front of the queue within timeout ticks.
-    pub fn get(&self, timeout: Duration) -> Result<M> {
+    pub fn get(&self, timeout: Duration) -> furi::Result<M> {
         let timeout_ticks = duration_to_ticks(timeout);
         let mut out = core::mem::MaybeUninit::<M>::uninit();
         let status = unsafe {
@@ -49,18 +49,18 @@ impl<M: Sized> MessageQueue<M> {
     }
 
     /// Returns the capacity of the queue.
-    pub fn capacity(&self) -> u32 {
-        unsafe { message_queue::capacity(self.hnd) }
+    pub fn capacity(&self) -> usize {
+        unsafe { message_queue::capacity(self.hnd) as usize }
     }
 
     /// Returns the number of elements in the queue.
-    pub fn len(&self) -> u32 {
-        unsafe { message_queue::count(self.hnd) }
+    pub fn len(&self) -> usize {
+        unsafe { message_queue::count(self.hnd) as usize }
     }
 
     /// Returns the number of free slots in the queue.
-    pub fn space(&self) -> u32 {
-        unsafe { message_queue::space(self.hnd) }
+    pub fn space(&self) -> usize {
+        unsafe { message_queue::space(self.hnd) as usize }
     }
 }
 
