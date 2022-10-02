@@ -1,0 +1,23 @@
+[package]
+name = "flipperzero-alloc"
+version = "0.1.0"
+description = "Rust for Flipper Zero"
+repository = "https://github.com/dcoles/flipperzero-rs"
+license = "MIT"
+edition = "2021"
+autobins = false
+autoexamples = false
+autotests = false
+autobenches = false
+
+[package.metadata.docs.rs]
+default-target = "thumbv7em-none-eabihf"
+targets = []
+all-features = true
+
+[lib]
+bench = false
+test = false
+
+[dependencies]
+flipperzero-sys = { path = "../sys", version = "0.2.0-alpha" }

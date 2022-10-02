@@ -6,8 +6,8 @@ pub mod canvas;
 pub mod furi;
 pub mod gui;
 pub mod icon;
-pub mod notification;
 pub mod lfrfid;
+pub mod notification;
 pub mod toolbox;
 pub mod view_port;
 
