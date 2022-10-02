@@ -10,6 +10,7 @@ pub const RECORD_GUI: *const c_char = c_string!("gui");
 opaque!(Gui);
 
 #[repr(C)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum GuiLayer {
     Desktop,

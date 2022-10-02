@@ -5,6 +5,7 @@ use core::marker::PhantomData;
 use core::ops::{Deref, DerefMut};
 
 use flipperzero_sys as sys;
+use sys::furi::mutex::{FuriMutex, FuriMutexType};
 
 use crate::furi;
 
@@ -14,13 +15,13 @@ type UnsendUnsync = PhantomData<*const ()>;
 
 /// A mutual exclusion primitive useful for protecting shared data.
 pub struct Mutex<T: ?Sized> {
-    mutex: *mut sys::furi::mutex::FuriMutex,
+    mutex: *mut FuriMutex,
     data: UnsafeCell<T>,
 }
 
 impl<T> Mutex<T> {
     pub fn new(data: T) -> Self {
-        let mutex = unsafe { sys::furi::mutex::alloc(sys::furi::mutex::Type::Normal) };
+        let mutex = unsafe { sys::furi::mutex::alloc(FuriMutexType::Normal) };
         if mutex.is_null() {
             panic!("furi_mutex_alloc failed");
         }

@@ -7,14 +7,15 @@ use crate::opaque;
 opaque!(FuriMutex);
 
 #[repr(C)]
-pub enum Type {
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum FuriMutexType {
     Normal,
     Recursive,
 }
 
 extern "C" {
     #[link_name = "furi_mutex_alloc"]
-    pub fn alloc(type_: Type) -> *mut FuriMutex;
+    pub fn alloc(type_: FuriMutexType) -> *mut FuriMutex;
     #[link_name = "furi_mutex_free"]
     pub fn free(instance: *mut FuriMutex);
     #[link_name = "furi_mutex_acquire"]
