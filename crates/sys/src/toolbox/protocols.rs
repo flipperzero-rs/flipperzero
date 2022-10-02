@@ -12,6 +12,7 @@ pub const PROTOCOLS_MAX: usize = 16; // SDK version 1.13
 opaque!(Dict);
 
 #[repr(transparent)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct ProtocolId(i32);
 
 extern "C" {
