@@ -27,7 +27,7 @@ macro_rules! opaque {
 /// Will automatically add a nul terminator.
 #[macro_export]
 macro_rules! c_string {
-    ($str:expr) => {
-        (concat!($str, "\0").as_ptr() as *const core::ffi::c_char)
-    };
+    ($str:expr) => {{
+        concat!($str, "\0").as_ptr() as *const core::ffi::c_char
+    }};
 }

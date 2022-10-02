@@ -57,6 +57,11 @@ impl<M: Sized> MessageQueue<M> {
         unsafe { message_queue::count(self.hnd) as usize }
     }
 
+    /// Is the message queue empty?
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     /// Returns the number of free slots in the queue.
     pub fn space(&self) -> usize {
         unsafe { message_queue::space(self.hnd) as usize }
@@ -67,7 +72,7 @@ impl<M: Sized> Drop for MessageQueue<M> {
     fn drop(&mut self) {
         // Drain any elements from the message queue, so any
         // drop handlers on the message element get called.
-        while self.len() > 0 {
+        while !self.is_empty() {
             match self.get(Duration::MAX) {
                 Ok(msg) => drop(msg),
                 Err(_) => break, // we tried

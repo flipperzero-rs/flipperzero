@@ -38,7 +38,7 @@ impl<T> Mutex<T> {
             return Err(status);
         }
 
-        Ok(MutexGuard(&self, PhantomData))
+        Ok(MutexGuard(self, PhantomData))
     }
 }
 
