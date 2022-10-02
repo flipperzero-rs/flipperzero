@@ -2,9 +2,8 @@
 
 use core::ffi::c_char;
 
-use crate::{opaque, c_string};
-
 use super::view_port::ViewPort;
+use crate::{c_string, opaque};
 
 pub const RECORD_GUI: *const c_char = c_string!("gui");
 

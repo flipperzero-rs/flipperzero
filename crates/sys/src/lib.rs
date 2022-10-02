@@ -18,8 +18,7 @@ macro_rules! opaque {
         #[repr(C)]
         pub struct $name {
             _data: [u8; 0],
-            _marker:
-                core::marker::PhantomData<(*mut u8, core::marker::PhantomPinned)>,
+            _marker: core::marker::PhantomData<(*mut u8, core::marker::PhantomPinned)>,
         }
     };
 }
@@ -30,5 +29,5 @@ macro_rules! opaque {
 macro_rules! c_string {
     ($str:expr) => {
         (concat!($str, "\0").as_ptr() as *const core::ffi::c_char)
-    }
+    };
 }

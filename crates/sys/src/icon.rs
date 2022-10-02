@@ -4,7 +4,6 @@ use crate::opaque;
 
 opaque!(Icon);
 
-
 extern "C" {
     #[link_name = "icon_get_width"]
     pub fn get_width(icon: *const Icon) -> u8;
@@ -15,7 +14,7 @@ extern "C" {
 pub mod icons {
     use super::Icon;
 
-    extern {
+    extern "C" {
         #[link_name = "I_Smile_18x18"]
         pub static SMILE: Icon;
     }
@@ -23,7 +22,7 @@ pub mod icons {
     pub mod buttons {
         use super::Icon;
 
-        extern {
+        extern "C" {
             #[link_name = "I_ButtonCenter_7x7"]
             pub static CENTER: Icon;
             #[link_name = "I_back_10px"]
@@ -44,7 +43,7 @@ pub mod icons {
     pub mod pin {
         use super::Icon;
 
-        extern {
+        extern "C" {
             #[link_name = "I_Pin_back_arrow_10x8"]
             pub static BACK: Icon;
 
@@ -62,7 +61,7 @@ pub mod icons {
     pub mod down {
         use super::Icon;
 
-        extern {
+        extern "C" {
             #[link_name = "I_ArrowDownEmpty_14x15"]
             pub static OUTLINE: Icon;
             #[link_name = "I_ArrowDownFilled_14x15"]
@@ -73,7 +72,7 @@ pub mod icons {
     pub mod up {
         use super::Icon;
 
-        extern {
+        extern "C" {
             #[link_name = "I_ArrowUpEmpty_14x15"]
             pub static OUTLINE: Icon;
             #[link_name = "I_ArrowUpFilled_14x15"]

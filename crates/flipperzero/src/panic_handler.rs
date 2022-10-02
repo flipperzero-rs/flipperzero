@@ -6,8 +6,7 @@ use core::fmt::Write;
 use core::panic::PanicInfo;
 use core::str;
 
-use flipperzero_sys::c_string;
-use flipperzero_sys::furi;
+use flipperzero_sys::{c_string, furi};
 
 use crate::furi::io::Stdout;
 
@@ -27,7 +26,10 @@ pub fn panic(panic_info: &PanicInfo<'_>) -> ! {
     };
 
     // Format: "thread: 'App Name' paniced at 'panic!', panic.rs:5"
-    let _ = write!(&mut stdout, "\x1b[0;31mthread '{thread_name}' {panic_info}\x1b[0m\r\n");
+    let _ = write!(
+        &mut stdout,
+        "\x1b[0;31mthread '{thread_name}' {panic_info}\x1b[0m\r\n"
+    );
     let _ = stdout.flush();
 
     unsafe {

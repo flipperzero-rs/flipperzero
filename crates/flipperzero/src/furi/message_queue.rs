@@ -1,8 +1,8 @@
 use core::ffi::c_void;
 use core::time::Duration;
 
-use flipperzero_sys::furi::message_queue;
 use flipperzero_sys::furi::kernel::duration_to_ticks;
+use flipperzero_sys::furi::message_queue;
 
 use crate::furi;
 
@@ -37,9 +37,8 @@ impl<M: Sized> MessageQueue<M> {
     pub fn get(&self, timeout: Duration) -> furi::Result<M> {
         let timeout_ticks = duration_to_ticks(timeout);
         let mut out = core::mem::MaybeUninit::<M>::uninit();
-        let status = unsafe {
-            message_queue::get(self.hnd, out.as_mut_ptr() as *mut c_void, timeout_ticks)
-        };
+        let status =
+            unsafe { message_queue::get(self.hnd, out.as_mut_ptr() as *mut c_void, timeout_ticks) };
 
         if status.is_ok() {
             Ok(unsafe { out.assume_init() })
@@ -75,8 +74,6 @@ impl<M: Sized> Drop for MessageQueue<M> {
             }
         }
 
-        unsafe {
-            message_queue::free(self.hnd)
-        }
+        unsafe { message_queue::free(self.hnd) }
     }
 }

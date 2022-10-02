@@ -1,0 +1,2 @@
+#imports_granularity = "Module" # Nightly
+#group_imports = "StdExternalCrate" # Nightly

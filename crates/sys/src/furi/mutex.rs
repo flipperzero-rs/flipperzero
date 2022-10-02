@@ -1,8 +1,8 @@
 //! Furi mutex.
 
-use crate::opaque;
 use crate::furi::base::Status;
 use crate::furi::thread::FuriThreadId;
+use crate::opaque;
 
 opaque!(FuriMutex);
 
@@ -13,14 +13,14 @@ pub enum Type {
 }
 
 extern "C" {
-    #[link_name="furi_mutex_alloc"]
+    #[link_name = "furi_mutex_alloc"]
     pub fn alloc(type_: Type) -> *mut FuriMutex;
-    #[link_name="furi_mutex_free"]
+    #[link_name = "furi_mutex_free"]
     pub fn free(instance: *mut FuriMutex);
-    #[link_name="furi_mutex_acquire"]
+    #[link_name = "furi_mutex_acquire"]
     pub fn acquire(instance: *mut FuriMutex, timeout: u32) -> Status;
-    #[link_name="furi_mutex_release"]
+    #[link_name = "furi_mutex_release"]
     pub fn release(instance: *mut FuriMutex) -> Status;
-    #[link_name="furi_mutex_get_owner"]
+    #[link_name = "furi_mutex_get_owner"]
     pub fn get_owner(instance: *mut FuriMutex) -> FuriThreadId;
 }

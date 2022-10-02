@@ -79,13 +79,18 @@ pub mod font {
     pub const BIG_NUMBERS: Font = Font(3);
 }
 
-
-
 extern "C" {
     #[link_name = "canvas_draw_str"]
     pub fn draw_str(canvas: *mut Canvas, x: u8, y: u8, str: *const c_char);
     #[link_name = "canvas_draw_str_aligned"]
-    pub fn draw_str_aligned(canvas: *mut Canvas, x: u8, y: u8, horizontal: Align, vertical: Align, str: *const c_char);
+    pub fn draw_str_aligned(
+        canvas: *mut Canvas,
+        x: u8,
+        y: u8,
+        horizontal: Align,
+        vertical: Align,
+        str: *const c_char,
+    );
     #[link_name = "canvas_draw_icon"]
     pub fn draw_icon(canvas: *mut Canvas, x: u8, y: u8, icon: *const crate::icon::Icon);
     #[link_name = "canvas_draw_box"]

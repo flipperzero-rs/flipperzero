@@ -3,9 +3,8 @@
 use core::ffi::c_void;
 use core::fmt::Display;
 
-use crate::opaque;
-
 use super::canvas::Canvas;
+use crate::opaque;
 
 opaque!(ViewPort);
 
@@ -19,7 +18,11 @@ pub struct InputEvent {
 
 impl Display for InputEvent {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "InputEvent(seq={}, key={}, type={})", self.sequence, self.key, self.event_type)
+        write!(
+            f,
+            "InputEvent(seq={}, key={}, type={})",
+            self.sequence, self.key, self.event_type
+        )
     }
 }
 
@@ -66,7 +69,6 @@ pub mod keys {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct InputType(pub u8);
 
-
 impl InputType {
     /// Describes the type of event.
     pub fn description(self) -> &'static str {
@@ -100,9 +102,8 @@ pub mod input_types {
     pub const REPEAT: InputType = InputType(4);
 }
 
-
-pub type ViewPortDrawCallback = extern fn(*mut Canvas, *mut c_void);
-pub type ViewPortInputCallback = extern fn(*mut InputEvent, *mut c_void);
+pub type ViewPortDrawCallback = extern "C" fn(*mut Canvas, *mut c_void);
+pub type ViewPortInputCallback = extern "C" fn(*mut InputEvent, *mut c_void);
 
 extern "C" {
     #[link_name = "view_port_alloc"]
@@ -112,9 +113,17 @@ extern "C" {
     #[link_name = "view_port_enabled_set"]
     pub fn enabled_set(view_port: *mut ViewPort, enabled: bool);
     #[link_name = "view_port_draw_callback_set"]
-    pub fn draw_callback_set(view_port: *mut ViewPort, callback: ViewPortDrawCallback, context: *mut c_void);
+    pub fn draw_callback_set(
+        view_port: *mut ViewPort,
+        callback: ViewPortDrawCallback,
+        context: *mut c_void,
+    );
     #[link_name = "view_port_input_callback_set"]
-    pub fn input_callback_set(view_port: *mut ViewPort, callback: ViewPortInputCallback, context: *mut c_void);
+    pub fn input_callback_set(
+        view_port: *mut ViewPort,
+        callback: ViewPortInputCallback,
+        context: *mut c_void,
+    );
     #[link_name = "view_port_update"]
     pub fn update(view_port: *mut ViewPort);
 }

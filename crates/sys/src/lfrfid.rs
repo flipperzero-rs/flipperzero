@@ -7,18 +7,18 @@ pub mod worker {
     opaque!(Worker);
 
     extern "C" {
-        #[link_name="lfrfid_worker_alloc"]
+        #[link_name = "lfrfid_worker_alloc"]
         pub fn lfrfid_worker_alloc(dict: *mut protocols::Dict) -> *mut Worker;
-        #[link_name="lfrfid_worker_free"]
+        #[link_name = "lfrfid_worker_free"]
         pub fn lfrfid_worker_free(worker: *mut Worker);
-        #[link_name="lfrfid_worker_start_thread"]
+        #[link_name = "lfrfid_worker_start_thread"]
         pub fn lfrfid_worker_start_thread(worker: *mut Worker);
-        #[link_name="lfrfid_worker_stop_thread"]
+        #[link_name = "lfrfid_worker_stop_thread"]
         pub fn lfrfid_worker_stop_thread(worker: *mut Worker);
 
-        #[link_name="lfrfid_worker_emulate_start"]
+        #[link_name = "lfrfid_worker_emulate_start"]
         pub fn lfrfid_worker_emulate_start(worker: *mut Worker, protocol_id: protocols::ProtocolId);
-        #[link_name="lfrfid_worker_stop"]
+        #[link_name = "lfrfid_worker_stop"]
         pub fn lfrfid_worker_stop(worker: *mut Worker);
     }
 }
