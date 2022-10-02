@@ -1,3 +1,9 @@
+//! Alloc support for the Flipper Zero.
+//! *Note:* This currently requires using nightly.
+
+#![no_std]
+#![feature(alloc_error_handler)]
+
 use core::alloc::{GlobalAlloc, Layout};
 use core::ffi::c_void;
 
@@ -54,4 +60,3 @@ pub fn get_free_heap() -> usize {
 pub fn get_minimum_free_heap() -> usize {
     unsafe { memmgr_get_minimum_free_heap() }
 }
-

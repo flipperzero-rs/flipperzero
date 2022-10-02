@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "crates/alloc",
     "crates/flipperzero",
     "crates/sys",
 ]
