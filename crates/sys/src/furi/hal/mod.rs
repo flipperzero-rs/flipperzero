@@ -1,6 +1,7 @@
 //! Furi Hardware Abstration Layer.
 
 pub mod cdc;
+pub mod clock;
 pub mod console;
 pub mod cortex;
 pub mod crypto;
