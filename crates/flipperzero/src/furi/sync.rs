@@ -34,7 +34,7 @@ impl<T> Mutex<T> {
     /// Acquires a mutex, blocking the current thread until it is able to do so.
     pub fn lock(&self) -> furi::Result<MutexGuard<'_, T>> {
         let status = unsafe { sys::furi::mutex::acquire(self.mutex, u32::MAX) };
-        if !status.is_ok() {
+        if status.is_err() {
             return Err(status);
         }
 
@@ -66,7 +66,7 @@ impl<T> DerefMut for MutexGuard<'_, T> {
 impl<T: ?Sized> Drop for MutexGuard<'_, T> {
     fn drop(&mut self) {
         let status = unsafe { sys::furi::mutex::release(self.0.mutex) };
-        if !status.is_ok() {
+        if status.is_err() {
             panic!("furi_mutex_release failed: {}", status);
         }
     }

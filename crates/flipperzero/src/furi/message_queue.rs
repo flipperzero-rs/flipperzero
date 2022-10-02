@@ -30,11 +30,7 @@ impl<M: Sized> MessageQueue<M> {
             message_queue::put(self.hnd, &mut msg as *mut _ as *const c_void, timeout_ticks)
         };
 
-        if status.is_ok() {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status.err_or(())
     }
 
     // Attempts to read a message from the front of the queue within timeout ticks.

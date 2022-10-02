@@ -35,6 +35,24 @@ impl Status {
     pub fn is_err(self) -> bool {
         self != status::OK
     }
+
+    /// Returns `Err(Status)` if [`Status`] is an error, otherwise `Ok(ok)`.
+    pub fn err_or<T>(self, ok: T) -> Result<T, Self> {
+        if self.is_err() {
+            Err(self)
+        } else {
+            Ok(ok)
+        }
+    }
+
+    /// Returns `Err(Status)` if [`Status`] is an error, otherwise `Ok(or_else(Status))`.
+    pub fn err_or_else<T>(self, or_else: impl Fn(Self) -> T) -> Result<T, Self> {
+        if self.is_err() {
+            Err(self)
+        } else {
+            Ok(or_else(self))
+        }
+    }
 }
 
 impl Display for Status {
