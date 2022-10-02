@@ -2,6 +2,7 @@
 
 pub mod base;
 pub mod check;
+pub mod hal;
 pub mod kernel;
 pub mod memmgr;
 pub mod message_queue;
