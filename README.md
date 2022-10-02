@@ -1,4 +1,4 @@
-# Rust for Flipper Zero
+# Rust for Flipper Zero 🐬❤️🦀
 
 [![crates.io](https://img.shields.io/crates/v/flipperzero)](https://crates.io/crates/flipperzero)
 [![docs.rs](https://img.shields.io/docsrs/flipperzero)](https://docs.rs/flipperzero)
