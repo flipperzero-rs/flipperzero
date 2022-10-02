@@ -13,10 +13,6 @@ Rust application support for the [Flipper Zero](https://flipperzero.one/).
     ```
     rustup target add thumbv7em-none-eabihf
     ```
-3. Clone the [`flipperzero-firmware`](https://github.com/flipperdevices/flipperzero-firmware) repository:
-    ```
-    git clone --recurse-submodules https://github.com/flipperdevices/flipperzero-firmware.git && cd flipperzero-firmware
-    ```
 
 ## Writing an external app
 
