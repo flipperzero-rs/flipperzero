@@ -8,7 +8,6 @@ opaque!(View);
 pub type DrawCallback = extern "C" fn(*mut super::canvas::Canvas, *mut c_void);
 pub type InputCallback = extern "C" fn(*mut super::InputEvent, *mut c_void) -> bool;
 pub type CustomCallback = extern "C" fn(u32, *mut c_void) -> bool;
-pub type NavigationCallback = extern "C" fn(*mut c_void) -> u32;
 
 extern "C" {
     #[link_name = "view_alloc"]

@@ -5,6 +5,8 @@ use core::ffi::c_char;
 use core::fmt::Display;
 
 pub mod canvas;
+pub mod elements;
+pub mod variable_item_list;
 pub mod view;
 pub mod view_dispatcher;
 pub mod view_port;
