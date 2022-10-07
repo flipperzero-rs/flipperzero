@@ -5,6 +5,7 @@ description = "Rust for Flipper Zero"
 repository = "https://github.com/dcoles/flipperzero-rs"
 license = "MIT"
 edition = "2021"
+rust-version = "1.64.0"
 autobins = false
 autoexamples = false
 autotests = false
