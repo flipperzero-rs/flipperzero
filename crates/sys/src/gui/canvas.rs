@@ -7,21 +7,26 @@ use crate::opaque;
 
 opaque!(Canvas);
 
+/// Alignment.
 #[repr(transparent)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Align(pub u8);
 
 impl Align {
+    pub const LEFT: Align = Self(0);
+    pub const RIGHT: Align = Self(1);
+    pub const TOP: Align = Self(2);
+    pub const BOTTOM: Align = Self(3);
+    pub const CENTER: Align = Self(4);
+
     /// Describes the alignment indicated.
     pub fn description(self) -> &'static str {
-        use alignment::*;
-
         match self {
-            LEFT => "Left",
-            RIGHT => "Right",
-            TOP => "Top",
-            BOTTOM => "Bottom",
-            CENTER => "Center",
+            Self::LEFT => "Left",
+            Self::RIGHT => "Right",
+            Self::TOP => "Top",
+            Self::BOTTOM => "Bottom",
+            Self::CENTER => "Center",
             _ => "Unknown",
         }
     }
@@ -33,31 +38,24 @@ impl Display for Align {
     }
 }
 
-/// Align types.
-pub mod alignment {
-    use super::Align;
-
-    pub const LEFT: Align = Align(0);
-    pub const RIGHT: Align = Align(1);
-    pub const TOP: Align = Align(2);
-    pub const BOTTOM: Align = Align(3);
-    pub const CENTER: Align = Align(4);
-}
-
+/// Fonts.
 #[repr(transparent)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Font(pub u8);
 
 impl Font {
+    pub const PRIMARY: Font = Self(0);
+    pub const SECONDARY: Font = Self(1);
+    pub const KEYBOARD: Font = Self(2);
+    pub const BIG_NUMBERS: Font = Self(3);
+
     /// Describes the font selected.
     pub fn description(self) -> &'static str {
-        use font::*;
-
         match self {
-            PRIMARY => "Primary",
-            SECONDARY => "Secondary",
-            KEYBOARD => "Keyboard",
-            BIG_NUMBERS => "Big numbers",
+            Self::PRIMARY => "Primary",
+            Self::SECONDARY => "Secondary",
+            Self::KEYBOARD => "Keyboard",
+            Self::BIG_NUMBERS => "Big numbers",
             _ => "Unknown",
         }
     }
@@ -67,16 +65,6 @@ impl Display for Font {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "{}", self.description())
     }
-}
-
-/// Builtin fonts.
-pub mod font {
-    use super::Font;
-
-    pub const PRIMARY: Font = Font(0);
-    pub const SECONDARY: Font = Font(1);
-    pub const KEYBOARD: Font = Font(2);
-    pub const BIG_NUMBERS: Font = Font(3);
 }
 
 extern "C" {

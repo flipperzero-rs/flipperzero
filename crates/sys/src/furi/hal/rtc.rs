@@ -1,5 +1,7 @@
 //! Furi HAL RTC bindings.
 
+use core::ops;
+
 #[repr(C)]
 pub struct FuriHalRtcDateTime {
     /// Hour in 24H format: 0-23
@@ -18,40 +20,68 @@ pub struct FuriHalRtcDateTime {
     weekday: u8,
 }
 
-pub type FuriHalRtcFlag = u32;
-pub type FuriHalRtcBootMode = u32;
-pub type FuriHalRtcRegister = u32;
+#[repr(transparent)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct FuriHalRtcFlag(u32);
 
-pub const FLAG_DEBUG: FuriHalRtcFlag = 1 << 0;
-pub const FLAG_FACTORY_RESET: FuriHalRtcFlag = 1 << 1;
-pub const FLAG_LOCK: FuriHalRtcFlag = 1 << 2;
-pub const FLAG_C2_UPDATE: FuriHalRtcFlag = 1 << 3;
+impl FuriHalRtcFlag {
+    pub const DEBUG: FuriHalRtcFlag = Self(1 << 0);
+    pub const FACTORY_RESET: FuriHalRtcFlag = Self(1 << 1);
+    pub const LOCK: FuriHalRtcFlag = Self(1 << 2);
+    pub const C2_UPDATE: FuriHalRtcFlag = Self(1 << 3);
+}
 
-/// Normal boot mode, default value.
-pub const BOOT_MODE_NORMAL: FuriHalRtcBootMode = 0;
-/// Boot to DFU (MCU bootloader by ST).
-pub const BOOT_MODE_DFU: FuriHalRtcBootMode = 1;
-/// Boot to Update, pre update.
-pub const BOOT_MODE_PRE_UPDATE: FuriHalRtcBootMode = 2;
-/// Boot to Update, main.
-pub const BOOT_MODE_UPDATE: FuriHalRtcBootMode = 3;
-/// Boot to Update, post update.
-pub const BOOT_MODE_POST_UPDATE: FuriHalRtcBootMode = 4;
+impl ops::BitOr for FuriHalRtcFlag {
+    type Output = Self;
 
-/// RTC structure header.
-pub const REGISTER_HEADER: FuriHalRtcRegister = 0;
-/// Various system bits.
-pub const REGISTER_SYSTEM: FuriHalRtcRegister = 1;
-/// Pointer to Version.
-pub const REGISTER_VERSION: FuriHalRtcRegister = 2;
-/// LFS geometry fingerprint.
-pub const REGISTER_LFS_FINGERPRINT: FuriHalRtcRegister = 3;
-/// Pointer to last fault message
-pub const REGISTER_FAULT_DATA: FuriHalRtcRegister = 4;
-/// Failed pins count.
-pub const REGISTER_PIN_FAILS: FuriHalRtcRegister = 5;
-/// Index of FS directory entry corresponding to FW update to be applied.
-pub const REGISTER_UPDATE_FOLDER_FS_INDEX: FuriHalRtcRegister = 6;
+    fn bitor(self, rhs: Self) -> Self::Output {
+        Self(self.0 | rhs.0)
+    }
+}
+
+impl ops::BitOrAssign for FuriHalRtcFlag {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+
+#[repr(transparent)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct FuriHalRtcBootMode(u32);
+
+impl FuriHalRtcBootMode {
+    /// Normal boot mode, default value.
+    pub const NORMAL: FuriHalRtcBootMode = Self(0);
+    /// Boot to DFU (MCU bootloader by ST).
+    pub const DFU: FuriHalRtcBootMode = Self(1);
+    /// Boot to Update, pre update.
+    pub const PRE_UPDATE: FuriHalRtcBootMode = Self(2);
+    /// Boot to Update, main.
+    pub const UPDATE: FuriHalRtcBootMode = Self(3);
+    /// Boot to Update, post update.
+    pub const POST_UPDATE: FuriHalRtcBootMode = Self(4);
+}
+
+#[repr(transparent)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct FuriHalRtcRegister(u32);
+
+impl FuriHalRtcRegister {
+    /// RTC structure header.
+    pub const HEADER: FuriHalRtcRegister = Self(0);
+    /// Various system bits.
+    pub const SYSTEM: FuriHalRtcRegister = Self(1);
+    /// Pointer to Version.
+    pub const VERSION: FuriHalRtcRegister = Self(2);
+    /// LFS geometry fingerprint.
+    pub const LFS_FINGERPRINT: FuriHalRtcRegister = Self(3);
+    /// Pointer to last fault message
+    pub const FAULT_DATA: FuriHalRtcRegister = Self(4);
+    /// Failed pins count.
+    pub const PIN_FAILS: FuriHalRtcRegister = Self(5);
+    /// Index of FS directory entry corresponding to FW update to be applied.
+    pub const UPDATE_FOLDER_FS_INDEX: FuriHalRtcRegister = Self(6);
+}
 
 extern "C" {
     #[link_name = "furi_hal_rtc_datetime_to_timestamp"]

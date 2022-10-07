@@ -52,17 +52,22 @@ impl Display for InputEvent {
 pub struct InputKey(pub u8);
 
 impl InputKey {
+    pub const UP: InputKey = Self(0);
+    pub const DOWN: InputKey = Self(1);
+    pub const RIGHT: InputKey = Self(2);
+    pub const LEFT: InputKey = Self(3);
+    pub const OK: InputKey = Self(4);
+    pub const BACK: InputKey = Self(5);
+
     /// Describes the key which was pressed.
     pub fn description(self) -> &'static str {
-        use keys::*;
-
         match self {
-            UP => "Up",
-            DOWN => "Down",
-            RIGHT => "Right",
-            LEFT => "Left",
-            OK => "Ok",
-            BACK => "Back",
+            Self::UP => "Up",
+            Self::DOWN => "Down",
+            Self::RIGHT => "Right",
+            Self::LEFT => "Left",
+            Self::OK => "Ok",
+            Self::BACK => "Back",
             _ => "Unknown",
         }
     }
@@ -74,33 +79,25 @@ impl Display for InputKey {
     }
 }
 
-/// Input keys.
-pub mod keys {
-    use super::InputKey;
-
-    pub const UP: InputKey = InputKey(0);
-    pub const DOWN: InputKey = InputKey(1);
-    pub const RIGHT: InputKey = InputKey(2);
-    pub const LEFT: InputKey = InputKey(3);
-    pub const OK: InputKey = InputKey(4);
-    pub const BACK: InputKey = InputKey(5);
-}
-
 #[repr(transparent)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct InputType(pub u8);
 
 impl InputType {
+    pub const PRESS: InputType = Self(0);
+    pub const RELEASE: InputType = Self(1);
+    pub const SHORT: InputType = Self(2);
+    pub const LONG: InputType = Self(3);
+    pub const REPEAT: InputType = Self(4);
+
     /// Describes the type of event.
     pub fn description(self) -> &'static str {
-        use input_types::*;
-
         match self {
-            PRESS => "Press",
-            RELEASE => "Release",
-            SHORT => "Short",
-            LONG => "Long",
-            REPEAT => "Repeat",
+            Self::PRESS => "Press",
+            Self::RELEASE => "Release",
+            Self::SHORT => "Short",
+            Self::LONG => "Long",
+            Self::REPEAT => "Repeat",
             _ => "Unknown",
         }
     }
@@ -110,17 +107,6 @@ impl Display for InputType {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "{}", self.description())
     }
-}
-
-/// Input types.
-pub mod input_types {
-    use super::InputType;
-
-    pub const PRESS: InputType = InputType(0);
-    pub const RELEASE: InputType = InputType(1);
-    pub const SHORT: InputType = InputType(2);
-    pub const LONG: InputType = InputType(3);
-    pub const REPEAT: InputType = InputType(4);
 }
 
 extern "C" {

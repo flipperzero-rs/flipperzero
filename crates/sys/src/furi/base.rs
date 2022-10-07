@@ -10,30 +10,43 @@ use core::fmt::Display;
 pub struct Status(pub i32);
 
 impl Status {
+    /// Operation completed successfully.
+    pub const OK: Status = Status(0);
+    /// Unspecified RTOS error: run-time error but no other error message fits.
+    pub const ERR: Status = Status(-1);
+    /// Operation not completed within the timeout period.
+    pub const ERR_TIMEOUT: Status = Status(-2);
+    /// Resource not available.
+    pub const ERR_RESOURCE: Status = Status(-3);
+    /// Parameter error.
+    pub const ERR_PARAMETER: Status = Status(-4);
+    /// System is out of memory: it was impossible to allocate or reserve memory for the operation.
+    pub const ERR_NO_MEMORY: Status = Status(-5);
+    /// Not allowed in ISR context: the function cannot be called from interrupt service routines.
+    pub const ERR_ISR: Status = Status(-6);
+
     /// Describes the status result of the operation.
     pub fn description(self) -> &'static str {
-        use status::*;
-
         match self {
-            OK => "Operation completed successfully",
-            ERR => "Unspecified RTOS error",
-            ERR_TIMEOUT => "Operation not completed within the timeout period",
-            ERR_RESOURCE => "Resource not available",
-            ERR_PARAMETER => "Parameter error",
-            ERR_NO_MEMORY => "System is out of memory",
-            ERR_ISR => "Not allowed in ISR context",
+            Self::OK => "Operation completed successfully",
+            Self::ERR => "Unspecified RTOS error",
+            Self::ERR_TIMEOUT => "Operation not completed within the timeout period",
+            Self::ERR_RESOURCE => "Resource not available",
+            Self::ERR_PARAMETER => "Parameter error",
+            Self::ERR_NO_MEMORY => "System is out of memory",
+            Self::ERR_ISR => "Not allowed in ISR context",
             _ => "Unknown",
         }
     }
 
     /// Was the operation successful?
     pub fn is_ok(self) -> bool {
-        self == status::OK
+        self == Self::OK
     }
 
     /// Did the operation error?
     pub fn is_err(self) -> bool {
-        self != status::OK
+        self != Self::OK
     }
 
     /// Returns `Err(Status)` if [`Status`] is an error, otherwise `Ok(ok)`.
@@ -65,24 +78,4 @@ impl From<i32> for Status {
     fn from(code: i32) -> Self {
         Status(code)
     }
-}
-
-/// Status codes.
-pub mod status {
-    use super::Status;
-
-    /// Operation completed successfully.
-    pub const OK: Status = Status(0);
-    /// Unspecified RTOS error: run-time error but no other error message fits.
-    pub const ERR: Status = Status(-1);
-    /// Operation not completed within the timeout period.
-    pub const ERR_TIMEOUT: Status = Status(-2);
-    /// Resource not available.
-    pub const ERR_RESOURCE: Status = Status(-3);
-    /// Parameter error.
-    pub const ERR_PARAMETER: Status = Status(-4);
-    /// System is out of memory: it was impossible to allocate or reserve memory for the operation.
-    pub const ERR_NO_MEMORY: Status = Status(-5);
-    /// Not allowed in ISR context: the function cannot be called from interrupt service routines.
-    pub const ERR_ISR: Status = Status(-6);
 }

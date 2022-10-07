@@ -31,30 +31,20 @@ The `flippperzero_sys::opaque!` macro can be used to define an opaque `struct` t
 
 If there's any chance that an API may return new enumeration values then Rust's enum type can't be used. Unlike enums in C, it's not possible to cast an unknown integer to an enum type. Doing so is undefined behaviour.
 
-Instead use the matching integer type for the enum (typically `i32`) and create constants for the known values:
-
-```rust
-pub type FuriHalRtcBootMode = u32;
-
-/// Normal boot mode, default value.
-pub const BOOT_MODE_NORMAL: FuriHalRtcBootMode = 0;
-/// Boot to DFU (MCU bootloader by ST).
-pub const BOOT_MODE_DFU: FuriHalRtcBootMode = 1;
-// ...
-```
-
-It may also be worth making the enum a [new-type](https://doc.rust-lang.org/rust-by-example/generics/new_types.html):
+Instead use a [new-type](https://doc.rust-lang.org/rust-by-example/generics/new_types.html) struct of the matching type of the enum (typically `i32`) and create constants for the known values:
 
 ```rust
 #[repr(transparent)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct FuriHalRtcBootMode(u32);
 
-/// Normal boot mode, default value.
-pub const BOOT_MODE_NORMAL: FuriHalRtcBootMode = FuriHalRtcBootMode(0);
-/// Boot to DFU (MCU bootloader by ST).
-pub const BOOT_MODE_DFU: FuriHalRtcBootMode = FuriHalRtcBootMode(1);
-// ...
+impl FuriHalRtcBootMode {
+    /// Normal boot mode, default value.
+    pub const NORMAL: FuriHalRtcBootMode = Self(0);
+    /// Boot to DFU (MCU bootloader by ST).
+    pub const DFU: FuriHalRtcBootMode = Self(1);
+    // ...
+}
 ```
 
 If an enum is used solely as an input parameter, then Rust enums are fine to use:
