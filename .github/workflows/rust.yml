@@ -11,9 +11,38 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: crates
+    steps:
+    - uses: actions/checkout@v3
+    - name: Rustup
+      run: rustup +nightly target add thumbv7em-none-eabihf
+    - name: Build
+      run: cargo +nightly build --verbose
+    - name: Run tests
+      run: cargo +nightly test --verbose
 
+  examples-hello-rust:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples/hello-rust
+    steps:
+    - uses: actions/checkout@v3
+    - name: Rustup
+      run: rustup +nightly target add thumbv7em-none-eabihf
+    - name: Build
+      run: cargo +nightly build --verbose
+    - name: Run tests
+      run: cargo +nightly test --verbose
+
+  examples-gui:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples/gui
     steps:
     - uses: actions/checkout@v3
     - name: Rustup

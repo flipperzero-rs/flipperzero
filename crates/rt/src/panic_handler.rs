@@ -1,21 +1,21 @@
 //! Panic handler for Furi applications.
 //! This will print the panic info to stdout and then trigger a crash.
 
-use core::ffi::CStr;
+use core::ffi::{CStr, c_char};
 use core::fmt::Write;
 use core::panic::PanicInfo;
 use core::str;
 
 use flipperzero_sys as sys;
-use sys::{c_string, furi};
 
 /// Minimal [`Stdout`] implementation.
 struct Stdout;
 
 impl Write for Stdout {
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
+        let len = s.len();
         unsafe {
-            if sys::furi::thread::stdout_write(s.as_ptr(), s.len()) != s.len() {
+            if sys::furi_thread_stdout_write(s.as_ptr() as *mut c_char, len) != len {
                 return Err(core::fmt::Error);
             }
         }
@@ -27,8 +27,8 @@ impl Write for Stdout {
 #[panic_handler]
 pub fn panic(panic_info: &PanicInfo<'_>) -> ! {
     let thread_name = unsafe {
-        let thread_id = furi::thread::get_current_id();
-        let thread_name = furi::thread::get_name(thread_id);
+        let thread_id = sys::furi_thread_get_current_id();
+        let thread_name = sys::furi_thread_get_name(thread_id);
 
         if thread_name.is_null() {
             "<unknown>"
@@ -44,8 +44,8 @@ pub fn panic(panic_info: &PanicInfo<'_>) -> ! {
     );
 
     unsafe {
-        furi::thread::stdout_flush();
-        furi::thread::yield_(); // Allow console to flush
-        furi::check::crash(c_string!("Rust panic\r\n"))
+        sys::furi_thread_stdout_flush();
+        sys::furi_thread_yield(); // Allow console to flush
+        sys::crash!("Rust panic")
     }
 }

@@ -8,19 +8,18 @@ use core::alloc::{GlobalAlloc, Layout};
 use core::ffi::c_void;
 
 use flipperzero_sys as sys;
-use sys::c_string;
 
 pub struct FuriAlloc;
 
 unsafe impl GlobalAlloc for FuriAlloc {
     #[inline]
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        sys::furi::memmgr::aligned_malloc(layout.size(), layout.align()) as *mut u8
+        sys::aligned_malloc(layout.size(), layout.align()) as *mut u8
     }
 
     #[inline]
     unsafe fn dealloc(&self, ptr: *mut u8, _layout: Layout) {
-        sys::furi::memmgr::aligned_free(ptr as *mut c_void);
+        sys::aligned_free(ptr as *mut c_void);
     }
 
     #[inline]
@@ -36,7 +35,7 @@ static ALLOCATOR: FuriAlloc = FuriAlloc;
 #[alloc_error_handler]
 fn on_oom(_layout: Layout) -> ! {
     unsafe {
-        sys::furi::thread::yield_();
-        sys::furi::check::crash(c_string!("Rust: Out of Memory\r\n"))
+        sys::furi_thread_yield();
+        sys::crash!("Rust: Out of Memory");
     }
 }

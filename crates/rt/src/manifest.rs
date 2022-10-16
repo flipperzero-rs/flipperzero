@@ -2,9 +2,9 @@
 
 use core::ffi::c_char;
 
+use flipperzero_sys as sys;
+
 const MANIFEST_MAGIC: u32 = 0x52474448;
-const API_MAJOR: u16 = 2;
-const API_MINOR: u16 = 2;
 const HARDWARE_TARGET: u16 = 7;
 const DEFAULT_STACK_SIZE: u16 = 2048; // 2 KiB
 
@@ -79,8 +79,8 @@ impl ApplicationManifestV1 {
             base: ManifestBase {
                 manifest_magic: MANIFEST_MAGIC,
                 manifest_version: 1,
-                api_version_major: API_MAJOR,
-                api_version_minor: API_MINOR,
+                api_version_major: (sys::API_VERSION >> 16) as u16,
+                api_version_minor: (sys::API_VERSION & 0x0000FFFF) as u16,
                 hardware_target_id: HARDWARE_TARGET,
             },
             stack_size: DEFAULT_STACK_SIZE,

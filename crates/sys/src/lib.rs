@@ -1,31 +1,33 @@
 //! Low-level bindings for the Flipper Zero.
 
+#![allow(non_upper_case_globals)]
+#![allow(non_camel_case_types)]
+#![allow(non_snake_case)]
 #![no_std]
 
 pub mod furi;
-pub mod gui;
-pub mod icon;
-pub mod lfrfid;
-pub mod notification;
-pub mod toolbox;
+mod bindings;
 
-/// Declare an opaque type.
+/// Create a static C string.
+/// Will automatically add a NUL terminator.
 #[macro_export]
-macro_rules! opaque {
-    ($name:ident) => {
-        #[repr(C)]
-        pub struct $name {
-            _data: [u8; 0],
-            _marker: core::marker::PhantomData<(*mut u8, core::marker::PhantomPinned)>,
+macro_rules! c_string {
+    ($str:literal) => {{
+        concat!($str, "\0").as_ptr() as *const core::ffi::c_char
+    }};
+}
+
+/// Crash the system.
+#[macro_export]
+macro_rules! crash {
+    ($msg:literal) => {
+        unsafe {
+            $crate::furi_crash($crate::c_string!($msg));
+            // `unreachable!` generates exception machinery, `noreturn` does not
+            core::arch::asm!("", options(noreturn));
         }
     };
 }
 
-/// Create a static C string.
-/// Will automatically add a nul terminator.
-#[macro_export]
-macro_rules! c_string {
-    ($str:expr) => {{
-        concat!($str, "\0").as_ptr() as *const core::ffi::c_char
-    }};
-}
+/// Re-export bindings
+pub use bindings::*;
