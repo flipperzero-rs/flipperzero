@@ -1,5 +1,6 @@
 //! Furi I/O API.
 
+use core::ffi::c_char;
 use core::fmt::{Write, Arguments};
 
 use flipperzero_sys as sys;
@@ -8,8 +9,9 @@ pub struct Stdout;
 
 impl core::fmt::Write for Stdout {
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
+        let len = s.len();
         unsafe {
-            if sys::furi::thread::stdout_write(s.as_ptr(), s.len()) != s.len() {
+            if sys::furi_thread_stdout_write(s.as_ptr() as *const c_char, len) != len {
                 return Err(core::fmt::Error);
             }
         }
@@ -21,7 +23,7 @@ impl core::fmt::Write for Stdout {
 impl Stdout {
     pub fn flush(&mut self) -> core::fmt::Result {
         unsafe {
-            if sys::furi::thread::stdout_flush().is_err() {
+            if sys::furi_thread_stdout_flush() != 0 {
                 return Err(core::fmt::Error);
             }
         }

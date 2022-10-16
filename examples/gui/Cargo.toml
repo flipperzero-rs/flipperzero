@@ -1,0 +1,19 @@
+[package]
+name = "gui"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.64.0"
+autobins = false
+autoexamples = false
+autotests = false
+autobenches = false
+
+[[bin]]
+name = "gui"
+bench = false
+test = false
+
+[dependencies]
+flipperzero = { version = "0.3.0-alpha", path = "../../crates/flipperzero" }
+flipperzero-sys = { version = "0.3.0-alpha", path = "../../crates/sys" }
+flipperzero-rt = { version = "0.3.0-alpha", path = "../../crates/rt" }
