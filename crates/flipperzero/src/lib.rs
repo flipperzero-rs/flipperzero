@@ -3,7 +3,6 @@
 #![no_std]
 
 pub mod furi;
-pub mod panic_handler;
 
 #[macro_export]
 macro_rules! print {

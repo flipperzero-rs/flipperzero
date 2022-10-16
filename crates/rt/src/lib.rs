@@ -6,6 +6,7 @@
 #![no_std]
 
 pub mod manifest;
+pub mod panic_handler;
 
 /// The C entry point.
 /// This just delegates to the user's Rust entry point.
