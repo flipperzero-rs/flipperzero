@@ -3,6 +3,10 @@ members = [
     "crates/alloc",
     "crates/flipperzero",
     "crates/sys",
+    "crates/rt",
+]
+exclude = [
+    "examples/hello-rust",
 ]
 
 [profile.dev]

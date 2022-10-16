@@ -1,6 +1,6 @@
 [package]
 name = "flipperzero"
-version = "0.2.0"
+version = "0.3.0-alpha"
 description = "Rust for Flipper Zero"
 repository = "https://github.com/dcoles/flipperzero-rs"
 license = "MIT"
@@ -21,12 +21,4 @@ bench = false
 test = false
 
 [dependencies]
-flipperzero-sys = { path = "../sys", version = "0.2.0" }
-
-[profile.dev]
-opt-level = "z"
-panic = "abort"
-
-[profile.release]
-opt-level = "z"
-panic = "abort"
+flipperzero-sys = { path = "../sys", version = "0.3.0-alpha" }

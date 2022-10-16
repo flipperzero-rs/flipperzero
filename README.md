@@ -18,7 +18,7 @@ Rust application support for the [Flipper Zero](https://flipperzero.one/).
 
 The Flipper Zero supports installing [externally built applications on the SD card](https://github.com/flipperdevices/flipperzero-firmware/blob/dev/documentation/AppsOnSDCard.md).
 
-For the moment, [flipperzero-hello-rust](https://github.com/dcoles/flipperzero-hello-rust) is the best example on how to do so.
+See [`examples/hello-rust`](examples/hello-rust) for an example application.
 
 ## License
 
