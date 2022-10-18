@@ -6,6 +6,7 @@ use core::fmt::Display;
 
 pub mod canvas;
 pub mod elements;
+pub mod text_input;
 pub mod variable_item_list;
 pub mod view;
 pub mod view_dispatcher;
