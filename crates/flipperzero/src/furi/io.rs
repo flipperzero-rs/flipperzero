@@ -1,6 +1,9 @@
 //! Furi I/O API.
 
+use core::fmt::{Write, Arguments};
+
 use flipperzero_sys as sys;
+
 pub struct Stdout;
 
 impl core::fmt::Write for Stdout {
@@ -25,4 +28,16 @@ impl Stdout {
 
         Ok(())
     }
+}
+
+#[doc(hidden)]
+pub fn _print(args: Arguments) {
+    // Avoid generating exception machinery
+    Stdout.write_fmt(args).ok();
+}
+
+#[doc(hidden)]
+pub fn _write_str(s: &str) {
+    // Adoid generating exception machinery
+    Stdout.write_str(s).ok();
 }
