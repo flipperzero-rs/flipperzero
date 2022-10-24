@@ -14,6 +14,6 @@ bench = false
 test = false
 
 [dependencies]
-flipperzero = { version = "0.3.0-alpha", path = "../../crates/flipperzero" }
-flipperzero-sys = { version = "0.3.0-alpha", path = "../../crates/sys" }
-flipperzero-rt = { version = "0.3.0-alpha", path = "../../crates/rt" }
+flipperzero = { version = "0.3.0", path = "../../crates/flipperzero" }
+flipperzero-sys = { version = "0.3.0", path = "../../crates/sys" }
+flipperzero-rt = { version = "0.3.0", path = "../../crates/rt" }

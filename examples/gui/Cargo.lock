@@ -4,21 +4,21 @@ version = 3
 
 [[package]]
 name = "flipperzero"
-version = "0.3.0-alpha"
+version = "0.3.0"
 dependencies = [
  "flipperzero-sys",
 ]
 
 [[package]]
 name = "flipperzero-rt"
-version = "0.3.0-alpha"
+version = "0.3.0"
 dependencies = [
  "flipperzero-sys",
 ]
 
 [[package]]
 name = "flipperzero-sys"
-version = "0.3.0-alpha"
+version = "0.3.0"
 
 [[package]]
 name = "gui"
