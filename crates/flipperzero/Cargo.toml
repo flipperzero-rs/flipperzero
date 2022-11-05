@@ -7,7 +7,6 @@ license = "MIT"
 edition = "2021"
 rust-version = "1.64.0"
 autobins = false
-autoexamples = false
 autotests = false
 autobenches = false
 
@@ -21,4 +20,7 @@ bench = false
 test = false
 
 [dependencies]
-flipperzero-sys = { path = "../sys", version = "0.3.0" }
+flipperzero-sys = { path = "../sys", version = "0.3.1" }
+
+[dev-dependencies]
+flipperzero-rt = { path = "../rt", version = "0.3.1" }

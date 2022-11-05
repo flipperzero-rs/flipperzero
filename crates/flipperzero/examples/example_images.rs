@@ -1,0 +1,82 @@
+//! Example Images application.
+//! See https://github.com/flipperdevices/flipperzero-firmware/blob/dev/applications/examples/example_images/example_images.c
+
+#![no_std]
+#![no_main]
+
+use core::ffi::{c_char, c_void};
+use core::mem::{self, MaybeUninit};
+
+use flipperzero_rt as rt;
+use flipperzero_sys as sys;
+
+rt::manifest!(name = "Example: Images");
+rt::entry!(main);
+
+const RECORD_GUI: *const c_char = sys::c_string!("gui");
+
+#[repr(C)]
+struct ImagePosition {
+    pub x: u8,
+    pub y: u8,
+}
+
+static mut IMAGE_POSITION: ImagePosition = ImagePosition { x: 0, y: 0 };
+
+// Screen is 128x64 px
+extern "C" fn app_draw_callback(canvas: *mut sys::Canvas, _ctx: *mut c_void) {
+    unsafe {
+        sys::canvas_clear(canvas);
+        sys::canvas_draw_icon(canvas, IMAGE_POSITION.x % 128, IMAGE_POSITION.y % 128, &sys::I_Cry_dolph_55x52);
+    }
+}
+
+extern "C" fn app_input_callback(input_event: *mut sys::InputEvent, ctx: *mut c_void) {
+    unsafe {
+        let event_queue = ctx as *mut sys::FuriMessageQueue;
+        sys::furi_message_queue_put(event_queue, input_event as *mut c_void, 0);
+    }
+}
+
+fn main(_args: *mut u8) -> i32 {
+    unsafe {
+        let event_queue = sys::furi_message_queue_alloc(8, mem::size_of::<sys::InputEvent>() as u32) as *mut sys::FuriMessageQueue;
+
+        // Configure view port
+        let view_port = sys::view_port_alloc();
+        sys::view_port_draw_callback_set(view_port, Some(app_draw_callback), view_port as *mut c_void);
+        sys::view_port_input_callback_set(view_port, Some(app_input_callback), event_queue as *mut c_void);
+
+        // Register view port in GUI
+        let gui = sys::furi_record_open(RECORD_GUI) as *mut sys::Gui;
+        sys::gui_add_view_port(gui, view_port, sys::GuiLayer_GuiLayerFullscreen);
+
+        let mut event: MaybeUninit<sys::InputEvent> = MaybeUninit::uninit();
+
+        let mut running = true;
+        while running {
+            if sys::furi_message_queue_get(event_queue, event.as_mut_ptr() as *mut sys::InputEvent as *mut c_void, 100) == sys::FuriStatus_FuriStatusOk {
+                let event = event.assume_init();
+                if event.type_ == sys::InputType_InputTypePress || event.type_ == sys::InputType_InputTypeRepeat {
+                    match event.key {
+                        sys::InputKey_InputKeyLeft => IMAGE_POSITION.x -= 2,
+                        sys::InputKey_InputKeyRight => IMAGE_POSITION.x += 2,
+                        sys::InputKey_InputKeyUp => IMAGE_POSITION.y -= 2,
+                        sys::InputKey_InputKeyDown => IMAGE_POSITION.y += 2,
+                        _ => running = false,
+                    }
+                }
+            }
+            sys::view_port_update(view_port);
+        }
+
+        sys::view_port_enabled_set(view_port, false);
+        sys::gui_remove_view_port(gui, view_port);
+        sys::view_port_free(view_port);
+        sys::furi_message_queue_free(event_queue);
+
+        sys::furi_record_close(RECORD_GUI);
+    }
+
+    0
+}
