@@ -120,10 +120,10 @@ pub const BtStatus_BtStatusUnavailable: BtStatus = 0;
 pub const BtStatus_BtStatusOff: BtStatus = 1;
 pub const BtStatus_BtStatusAdvertising: BtStatus = 2;
 pub const BtStatus_BtStatusConnected: BtStatus = 3;
-pub type BtStatus = core::ffi::c_uint;
+pub type BtStatus = core::ffi::c_uchar;
 pub const BtProfile_BtProfileSerial: BtProfile = 0;
 pub const BtProfile_BtProfileHidKeyboard: BtProfile = 1;
-pub type BtProfile = core::ffi::c_uint;
+pub type BtProfile = core::ffi::c_uchar;
 pub type BtStatusChangedCallback =
     ::core::option::Option<unsafe extern "C" fn(status: BtStatus, context: *mut core::ffi::c_void)>;
 extern "C" {
@@ -1980,7 +1980,7 @@ pub const FuriLogLevel_FuriLogLevelWarn: FuriLogLevel = 3;
 pub const FuriLogLevel_FuriLogLevelInfo: FuriLogLevel = 4;
 pub const FuriLogLevel_FuriLogLevelDebug: FuriLogLevel = 5;
 pub const FuriLogLevel_FuriLogLevelTrace: FuriLogLevel = 6;
-pub type FuriLogLevel = core::ffi::c_uint;
+pub type FuriLogLevel = core::ffi::c_uchar;
 extern "C" {
     #[doc = " Print log record"]
     #[doc = ""]
@@ -2157,7 +2157,7 @@ pub const FuriThreadState_FuriThreadStateStopped: FuriThreadState = 0;
 pub const FuriThreadState_FuriThreadStateStarting: FuriThreadState = 1;
 pub const FuriThreadState_FuriThreadStateRunning: FuriThreadState = 2;
 #[doc = " FuriThreadState"]
-pub type FuriThreadState = core::ffi::c_uint;
+pub type FuriThreadState = core::ffi::c_uchar;
 #[doc = "< Uninitialized, choose system default"]
 pub const FuriThreadPriority_FuriThreadPriorityNone: FuriThreadPriority = 0;
 #[doc = "< Idle priority"]
@@ -2175,7 +2175,7 @@ pub const FuriThreadPriority_FuriThreadPriorityHighest: FuriThreadPriority = 18;
 #[doc = "< Deffered Isr (highest possible)"]
 pub const FuriThreadPriority_FuriThreadPriorityIsr: FuriThreadPriority = 32;
 #[doc = " FuriThreadPriority"]
-pub type FuriThreadPriority = core::ffi::c_uint;
+pub type FuriThreadPriority = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FuriThread {
@@ -2520,7 +2520,7 @@ extern "C" {
 }
 pub const FuriMutexType_FuriMutexTypeNormal: FuriMutexType = 0;
 pub const FuriMutexType_FuriMutexTypeRecursive: FuriMutexType = 1;
-pub type FuriMutexType = core::ffi::c_uint;
+pub type FuriMutexType = core::ffi::c_uchar;
 pub type FuriMutex = core::ffi::c_void;
 extern "C" {
     #[doc = " Allocate FuriMutex"]
@@ -2703,7 +2703,7 @@ pub type FuriTimerCallback =
 pub const FuriTimerType_FuriTimerTypeOnce: FuriTimerType = 0;
 #[doc = "< Repeating timer."]
 pub const FuriTimerType_FuriTimerTypePeriodic: FuriTimerType = 1;
-pub type FuriTimerType = core::ffi::c_uint;
+pub type FuriTimerType = core::ffi::c_uchar;
 pub type FuriTimer = core::ffi::c_void;
 extern "C" {
     #[doc = " Allocate timer"]
@@ -3329,7 +3329,7 @@ pub const FuriStringUTF8State_FuriStringUTF8StateDecoding2: FuriStringUTF8State 
 pub const FuriStringUTF8State_FuriStringUTF8StateDecoding3: FuriStringUTF8State = 3;
 pub const FuriStringUTF8State_FuriStringUTF8StateError: FuriStringUTF8State = 4;
 #[doc = " @brief State of the UTF8 decoding machine state."]
-pub type FuriStringUTF8State = core::ffi::c_uint;
+pub type FuriStringUTF8State = core::ffi::c_uchar;
 extern "C" {
     #[doc = " @brief Main generic UTF8 decoder."]
     #[doc = " It takes a character, and the previous state and the previous value of the unicode value."]
@@ -5063,7 +5063,7 @@ fn bindgen_test_layout_USART_TypeDef() {
 }
 pub const ErrorStatus_SUCCESS: ErrorStatus = 0;
 pub const ErrorStatus_ERROR: ErrorStatus = 1;
-pub type ErrorStatus = core::ffi::c_uint;
+pub type ErrorStatus = core::ffi::c_uchar;
 #[doc = " @brief LL GPIO Init Structure definition"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -5195,18 +5195,18 @@ pub const GpioMode_GpioModeEventRise: GpioMode = 9;
 pub const GpioMode_GpioModeEventFall: GpioMode = 10;
 pub const GpioMode_GpioModeEventRiseFall: GpioMode = 11;
 #[doc = " Gpio modes"]
-pub type GpioMode = core::ffi::c_uint;
+pub type GpioMode = core::ffi::c_uchar;
 pub const GpioPull_GpioPullNo: GpioPull = 0;
 pub const GpioPull_GpioPullUp: GpioPull = 1;
 pub const GpioPull_GpioPullDown: GpioPull = 2;
 #[doc = " Gpio pull modes"]
-pub type GpioPull = core::ffi::c_uint;
+pub type GpioPull = core::ffi::c_uchar;
 pub const GpioSpeed_GpioSpeedLow: GpioSpeed = 0;
 pub const GpioSpeed_GpioSpeedMedium: GpioSpeed = 1;
 pub const GpioSpeed_GpioSpeedHigh: GpioSpeed = 2;
 pub const GpioSpeed_GpioSpeedVeryHigh: GpioSpeed = 3;
 #[doc = " Gpio speed modes"]
-pub type GpioSpeed = core::ffi::c_uint;
+pub type GpioSpeed = core::ffi::c_uchar;
 #[doc = "< MCO Alternate Function mapping"]
 pub const GpioAltFn_GpioAltFn0MCO: GpioAltFn = 0;
 #[doc = "< LSCO Alternate Function mapping"]
@@ -5348,7 +5348,7 @@ pub const GpioAltFn_GpioAltFn15EVENTOUT: GpioAltFn = 15;
 #[doc = "< just dummy value"]
 pub const GpioAltFn_GpioAltFnUnused: GpioAltFn = 16;
 #[doc = " Gpio alternate functions"]
-pub type GpioAltFn = core::ffi::c_uint;
+pub type GpioAltFn = core::ffi::c_uchar;
 #[doc = " Gpio structure"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -5459,7 +5459,7 @@ pub const CliCommandFlag_CliCommandFlagDefault: CliCommandFlag = 0;
 pub const CliCommandFlag_CliCommandFlagParallelSafe: CliCommandFlag = 1;
 #[doc = "< Safe to run with insomnia mode on"]
 pub const CliCommandFlag_CliCommandFlagInsomniaSafe: CliCommandFlag = 2;
-pub type CliCommandFlag = core::ffi::c_uint;
+pub type CliCommandFlag = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct Cli {
@@ -6227,27 +6227,27 @@ extern "C" {
 pub const Color_ColorWhite: Color = 0;
 pub const Color_ColorBlack: Color = 1;
 #[doc = " Color enumeration"]
-pub type Color = core::ffi::c_uint;
+pub type Color = core::ffi::c_uchar;
 pub const Font_FontPrimary: Font = 0;
 pub const Font_FontSecondary: Font = 1;
 pub const Font_FontKeyboard: Font = 2;
 pub const Font_FontBigNumbers: Font = 3;
 pub const Font_FontTotalNumber: Font = 4;
 #[doc = " Fonts enumeration"]
-pub type Font = core::ffi::c_uint;
+pub type Font = core::ffi::c_uchar;
 pub const Align_AlignLeft: Align = 0;
 pub const Align_AlignRight: Align = 1;
 pub const Align_AlignTop: Align = 2;
 pub const Align_AlignBottom: Align = 3;
 pub const Align_AlignCenter: Align = 4;
 #[doc = " Alignment enumeration"]
-pub type Align = core::ffi::c_uint;
+pub type Align = core::ffi::c_uchar;
 pub const CanvasDirection_CanvasDirectionLeftToRight: CanvasDirection = 0;
 pub const CanvasDirection_CanvasDirectionTopToBottom: CanvasDirection = 1;
 pub const CanvasDirection_CanvasDirectionRightToLeft: CanvasDirection = 2;
 pub const CanvasDirection_CanvasDirectionBottomToTop: CanvasDirection = 3;
 #[doc = " Font Direction"]
-pub type CanvasDirection = core::ffi::c_uint;
+pub type CanvasDirection = core::ffi::c_uchar;
 #[doc = " Font parameters"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -6603,12 +6603,12 @@ pub const InputKey_InputKeyRight: InputKey = 2;
 pub const InputKey_InputKeyLeft: InputKey = 3;
 pub const InputKey_InputKeyOk: InputKey = 4;
 pub const InputKey_InputKeyBack: InputKey = 5;
-pub type InputKey = core::ffi::c_uint;
+pub type InputKey = core::ffi::c_uchar;
 pub const Light_LightRed: Light = 1;
 pub const Light_LightGreen: Light = 2;
 pub const Light_LightBlue: Light = 4;
 pub const Light_LightBacklight: Light = 8;
-pub type Light = core::ffi::c_uint;
+pub type Light = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct InputPin {
@@ -6653,7 +6653,7 @@ fn bindgen_test_layout_InputPin() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).inverted) as usize - ptr as usize },
-        12usize,
+        9usize,
         concat!(
             "Offset of field: ",
             stringify!(InputPin),
@@ -6828,7 +6828,7 @@ pub const InputType_InputTypeLong: InputType = 3;
 pub const InputType_InputTypeRepeat: InputType = 4;
 #[doc = " Input Types"]
 #[doc = " Some of them are physical events and some logical"]
-pub type InputType = core::ffi::c_uint;
+pub type InputType = core::ffi::c_uchar;
 #[doc = " Input Event, dispatches with FuriPubSub"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -6843,7 +6843,7 @@ fn bindgen_test_layout_InputEvent() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<InputEvent>(),
-        12usize,
+        8usize,
         concat!("Size of: ", stringify!(InputEvent))
     );
     assert_eq!(
@@ -6873,7 +6873,7 @@ fn bindgen_test_layout_InputEvent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
-        8usize,
+        5usize,
         concat!(
             "Offset of field: ",
             stringify!(InputEvent),
@@ -6896,7 +6896,7 @@ extern "C" {
 }
 pub const ViewOrientation_ViewOrientationHorizontal: ViewOrientation = 0;
 pub const ViewOrientation_ViewOrientationVertical: ViewOrientation = 1;
-pub type ViewOrientation = core::ffi::c_uint;
+pub type ViewOrientation = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct View {
@@ -6944,7 +6944,7 @@ pub const ViewModelType_ViewModelTypeLockFree: ViewModelType = 1;
 #[doc = " Locking gui thread."]
 pub const ViewModelType_ViewModelTypeLocking: ViewModelType = 2;
 #[doc = " View model types"]
-pub type ViewModelType = core::ffi::c_uint;
+pub type ViewModelType = core::ffi::c_uchar;
 extern "C" {
     #[doc = " Allocate and init View"]
     #[doc = " @return View instance"]
@@ -7238,7 +7238,7 @@ pub const DialogMessageButton_DialogMessageButtonLeft: DialogMessageButton = 1;
 pub const DialogMessageButton_DialogMessageButtonCenter: DialogMessageButton = 2;
 pub const DialogMessageButton_DialogMessageButtonRight: DialogMessageButton = 3;
 #[doc = " Message result type"]
-pub type DialogMessageButton = core::ffi::c_uint;
+pub type DialogMessageButton = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct DialogMessage {
@@ -7336,7 +7336,7 @@ pub const DolphinApp_DolphinAppIbutton: DolphinApp = 4;
 pub const DolphinApp_DolphinAppBadusb: DolphinApp = 5;
 pub const DolphinApp_DolphinAppPlugin: DolphinApp = 6;
 pub const DolphinApp_DolphinAppMAX: DolphinApp = 7;
-pub type DolphinApp = core::ffi::c_uint;
+pub type DolphinApp = core::ffi::c_uchar;
 pub const DolphinDeed_DolphinDeedSubGhzReceiverInfo: DolphinDeed = 0;
 pub const DolphinDeed_DolphinDeedSubGhzSave: DolphinDeed = 1;
 pub const DolphinDeed_DolphinDeedSubGhzRawRec: DolphinDeed = 2;
@@ -7373,7 +7373,7 @@ pub const DolphinDeed_DolphinDeedPluginGameWin: DolphinDeed = 32;
 pub const DolphinDeed_DolphinDeedMAX: DolphinDeed = 33;
 pub const DolphinDeed_DolphinDeedTestLeft: DolphinDeed = 34;
 pub const DolphinDeed_DolphinDeedTestRight: DolphinDeed = 35;
-pub type DolphinDeed = core::ffi::c_uint;
+pub type DolphinDeed = core::ffi::c_uchar;
 extern "C" {
     pub fn dolphin_deed_get_app(deed: DolphinDeed) -> DolphinApp;
 }
@@ -7693,7 +7693,7 @@ pub struct ViewPort {
 }
 pub const ViewPortOrientation_ViewPortOrientationHorizontal: ViewPortOrientation = 0;
 pub const ViewPortOrientation_ViewPortOrientationVertical: ViewPortOrientation = 1;
-pub type ViewPortOrientation = core::ffi::c_uint;
+pub type ViewPortOrientation = core::ffi::c_uchar;
 #[doc = " ViewPort Draw callback"]
 #[doc = " @warning    called from GUI thread"]
 pub type ViewPortDrawCallback = ::core::option::Option<
@@ -7793,7 +7793,7 @@ pub const GuiLayer_GuiLayerFullscreen: GuiLayer = 4;
 #[doc = "< Don't use or move, special value"]
 pub const GuiLayer_GuiLayerMAX: GuiLayer = 5;
 #[doc = " Gui layers"]
-pub type GuiLayer = core::ffi::c_uint;
+pub type GuiLayer = core::ffi::c_uchar;
 #[doc = " Gui Canvas Commit Callback"]
 pub type GuiCanvasCommitCallback = ::core::option::Option<
     unsafe extern "C" fn(data: *mut u8, size: usize, context: *mut core::ffi::c_void),
@@ -7892,7 +7892,7 @@ pub type ButtonMenuItemCallback = ::core::option::Option<
 pub const ButtonMenuItemType_ButtonMenuItemTypeCommon: ButtonMenuItemType = 0;
 pub const ButtonMenuItemType_ButtonMenuItemTypeControl: ButtonMenuItemType = 1;
 #[doc = " Type of button. Difference in drawing buttons."]
-pub type ButtonMenuItemType = core::ffi::c_uint;
+pub type ButtonMenuItemType = core::ffi::c_uchar;
 extern "C" {
     #[doc = " Get button menu view"]
     #[doc = ""]
@@ -8120,7 +8120,7 @@ pub const DialogExResult_DialogExReleaseLeft: DialogExResult = 6;
 pub const DialogExResult_DialogExReleaseCenter: DialogExResult = 7;
 pub const DialogExResult_DialogExReleaseRight: DialogExResult = 8;
 #[doc = " DialogEx result"]
-pub type DialogExResult = core::ffi::c_uint;
+pub type DialogExResult = core::ffi::c_uchar;
 #[doc = " DialogEx result callback type"]
 #[doc = " @warning comes from GUI thread"]
 pub type DialogExResultCallback = ::core::option::Option<
@@ -8666,10 +8666,10 @@ pub struct TextBox {
 }
 pub const TextBoxFont_TextBoxFontText: TextBoxFont = 0;
 pub const TextBoxFont_TextBoxFontHex: TextBoxFont = 1;
-pub type TextBoxFont = core::ffi::c_uint;
+pub type TextBoxFont = core::ffi::c_uchar;
 pub const TextBoxFocus_TextBoxFocusStart: TextBoxFocus = 0;
 pub const TextBoxFocus_TextBoxFocusEnd: TextBoxFocus = 1;
-pub type TextBoxFocus = core::ffi::c_uint;
+pub type TextBoxFocus = core::ffi::c_uchar;
 extern "C" {
     #[doc = " Allocate and initialize text_box"]
     #[doc = ""]
@@ -8944,7 +8944,7 @@ extern "C" {
 pub const GuiButtonType_GuiButtonTypeLeft: GuiButtonType = 0;
 pub const GuiButtonType_GuiButtonTypeCenter: GuiButtonType = 1;
 pub const GuiButtonType_GuiButtonTypeRight: GuiButtonType = 2;
-pub type GuiButtonType = core::ffi::c_uint;
+pub type GuiButtonType = core::ffi::c_uchar;
 pub type ButtonCallback = ::core::option::Option<
     unsafe extern "C" fn(result: GuiButtonType, type_: InputType, context: *mut core::ffi::c_void),
 >;
@@ -9116,7 +9116,7 @@ pub const SceneManagerEventType_SceneManagerEventTypeCustom: SceneManagerEventTy
 pub const SceneManagerEventType_SceneManagerEventTypeBack: SceneManagerEventType = 1;
 pub const SceneManagerEventType_SceneManagerEventTypeTick: SceneManagerEventType = 2;
 #[doc = " Scene Manager events type"]
-pub type SceneManagerEventType = core::ffi::c_uint;
+pub type SceneManagerEventType = core::ffi::c_uchar;
 #[doc = " Scene Manager event"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -9392,7 +9392,7 @@ pub const ViewDispatcherType_ViewDispatcherTypeWindow: ViewDispatcherType = 1;
 #[doc = "< Fullscreen layer: without status bar"]
 pub const ViewDispatcherType_ViewDispatcherTypeFullscreen: ViewDispatcherType = 2;
 #[doc = " ViewDispatcher view_port placement"]
-pub type ViewDispatcherType = core::ffi::c_uint;
+pub type ViewDispatcherType = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct ViewDispatcher {
@@ -9600,7 +9600,7 @@ pub const LoaderStatus_LoaderStatusOk: LoaderStatus = 0;
 pub const LoaderStatus_LoaderStatusErrorAppStarted: LoaderStatus = 1;
 pub const LoaderStatus_LoaderStatusErrorUnknownApp: LoaderStatus = 2;
 pub const LoaderStatus_LoaderStatusErrorInternal: LoaderStatus = 3;
-pub type LoaderStatus = core::ffi::c_uint;
+pub type LoaderStatus = core::ffi::c_uchar;
 extern "C" {
     #[doc = " Start application"]
     #[doc = " @param name - application name"]
@@ -9850,12 +9850,12 @@ fn bindgen_test_layout_NotificationMessageDataLedBlink() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<NotificationMessageDataLedBlink>(),
-        8usize,
+        6usize,
         concat!("Size of: ", stringify!(NotificationMessageDataLedBlink))
     );
     assert_eq!(
         ::core::mem::align_of::<NotificationMessageDataLedBlink>(),
-        4usize,
+        2usize,
         concat!("Alignment of ", stringify!(NotificationMessageDataLedBlink))
     );
     assert_eq!(
@@ -10000,7 +10000,7 @@ pub const NotificationMessageType_NotificationMessageTypeForceDisplayBrightnessS
     NotificationMessageType = 16;
 pub const NotificationMessageType_NotificationMessageTypeLedBrightnessSettingApply:
     NotificationMessageType = 17;
-pub type NotificationMessageType = core::ffi::c_uint;
+pub type NotificationMessageType = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct NotificationMessage {
@@ -10667,7 +10667,7 @@ pub struct Power {
 pub const PowerBootMode_PowerBootModeNormal: PowerBootMode = 0;
 pub const PowerBootMode_PowerBootModeDfu: PowerBootMode = 1;
 pub const PowerBootMode_PowerBootModeUpdateStart: PowerBootMode = 2;
-pub type PowerBootMode = core::ffi::c_uint;
+pub type PowerBootMode = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct PowerInfo {
@@ -10993,7 +10993,7 @@ pub const RpcAppSystemEvent_RpcAppEventAppExit: RpcAppSystemEvent = 1;
 pub const RpcAppSystemEvent_RpcAppEventLoadFile: RpcAppSystemEvent = 2;
 pub const RpcAppSystemEvent_RpcAppEventButtonPress: RpcAppSystemEvent = 3;
 pub const RpcAppSystemEvent_RpcAppEventButtonRelease: RpcAppSystemEvent = 4;
-pub type RpcAppSystemEvent = core::ffi::c_uint;
+pub type RpcAppSystemEvent = core::ffi::c_uchar;
 pub type RpcAppSystemCallback = ::core::option::Option<
     unsafe extern "C" fn(event: RpcAppSystemEvent, context: *mut core::ffi::c_void),
 >;
@@ -11032,7 +11032,7 @@ pub const FS_AccessMode_FSAM_WRITE: FS_AccessMode = 2;
 #[doc = "< Read and write access"]
 pub const FS_AccessMode_FSAM_READ_WRITE: FS_AccessMode = 3;
 #[doc = " Access mode flags"]
-pub type FS_AccessMode = core::ffi::c_uint;
+pub type FS_AccessMode = core::ffi::c_uchar;
 #[doc = "< Open file, fail if file doesn't exist"]
 pub const FS_OpenMode_FSOM_OPEN_EXISTING: FS_OpenMode = 1;
 #[doc = "< Open file. Create new file if not exist"]
@@ -11044,7 +11044,7 @@ pub const FS_OpenMode_FSOM_CREATE_NEW: FS_OpenMode = 8;
 #[doc = "< Creates a new file. If file exist, truncate to zero size"]
 pub const FS_OpenMode_FSOM_CREATE_ALWAYS: FS_OpenMode = 16;
 #[doc = " Open mode flags"]
-pub type FS_OpenMode = core::ffi::c_uint;
+pub type FS_OpenMode = core::ffi::c_uchar;
 #[doc = "< No error"]
 pub const FS_Error_FSE_OK: FS_Error = 0;
 #[doc = "< FS not ready"]
@@ -11066,7 +11066,7 @@ pub const FS_Error_FSE_NOT_IMPLEMENTED: FS_Error = 8;
 #[doc = "< File/Dir already opened"]
 pub const FS_Error_FSE_ALREADY_OPEN: FS_Error = 9;
 #[doc = " API errors enumeration"]
-pub type FS_Error = core::ffi::c_uint;
+pub type FS_Error = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct File {
@@ -11127,7 +11127,7 @@ pub const SDFsType_FST_FAT12: SDFsType = 1;
 pub const SDFsType_FST_FAT16: SDFsType = 2;
 pub const SDFsType_FST_FAT32: SDFsType = 3;
 pub const SDFsType_FST_EXFAT: SDFsType = 4;
-pub type SDFsType = core::ffi::c_uint;
+pub type SDFsType = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct SDInfo {
@@ -11145,7 +11145,7 @@ fn bindgen_test_layout_SDInfo() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<SDInfo>(),
-        56usize,
+        52usize,
         concat!("Size of: ", stringify!(SDInfo))
     );
     assert_eq!(
@@ -11215,7 +11215,7 @@ fn bindgen_test_layout_SDInfo() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
-        52usize,
+        50usize,
         concat!(
             "Offset of field: ",
             stringify!(SDInfo),
@@ -11576,7 +11576,7 @@ pub const FuriHalClockMcoSourceId_FuriHalClockMcoMsi16m: FuriHalClockMcoSourceId
 pub const FuriHalClockMcoSourceId_FuriHalClockMcoMsi24m: FuriHalClockMcoSourceId = 11;
 pub const FuriHalClockMcoSourceId_FuriHalClockMcoMsi32m: FuriHalClockMcoSourceId = 12;
 pub const FuriHalClockMcoSourceId_FuriHalClockMcoMsi48m: FuriHalClockMcoSourceId = 13;
-pub type FuriHalClockMcoSourceId = core::ffi::c_uint;
+pub type FuriHalClockMcoSourceId = core::ffi::c_uchar;
 pub const FuriHalClockMcoDivisorId_FuriHalClockMcoDiv1: FuriHalClockMcoDivisorId = 0;
 pub const FuriHalClockMcoDivisorId_FuriHalClockMcoDiv2: FuriHalClockMcoDivisorId = 268435456;
 pub const FuriHalClockMcoDivisorId_FuriHalClockMcoDiv4: FuriHalClockMcoDivisorId = 536870912;
@@ -11788,7 +11788,7 @@ pub const FuriHalI2cBusEvent_FuriHalI2cBusEventActivate: FuriHalI2cBusEvent = 4;
 #[doc = "< Bus deactivation event, called after handle deactivation"]
 pub const FuriHalI2cBusEvent_FuriHalI2cBusEventDeactivate: FuriHalI2cBusEvent = 5;
 #[doc = " FuriHal i2c bus states"]
-pub type FuriHalI2cBusEvent = core::ffi::c_uint;
+pub type FuriHalI2cBusEvent = core::ffi::c_uchar;
 #[doc = " FuriHal i2c bus event callback"]
 pub type FuriHalI2cBusEventCallback = ::core::option::Option<
     unsafe extern "C" fn(bus: *mut FuriHalI2cBus, event: FuriHalI2cBusEvent),
@@ -11851,7 +11851,7 @@ pub const FuriHalI2cBusHandleEvent_FuriHalI2cBusHandleEventActivate: FuriHalI2cB
 #[doc = "< Handle deactivate: disconnect gpio and reset bus config"]
 pub const FuriHalI2cBusHandleEvent_FuriHalI2cBusHandleEventDeactivate: FuriHalI2cBusHandleEvent = 1;
 #[doc = " FuriHal i2c handle states"]
-pub type FuriHalI2cBusHandleEvent = core::ffi::c_uint;
+pub type FuriHalI2cBusHandleEvent = core::ffi::c_uchar;
 #[doc = " FuriHal i2c handle event callback"]
 pub type FuriHalI2cBusHandleEventCallback = ::core::option::Option<
     unsafe extern "C" fn(handle: *mut FuriHalI2cBusHandle, event: FuriHalI2cBusHandleEvent),
@@ -12322,7 +12322,7 @@ pub const FuriHalInterruptId_FuriHalInterruptIdHsem: FuriHalInterruptId = 20;
 pub const FuriHalInterruptId_FuriHalInterruptIdLpTim1: FuriHalInterruptId = 21;
 pub const FuriHalInterruptId_FuriHalInterruptIdLpTim2: FuriHalInterruptId = 22;
 pub const FuriHalInterruptId_FuriHalInterruptIdMax: FuriHalInterruptId = 23;
-pub type FuriHalInterruptId = core::ffi::c_uint;
+pub type FuriHalInterruptId = core::ffi::c_uchar;
 extern "C" {
     #[doc = " Set ISR and enable interrupt with default priority"]
     #[doc = " We don't clear interrupt flags for you, do it by your self."]
@@ -12354,7 +12354,7 @@ extern "C" {
 }
 pub const FuriHalPwmOutputId_FuriHalPwmOutputIdTim1PA7: FuriHalPwmOutputId = 0;
 pub const FuriHalPwmOutputId_FuriHalPwmOutputIdLptim2PA4: FuriHalPwmOutputId = 1;
-pub type FuriHalPwmOutputId = core::ffi::c_uint;
+pub type FuriHalPwmOutputId = core::ffi::c_uchar;
 extern "C" {
     #[doc = " Enable PWM channel and set parameters"]
     #[doc = ""]
@@ -12567,7 +12567,7 @@ pub const FuriHalSpiBusEvent_FuriHalSpiBusEventActivate: FuriHalSpiBusEvent = 4;
 #[doc = "< Bus deactivation event, called after handle deactivation"]
 pub const FuriHalSpiBusEvent_FuriHalSpiBusEventDeactivate: FuriHalSpiBusEvent = 5;
 #[doc = " FuriHal spi bus states"]
-pub type FuriHalSpiBusEvent = core::ffi::c_uint;
+pub type FuriHalSpiBusEvent = core::ffi::c_uchar;
 #[doc = " FuriHal spi bus event callback"]
 pub type FuriHalSpiBusEventCallback = ::core::option::Option<
     unsafe extern "C" fn(bus: *mut FuriHalSpiBus, event: FuriHalSpiBusEvent),
@@ -12634,7 +12634,7 @@ pub const FuriHalSpiBusHandleEvent_FuriHalSpiBusHandleEventActivate: FuriHalSpiB
 #[doc = "< Handle deactivate: disconnect gpio and reset bus config"]
 pub const FuriHalSpiBusHandleEvent_FuriHalSpiBusHandleEventDeactivate: FuriHalSpiBusHandleEvent = 3;
 #[doc = " FuriHal spi handle states"]
-pub type FuriHalSpiBusHandleEvent = core::ffi::c_uint;
+pub type FuriHalSpiBusHandleEvent = core::ffi::c_uchar;
 #[doc = " FuriHal spi handle event callback"]
 pub type FuriHalSpiBusHandleEventCallback = ::core::option::Option<
     unsafe extern "C" fn(handle: *mut FuriHalSpiBusHandle, event: FuriHalSpiBusHandleEvent),
@@ -12803,25 +12803,23 @@ pub const CC1101State_CC1101StateSETTLING: CC1101State = 5;
 pub const CC1101State_CC1101StateRXFIFO_OVERFLOW: CC1101State = 6;
 #[doc = " RX FIFO has overflowed. Read out any useful data, then flush the FIFO with SFRX"]
 pub const CC1101State_CC1101StateTXFIFO_UNDERFLOW: CC1101State = 7;
-pub type CC1101State = core::ffi::c_uint;
-#[repr(C)]
-#[repr(align(4))]
+pub type CC1101State = core::ffi::c_uchar;
+#[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct CC1101Status {
     pub _bitfield_align_1: [u8; 0],
     pub _bitfield_1: __BindgenBitfieldUnit<[u8; 1usize]>,
-    pub __bindgen_padding_0: [u8; 11usize],
 }
 #[test]
 fn bindgen_test_layout_CC1101Status() {
     assert_eq!(
         ::core::mem::size_of::<CC1101Status>(),
-        12usize,
+        1usize,
         concat!("Size of: ", stringify!(CC1101Status))
     );
     assert_eq!(
         ::core::mem::align_of::<CC1101Status>(),
-        4usize,
+        1usize,
         concat!("Alignment of ", stringify!(CC1101Status))
     );
 }
@@ -12839,12 +12837,12 @@ impl CC1101Status {
     }
     #[inline]
     pub fn STATE(&self) -> CC1101State {
-        unsafe { ::core::mem::transmute(self._bitfield_1.get(4usize, 3u8) as u32) }
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(4usize, 3u8) as u8) }
     }
     #[inline]
     pub fn set_STATE(&mut self, val: CC1101State) {
         unsafe {
-            let val: u32 = ::core::mem::transmute(val);
+            let val: u8 = ::core::mem::transmute(val);
             self._bitfield_1.set(4usize, 3u8, val as u64)
         }
     }
@@ -12871,7 +12869,7 @@ impl CC1101Status {
             FIFO_BYTES_AVAILABLE as u64
         });
         __bindgen_bitfield_unit.set(4usize, 3u8, {
-            let STATE: u32 = unsafe { ::core::mem::transmute(STATE) };
+            let STATE: u8 = unsafe { ::core::mem::transmute(STATE) };
             STATE as u64
         });
         __bindgen_bitfield_unit.set(7usize, 1u8, {
@@ -13115,10 +13113,10 @@ extern "C" {
 pub const FuriHalUartId_FuriHalUartIdUSART1: FuriHalUartId = 0;
 pub const FuriHalUartId_FuriHalUartIdLPUART1: FuriHalUartId = 1;
 #[doc = " UART channels"]
-pub type FuriHalUartId = core::ffi::c_uint;
+pub type FuriHalUartId = core::ffi::c_uchar;
 pub const UartIrqEvent_UartIrqEventRXNE: UartIrqEvent = 0;
 #[doc = " UART events"]
-pub type UartIrqEvent = core::ffi::c_uint;
+pub type UartIrqEvent = core::ffi::c_uchar;
 extern "C" {
     #[doc = " Init UART"]
     #[doc = " Configures GPIO to UART function, сonfigures UART hardware, enables UART hardware"]
@@ -13363,11 +13361,11 @@ pub const FuriHalCryptoKeyType_FuriHalCryptoKeyTypeSimple: FuriHalCryptoKeyType 
 #[doc = "< Encrypted with Master key"]
 pub const FuriHalCryptoKeyType_FuriHalCryptoKeyTypeEncrypted: FuriHalCryptoKeyType = 2;
 #[doc = " FuriHalCryptoKey Type"]
-pub type FuriHalCryptoKeyType = core::ffi::c_uint;
+pub type FuriHalCryptoKeyType = core::ffi::c_uchar;
 pub const FuriHalCryptoKeySize_FuriHalCryptoKeySize128: FuriHalCryptoKeySize = 0;
 pub const FuriHalCryptoKeySize_FuriHalCryptoKeySize256: FuriHalCryptoKeySize = 1;
 #[doc = " FuriHalCryptoKey Size in bits"]
-pub type FuriHalCryptoKeySize = core::ffi::c_uint;
+pub type FuriHalCryptoKeySize = core::ffi::c_uchar;
 #[doc = " FuriHalCryptoKey"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -13402,7 +13400,7 @@ fn bindgen_test_layout_FuriHalCryptoKey() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
-        4usize,
+        1usize,
         concat!(
             "Offset of field: ",
             stringify!(FuriHalCryptoKey),
@@ -13974,7 +13972,7 @@ pub const FuriHalRtcFlag_FuriHalRtcFlagDebug: FuriHalRtcFlag = 1;
 pub const FuriHalRtcFlag_FuriHalRtcFlagFactoryReset: FuriHalRtcFlag = 2;
 pub const FuriHalRtcFlag_FuriHalRtcFlagLock: FuriHalRtcFlag = 4;
 pub const FuriHalRtcFlag_FuriHalRtcFlagC2Update: FuriHalRtcFlag = 8;
-pub type FuriHalRtcFlag = core::ffi::c_uint;
+pub type FuriHalRtcFlag = core::ffi::c_uchar;
 #[doc = "< Normal boot mode, default value"]
 pub const FuriHalRtcBootMode_FuriHalRtcBootModeNormal: FuriHalRtcBootMode = 0;
 #[doc = "< Boot to DFU (MCU bootloader by ST)"]
@@ -13985,7 +13983,7 @@ pub const FuriHalRtcBootMode_FuriHalRtcBootModePreUpdate: FuriHalRtcBootMode = 2
 pub const FuriHalRtcBootMode_FuriHalRtcBootModeUpdate: FuriHalRtcBootMode = 3;
 #[doc = "< Boot to Update, post update"]
 pub const FuriHalRtcBootMode_FuriHalRtcBootModePostUpdate: FuriHalRtcBootMode = 4;
-pub type FuriHalRtcBootMode = core::ffi::c_uint;
+pub type FuriHalRtcBootMode = core::ffi::c_uchar;
 #[doc = "< RTC structure header"]
 pub const FuriHalRtcRegister_FuriHalRtcRegisterHeader: FuriHalRtcRegister = 0;
 #[doc = "< Various system bits"]
@@ -14001,7 +13999,7 @@ pub const FuriHalRtcRegister_FuriHalRtcRegisterPinFails: FuriHalRtcRegister = 5;
 pub const FuriHalRtcRegister_FuriHalRtcRegisterUpdateFolderFSIndex: FuriHalRtcRegister = 6;
 #[doc = "< Service value, do not use"]
 pub const FuriHalRtcRegister_FuriHalRtcRegisterMAX: FuriHalRtcRegister = 7;
-pub type FuriHalRtcRegister = core::ffi::c_uint;
+pub type FuriHalRtcRegister = core::ffi::c_uchar;
 extern "C" {
     #[doc = " Early deinitialization"]
     pub fn furi_hal_rtc_deinit_early();
@@ -14101,7 +14099,7 @@ extern "C" {
 pub const FuriHalPowerIC_FuriHalPowerICCharger: FuriHalPowerIC = 0;
 pub const FuriHalPowerIC_FuriHalPowerICFuelGauge: FuriHalPowerIC = 1;
 #[doc = " Power IC type"]
-pub type FuriHalPowerIC = core::ffi::c_uint;
+pub type FuriHalPowerIC = core::ffi::c_uchar;
 extern "C" {
     #[doc = " Check if gauge is ok"]
     #[doc = ""]
@@ -14380,19 +14378,19 @@ pub const FuriHalVersionColor_FuriHalVersionColorUnknown: FuriHalVersionColor = 
 pub const FuriHalVersionColor_FuriHalVersionColorBlack: FuriHalVersionColor = 1;
 pub const FuriHalVersionColor_FuriHalVersionColorWhite: FuriHalVersionColor = 2;
 #[doc = " Device Colors"]
-pub type FuriHalVersionColor = core::ffi::c_uint;
+pub type FuriHalVersionColor = core::ffi::c_uchar;
 pub const FuriHalVersionRegion_FuriHalVersionRegionUnknown: FuriHalVersionRegion = 0;
 pub const FuriHalVersionRegion_FuriHalVersionRegionEuRu: FuriHalVersionRegion = 1;
 pub const FuriHalVersionRegion_FuriHalVersionRegionUsCaAu: FuriHalVersionRegion = 2;
 pub const FuriHalVersionRegion_FuriHalVersionRegionJp: FuriHalVersionRegion = 3;
 pub const FuriHalVersionRegion_FuriHalVersionRegionWorld: FuriHalVersionRegion = 4;
 #[doc = " Device Regions"]
-pub type FuriHalVersionRegion = core::ffi::c_uint;
+pub type FuriHalVersionRegion = core::ffi::c_uchar;
 pub const FuriHalVersionDisplay_FuriHalVersionDisplayUnknown: FuriHalVersionDisplay = 0;
 pub const FuriHalVersionDisplay_FuriHalVersionDisplayErc: FuriHalVersionDisplay = 1;
 pub const FuriHalVersionDisplay_FuriHalVersionDisplayMgg: FuriHalVersionDisplay = 2;
 #[doc = " Device Display"]
-pub type FuriHalVersionDisplay = core::ffi::c_uint;
+pub type FuriHalVersionDisplay = core::ffi::c_uchar;
 extern "C" {
     #[doc = " Check target firmware version"]
     #[doc = ""]
@@ -14514,7 +14512,7 @@ pub const GapEventType_GapEventTypeStopAdvertising: GapEventType = 3;
 pub const GapEventType_GapEventTypePinCodeShow: GapEventType = 4;
 pub const GapEventType_GapEventTypePinCodeVerify: GapEventType = 5;
 pub const GapEventType_GapEventTypeUpdateMTU: GapEventType = 6;
-pub type GapEventType = core::ffi::c_uint;
+pub type GapEventType = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union GapEventData {
@@ -14603,7 +14601,7 @@ pub type GapEventCallback = ::core::option::Option<
 pub const SerialServiceEventType_SerialServiceEventTypeDataReceived: SerialServiceEventType = 0;
 pub const SerialServiceEventType_SerialServiceEventTypeDataSent: SerialServiceEventType = 1;
 pub const SerialServiceEventType_SerialServiceEventTypesBleResetRequest: SerialServiceEventType = 2;
-pub type SerialServiceEventType = core::ffi::c_uint;
+pub type SerialServiceEventType = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct SerialServiceData {
@@ -14692,7 +14690,7 @@ pub type SerialServiceEventCallback = ::core::option::Option<
 pub const BleGlueC2Mode_BleGlueC2ModeUnknown: BleGlueC2Mode = 0;
 pub const BleGlueC2Mode_BleGlueC2ModeFUS: BleGlueC2Mode = 1;
 pub const BleGlueC2Mode_BleGlueC2ModeStack: BleGlueC2Mode = 2;
-pub type BleGlueC2Mode = core::ffi::c_uint;
+pub type BleGlueC2Mode = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct BleGlueC2Info {
@@ -14723,12 +14721,12 @@ fn bindgen_test_layout_BleGlueC2Info() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<BleGlueC2Info>(),
-        40usize,
+        37usize,
         concat!("Size of: ", stringify!(BleGlueC2Info))
     );
     assert_eq!(
         ::core::mem::align_of::<BleGlueC2Info>(),
-        4usize,
+        1usize,
         concat!("Alignment of ", stringify!(BleGlueC2Info))
     );
     assert_eq!(
@@ -14743,7 +14741,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).VersionMajor) as usize - ptr as usize },
-        4usize,
+        1usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14753,7 +14751,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).VersionMinor) as usize - ptr as usize },
-        5usize,
+        2usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14763,7 +14761,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).VersionSub) as usize - ptr as usize },
-        6usize,
+        3usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14773,7 +14771,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).VersionBranch) as usize - ptr as usize },
-        7usize,
+        4usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14783,7 +14781,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).VersionReleaseType) as usize - ptr as usize },
-        8usize,
+        5usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14793,7 +14791,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).MemorySizeSram2B) as usize - ptr as usize },
-        9usize,
+        6usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14803,7 +14801,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).MemorySizeSram2A) as usize - ptr as usize },
-        10usize,
+        7usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14813,7 +14811,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).MemorySizeSram1) as usize - ptr as usize },
-        11usize,
+        8usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14823,7 +14821,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).MemorySizeFlash) as usize - ptr as usize },
-        12usize,
+        9usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14833,7 +14831,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).StackType) as usize - ptr as usize },
-        13usize,
+        10usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14843,7 +14841,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).StackTypeString) as usize - ptr as usize },
-        14usize,
+        11usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14853,7 +14851,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).FusVersionMajor) as usize - ptr as usize },
-        34usize,
+        31usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14863,7 +14861,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).FusVersionMinor) as usize - ptr as usize },
-        35usize,
+        32usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14873,7 +14871,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).FusVersionSub) as usize - ptr as usize },
-        36usize,
+        33usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14883,7 +14881,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).FusMemorySizeSram2B) as usize - ptr as usize },
-        37usize,
+        34usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14893,7 +14891,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).FusMemorySizeSram2A) as usize - ptr as usize },
-        38usize,
+        35usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14903,7 +14901,7 @@ fn bindgen_test_layout_BleGlueC2Info() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).FusMemorySizeFlash) as usize - ptr as usize },
-        39usize,
+        36usize,
         concat!(
             "Offset of field: ",
             stringify!(BleGlueC2Info),
@@ -14968,7 +14966,7 @@ pub const BleGlueCommandResult_BleGlueCommandResultOK: BleGlueCommandResult = 1;
 pub const BleGlueCommandResult_BleGlueCommandResultError: BleGlueCommandResult = 2;
 pub const BleGlueCommandResult_BleGlueCommandResultRestartPending: BleGlueCommandResult = 3;
 pub const BleGlueCommandResult_BleGlueCommandResultOperationOngoing: BleGlueCommandResult = 4;
-pub type BleGlueCommandResult = core::ffi::c_uint;
+pub type BleGlueCommandResult = core::ffi::c_uchar;
 extern "C" {
     #[doc = " Restart MCU to launch radio stack firmware if necessary"]
     #[doc = ""]
@@ -15022,11 +15020,11 @@ extern "C" {
 pub const FuriHalBtStack_FuriHalBtStackUnknown: FuriHalBtStack = 0;
 pub const FuriHalBtStack_FuriHalBtStackLight: FuriHalBtStack = 1;
 pub const FuriHalBtStack_FuriHalBtStackFull: FuriHalBtStack = 2;
-pub type FuriHalBtStack = core::ffi::c_uint;
+pub type FuriHalBtStack = core::ffi::c_uchar;
 pub const FuriHalBtProfile_FuriHalBtProfileSerial: FuriHalBtProfile = 0;
 pub const FuriHalBtProfile_FuriHalBtProfileHidKeyboard: FuriHalBtProfile = 1;
 pub const FuriHalBtProfile_FuriHalBtProfileNumber: FuriHalBtProfile = 2;
-pub type FuriHalBtProfile = core::ffi::c_uint;
+pub type FuriHalBtProfile = core::ffi::c_uchar;
 extern "C" {
     #[doc = " Lock core2 state transition"]
     pub fn furi_hal_bt_lock_core2();
@@ -15280,7 +15278,7 @@ pub const FuriHalSubGhzPreset_FuriHalSubGhzPresetMSK99_97KbAsync: FuriHalSubGhzP
 pub const FuriHalSubGhzPreset_FuriHalSubGhzPresetGFSK9_99KbAsync: FuriHalSubGhzPreset = 6;
 pub const FuriHalSubGhzPreset_FuriHalSubGhzPresetCustom: FuriHalSubGhzPreset = 7;
 #[doc = " Radio Presets"]
-pub type FuriHalSubGhzPreset = core::ffi::c_uint;
+pub type FuriHalSubGhzPreset = core::ffi::c_uchar;
 #[doc = "< Isolate Radio from antenna"]
 pub const FuriHalSubGhzPath_FuriHalSubGhzPathIsolate: FuriHalSubGhzPath = 0;
 #[doc = "< Center Frquency: 433MHz. Path 1: SW1RF1-SW2RF2, LCLCL"]
@@ -15290,7 +15288,7 @@ pub const FuriHalSubGhzPath_FuriHalSubGhzPath315: FuriHalSubGhzPath = 2;
 #[doc = "< Center Frquency: 868MHz. Path 3: SW1RF3-SW2RF3, LCLC"]
 pub const FuriHalSubGhzPath_FuriHalSubGhzPath868: FuriHalSubGhzPath = 3;
 #[doc = " Switchable Radio Paths"]
-pub type FuriHalSubGhzPath = core::ffi::c_uint;
+pub type FuriHalSubGhzPath = core::ffi::c_uchar;
 extern "C" {
     #[doc = " Send device to sleep mode"]
     pub fn furi_hal_subghz_sleep();
@@ -15884,7 +15882,7 @@ pub const FuriHalNfcTxRxType_FuriHalNfcTxRxTypeRxKeepPar: FuriHalNfcTxRxType = 2
 pub const FuriHalNfcTxRxType_FuriHalNfcTxRxTypeRaw: FuriHalNfcTxRxType = 3;
 pub const FuriHalNfcTxRxType_FuriHalNfcTxRxTypeRxRaw: FuriHalNfcTxRxType = 4;
 pub const FuriHalNfcTxRxType_FuriHalNfcTxRxTransparent: FuriHalNfcTxRxType = 5;
-pub type FuriHalNfcTxRxType = core::ffi::c_uint;
+pub type FuriHalNfcTxRxType = core::ffi::c_uchar;
 pub type FuriHalNfcEmulateCallback = ::core::option::Option<
     unsafe extern "C" fn(
         buff_rx: *mut u8,
@@ -15899,11 +15897,11 @@ pub const FuriHalNfcType_FuriHalNfcTypeA: FuriHalNfcType = 0;
 pub const FuriHalNfcType_FuriHalNfcTypeB: FuriHalNfcType = 1;
 pub const FuriHalNfcType_FuriHalNfcTypeF: FuriHalNfcType = 2;
 pub const FuriHalNfcType_FuriHalNfcTypeV: FuriHalNfcType = 3;
-pub type FuriHalNfcType = core::ffi::c_uint;
+pub type FuriHalNfcType = core::ffi::c_uchar;
 pub const FuriHalNfcInterface_FuriHalNfcInterfaceRf: FuriHalNfcInterface = 0;
 pub const FuriHalNfcInterface_FuriHalNfcInterfaceIsoDep: FuriHalNfcInterface = 1;
 pub const FuriHalNfcInterface_FuriHalNfcInterfaceNfcDep: FuriHalNfcInterface = 2;
-pub type FuriHalNfcInterface = core::ffi::c_uint;
+pub type FuriHalNfcInterface = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FuriHalNfcDevData {
@@ -15921,7 +15919,7 @@ fn bindgen_test_layout_FuriHalNfcDevData() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<FuriHalNfcDevData>(),
-        28usize,
+        24usize,
         concat!("Size of: ", stringify!(FuriHalNfcDevData))
     );
     assert_eq!(
@@ -15941,7 +15939,7 @@ fn bindgen_test_layout_FuriHalNfcDevData() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).interface) as usize - ptr as usize },
-        4usize,
+        1usize,
         concat!(
             "Offset of field: ",
             stringify!(FuriHalNfcDevData),
@@ -15951,7 +15949,7 @@ fn bindgen_test_layout_FuriHalNfcDevData() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).uid_len) as usize - ptr as usize },
-        8usize,
+        2usize,
         concat!(
             "Offset of field: ",
             stringify!(FuriHalNfcDevData),
@@ -15961,7 +15959,7 @@ fn bindgen_test_layout_FuriHalNfcDevData() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).uid) as usize - ptr as usize },
-        9usize,
+        3usize,
         concat!(
             "Offset of field: ",
             stringify!(FuriHalNfcDevData),
@@ -15971,7 +15969,7 @@ fn bindgen_test_layout_FuriHalNfcDevData() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).cuid) as usize - ptr as usize },
-        20usize,
+        16usize,
         concat!(
             "Offset of field: ",
             stringify!(FuriHalNfcDevData),
@@ -15981,7 +15979,7 @@ fn bindgen_test_layout_FuriHalNfcDevData() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).atqa) as usize - ptr as usize },
-        24usize,
+        20usize,
         concat!(
             "Offset of field: ",
             stringify!(FuriHalNfcDevData),
@@ -15991,7 +15989,7 @@ fn bindgen_test_layout_FuriHalNfcDevData() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).sak) as usize - ptr as usize },
-        26usize,
+        22usize,
         concat!(
             "Offset of field: ",
             stringify!(FuriHalNfcDevData),
@@ -16381,7 +16379,7 @@ pub const FuriHalNfcReturn_FuriHalNfcReturnIncompleteByte05: FuriHalNfcReturn = 
 pub const FuriHalNfcReturn_FuriHalNfcReturnIncompleteByte06: FuriHalNfcReturn = 46;
 #[doc = "< Incomplete byte rcvd - 7 bit"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnIncompleteByte07: FuriHalNfcReturn = 47;
-pub type FuriHalNfcReturn = core::ffi::c_uint;
+pub type FuriHalNfcReturn = core::ffi::c_uchar;
 #[doc = "< No mode selected/defined"]
 pub const FuriHalNfcMode_FuriHalNfcModeNone: FuriHalNfcMode = 0;
 #[doc = "< Mode to perform as NFCA (ISO14443A) Poller (PCD)"]
@@ -16410,7 +16408,7 @@ pub const FuriHalNfcMode_FuriHalNfcModeListenNfcb: FuriHalNfcMode = 11;
 pub const FuriHalNfcMode_FuriHalNfcModeListenNfcf: FuriHalNfcMode = 12;
 #[doc = "< Mode to perform as Active P2P (ISO18092) Target"]
 pub const FuriHalNfcMode_FuriHalNfcModeListenActiveP2p: FuriHalNfcMode = 13;
-pub type FuriHalNfcMode = core::ffi::c_uint;
+pub type FuriHalNfcMode = core::ffi::c_uchar;
 #[doc = "< Bit Rate 106 kbit/s (fc/128)"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate106: FuriHalNfcBitrate = 0;
 #[doc = "< Bit Rate 212 kbit/s (fc/64)"]
@@ -16435,7 +16433,7 @@ pub const FuriHalNfcBitrate_FuriHalNfcBitrate26p48: FuriHalNfcBitrate = 236;
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate1p66: FuriHalNfcBitrate = 237;
 #[doc = "< Value indicating to keep the same previous bit rate"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrateKeep: FuriHalNfcBitrate = 255;
-pub type FuriHalNfcBitrate = core::ffi::c_uint;
+pub type FuriHalNfcBitrate = core::ffi::c_uchar;
 extern "C" {
     pub fn furi_hal_nfc_ll_set_mode(
         mode: FuriHalNfcMode,
@@ -16452,7 +16450,7 @@ pub const FuriHalNfcErrorHandling_FuriHalNfcErrorHandlingNone: FuriHalNfcErrorHa
 pub const FuriHalNfcErrorHandling_FuriHalNfcErrorHandlingNfc: FuriHalNfcErrorHandling = 1;
 #[doc = "< Error handling set to perform as EMVCo compliant device"]
 pub const FuriHalNfcErrorHandling_FuriHalNfcErrorHandlingEmvco: FuriHalNfcErrorHandling = 2;
-pub type FuriHalNfcErrorHandling = core::ffi::c_uint;
+pub type FuriHalNfcErrorHandling = core::ffi::c_uchar;
 extern "C" {
     pub fn furi_hal_nfc_ll_set_error_handling(eHandling: FuriHalNfcErrorHandling);
 }
@@ -16489,7 +16487,7 @@ pub const _usbd_respond_usbd_ack: _usbd_respond = 1;
 #[doc = "<\\brief Function is busy. NAK handshake."]
 pub const _usbd_respond_usbd_nak: _usbd_respond = 2;
 #[doc = "\\brief Reporting status results."]
-pub type _usbd_respond = core::ffi::c_uint;
+pub type _usbd_respond = core::ffi::c_uchar;
 #[doc = "\\brief Reporting status results."]
 pub use self::_usbd_respond as usbd_respond;
 #[doc = "\\brief Represents a USB device data."]
@@ -17699,7 +17697,7 @@ pub const FuriHalInfraredTxGetDataState_FuriHalInfraredTxGetDataStateDone:
 #[doc = "< New data obtained, and this is end of package and no more data available"]
 pub const FuriHalInfraredTxGetDataState_FuriHalInfraredTxGetDataStateLastDone:
     FuriHalInfraredTxGetDataState = 2;
-pub type FuriHalInfraredTxGetDataState = core::ffi::c_uint;
+pub type FuriHalInfraredTxGetDataState = core::ffi::c_uchar;
 #[doc = " Callback type for providing data to INFRARED DMA TX system. It is called every tim"]
 pub type FuriHalInfraredTxGetDataISRCallback = ::core::option::Option<
     unsafe extern "C" fn(
@@ -17858,7 +17856,7 @@ pub const FuriHalMpuRegion_FuriHalMpuRegion4: FuriHalMpuRegion = 4;
 pub const FuriHalMpuRegion_FuriHalMpuRegion5: FuriHalMpuRegion = 5;
 pub const FuriHalMpuRegion_FuriHalMpuRegion6: FuriHalMpuRegion = 6;
 pub const FuriHalMpuRegion_FuriHalMpuRegion7: FuriHalMpuRegion = 7;
-pub type FuriHalMpuRegion = core::ffi::c_uint;
+pub type FuriHalMpuRegion = core::ffi::c_uchar;
 pub const FuriHalMPURegionSize_FuriHalMPURegionSize32B: FuriHalMPURegionSize = 4;
 pub const FuriHalMPURegionSize_FuriHalMPURegionSize64B: FuriHalMPURegionSize = 5;
 pub const FuriHalMPURegionSize_FuriHalMPURegionSize128B: FuriHalMPURegionSize = 6;
@@ -17887,7 +17885,7 @@ pub const FuriHalMPURegionSize_FuriHalMPURegionSize512MB: FuriHalMPURegionSize =
 pub const FuriHalMPURegionSize_FuriHalMPURegionSize1GB: FuriHalMPURegionSize = 29;
 pub const FuriHalMPURegionSize_FuriHalMPURegionSize2GB: FuriHalMPURegionSize = 30;
 pub const FuriHalMPURegionSize_FuriHalMPURegionSize4GB: FuriHalMPURegionSize = 31;
-pub type FuriHalMPURegionSize = core::ffi::c_uint;
+pub type FuriHalMPURegionSize = core::ffi::c_uchar;
 extern "C" {
     #[doc = " @brief Enable memory protection unit"]
     pub fn furi_hal_mpu_enable();
@@ -17916,7 +17914,7 @@ extern "C" {
 pub const HidU2fEvent_HidU2fDisconnected: HidU2fEvent = 0;
 pub const HidU2fEvent_HidU2fConnected: HidU2fEvent = 1;
 pub const HidU2fEvent_HidU2fRequest: HidU2fEvent = 2;
-pub type HidU2fEvent = core::ffi::c_uint;
+pub type HidU2fEvent = core::ffi::c_uchar;
 pub type HidU2fCallback =
     ::core::option::Option<unsafe extern "C" fn(ev: HidU2fEvent, context: *mut core::ffi::c_void)>;
 extern "C" {
@@ -18967,7 +18965,7 @@ pub const FlipperApplicationPreloadStatus_FlipperApplicationPreloadStatusApiMism
     FlipperApplicationPreloadStatus = 4;
 pub const FlipperApplicationPreloadStatus_FlipperApplicationPreloadStatusTargetMismatch:
     FlipperApplicationPreloadStatus = 5;
-pub type FlipperApplicationPreloadStatus = core::ffi::c_uint;
+pub type FlipperApplicationPreloadStatus = core::ffi::c_uchar;
 pub const FlipperApplicationLoadStatus_FlipperApplicationLoadStatusSuccess:
     FlipperApplicationLoadStatus = 0;
 pub const FlipperApplicationLoadStatus_FlipperApplicationLoadStatusUnspecifiedError:
@@ -18976,7 +18974,7 @@ pub const FlipperApplicationLoadStatus_FlipperApplicationLoadStatusNoFreeMemory:
     FlipperApplicationLoadStatus = 2;
 pub const FlipperApplicationLoadStatus_FlipperApplicationLoadStatusMissingImports:
     FlipperApplicationLoadStatus = 3;
-pub type FlipperApplicationLoadStatus = core::ffi::c_uint;
+pub type FlipperApplicationLoadStatus = core::ffi::c_uchar;
 extern "C" {
     #[doc = " @brief Get text description of load status"]
     #[doc = " @param status Status code"]
@@ -19650,7 +19648,7 @@ pub struct Stream {
 pub const StreamOffset_StreamOffsetFromCurrent: StreamOffset = 0;
 pub const StreamOffset_StreamOffsetFromStart: StreamOffset = 1;
 pub const StreamOffset_StreamOffsetFromEnd: StreamOffset = 2;
-pub type StreamOffset = core::ffi::c_uint;
+pub type StreamOffset = core::ffi::c_uchar;
 pub type StreamWriteCB = ::core::option::Option<
     unsafe extern "C" fn(stream: *mut Stream, context: *const core::ffi::c_void) -> bool,
 >;
@@ -20424,7 +20422,7 @@ pub const LFRFIDProtocol_LFRFIDProtocolPACStanley: LFRFIDProtocol = 13;
 pub const LFRFIDProtocol_LFRFIDProtocolKeri: LFRFIDProtocol = 14;
 pub const LFRFIDProtocol_LFRFIDProtocolGallagher: LFRFIDProtocol = 15;
 pub const LFRFIDProtocol_LFRFIDProtocolMax: LFRFIDProtocol = 16;
-pub type LFRFIDProtocol = core::ffi::c_uint;
+pub type LFRFIDProtocol = core::ffi::c_uchar;
 extern "C" {
     pub static mut lfrfid_protocols: [*const ProtocolBase; 0usize];
 }
@@ -20553,11 +20551,11 @@ pub const LFRFIDWorkerWriteResult_LFRFIDWorkerWriteProtocolCannotBeWritten:
     LFRFIDWorkerWriteResult = 1;
 pub const LFRFIDWorkerWriteResult_LFRFIDWorkerWriteFobCannotBeWritten: LFRFIDWorkerWriteResult = 2;
 pub const LFRFIDWorkerWriteResult_LFRFIDWorkerWriteTooLongToWrite: LFRFIDWorkerWriteResult = 3;
-pub type LFRFIDWorkerWriteResult = core::ffi::c_uint;
+pub type LFRFIDWorkerWriteResult = core::ffi::c_uchar;
 pub const LFRFIDWorkerReadType_LFRFIDWorkerReadTypeAuto: LFRFIDWorkerReadType = 0;
 pub const LFRFIDWorkerReadType_LFRFIDWorkerReadTypeASKOnly: LFRFIDWorkerReadType = 1;
 pub const LFRFIDWorkerReadType_LFRFIDWorkerReadTypePSKOnly: LFRFIDWorkerReadType = 2;
-pub type LFRFIDWorkerReadType = core::ffi::c_uint;
+pub type LFRFIDWorkerReadType = core::ffi::c_uchar;
 pub const LFRFIDWorkerReadResult_LFRFIDWorkerReadSenseStart: LFRFIDWorkerReadResult = 0;
 pub const LFRFIDWorkerReadResult_LFRFIDWorkerReadSenseEnd: LFRFIDWorkerReadResult = 1;
 pub const LFRFIDWorkerReadResult_LFRFIDWorkerReadSenseCardStart: LFRFIDWorkerReadResult = 2;
@@ -20565,15 +20563,15 @@ pub const LFRFIDWorkerReadResult_LFRFIDWorkerReadSenseCardEnd: LFRFIDWorkerReadR
 pub const LFRFIDWorkerReadResult_LFRFIDWorkerReadStartASK: LFRFIDWorkerReadResult = 4;
 pub const LFRFIDWorkerReadResult_LFRFIDWorkerReadStartPSK: LFRFIDWorkerReadResult = 5;
 pub const LFRFIDWorkerReadResult_LFRFIDWorkerReadDone: LFRFIDWorkerReadResult = 6;
-pub type LFRFIDWorkerReadResult = core::ffi::c_uint;
+pub type LFRFIDWorkerReadResult = core::ffi::c_uchar;
 pub const LFRFIDWorkerReadRawResult_LFRFIDWorkerReadRawFileError: LFRFIDWorkerReadRawResult = 0;
 pub const LFRFIDWorkerReadRawResult_LFRFIDWorkerReadRawOverrun: LFRFIDWorkerReadRawResult = 1;
-pub type LFRFIDWorkerReadRawResult = core::ffi::c_uint;
+pub type LFRFIDWorkerReadRawResult = core::ffi::c_uchar;
 pub const LFRFIDWorkerEmulateRawResult_LFRFIDWorkerEmulateRawFileError:
     LFRFIDWorkerEmulateRawResult = 0;
 pub const LFRFIDWorkerEmulateRawResult_LFRFIDWorkerEmulateRawOverrun: LFRFIDWorkerEmulateRawResult =
     1;
-pub type LFRFIDWorkerEmulateRawResult = core::ffi::c_uint;
+pub type LFRFIDWorkerEmulateRawResult = core::ffi::c_uchar;
 pub type LFRFIDWorkerReadCallback = ::core::option::Option<
     unsafe extern "C" fn(
         result: LFRFIDWorkerReadResult,
@@ -20741,7 +20739,7 @@ pub const BitLibParity_BitLibParityEven: BitLibParity = 0;
 pub const BitLibParity_BitLibParityOdd: BitLibParity = 1;
 pub const BitLibParity_BitLibParityAlways0: BitLibParity = 2;
 pub const BitLibParity_BitLibParityAlways1: BitLibParity = 3;
-pub type BitLibParity = core::ffi::c_uint;
+pub type BitLibParity = core::ffi::c_uchar;
 extern "C" {
     #[doc = " @brief Push a bit into a byte array."]
     #[doc = "  @param data array to push bit into"]
@@ -21046,7 +21044,7 @@ extern "C" {
 pub const iButtonKeyType_iButtonKeyDS1990: iButtonKeyType = 0;
 pub const iButtonKeyType_iButtonKeyCyfral: iButtonKeyType = 1;
 pub const iButtonKeyType_iButtonKeyMetakom: iButtonKeyType = 2;
-pub type iButtonKeyType = core::ffi::c_uint;
+pub type iButtonKeyType = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct iButtonKey {
@@ -21149,7 +21147,7 @@ pub const iButtonWorkerWriteResult_iButtonWorkerWriteOK: iButtonWorkerWriteResul
 pub const iButtonWorkerWriteResult_iButtonWorkerWriteSameKey: iButtonWorkerWriteResult = 1;
 pub const iButtonWorkerWriteResult_iButtonWorkerWriteNoDetect: iButtonWorkerWriteResult = 2;
 pub const iButtonWorkerWriteResult_iButtonWorkerWriteCannotWrite: iButtonWorkerWriteResult = 3;
-pub type iButtonWorkerWriteResult = core::ffi::c_uint;
+pub type iButtonWorkerWriteResult = core::ffi::c_uchar;
 pub type iButtonWorkerReadCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
 pub type iButtonWorkerWriteCallback = ::core::option::Option<
@@ -21304,7 +21302,7 @@ extern "C" {
 pub const OneWireHostSearchMode_CONDITIONAL_SEARCH: OneWireHostSearchMode = 0;
 #[doc = "< Search all devices"]
 pub const OneWireHostSearchMode_NORMAL_SEARCH: OneWireHostSearchMode = 1;
-pub type OneWireHostSearchMode = core::ffi::c_uint;
+pub type OneWireHostSearchMode = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct OneWireHost {
@@ -21791,7 +21789,7 @@ pub const SubGhzProtocolType_SubGhzProtocolTypeUnknown: SubGhzProtocolType = 0;
 pub const SubGhzProtocolType_SubGhzProtocolTypeStatic: SubGhzProtocolType = 1;
 pub const SubGhzProtocolType_SubGhzProtocolTypeDynamic: SubGhzProtocolType = 2;
 pub const SubGhzProtocolType_SubGhzProtocolTypeRAW: SubGhzProtocolType = 3;
-pub type SubGhzProtocolType = core::ffi::c_uint;
+pub type SubGhzProtocolType = core::ffi::c_uchar;
 pub const SubGhzProtocolFlag_SubGhzProtocolFlag_RAW: SubGhzProtocolFlag = 1;
 pub const SubGhzProtocolFlag_SubGhzProtocolFlag_Decodable: SubGhzProtocolFlag = 2;
 pub const SubGhzProtocolFlag_SubGhzProtocolFlag_315: SubGhzProtocolFlag = 4;
@@ -21802,7 +21800,7 @@ pub const SubGhzProtocolFlag_SubGhzProtocolFlag_FM: SubGhzProtocolFlag = 64;
 pub const SubGhzProtocolFlag_SubGhzProtocolFlag_Save: SubGhzProtocolFlag = 128;
 pub const SubGhzProtocolFlag_SubGhzProtocolFlag_Load: SubGhzProtocolFlag = 256;
 pub const SubGhzProtocolFlag_SubGhzProtocolFlag_Send: SubGhzProtocolFlag = 512;
-pub type SubGhzProtocolFlag = core::ffi::c_uint;
+pub type SubGhzProtocolFlag = core::ffi::c_ushort;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct SubGhzProtocol {
@@ -21848,7 +21846,7 @@ fn bindgen_test_layout_SubGhzProtocol() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).flag) as usize - ptr as usize },
-        12usize,
+        10usize,
         concat!(
             "Offset of field: ",
             stringify!(SubGhzProtocol),
@@ -22459,7 +22457,7 @@ pub const DirWalkResult_DirWalkOK: DirWalkResult = 0;
 pub const DirWalkResult_DirWalkError: DirWalkResult = 1;
 #[doc = "< Last element"]
 pub const DirWalkResult_DirWalkLast: DirWalkResult = 2;
-pub type DirWalkResult = core::ffi::c_uint;
+pub type DirWalkResult = core::ffi::c_uchar;
 pub type DirWalkFilterCb = ::core::option::Option<
     unsafe extern "C" fn(
         name: *const core::ffi::c_char,
@@ -22765,12 +22763,12 @@ pub const ManchesterEvent_ManchesterEventShortHigh: ManchesterEvent = 2;
 pub const ManchesterEvent_ManchesterEventLongLow: ManchesterEvent = 4;
 pub const ManchesterEvent_ManchesterEventLongHigh: ManchesterEvent = 6;
 pub const ManchesterEvent_ManchesterEventReset: ManchesterEvent = 8;
-pub type ManchesterEvent = core::ffi::c_uint;
+pub type ManchesterEvent = core::ffi::c_uchar;
 pub const ManchesterState_ManchesterStateStart1: ManchesterState = 0;
 pub const ManchesterState_ManchesterStateMid1: ManchesterState = 1;
 pub const ManchesterState_ManchesterStateMid0: ManchesterState = 2;
 pub const ManchesterState_ManchesterStateStart0: ManchesterState = 3;
-pub type ManchesterState = core::ffi::c_uint;
+pub type ManchesterState = core::ffi::c_uchar;
 extern "C" {
     pub fn manchester_advance(
         state: ManchesterState,
@@ -22825,7 +22823,7 @@ pub const ManchesterEncoderResult_ManchesterEncoderResultShortLow: ManchesterEnc
 pub const ManchesterEncoderResult_ManchesterEncoderResultLongLow: ManchesterEncoderResult = 1;
 pub const ManchesterEncoderResult_ManchesterEncoderResultLongHigh: ManchesterEncoderResult = 2;
 pub const ManchesterEncoderResult_ManchesterEncoderResultShortHigh: ManchesterEncoderResult = 3;
-pub type ManchesterEncoderResult = core::ffi::c_uint;
+pub type ManchesterEncoderResult = core::ffi::c_uchar;
 extern "C" {
     pub fn manchester_encoder_reset(state: *mut ManchesterEncoderState);
 }
@@ -23102,7 +23100,7 @@ pub struct TarArchive {
 pub const TarOpenMode_TAR_OPEN_MODE_READ: TarOpenMode = 114;
 pub const TarOpenMode_TAR_OPEN_MODE_WRITE: TarOpenMode = 119;
 pub const TarOpenMode_TAR_OPEN_MODE_STDOUT: TarOpenMode = 115;
-pub type TarOpenMode = core::ffi::c_uint;
+pub type TarOpenMode = core::ffi::c_uchar;
 extern "C" {
     pub fn tar_archive_alloc(storage: *mut Storage) -> *mut TarArchive;
 }

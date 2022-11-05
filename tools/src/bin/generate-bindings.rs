@@ -157,6 +157,7 @@ fn main() {
         .clang_args(["-isystem", &toolchain.display().to_string()])
         .clang_args(&sdk_opts)
         .clang_arg("-Wno-error")
+        .clang_arg("-fshort-enums")
         .use_core()
         .ctypes_prefix("core::ffi")
         .allowlist_var("API_VERSION")

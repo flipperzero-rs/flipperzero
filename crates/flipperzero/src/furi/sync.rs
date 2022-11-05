@@ -9,7 +9,7 @@ use sys::furi::Status;
 
 use crate::furi;
 
-const MUTEX_TYPE: u32 = sys::FuriMutexType_FuriMutexTypeNormal;
+const MUTEX_TYPE: u8 = sys::FuriMutexType_FuriMutexTypeNormal;
 
 /// Negative trait bounds are not implemented (see rust-lang/rust#68318).
 /// As a workaround we can force `!Send`/`!Sync` by pretending we own a raw pointer.
