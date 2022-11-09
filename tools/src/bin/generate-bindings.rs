@@ -8,9 +8,9 @@ use std::{env, fs};
 use std::path::{PathBuf, Path};
 
 use clap::{self, value_parser, crate_authors, crate_description, crate_version};
+use serde::Deserialize;
 
 const OUTFILE: &str = "bindings.rs";
-const API_SYMBOLS: &str = "api_symbols.csv";
 const SDK_OPTS: &str = "sdk.opts";
 #[cfg(windows)]
 const TOOLCHAIN: &str = "../../../toolchain/i686-windows/arm-none-eabi/include";
@@ -73,20 +73,25 @@ fn load_symbols<T: AsRef<Path>>(path: T) -> ApiSymbols {
     ApiSymbols { api_version, headers, functions, variables }
 }
 
+#[allow(dead_code)]
+#[derive(Debug, Deserialize)]
+struct SdkOpts {
+    sdk_symbols: String,
+    cc_args: String,
+    cpp_args: String,
+    linker_args: String,
+    linker_script: String,
+}
+
 /// Load `sdk.opts` file of compiler flags.
-fn load_sdk_opts<T: AsRef<Path>>(path: T) -> Vec<String> {
+fn load_sdk_opts<T: AsRef<Path>>(path: T) -> SdkOpts {
     let file = fs::File::open(path.as_ref())
         .expect("failed to open sdk.opts");
 
-    let sdk_opts: serde_json::Value = serde_json::from_reader(file)
+    let sdk_opts: SdkOpts = serde_json::from_reader(file)
         .expect("failed to parse sdk.opts JSON");
 
-    let cc_flags = sdk_opts.get("cc_args")
-        .and_then(serde_json::Value::as_str)
-        .expect("failed to read sdk.opts cc_args");
-
-    // Some of the values are shell-quoted
-    shlex::split(&cc_flags).expect("failed to split sdk.opts cc_args")
+    sdk_opts
 }
 
 /// Generate bindings header.
@@ -141,12 +146,21 @@ fn main() {
         )
     }
 
-    // Load SDK symbols
-    let symbols = load_symbols(&sdk.join(API_SYMBOLS));
-    let bindings_header = generate_bindings_header(&symbols);
+    let replace_sdk_root_dir = |s: &str| {
+        // Need to use '/' on Windows, or else include paths don't work
+        s.replace("SDK_ROOT_DIR", sdk.to_str().unwrap()).replace("\\", "/")
+    };
 
     // Load SDK compiler flags
     let sdk_opts = load_sdk_opts(&sdk.join(SDK_OPTS));
+
+    // Load SDK symbols
+    let symbols = load_symbols(&sdk.join(&replace_sdk_root_dir(&sdk_opts.sdk_symbols)));
+    let bindings_header = generate_bindings_header(&symbols);
+
+    // Some of the values are shell-quoted
+    let cc_flags = shlex::split(&replace_sdk_root_dir(&sdk_opts.cc_args))
+        .expect("failed to split sdk.opts cc_args");
 
     // Generate bindings
     eprintln!("Generating bindings for SDK {:08X}", symbols.api_version);
@@ -155,7 +169,7 @@ fn main() {
         .clang_arg(&sdk.display().to_string())
         .clang_args(["--system-header-prefix=f7_sdk/"])
         .clang_args(["-isystem", &toolchain.display().to_string()])
-        .clang_args(&sdk_opts)
+        .clang_args(&cc_flags)
         .clang_arg("-Wno-error")
         .clang_arg("-fshort-enums")
         .use_core()
@@ -172,7 +186,6 @@ fn main() {
     }
 
     let bindings = bindings.generate().expect("failed to generate bindings");
-
 
     // `-working-directory` also affects `Bindings::write_to_file`
     let outfile = cwd.join(OUTFILE);
