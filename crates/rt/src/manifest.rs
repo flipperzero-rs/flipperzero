@@ -56,8 +56,7 @@ pub mod set {
 pub struct ManifestBase {
     pub manifest_magic: u32,
     pub manifest_version: u32,
-    pub api_version_major: u16,
-    pub api_version_minor: u16,
+    pub api_version: u32,
     pub hardware_target_id: u16,
 }
 
@@ -79,8 +78,7 @@ impl ApplicationManifestV1 {
             base: ManifestBase {
                 manifest_magic: MANIFEST_MAGIC,
                 manifest_version: 1,
-                api_version_major: (sys::API_VERSION >> 16) as u16,
-                api_version_minor: (sys::API_VERSION & 0x0000FFFF) as u16,
+                api_version: sys::API_VERSION,
                 hardware_target_id: HARDWARE_TARGET,
             },
             stack_size: DEFAULT_STACK_SIZE,

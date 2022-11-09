@@ -23,7 +23,11 @@ macro_rules! c_string {
 macro_rules! crash {
     ($msg:literal) => {
         unsafe {
-            $crate::furi_crash($crate::c_string!($msg));
+            // Crash message is passed via r12
+            let msg = $crate::c_string!($msg);
+            core::arch::asm!("", in("r12") msg, options(nomem, nostack));
+
+            $crate::__furi_crash();
             // `unreachable!` generates exception machinery, `noreturn` does not
             core::arch::asm!("", options(noreturn));
         }

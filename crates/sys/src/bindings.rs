@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 131074;
+pub const API_VERSION: u32 = 458752;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct Bt {
@@ -1698,11 +1698,11 @@ extern "C" {
 }
 extern "C" {
     #[doc = " Crash system"]
-    pub fn furi_crash(message: *const core::ffi::c_char);
+    pub fn __furi_crash();
 }
 extern "C" {
     #[doc = " Halt system"]
-    pub fn furi_halt(message: *const core::ffi::c_char);
+    pub fn __furi_halt();
 }
 extern "C" {
     #[doc = "< System Clock Frequency"]
@@ -5602,552 +5602,6 @@ extern "C" {
     #[doc = " @return     pointer to XBM bitmap data"]
     pub fn icon_get_data(instance: *const Icon) -> *const u8;
 }
-extern "C" {
-    pub static I_Certification1_103x56: Icon;
-}
-extern "C" {
-    pub static I_Certification2_98x33: Icon;
-}
-extern "C" {
-    pub static A_Levelup1_128x64: Icon;
-}
-extern "C" {
-    pub static A_Levelup2_128x64: Icon;
-}
-extern "C" {
-    pub static I_125_10px: Icon;
-}
-extern "C" {
-    pub static I_Nfc_10px: Icon;
-}
-extern "C" {
-    pub static I_back_10px: Icon;
-}
-extern "C" {
-    pub static I_badusb_10px: Icon;
-}
-extern "C" {
-    pub static I_dir_10px: Icon;
-}
-extern "C" {
-    pub static I_ibutt_10px: Icon;
-}
-extern "C" {
-    pub static I_ir_10px: Icon;
-}
-extern "C" {
-    pub static I_loading_10px: Icon;
-}
-extern "C" {
-    pub static I_music_10px: Icon;
-}
-extern "C" {
-    pub static I_sub1_10px: Icon;
-}
-extern "C" {
-    pub static I_u2f_10px: Icon;
-}
-extern "C" {
-    pub static I_unknown_10px: Icon;
-}
-extern "C" {
-    pub static I_update_10px: Icon;
-}
-extern "C" {
-    pub static I_BLE_Pairing_128x64: Icon;
-}
-extern "C" {
-    pub static I_Ble_connected_15x15: Icon;
-}
-extern "C" {
-    pub static I_Ble_disconnected_15x15: Icon;
-}
-extern "C" {
-    pub static I_Button_18x18: Icon;
-}
-extern "C" {
-    pub static I_Circles_47x47: Icon;
-}
-extern "C" {
-    pub static I_Left_mouse_icon_9x9: Icon;
-}
-extern "C" {
-    pub static I_Ok_btn_9x9: Icon;
-}
-extern "C" {
-    pub static I_Ok_btn_pressed_13x13: Icon;
-}
-extern "C" {
-    pub static I_Pressed_Button_13x13: Icon;
-}
-extern "C" {
-    pub static I_Right_mouse_icon_9x9: Icon;
-}
-extern "C" {
-    pub static I_Space_65x18: Icon;
-}
-extern "C" {
-    pub static I_Voldwn_6x6: Icon;
-}
-extern "C" {
-    pub static I_Volup_8x6: Icon;
-}
-extern "C" {
-    pub static I_Clock_18x18: Icon;
-}
-extern "C" {
-    pub static I_Error_18x18: Icon;
-}
-extern "C" {
-    pub static I_EviSmile1_18x21: Icon;
-}
-extern "C" {
-    pub static I_EviSmile2_18x21: Icon;
-}
-extern "C" {
-    pub static I_EviWaiting1_18x21: Icon;
-}
-extern "C" {
-    pub static I_EviWaiting2_18x21: Icon;
-}
-extern "C" {
-    pub static I_Percent_10x14: Icon;
-}
-extern "C" {
-    pub static I_Smile_18x18: Icon;
-}
-extern "C" {
-    pub static I_UsbTree_48x22: Icon;
-}
-extern "C" {
-    pub static I_ActiveConnection_50x64: Icon;
-}
-extern "C" {
-    pub static I_ButtonCenter_7x7: Icon;
-}
-extern "C" {
-    pub static I_ButtonDown_7x4: Icon;
-}
-extern "C" {
-    pub static I_ButtonLeftSmall_3x5: Icon;
-}
-extern "C" {
-    pub static I_ButtonLeft_4x7: Icon;
-}
-extern "C" {
-    pub static I_ButtonRightSmall_3x5: Icon;
-}
-extern "C" {
-    pub static I_ButtonRight_4x7: Icon;
-}
-extern "C" {
-    pub static I_ButtonUp_7x4: Icon;
-}
-extern "C" {
-    pub static I_DFU_128x50: Icon;
-}
-extern "C" {
-    pub static I_Warning_30x23: Icon;
-}
-extern "C" {
-    pub static A_Loading_24: Icon;
-}
-extern "C" {
-    pub static A_Round_loader_8x8: Icon;
-}
-extern "C" {
-    pub static I_DolphinCommon_56x48: Icon;
-}
-extern "C" {
-    pub static I_ArrowDownEmpty_14x15: Icon;
-}
-extern "C" {
-    pub static I_ArrowDownFilled_14x15: Icon;
-}
-extern "C" {
-    pub static I_ArrowUpEmpty_14x15: Icon;
-}
-extern "C" {
-    pub static I_ArrowUpFilled_14x15: Icon;
-}
-extern "C" {
-    pub static I_CoolHi_25x27: Icon;
-}
-extern "C" {
-    pub static I_CoolHi_hvr_25x27: Icon;
-}
-extern "C" {
-    pub static I_CoolLo_25x27: Icon;
-}
-extern "C" {
-    pub static I_CoolLo_hvr_25x27: Icon;
-}
-extern "C" {
-    pub static I_Dehumidify_25x27: Icon;
-}
-extern "C" {
-    pub static I_Dehumidify_hvr_25x27: Icon;
-}
-extern "C" {
-    pub static I_DolphinReadingSuccess_59x63: Icon;
-}
-extern "C" {
-    pub static I_Down_25x27: Icon;
-}
-extern "C" {
-    pub static I_Down_hvr_25x27: Icon;
-}
-extern "C" {
-    pub static I_HeatHi_25x27: Icon;
-}
-extern "C" {
-    pub static I_HeatHi_hvr_25x27: Icon;
-}
-extern "C" {
-    pub static I_HeatLo_25x27: Icon;
-}
-extern "C" {
-    pub static I_HeatLo_hvr_25x27: Icon;
-}
-extern "C" {
-    pub static I_InfraredArrowDown_4x8: Icon;
-}
-extern "C" {
-    pub static I_InfraredArrowUp_4x8: Icon;
-}
-extern "C" {
-    pub static I_InfraredLearnShort_128x31: Icon;
-}
-extern "C" {
-    pub static I_Mute_25x27: Icon;
-}
-extern "C" {
-    pub static I_Mute_hvr_25x27: Icon;
-}
-extern "C" {
-    pub static I_Off_25x27: Icon;
-}
-extern "C" {
-    pub static I_Off_hvr_25x27: Icon;
-}
-extern "C" {
-    pub static I_Power_25x27: Icon;
-}
-extern "C" {
-    pub static I_Power_hvr_25x27: Icon;
-}
-extern "C" {
-    pub static I_Up_25x27: Icon;
-}
-extern "C" {
-    pub static I_Up_hvr_25x27: Icon;
-}
-extern "C" {
-    pub static I_Vol_down_25x27: Icon;
-}
-extern "C" {
-    pub static I_Vol_down_hvr_25x27: Icon;
-}
-extern "C" {
-    pub static I_Vol_up_25x27: Icon;
-}
-extern "C" {
-    pub static I_Vol_up_hvr_25x27: Icon;
-}
-extern "C" {
-    pub static I_DoorLeft_70x55: Icon;
-}
-extern "C" {
-    pub static I_DoorRight_70x55: Icon;
-}
-extern "C" {
-    pub static I_SmallArrowDown_3x5: Icon;
-}
-extern "C" {
-    pub static I_SmallArrowDown_4x7: Icon;
-}
-extern "C" {
-    pub static I_SmallArrowUp_3x5: Icon;
-}
-extern "C" {
-    pub static I_SmallArrowUp_4x7: Icon;
-}
-extern "C" {
-    pub static I_WarningDolphin_45x42: Icon;
-}
-extern "C" {
-    pub static I_KeyBackspaceSelected_16x9: Icon;
-}
-extern "C" {
-    pub static I_KeyBackspace_16x9: Icon;
-}
-extern "C" {
-    pub static I_KeySaveSelected_24x11: Icon;
-}
-extern "C" {
-    pub static I_KeySave_24x11: Icon;
-}
-extern "C" {
-    pub static A_125khz_14: Icon;
-}
-extern "C" {
-    pub static A_BadUsb_14: Icon;
-}
-extern "C" {
-    pub static A_Debug_14: Icon;
-}
-extern "C" {
-    pub static A_FileManager_14: Icon;
-}
-extern "C" {
-    pub static A_GPIO_14: Icon;
-}
-extern "C" {
-    pub static A_Infrared_14: Icon;
-}
-extern "C" {
-    pub static A_NFC_14: Icon;
-}
-extern "C" {
-    pub static A_Plugins_14: Icon;
-}
-extern "C" {
-    pub static A_Settings_14: Icon;
-}
-extern "C" {
-    pub static A_Sub1ghz_14: Icon;
-}
-extern "C" {
-    pub static A_U2F_14: Icon;
-}
-extern "C" {
-    pub static A_iButton_14: Icon;
-}
-extern "C" {
-    pub static I_ArrowC_1_36x36: Icon;
-}
-extern "C" {
-    pub static I_Detailed_chip_17x13: Icon;
-}
-extern "C" {
-    pub static I_Keychain_39x36: Icon;
-}
-extern "C" {
-    pub static I_Medium_chip_22x21: Icon;
-}
-extern "C" {
-    pub static I_Modern_reader_18x34: Icon;
-}
-extern "C" {
-    pub static I_Move_flipper_26x39: Icon;
-}
-extern "C" {
-    pub static I_NFC_manual_60x50: Icon;
-}
-extern "C" {
-    pub static I_Reader_detect_43x40: Icon;
-}
-extern "C" {
-    pub static I_Release_arrow_18x15: Icon;
-}
-extern "C" {
-    pub static I_Restoring_38x32: Icon;
-}
-extern "C" {
-    pub static I_Tap_reader_36x38: Icon;
-}
-extern "C" {
-    pub static I_Pin_arrow_down_7x9: Icon;
-}
-extern "C" {
-    pub static I_Pin_arrow_left_9x7: Icon;
-}
-extern "C" {
-    pub static I_Pin_arrow_right_9x7: Icon;
-}
-extern "C" {
-    pub static I_Pin_arrow_up_7x9: Icon;
-}
-extern "C" {
-    pub static I_Pin_attention_dpad_29x29: Icon;
-}
-extern "C" {
-    pub static I_Pin_back_arrow_10x8: Icon;
-}
-extern "C" {
-    pub static I_Pin_back_full_40x8: Icon;
-}
-extern "C" {
-    pub static I_Pin_pointer_5x3: Icon;
-}
-extern "C" {
-    pub static I_Pin_star_7x7: Icon;
-}
-extern "C" {
-    pub static I_passport_bad1_46x49: Icon;
-}
-extern "C" {
-    pub static I_passport_bad2_46x49: Icon;
-}
-extern "C" {
-    pub static I_passport_bad3_46x49: Icon;
-}
-extern "C" {
-    pub static I_passport_bottom_128x18: Icon;
-}
-extern "C" {
-    pub static I_passport_happy1_46x49: Icon;
-}
-extern "C" {
-    pub static I_passport_happy2_46x49: Icon;
-}
-extern "C" {
-    pub static I_passport_happy3_46x49: Icon;
-}
-extern "C" {
-    pub static I_passport_left_6x46: Icon;
-}
-extern "C" {
-    pub static I_passport_okay1_46x49: Icon;
-}
-extern "C" {
-    pub static I_passport_okay2_46x49: Icon;
-}
-extern "C" {
-    pub static I_passport_okay3_46x49: Icon;
-}
-extern "C" {
-    pub static I_BatteryBody_52x28: Icon;
-}
-extern "C" {
-    pub static I_Battery_16x16: Icon;
-}
-extern "C" {
-    pub static I_FaceCharging_29x14: Icon;
-}
-extern "C" {
-    pub static I_FaceConfused_29x14: Icon;
-}
-extern "C" {
-    pub static I_FaceNopower_29x14: Icon;
-}
-extern "C" {
-    pub static I_FaceNormal_29x14: Icon;
-}
-extern "C" {
-    pub static I_Health_16x16: Icon;
-}
-extern "C" {
-    pub static I_Temperature_16x16: Icon;
-}
-extern "C" {
-    pub static I_Unplug_bg_bottom_128x10: Icon;
-}
-extern "C" {
-    pub static I_Unplug_bg_top_128x14: Icon;
-}
-extern "C" {
-    pub static I_Voltage_16x16: Icon;
-}
-extern "C" {
-    pub static I_RFIDBigChip_37x36: Icon;
-}
-extern "C" {
-    pub static I_RFIDDolphinReceive_97x61: Icon;
-}
-extern "C" {
-    pub static I_RFIDDolphinSend_97x61: Icon;
-}
-extern "C" {
-    pub static I_RFIDDolphinSuccess_108x57: Icon;
-}
-extern "C" {
-    pub static I_SDQuestion_35x43: Icon;
-}
-extern "C" {
-    pub static I_Cry_dolph_55x52: Icon;
-}
-extern "C" {
-    pub static I_Attention_5x8: Icon;
-}
-extern "C" {
-    pub static I_Background_128x11: Icon;
-}
-extern "C" {
-    pub static I_Battery_26x8: Icon;
-}
-extern "C" {
-    pub static I_Bluetooth_Connected_16x8: Icon;
-}
-extern "C" {
-    pub static I_Bluetooth_Idle_5x8: Icon;
-}
-extern "C" {
-    pub static I_Charging_lightning_9x10: Icon;
-}
-extern "C" {
-    pub static I_Charging_lightning_mask_9x10: Icon;
-}
-extern "C" {
-    pub static I_GameMode_11x8: Icon;
-}
-extern "C" {
-    pub static I_Lock_8x8: Icon;
-}
-extern "C" {
-    pub static I_SDcardFail_11x8: Icon;
-}
-extern "C" {
-    pub static I_SDcardMounted_11x8: Icon;
-}
-extern "C" {
-    pub static I_Lock_7x8: Icon;
-}
-extern "C" {
-    pub static I_MHz_25x11: Icon;
-}
-extern "C" {
-    pub static I_Quest_7x8: Icon;
-}
-extern "C" {
-    pub static I_Scanning_123x52: Icon;
-}
-extern "C" {
-    pub static I_Unlock_7x8: Icon;
-}
-extern "C" {
-    pub static I_Auth_62x31: Icon;
-}
-extern "C" {
-    pub static I_Connect_me_62x31: Icon;
-}
-extern "C" {
-    pub static I_Connected_62x31: Icon;
-}
-extern "C" {
-    pub static I_Drive_112x35: Icon;
-}
-extern "C" {
-    pub static I_Error_62x31: Icon;
-}
-extern "C" {
-    pub static I_Updating_32x40: Icon;
-}
-extern "C" {
-    pub static I_DolphinMafia_115x62: Icon;
-}
-extern "C" {
-    pub static I_DolphinNice_96x59: Icon;
-}
-extern "C" {
-    pub static I_DolphinWait_61x59: Icon;
-}
-extern "C" {
-    pub static I_iButtonDolphinVerySuccess_108x52: Icon;
-}
-extern "C" {
-    pub static I_iButtonKey_49x44: Icon;
-}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct IconAnimation {
@@ -6895,7 +6349,9 @@ extern "C" {
     pub fn input_get_type_name(type_: InputType) -> *const core::ffi::c_char;
 }
 pub const ViewOrientation_ViewOrientationHorizontal: ViewOrientation = 0;
-pub const ViewOrientation_ViewOrientationVertical: ViewOrientation = 1;
+pub const ViewOrientation_ViewOrientationHorizontalFlip: ViewOrientation = 1;
+pub const ViewOrientation_ViewOrientationVertical: ViewOrientation = 2;
+pub const ViewOrientation_ViewOrientationVerticalFlip: ViewOrientation = 3;
 pub type ViewOrientation = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -6916,6 +6372,13 @@ pub type ViewDrawCallback = ::core::option::Option<
 #[doc = " @warning    called from GUI thread"]
 pub type ViewInputCallback = ::core::option::Option<
     unsafe extern "C" fn(event: *mut InputEvent, context: *mut core::ffi::c_void) -> bool,
+>;
+#[doc = " View Custom callback"]
+#[doc = " @param      event,    number of custom event"]
+#[doc = " @param      context,  pointer to context"]
+#[doc = " @return     true if event handled, false if event ignored"]
+pub type ViewCustomCallback = ::core::option::Option<
+    unsafe extern "C" fn(event: u32, context: *mut core::ffi::c_void) -> bool,
 >;
 #[doc = " View navigation callback"]
 #[doc = " @param      context,  pointer to context"]
@@ -6976,6 +6439,13 @@ extern "C" {
     #[doc = " @param      view      View instance"]
     #[doc = " @param      callback  input callback"]
     pub fn view_set_input_callback(view: *mut View, callback: ViewInputCallback);
+}
+extern "C" {
+    #[doc = " Set View Custom callback"]
+    #[doc = ""]
+    #[doc = " @param      view      View instance"]
+    #[doc = " @param      callback  input callback"]
+    pub fn view_set_custom_callback(view: *mut View, callback: ViewCustomCallback);
 }
 extern "C" {
     #[doc = " Set Navigation Previous callback"]
@@ -7354,8 +6824,8 @@ pub const DolphinDeed_DolphinDeedNfcSave: DolphinDeed = 13;
 pub const DolphinDeed_DolphinDeedNfcDetectReader: DolphinDeed = 14;
 pub const DolphinDeed_DolphinDeedNfcEmulate: DolphinDeed = 15;
 pub const DolphinDeed_DolphinDeedNfcMfcAdd: DolphinDeed = 16;
-pub const DolphinDeed_DolphinDeedNfcMfulError: DolphinDeed = 17;
-pub const DolphinDeed_DolphinDeedNfcAddSave: DolphinDeed = 18;
+pub const DolphinDeed_DolphinDeedNfcAddSave: DolphinDeed = 17;
+pub const DolphinDeed_DolphinDeedNfcAddEmulate: DolphinDeed = 18;
 pub const DolphinDeed_DolphinDeedIrSend: DolphinDeed = 19;
 pub const DolphinDeed_DolphinDeedIrLearnSuccess: DolphinDeed = 20;
 pub const DolphinDeed_DolphinDeedIrSave: DolphinDeed = 21;
@@ -7692,7 +7162,9 @@ pub struct ViewPort {
     _unused: [u8; 0],
 }
 pub const ViewPortOrientation_ViewPortOrientationHorizontal: ViewPortOrientation = 0;
-pub const ViewPortOrientation_ViewPortOrientationVertical: ViewPortOrientation = 1;
+pub const ViewPortOrientation_ViewPortOrientationHorizontalFlip: ViewPortOrientation = 1;
+pub const ViewPortOrientation_ViewPortOrientationVertical: ViewPortOrientation = 2;
+pub const ViewPortOrientation_ViewPortOrientationVerticalFlip: ViewPortOrientation = 3;
 pub type ViewPortOrientation = core::ffi::c_uchar;
 #[doc = " ViewPort Draw callback"]
 #[doc = " @warning    called from GUI thread"]
@@ -7731,6 +7203,18 @@ extern "C" {
 }
 extern "C" {
     pub fn view_port_get_width(view_port: *mut ViewPort) -> u8;
+}
+extern "C" {
+    #[doc = " Set view_port height."]
+    #[doc = ""]
+    #[doc = " Will be used to limit canvas drawing area and autolayout feature."]
+    #[doc = ""]
+    #[doc = " @param      view_port  ViewPort instance"]
+    #[doc = " @param      height     wanted height, 0 - auto."]
+    pub fn view_port_set_height(view_port: *mut ViewPort, height: u8);
+}
+extern "C" {
+    pub fn view_port_get_height(view_port: *mut ViewPort) -> u8;
 }
 extern "C" {
     #[doc = " Enable or disable view_port rendering."]
@@ -8914,6 +8398,13 @@ extern "C" {
     #[doc = " @param      item                 VariableItem* instance"]
     #[doc = " @param      current_value_index  The current value index"]
     pub fn variable_item_set_current_value_index(item: *mut VariableItem, current_value_index: u8);
+}
+extern "C" {
+    #[doc = " Set number of values for item"]
+    #[doc = ""]
+    #[doc = " @param      item                 VariableItem* instance"]
+    #[doc = " @param      values_count         The new values count"]
+    pub fn variable_item_set_values_count(item: *mut VariableItem, values_count: u8);
 }
 extern "C" {
     #[doc = " Set item current selected text"]
@@ -11605,6 +11096,9 @@ pub type FuriHalConsoleTxCallback = ::core::option::Option<
     unsafe extern "C" fn(buffer: *const u8, size: usize, context: *mut core::ffi::c_void),
 >;
 extern "C" {
+    pub fn furi_hal_console_init();
+}
+extern "C" {
     pub fn furi_hal_console_enable();
 }
 extern "C" {
@@ -13342,6 +12836,48 @@ extern "C" {
 extern "C" {
     pub fn __clear_cache(arg1: *mut core::ffi::c_void, arg2: *mut core::ffi::c_void);
 }
+#[doc = " Cortex timer provides high precision low level expiring timer"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FuriHalCortexTimer {
+    pub start: u32,
+    pub value: u32,
+}
+#[test]
+fn bindgen_test_layout_FuriHalCortexTimer() {
+    const UNINIT: ::core::mem::MaybeUninit<FuriHalCortexTimer> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FuriHalCortexTimer>(),
+        8usize,
+        concat!("Size of: ", stringify!(FuriHalCortexTimer))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FuriHalCortexTimer>(),
+        4usize,
+        concat!("Alignment of ", stringify!(FuriHalCortexTimer))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).start) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalCortexTimer),
+            "::",
+            stringify!(start)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).value) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalCortexTimer),
+            "::",
+            stringify!(value)
+        )
+    );
+}
 extern "C" {
     #[doc = " Microseconds delay"]
     #[doc = ""]
@@ -13353,6 +12889,28 @@ extern "C" {
     #[doc = ""]
     #[doc = " @return     instructions per microsecond count"]
     pub fn furi_hal_cortex_instructions_per_microsecond() -> u32;
+}
+extern "C" {
+    #[doc = " Get Timer"]
+    #[doc = ""]
+    #[doc = " @param[in]  timeout_us  The expire timeout in us"]
+    #[doc = ""]
+    #[doc = " @return     The FuriHalCortexTimer"]
+    pub fn furi_hal_cortex_timer_get(timeout_us: u32) -> FuriHalCortexTimer;
+}
+extern "C" {
+    #[doc = " Check if timer expired"]
+    #[doc = ""]
+    #[doc = " @param[in]  cortex_timer  The FuriHalCortexTimer"]
+    #[doc = ""]
+    #[doc = " @return     true if expired"]
+    pub fn furi_hal_cortex_timer_is_expired(cortex_timer: FuriHalCortexTimer) -> bool;
+}
+extern "C" {
+    #[doc = " Wait for timer expire"]
+    #[doc = ""]
+    #[doc = " @param[in]  cortex_timer  The FuriHalCortexTimer"]
+    pub fn furi_hal_cortex_timer_wait(cortex_timer: FuriHalCortexTimer);
 }
 #[doc = "< Master key"]
 pub const FuriHalCryptoKeyType_FuriHalCryptoKeyTypeMaster: FuriHalCryptoKeyType = 0;
@@ -14982,6 +14540,9 @@ extern "C" {
 extern "C" {
     pub fn ble_app_thread_stop();
 }
+pub const FuriHalBtSerialRpcStatus_FuriHalBtSerialRpcStatusNotActive: FuriHalBtSerialRpcStatus = 0;
+pub const FuriHalBtSerialRpcStatus_FuriHalBtSerialRpcStatusActive: FuriHalBtSerialRpcStatus = 1;
+pub type FuriHalBtSerialRpcStatus = core::ffi::c_uchar;
 #[doc = " Serial service callback type"]
 pub type FuriHalBtSerialCallback = SerialServiceEventCallback;
 extern "C" {
@@ -15003,6 +14564,12 @@ extern "C" {
         callback: FuriHalBtSerialCallback,
         context: *mut core::ffi::c_void,
     );
+}
+extern "C" {
+    #[doc = " Set BLE RPC status"]
+    #[doc = ""]
+    #[doc = " @param status        FuriHalBtSerialRpcStatus instance"]
+    pub fn furi_hal_bt_serial_set_rpc_status(status: FuriHalBtSerialRpcStatus);
 }
 extern "C" {
     #[doc = " Notify that application buffer is empty"]
@@ -16295,7 +15862,6 @@ pub const FuriHalNfcReturn_FuriHalNfcReturnBusy: FuriHalNfcReturn = 2;
 pub const FuriHalNfcReturn_FuriHalNfcReturnIo: FuriHalNfcReturn = 3;
 #[doc = "< error due to timeout"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnTimeout: FuriHalNfcReturn = 4;
-#[doc = "< invalid request or requested function can't be executed at the moment"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnRequest: FuriHalNfcReturn = 5;
 #[doc = "< No message of desired type"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnNomsg: FuriHalNfcReturn = 6;
@@ -16317,7 +15883,6 @@ pub const FuriHalNfcReturn_FuriHalNfcReturnAgain: FuriHalNfcReturn = 13;
 pub const FuriHalNfcReturn_FuriHalNfcReturnMemCorrupt: FuriHalNfcReturn = 14;
 #[doc = "< not implemented"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnNotImplemented: FuriHalNfcReturn = 15;
-#[doc = "< Program Counter has been manipulated or spike/noise trigger illegal operation"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnPcCorrupt: FuriHalNfcReturn = 16;
 #[doc = "< error sending"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnSend: FuriHalNfcReturn = 17;
@@ -16331,7 +15896,6 @@ pub const FuriHalNfcReturn_FuriHalNfcReturnSyntax: FuriHalNfcReturn = 20;
 pub const FuriHalNfcReturn_FuriHalNfcReturnCrc: FuriHalNfcReturn = 21;
 #[doc = "< transponder not found"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnNotfound: FuriHalNfcReturn = 22;
-#[doc = "< transponder not unique - more than one transponder in field"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnNotunique: FuriHalNfcReturn = 23;
 #[doc = "< requested operation not supported"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnNotsupp: FuriHalNfcReturn = 24;
@@ -16343,7 +15907,6 @@ pub const FuriHalNfcReturn_FuriHalNfcReturnFifo: FuriHalNfcReturn = 26;
 pub const FuriHalNfcReturn_FuriHalNfcReturnPar: FuriHalNfcReturn = 27;
 #[doc = "< transfer has already finished"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnDone: FuriHalNfcReturn = 28;
-#[doc = "< collision error (Bit Collision or during RF Collision avoidance )"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnRfCollision: FuriHalNfcReturn = 29;
 #[doc = "< lost one or more received bytes"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnHwOverrun: FuriHalNfcReturn = 30;
@@ -16359,7 +15922,6 @@ pub const FuriHalNfcReturn_FuriHalNfcReturnMaxReruns: FuriHalNfcReturn = 34;
 pub const FuriHalNfcReturn_FuriHalNfcReturnDisabled: FuriHalNfcReturn = 35;
 #[doc = "< expected hw do not match"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnHwMismatch: FuriHalNfcReturn = 36;
-#[doc = "< Other device's field didn't behave as expected: turned off by Initiator in Passive mode, or AP2P did not turn on field"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnLinkLoss: FuriHalNfcReturn = 37;
 #[doc = "< invalid or not initalized device handle"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnInvalidHandle: FuriHalNfcReturn = 38;
@@ -16427,7 +15989,6 @@ pub const FuriHalNfcBitrate_FuriHalNfcBitrate6780: FuriHalNfcBitrate = 6;
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate13560: FuriHalNfcBitrate = 7;
 #[doc = "< Bit Rate 52.97 kbit/s (fc/256) Fast Mode VICC->VCD"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate52p97: FuriHalNfcBitrate = 235;
-#[doc = "< Bit Rate 26,48 kbit/s (fc/512) NFCV VICC->VCD & VCD->VICC 1of4"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate26p48: FuriHalNfcBitrate = 236;
 #[doc = "< Bit Rate 1,66 kbit/s (fc/8192) NFCV VCD->VICC 1of256"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate1p66: FuriHalNfcBitrate = 237;
@@ -16448,7 +16009,6 @@ extern "C" {
 pub const FuriHalNfcErrorHandling_FuriHalNfcErrorHandlingNone: FuriHalNfcErrorHandling = 0;
 #[doc = "< Error handling set to perform as NFC compliant device"]
 pub const FuriHalNfcErrorHandling_FuriHalNfcErrorHandlingNfc: FuriHalNfcErrorHandling = 1;
-#[doc = "< Error handling set to perform as EMVCo compliant device"]
 pub const FuriHalNfcErrorHandling_FuriHalNfcErrorHandlingEmvco: FuriHalNfcErrorHandling = 2;
 pub type FuriHalNfcErrorHandling = core::ffi::c_uchar;
 extern "C" {
@@ -21484,6 +21044,134 @@ extern "C" {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+pub struct SubGhzBlockDecoder {
+    pub parser_step: u32,
+    pub te_last: u32,
+    pub decode_data: u64,
+    pub decode_count_bit: u8,
+}
+#[test]
+fn bindgen_test_layout_SubGhzBlockDecoder() {
+    const UNINIT: ::core::mem::MaybeUninit<SubGhzBlockDecoder> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<SubGhzBlockDecoder>(),
+        24usize,
+        concat!("Size of: ", stringify!(SubGhzBlockDecoder))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<SubGhzBlockDecoder>(),
+        8usize,
+        concat!("Alignment of ", stringify!(SubGhzBlockDecoder))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).parser_step) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SubGhzBlockDecoder),
+            "::",
+            stringify!(parser_step)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).te_last) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SubGhzBlockDecoder),
+            "::",
+            stringify!(te_last)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).decode_data) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SubGhzBlockDecoder),
+            "::",
+            stringify!(decode_data)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).decode_count_bit) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SubGhzBlockDecoder),
+            "::",
+            stringify!(decode_count_bit)
+        )
+    );
+}
+extern "C" {
+    #[doc = " Add data bit when decoding."]
+    #[doc = " @param decoder Pointer to a SubGhzBlockDecoder instance"]
+    #[doc = " @param bit data, 1bit"]
+    pub fn subghz_protocol_blocks_add_bit(decoder: *mut SubGhzBlockDecoder, bit: u8);
+}
+extern "C" {
+    #[doc = " Add data to_128 bit when decoding."]
+    #[doc = " @param decoder Pointer to a SubGhzBlockDecoder instance"]
+    #[doc = " @param head_64_bit Pointer to a head_64_bit"]
+    #[doc = " @param bit data, 1bit"]
+    pub fn subghz_protocol_blocks_add_to_128_bit(
+        decoder: *mut SubGhzBlockDecoder,
+        bit: u8,
+        head_64_bit: *mut u64,
+    );
+}
+extern "C" {
+    #[doc = " Getting the hash sum of the last randomly received parcel."]
+    #[doc = " @param decoder Pointer to a SubGhzBlockDecoder instance"]
+    #[doc = " @return hash Hash sum"]
+    pub fn subghz_protocol_blocks_get_hash_data(decoder: *mut SubGhzBlockDecoder, len: usize)
+        -> u8;
+}
+extern "C" {
+    #[doc = " Set data bit when encoding HEX array."]
+    #[doc = " @param bit_value The value of the bit to be set"]
+    #[doc = " @param data_array Pointer to a HEX array"]
+    #[doc = " @param set_index_bit Number set a bit in the array starting from the left"]
+    #[doc = " @param max_size_array array size, check not to overflow"]
+    pub fn subghz_protocol_blocks_set_bit_array(
+        bit_value: bool,
+        data_array: *mut u8,
+        set_index_bit: usize,
+        max_size_array: usize,
+    );
+}
+extern "C" {
+    #[doc = " Get data bit when encoding HEX array."]
+    #[doc = " @param data_array Pointer to a HEX array"]
+    #[doc = " @param read_index_bit Number get a bit in the array starting from the left"]
+    #[doc = " @return bool value bit"]
+    pub fn subghz_protocol_blocks_get_bit_array(data_array: *mut u8, read_index_bit: usize)
+        -> bool;
+}
+extern "C" {
+    #[doc = " Generating an upload from data."]
+    #[doc = " @param data_array Pointer to a HEX array"]
+    #[doc = " @param count_bit_data_array How many bits in the array are processed"]
+    #[doc = " @param upload Pointer to a LevelDuration"]
+    #[doc = " @param max_size_upload upload size, check not to overflow"]
+    #[doc = " @param duration_bit duration 1 bit"]
+    pub fn subghz_protocol_blocks_get_upload(
+        data_array: *mut u8,
+        count_bit_data_array: usize,
+        upload: *mut LevelDuration,
+        max_size_upload: usize,
+        duration_bit: u32,
+    ) -> usize;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct SubGhzKeystore {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct SubGhzEnvironment {
     _unused: [u8; 0],
 }
@@ -21507,35 +21195,101 @@ extern "C" {
         filename: *const core::ffi::c_char,
     ) -> bool;
 }
+extern "C" {
+    #[doc = " Get pointer to a SubGhzKeystore* instance."]
+    #[doc = " @return SubGhzEnvironment* pointer to a SubGhzEnvironment instance"]
+    pub fn subghz_environment_get_keystore(instance: *mut SubGhzEnvironment)
+        -> *mut SubGhzKeystore;
+}
+extern "C" {
+    #[doc = " Set filename to work with Came Atomo."]
+    #[doc = " @param instance Pointer to a SubGhzEnvironment instance"]
+    #[doc = " @param filename Full path to the file"]
+    pub fn subghz_environment_set_came_atomo_rainbow_table_file_name(
+        instance: *mut SubGhzEnvironment,
+        filename: *const core::ffi::c_char,
+    );
+}
+extern "C" {
+    #[doc = " Get filename to work with Came Atomo."]
+    #[doc = " @param instance Pointer to a SubGhzEnvironment instance"]
+    #[doc = " @return Full path to the file"]
+    pub fn subghz_environment_get_came_atomo_rainbow_table_file_name(
+        instance: *mut SubGhzEnvironment,
+    ) -> *const core::ffi::c_char;
+}
+extern "C" {
+    #[doc = " Set filename to work with Nice Flor-S."]
+    #[doc = " @param instance Pointer to a SubGhzEnvironment instance"]
+    #[doc = " @param filename Full path to the file"]
+    pub fn subghz_environment_set_nice_flor_s_rainbow_table_file_name(
+        instance: *mut SubGhzEnvironment,
+        filename: *const core::ffi::c_char,
+    );
+}
+extern "C" {
+    #[doc = " Get filename to work with Nice Flor-S."]
+    #[doc = " @param instance Pointer to a SubGhzEnvironment instance"]
+    #[doc = " @return Full path to the file"]
+    pub fn subghz_environment_get_nice_flor_s_rainbow_table_file_name(
+        instance: *mut SubGhzEnvironment,
+    ) -> *const core::ffi::c_char;
+}
+extern "C" {
+    #[doc = " Set list of protocols to work."]
+    #[doc = " @param instance Pointer to a SubGhzEnvironment instance"]
+    #[doc = " @param protocol_registry_items Pointer to a SubGhzProtocolRegistry"]
+    pub fn subghz_environment_set_protocol_registry(
+        instance: *mut SubGhzEnvironment,
+        protocol_registry_items: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = " Get list of protocols to work."]
+    #[doc = " @param instance Pointer to a SubGhzEnvironment instance"]
+    #[doc = " @return Pointer to a SubGhzProtocolRegistry"]
+    pub fn subghz_environment_get_protocol_registry(
+        instance: *mut SubGhzEnvironment,
+    ) -> *mut core::ffi::c_void;
+}
+extern "C" {
+    #[doc = " Get list of protocols names."]
+    #[doc = " @param instance Pointer to a SubGhzEnvironment instance"]
+    #[doc = " @param idx index protocols"]
+    #[doc = " @return Pointer to a SubGhzProtocolRegistry"]
+    pub fn subghz_environment_get_protocol_name_registry(
+        instance: *mut SubGhzEnvironment,
+        idx: usize,
+    ) -> *const core::ffi::c_char;
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct SubGhzPresetDefinition {
+pub struct SubGhzRadioPreset {
     pub name: *mut FuriString,
     pub frequency: u32,
     pub data: *mut u8,
     pub data_size: usize,
 }
 #[test]
-fn bindgen_test_layout_SubGhzPresetDefinition() {
-    const UNINIT: ::core::mem::MaybeUninit<SubGhzPresetDefinition> =
-        ::core::mem::MaybeUninit::uninit();
+fn bindgen_test_layout_SubGhzRadioPreset() {
+    const UNINIT: ::core::mem::MaybeUninit<SubGhzRadioPreset> = ::core::mem::MaybeUninit::uninit();
     let ptr = UNINIT.as_ptr();
     assert_eq!(
-        ::core::mem::size_of::<SubGhzPresetDefinition>(),
+        ::core::mem::size_of::<SubGhzRadioPreset>(),
         32usize,
-        concat!("Size of: ", stringify!(SubGhzPresetDefinition))
+        concat!("Size of: ", stringify!(SubGhzRadioPreset))
     );
     assert_eq!(
-        ::core::mem::align_of::<SubGhzPresetDefinition>(),
+        ::core::mem::align_of::<SubGhzRadioPreset>(),
         8usize,
-        concat!("Alignment of ", stringify!(SubGhzPresetDefinition))
+        concat!("Alignment of ", stringify!(SubGhzRadioPreset))
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(SubGhzPresetDefinition),
+            stringify!(SubGhzRadioPreset),
             "::",
             stringify!(name)
         )
@@ -21545,7 +21299,7 @@ fn bindgen_test_layout_SubGhzPresetDefinition() {
         8usize,
         concat!(
             "Offset of field: ",
-            stringify!(SubGhzPresetDefinition),
+            stringify!(SubGhzRadioPreset),
             "::",
             stringify!(frequency)
         )
@@ -21555,7 +21309,7 @@ fn bindgen_test_layout_SubGhzPresetDefinition() {
         16usize,
         concat!(
             "Offset of field: ",
-            stringify!(SubGhzPresetDefinition),
+            stringify!(SubGhzRadioPreset),
             "::",
             stringify!(data)
         )
@@ -21565,7 +21319,7 @@ fn bindgen_test_layout_SubGhzPresetDefinition() {
         24usize,
         concat!(
             "Offset of field: ",
-            stringify!(SubGhzPresetDefinition),
+            stringify!(SubGhzRadioPreset),
             "::",
             stringify!(data_size)
         )
@@ -21579,7 +21333,7 @@ pub type SubGhzSerialize = ::core::option::Option<
     unsafe extern "C" fn(
         context: *mut core::ffi::c_void,
         flipper_format: *mut FlipperFormat,
-        preset: *mut SubGhzPresetDefinition,
+        preset: *mut SubGhzRadioPreset,
     ) -> bool,
 >;
 pub type SubGhzDeserialize = ::core::option::Option<
@@ -21789,6 +21543,8 @@ pub const SubGhzProtocolType_SubGhzProtocolTypeUnknown: SubGhzProtocolType = 0;
 pub const SubGhzProtocolType_SubGhzProtocolTypeStatic: SubGhzProtocolType = 1;
 pub const SubGhzProtocolType_SubGhzProtocolTypeDynamic: SubGhzProtocolType = 2;
 pub const SubGhzProtocolType_SubGhzProtocolTypeRAW: SubGhzProtocolType = 3;
+pub const SubGhzProtocolType_SubGhzProtocolWeatherStation: SubGhzProtocolType = 4;
+pub const SubGhzProtocolType_SubGhzProtocolCustom: SubGhzProtocolType = 5;
 pub type SubGhzProtocolType = core::ffi::c_uchar;
 pub const SubGhzProtocolFlag_SubGhzProtocolFlag_RAW: SubGhzProtocolFlag = 1;
 pub const SubGhzProtocolFlag_SubGhzProtocolFlag_Decodable: SubGhzProtocolFlag = 2;
@@ -21875,6 +21631,326 @@ fn bindgen_test_layout_SubGhzProtocol() {
         )
     );
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct SubGhzBlockGeneric {
+    pub protocol_name: *const core::ffi::c_char,
+    pub data: u64,
+    pub serial: u32,
+    pub data_count_bit: u8,
+    pub btn: u8,
+    pub cnt: u32,
+}
+#[test]
+fn bindgen_test_layout_SubGhzBlockGeneric() {
+    const UNINIT: ::core::mem::MaybeUninit<SubGhzBlockGeneric> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<SubGhzBlockGeneric>(),
+        32usize,
+        concat!("Size of: ", stringify!(SubGhzBlockGeneric))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<SubGhzBlockGeneric>(),
+        8usize,
+        concat!("Alignment of ", stringify!(SubGhzBlockGeneric))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).protocol_name) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SubGhzBlockGeneric),
+            "::",
+            stringify!(protocol_name)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SubGhzBlockGeneric),
+            "::",
+            stringify!(data)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).serial) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SubGhzBlockGeneric),
+            "::",
+            stringify!(serial)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data_count_bit) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SubGhzBlockGeneric),
+            "::",
+            stringify!(data_count_bit)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).btn) as usize - ptr as usize },
+        21usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SubGhzBlockGeneric),
+            "::",
+            stringify!(btn)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).cnt) as usize - ptr as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SubGhzBlockGeneric),
+            "::",
+            stringify!(cnt)
+        )
+    );
+}
+extern "C" {
+    #[doc = " Get name preset."]
+    #[doc = " @param preset_name name preset"]
+    #[doc = " @param preset_str Output name preset"]
+    pub fn subghz_block_generic_get_preset_name(
+        preset_name: *const core::ffi::c_char,
+        preset_str: *mut FuriString,
+    );
+}
+extern "C" {
+    #[doc = " Serialize data SubGhzBlockGeneric."]
+    #[doc = " @param instance Pointer to a SubGhzBlockGeneric instance"]
+    #[doc = " @param flipper_format Pointer to a FlipperFormat instance"]
+    #[doc = " @param preset The modulation on which the signal was received, SubGhzRadioPreset"]
+    #[doc = " @return true On success"]
+    pub fn subghz_block_generic_serialize(
+        instance: *mut SubGhzBlockGeneric,
+        flipper_format: *mut FlipperFormat,
+        preset: *mut SubGhzRadioPreset,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = " Deserialize data SubGhzBlockGeneric."]
+    #[doc = " @param instance Pointer to a SubGhzBlockGeneric instance"]
+    #[doc = " @param flipper_format Pointer to a FlipperFormat instance"]
+    #[doc = " @return true On success"]
+    pub fn subghz_block_generic_deserialize(
+        instance: *mut SubGhzBlockGeneric,
+        flipper_format: *mut FlipperFormat,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = " Flip the data bitwise"]
+    #[doc = ""]
+    #[doc = " @param      key        In data"]
+    #[doc = " @param      bit_count  number of data bits"]
+    #[doc = ""]
+    #[doc = " @return     Reverse data"]
+    pub fn subghz_protocol_blocks_reverse_key(key: u64, bit_count: u8) -> u64;
+}
+extern "C" {
+    #[doc = " Get parity the data bitwise"]
+    #[doc = ""]
+    #[doc = " @param      key        In data"]
+    #[doc = " @param      bit_count  number of data bits"]
+    #[doc = ""]
+    #[doc = " @return     parity"]
+    pub fn subghz_protocol_blocks_get_parity(key: u64, bit_count: u8) -> u8;
+}
+extern "C" {
+    #[doc = " CRC-4"]
+    #[doc = ""]
+    #[doc = " @param      message     array of bytes to check"]
+    #[doc = " @param      size        number of bytes in message"]
+    #[doc = " @param      polynomial  CRC polynomial"]
+    #[doc = " @param      init        starting crc value"]
+    #[doc = ""]
+    #[doc = " @return     CRC value"]
+    pub fn subghz_protocol_blocks_crc4(
+        message: *const u8,
+        size: usize,
+        polynomial: u8,
+        init: u8,
+    ) -> u8;
+}
+extern "C" {
+    #[doc = " CRC-7"]
+    #[doc = ""]
+    #[doc = " @param      message     array of bytes to check"]
+    #[doc = " @param      size        number of bytes in message"]
+    #[doc = " @param      polynomial  CRC polynomial"]
+    #[doc = " @param      init        starting crc value"]
+    #[doc = ""]
+    #[doc = " @return     CRC value"]
+    pub fn subghz_protocol_blocks_crc7(
+        message: *const u8,
+        size: usize,
+        polynomial: u8,
+        init: u8,
+    ) -> u8;
+}
+extern "C" {
+    #[doc = " Generic Cyclic Redundancy Check CRC-8. Example polynomial: 0x31 = x8 + x5 +"]
+    #[doc = " x4 + 1 (x8 is implicit) Example polynomial: 0x80 = x8 + x7 (a normal"]
+    #[doc = " bit-by-bit parity XOR)"]
+    #[doc = ""]
+    #[doc = " @param      message     array of bytes to check"]
+    #[doc = " @param      size        number of bytes in message"]
+    #[doc = " @param      polynomial  byte is from x^7 to x^0 (x^8 is implicitly one)"]
+    #[doc = " @param      init        starting crc value"]
+    #[doc = ""]
+    #[doc = " @return     CRC value"]
+    pub fn subghz_protocol_blocks_crc8(
+        message: *const u8,
+        size: usize,
+        polynomial: u8,
+        init: u8,
+    ) -> u8;
+}
+extern "C" {
+    #[doc = " \"Little-endian\" Cyclic Redundancy Check CRC-8 LE Input and output are"]
+    #[doc = " reflected, i.e. least significant bit is shifted in first"]
+    #[doc = ""]
+    #[doc = " @param      message     array of bytes to check"]
+    #[doc = " @param      size        number of bytes in message"]
+    #[doc = " @param      polynomial  CRC polynomial"]
+    #[doc = " @param      init        starting crc value"]
+    #[doc = ""]
+    #[doc = " @return     CRC value"]
+    pub fn subghz_protocol_blocks_crc8le(
+        message: *const u8,
+        size: usize,
+        polynomial: u8,
+        init: u8,
+    ) -> u8;
+}
+extern "C" {
+    #[doc = " CRC-16 LSB. Input and output are reflected, i.e. least significant bit is"]
+    #[doc = " shifted in first. Note that poly and init already need to be reflected"]
+    #[doc = ""]
+    #[doc = " @param      message     array of bytes to check"]
+    #[doc = " @param      size        number of bytes in message"]
+    #[doc = " @param      polynomial  CRC polynomial"]
+    #[doc = " @param      init        starting crc value"]
+    #[doc = ""]
+    #[doc = " @return     CRC value"]
+    pub fn subghz_protocol_blocks_crc16lsb(
+        message: *const u8,
+        size: usize,
+        polynomial: u16,
+        init: u16,
+    ) -> u16;
+}
+extern "C" {
+    #[doc = " CRC-16"]
+    #[doc = ""]
+    #[doc = " @param      message     array of bytes to check"]
+    #[doc = " @param      size        number of bytes in message"]
+    #[doc = " @param      polynomial  CRC polynomial"]
+    #[doc = " @param      init        starting crc value"]
+    #[doc = ""]
+    #[doc = " @return     CRC value"]
+    pub fn subghz_protocol_blocks_crc16(
+        message: *const u8,
+        size: usize,
+        polynomial: u16,
+        init: u16,
+    ) -> u16;
+}
+extern "C" {
+    #[doc = " Digest-8 by \"LFSR-based Toeplitz hash\""]
+    #[doc = ""]
+    #[doc = " @param      message  bytes of message data"]
+    #[doc = " @param      size     number of bytes to digest"]
+    #[doc = " @param      gen      key stream generator, needs to includes the MSB if the"]
+    #[doc = "                      LFSR is rolling"]
+    #[doc = " @param      key      initial key"]
+    #[doc = ""]
+    #[doc = " @return     digest value"]
+    pub fn subghz_protocol_blocks_lfsr_digest8(
+        message: *const u8,
+        size: usize,
+        gen: u8,
+        key: u8,
+    ) -> u8;
+}
+extern "C" {
+    #[doc = " Digest-8 by \"LFSR-based Toeplitz hash\", byte reflect, bit reflect"]
+    #[doc = ""]
+    #[doc = " @param      message  bytes of message data"]
+    #[doc = " @param      size     number of bytes to digest"]
+    #[doc = " @param      gen      key stream generator, needs to includes the MSB if the"]
+    #[doc = "                      LFSR is rolling"]
+    #[doc = " @param      key      initial key"]
+    #[doc = ""]
+    #[doc = " @return     digest value"]
+    pub fn subghz_protocol_blocks_lfsr_digest8_reflect(
+        message: *const u8,
+        size: usize,
+        gen: u8,
+        key: u8,
+    ) -> u8;
+}
+extern "C" {
+    #[doc = " Digest-16 by \"LFSR-based Toeplitz hash\""]
+    #[doc = ""]
+    #[doc = " @param      message  bytes of message data"]
+    #[doc = " @param      size     number of bytes to digest"]
+    #[doc = " @param      gen      key stream generator, needs to includes the MSB if the"]
+    #[doc = "                      LFSR is rolling"]
+    #[doc = " @param      key      initial key"]
+    #[doc = ""]
+    #[doc = " @return     digest value"]
+    pub fn subghz_protocol_blocks_lfsr_digest16(
+        message: *const u8,
+        size: usize,
+        gen: u16,
+        key: u16,
+    ) -> u16;
+}
+extern "C" {
+    #[doc = " Compute Addition of a number of bytes"]
+    #[doc = ""]
+    #[doc = " @param      message  bytes of message data"]
+    #[doc = " @param      size     number of bytes to sum"]
+    #[doc = ""]
+    #[doc = " @return     summation value"]
+    pub fn subghz_protocol_blocks_add_bytes(message: *const u8, size: usize) -> u8;
+}
+extern "C" {
+    #[doc = " Compute bit parity of a single byte (8 bits)"]
+    #[doc = ""]
+    #[doc = " @param      byte  single byte to check"]
+    #[doc = ""]
+    #[doc = " @return     1 odd parity, 0 even parity"]
+    pub fn subghz_protocol_blocks_parity8(byte: u8) -> u8;
+}
+extern "C" {
+    #[doc = " Compute bit parity of a number of bytes"]
+    #[doc = ""]
+    #[doc = " @param      message  bytes of message data"]
+    #[doc = " @param      size     number of bytes to sum"]
+    #[doc = ""]
+    #[doc = " @return     1 odd parity, 0 even parity"]
+    pub fn subghz_protocol_blocks_parity_bytes(message: *const u8, size: usize) -> u8;
+}
+extern "C" {
+    #[doc = " Compute XOR (byte-wide parity) of a number of bytes"]
+    #[doc = ""]
+    #[doc = " @param      message  bytes of message data"]
+    #[doc = " @param      size     number of bytes to sum"]
+    #[doc = ""]
+    #[doc = " @return     summation value, per bit-position 1 odd parity, 0 even parity"]
+    pub fn subghz_protocol_blocks_xor_bytes(message: *const u8, size: usize) -> u8;
+}
 pub type SubGhzProtocolDecoderBaseRxCallback = ::core::option::Option<
     unsafe extern "C" fn(instance: *mut SubGhzProtocolDecoderBase, context: *mut core::ffi::c_void),
 >;
@@ -21932,16 +22008,33 @@ fn bindgen_test_layout_SubGhzProtocolDecoderBase() {
     );
 }
 extern "C" {
+    #[doc = " Getting a textual representation of the received data."]
+    #[doc = " @param decoder_base Pointer to a SubGhzProtocolDecoderBase instance"]
+    #[doc = " @param output Resulting text"]
+    pub fn subghz_protocol_decoder_base_get_string(
+        decoder_base: *mut SubGhzProtocolDecoderBase,
+        output: *mut FuriString,
+    ) -> bool;
+}
+extern "C" {
     #[doc = " Serialize data SubGhzProtocolDecoderBase."]
     #[doc = " @param decoder_base Pointer to a SubGhzProtocolDecoderBase instance"]
     #[doc = " @param flipper_format Pointer to a FlipperFormat instance"]
-    #[doc = " @param preset The modulation on which the signal was received, SubGhzPresetDefinition"]
+    #[doc = " @param preset The modulation on which the signal was received, SubGhzRadioPreset"]
     #[doc = " @return true On success"]
     pub fn subghz_protocol_decoder_base_serialize(
         decoder_base: *mut SubGhzProtocolDecoderBase,
         flipper_format: *mut FlipperFormat,
-        preset: *mut SubGhzPresetDefinition,
+        preset: *mut SubGhzRadioPreset,
     ) -> bool;
+}
+extern "C" {
+    #[doc = " Getting the hash sum of the last randomly received parcel."]
+    #[doc = " @param decoder_base Pointer to a SubGhzProtocolDecoderBase instance"]
+    #[doc = " @return hash Hash sum"]
+    pub fn subghz_protocol_decoder_base_get_hash_data(
+        decoder_base: *mut SubGhzProtocolDecoderBase,
+    ) -> u8;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -21999,12 +22092,12 @@ extern "C" {
     #[doc = " Open file for writing"]
     #[doc = " @param instance Pointer to a SubGhzProtocolDecoderRAW instance"]
     #[doc = " @param dev_name  File name"]
-    #[doc = " @param preset The modulation on which the signal was received, SubGhzPresetDefinition"]
+    #[doc = " @param preset The modulation on which the signal was received, SubGhzRadioPreset"]
     #[doc = " @return true On success"]
     pub fn subghz_protocol_raw_save_to_file_init(
         instance: *mut SubGhzProtocolDecoderRAW,
         dev_name: *const core::ffi::c_char,
-        preset: *mut SubGhzPresetDefinition,
+        preset: *mut SubGhzRadioPreset,
     ) -> bool;
 }
 extern "C" {
@@ -22083,6 +22176,15 @@ extern "C" {
     #[doc = " Forced transmission stop."]
     #[doc = " @param context Pointer to a SubGhzProtocolEncoderRAW instance"]
     pub fn subghz_protocol_encoder_raw_stop(context: *mut core::ffi::c_void);
+}
+extern "C" {
+    #[doc = " pause writing to flash."]
+    #[doc = " @param context Pointer to a SubGhzProtocolEncoderRAW instance"]
+    #[doc = " @param pause pause writing"]
+    pub fn subghz_protocol_raw_save_to_file_pause(
+        instance: *mut SubGhzProtocolDecoderRAW,
+        pause: bool,
+    );
 }
 extern "C" {
     #[doc = " Set callback on completion of file transfer."]
@@ -22181,6 +22283,78 @@ extern "C" {
         instance: *mut SubGhzReceiver,
         decoder_name: *const core::ffi::c_char,
     ) -> *mut SubGhzProtocolDecoderBase;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct SubGhzSetting {
+    _unused: [u8; 0],
+}
+extern "C" {
+    pub fn subghz_setting_alloc() -> *mut SubGhzSetting;
+}
+extern "C" {
+    pub fn subghz_setting_free(instance: *mut SubGhzSetting);
+}
+extern "C" {
+    pub fn subghz_setting_load(instance: *mut SubGhzSetting, file_path: *const core::ffi::c_char);
+}
+extern "C" {
+    pub fn subghz_setting_get_frequency_count(instance: *mut SubGhzSetting) -> usize;
+}
+extern "C" {
+    pub fn subghz_setting_get_hopper_frequency_count(instance: *mut SubGhzSetting) -> usize;
+}
+extern "C" {
+    pub fn subghz_setting_get_preset_count(instance: *mut SubGhzSetting) -> usize;
+}
+extern "C" {
+    pub fn subghz_setting_get_preset_name(
+        instance: *mut SubGhzSetting,
+        idx: usize,
+    ) -> *const core::ffi::c_char;
+}
+extern "C" {
+    pub fn subghz_setting_get_inx_preset_by_name(
+        instance: *mut SubGhzSetting,
+        preset_name: *const core::ffi::c_char,
+    ) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn subghz_setting_get_preset_data(instance: *mut SubGhzSetting, idx: usize) -> *mut u8;
+}
+extern "C" {
+    pub fn subghz_setting_get_preset_data_size(instance: *mut SubGhzSetting, idx: usize) -> usize;
+}
+extern "C" {
+    pub fn subghz_setting_get_preset_data_by_name(
+        instance: *mut SubGhzSetting,
+        preset_name: *const core::ffi::c_char,
+    ) -> *mut u8;
+}
+extern "C" {
+    pub fn subghz_setting_load_custom_preset(
+        instance: *mut SubGhzSetting,
+        preset_name: *const core::ffi::c_char,
+        fff_data_file: *mut FlipperFormat,
+    ) -> bool;
+}
+extern "C" {
+    pub fn subghz_setting_delete_custom_preset(
+        instance: *mut SubGhzSetting,
+        preset_name: *const core::ffi::c_char,
+    ) -> bool;
+}
+extern "C" {
+    pub fn subghz_setting_get_frequency(instance: *mut SubGhzSetting, idx: usize) -> u32;
+}
+extern "C" {
+    pub fn subghz_setting_get_hopper_frequency(instance: *mut SubGhzSetting, idx: usize) -> u32;
+}
+extern "C" {
+    pub fn subghz_setting_get_frequency_default_index(instance: *mut SubGhzSetting) -> u32;
+}
+extern "C" {
+    pub fn subghz_setting_get_default_frequency(instance: *mut SubGhzSetting) -> u32;
 }
 pub type SubGhzTxRxWorkerCallbackHaveRead =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
