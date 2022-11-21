@@ -5,6 +5,7 @@ members = [
     "sys",
     "rt",
 ]
+resolver = "2"
 
 [profile.dev]
 opt-level = "z"
