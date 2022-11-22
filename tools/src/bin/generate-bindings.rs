@@ -78,9 +78,6 @@ fn load_symbols<T: AsRef<Path>>(path: T) -> ApiSymbols {
 struct SdkOpts {
     sdk_symbols: String,
     cc_args: String,
-    cpp_args: String,
-    linker_args: String,
-    linker_script: String,
 }
 
 /// Load `sdk.opts` file of compiler flags.
@@ -99,6 +96,7 @@ fn generate_bindings_header(api_symbols: &ApiSymbols) -> String {
     let mut lines = Vec::new();
 
     lines.push(format!("#define API_VERSION 0x{:08X}", api_symbols.api_version));
+    lines.push(format!("#include \"furi/furi.h\""));
 
     for header in &api_symbols.headers {
         lines.push(format!("#include \"{}\"", header))
@@ -159,8 +157,14 @@ fn main() {
     let bindings_header = generate_bindings_header(&symbols);
 
     // Some of the values are shell-quoted
-    let cc_flags = shlex::split(&replace_sdk_root_dir(&sdk_opts.cc_args))
-        .expect("failed to split sdk.opts cc_args");
+    let cc_flags = shlex::split(&sdk_opts.cc_args).expect("failed to split sdk.opts cc_args");
+    let cc_flags: Vec<String> = cc_flags.into_iter().map(|arg| {
+        match arg.as_str() {
+            // Force word relocations by disallowing MOVW / MOVT
+            "-mword-relocations" => String::from("-mno-movt"),
+            a => replace_sdk_root_dir(a),
+        }
+    }).collect();
 
     // Generate bindings
     eprintln!("Generating bindings for SDK {:08X}", symbols.api_version);
@@ -172,6 +176,7 @@ fn main() {
         .clang_args(&cc_flags)
         .clang_arg("-Wno-error")
         .clang_arg("-fshort-enums")
+        .clang_arg("-fvisibility=default")
         .use_core()
         .ctypes_prefix("core::ffi")
         .allowlist_var("API_VERSION")
