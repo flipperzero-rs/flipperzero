@@ -15,19 +15,38 @@ rt::entry!(main);
 
 const RECORD_GUI: *const c_char = sys::c_string!("gui");
 
+static mut TARGET_ICON: Icon = Icon {
+    width: 48,
+    height: 32,
+    frame_count: 1,
+    frame_rate: 0,
+    frames: unsafe { TARGET_FRAMES.as_ptr() },
+};
+static mut TARGET_FRAMES: [*const u8; 1] = [ include_bytes!("icons/rustacean-48x32.icon").as_ptr() ];
+
+static mut IMAGE_POSITION: ImagePosition = ImagePosition { x: 0, y: 0 };
+
 #[repr(C)]
 struct ImagePosition {
     pub x: u8,
     pub y: u8,
 }
 
-static mut IMAGE_POSITION: ImagePosition = ImagePosition { x: 0, y: 0 };
+/// Internal icon representation.
+#[repr(C)]
+struct Icon {
+    width: u8,
+    height: u8,
+    frame_count: u8,
+    frame_rate: u8,
+    frames: *const *const u8,
+}
 
 // Screen is 128x64 px
 extern "C" fn app_draw_callback(canvas: *mut sys::Canvas, _ctx: *mut c_void) {
     unsafe {
         sys::canvas_clear(canvas);
-        sys::canvas_draw_icon(canvas, IMAGE_POSITION.x % 128, IMAGE_POSITION.y % 128, &sys::I_Cry_dolph_55x52);
+        sys::canvas_draw_icon(canvas, IMAGE_POSITION.x % 128, IMAGE_POSITION.y % 128, &TARGET_ICON as *const Icon as *const c_void as *const sys::Icon);
     }
 }
 
