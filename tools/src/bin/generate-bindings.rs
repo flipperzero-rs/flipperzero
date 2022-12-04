@@ -12,9 +12,13 @@ use serde::Deserialize;
 
 const OUTFILE: &str = "bindings.rs";
 const SDK_OPTS: &str = "sdk.opts";
-#[cfg(windows)]
+#[cfg(all(windows, target_arch = "x86"))]
 const TOOLCHAIN: &str = "../../../toolchain/i686-windows/arm-none-eabi/include";
-#[cfg(linux)]
+#[cfg(all(windows, target_arch = "x86_64"))]
+const TOOLCHAIN: &str = "../../../toolchain/x86_64-windows/arm-none-eabi/include";
+#[cfg(all(linux, target_arch = "x86"))]
+const TOOLCHAIN: &str = "../../../toolchain/i686-linux/arm-none-eabi/include";
+#[cfg(all(linux, target_arch = "x86_64"))]
 const TOOLCHAIN: &str = "../../../toolchain/x86_64-linux/arm-none-eabi/include";
 const VISIBILITY_PUBLIC: &str = "+";
 
