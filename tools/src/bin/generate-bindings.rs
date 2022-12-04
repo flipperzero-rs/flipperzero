@@ -194,7 +194,14 @@ fn main() {
         bindings = bindings.allowlist_var(variable);
     }
 
-    let bindings = bindings.generate().expect("failed to generate bindings");
+    let bindings = match bindings.generate() {
+        Ok(b) => b,
+        Err(e) => {
+            // Seperate errror output from the preceding clang diag output for legibility
+            println!("\n{}", e);
+            panic!("failed to generate bindings")
+        }
+    };
 
     // `-working-directory` also affects `Bindings::write_to_file`
     let outfile = cwd.join(OUTFILE);
