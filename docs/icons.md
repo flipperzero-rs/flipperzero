@@ -2,7 +2,7 @@
 
 The Flipper Zero uses a simple bitmap format for icons.
 
-Image data is stored as a 1-bit monochrome bitmap. You can use ImageMagic to convert existing images:
+Image data is stored as a 1-bit monochrome bitmap. You can use [ImageMagic](https://imagemagick.org/) to convert existing images:
 
 ```bash
 convert rustacean.png mono:rustacean.bitmap
