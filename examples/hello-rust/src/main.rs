@@ -11,7 +11,12 @@ use flipperzero::println;
 use flipperzero_rt::{entry, manifest};
 
 // Define the FAP Manifest for this application
-manifest!(name = "Hello, Rust!");
+manifest!(
+    name = "Hello, Rust!",
+    has_icon = true,
+    // See `docs/icons.md` for icon format
+    icon = "rustacean-10x10.icon"
+);
 
 // Define the entry function
 entry!(main);

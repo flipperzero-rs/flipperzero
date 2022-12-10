@@ -8,48 +8,39 @@ const MANIFEST_MAGIC: u32 = 0x52474448;
 const HARDWARE_TARGET: u16 = 7;
 const DEFAULT_STACK_SIZE: u16 = 2048; // 2 KiB
 
+/// Define application manifest.
+/// 
+/// # Examples
+/// 
+/// ```
+/// manifest!(
+///     name = "MyApp",
+///     stack_size = 1024,
+///     app_version = 1,
+///     has_icon = true,
+///     icon: "app.icon",
+/// )
+/// ```
 #[macro_export]
 macro_rules! manifest {
-    ($($field:ident = $value:expr),*) => {
+    ($($field:ident = $value:tt),*) => {
         #[no_mangle]
         #[link_section = ".fapmeta"]
         static FAP_MANIFEST: $crate::manifest::ApplicationManifestV1 = $crate::manifest::ApplicationManifestV1 {
-            $( $field: $crate::manifest::set::$field($value), )*
+            $( $field: $crate::_manifest_field!($field = $value), )*
             .. $crate::manifest::ApplicationManifestV1::default()
         };
     };
 }
 
 #[macro_export]
+#[doc(hidden)]
 macro_rules! _manifest_field {
-    (stack_size = $value:expr) => {
-        stack_size: $value
-    };
-
-    (app_version = $value:expr) => {
-        app_version: $value
-    };
-
-    (name = $value:expr) => {
-        name: $crate::manifest::padded($value.as_bytes())
-    }
-}
-
-/// Manifest setters
-pub mod set {
-    use super::padded;
-
-    pub const fn stack_size(n_bytes: u16) -> u16 {
-        n_bytes
-    }
-
-    pub const fn app_version(version: u32) -> u32 {
-        version
-    }
-
-    pub const fn name<const SIZE: usize>(name: &str) -> [u8; SIZE] {
-        padded(name.as_bytes())
-    }
+    (stack_size = $value:expr) => { $value };
+    (app_version = $value:expr) => { $value };
+    (name = $value:expr) => { $crate::manifest::_padded($value.as_bytes()) };
+    (has_icon = $value:expr) => { $value as core::ffi::c_char };
+    (icon = $value:expr) => { $crate::manifest::_padded(include_bytes!($value)) };
 }
 
 #[repr(C, packed)]
@@ -83,7 +74,7 @@ impl ApplicationManifestV1 {
             },
             stack_size: DEFAULT_STACK_SIZE,
             app_version: 1,
-            name: padded(b"Application"),
+            name: _padded(b"Application"),
             has_icon: 0,
             icon: [0; 32],
         }
@@ -92,7 +83,8 @@ impl ApplicationManifestV1 {
 
 /// Pads an array with NULL bytes.
 /// Ensures that there's always a NULL byte at the end.
-const fn padded<const SIZE: usize>(value: &[u8]) -> [u8; SIZE] {
+#[doc(hidden)]
+pub const fn _padded<const SIZE: usize>(value: &[u8]) -> [u8; SIZE] {
     let mut array: [u8; SIZE] = [0; SIZE];
 
     let mut i = 0;
