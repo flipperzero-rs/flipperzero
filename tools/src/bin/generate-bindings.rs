@@ -12,9 +12,13 @@ use serde::Deserialize;
 
 const OUTFILE: &str = "bindings.rs";
 const SDK_OPTS: &str = "sdk.opts";
-#[cfg(windows)]
+#[cfg(all(windows, target_arch = "x86"))]
 const TOOLCHAIN: &str = "../../../toolchain/i686-windows/arm-none-eabi/include";
-#[cfg(linux)]
+#[cfg(all(windows, target_arch = "x86_64"))]
+const TOOLCHAIN: &str = "../../../toolchain/x86_64-windows/arm-none-eabi/include";
+#[cfg(all(linux, target_arch = "x86"))]
+const TOOLCHAIN: &str = "../../../toolchain/i686-linux/arm-none-eabi/include";
+#[cfg(all(linux, target_arch = "x86_64"))]
 const TOOLCHAIN: &str = "../../../toolchain/x86_64-linux/arm-none-eabi/include";
 const VISIBILITY_PUBLIC: &str = "+";
 
@@ -190,7 +194,14 @@ fn main() {
         bindings = bindings.allowlist_var(variable);
     }
 
-    let bindings = bindings.generate().expect("failed to generate bindings");
+    let bindings = match bindings.generate() {
+        Ok(b) => b,
+        Err(e) => {
+            // Seperate errror output from the preceding clang diag output for legibility
+            println!("\n{}", e);
+            panic!("failed to generate bindings")
+        }
+    };
 
     // `-working-directory` also affects `Bindings::write_to_file`
     let outfile = cwd.join(OUTFILE);
