@@ -1,6 +1,6 @@
 //! Generate bindings.rs for Flipper Zero SDK.
 //!
-//! Usage: `generate-bindings flipperzero-firmware`
+//! Usage: `generate-bindings flipperzero-firmware/build/f7-firmware-D/sdk/`
 
 extern crate bindgen;
 
@@ -125,7 +125,7 @@ fn parse_args() -> clap::ArgMatches {
 fn main() {
     let matches = parse_args();
 
-    let sdk = matches.get_one::<PathBuf>("sdk").unwrap();
+    let sdk = matches.get_one::<PathBuf>("sdk").expect("failed to find SDK directory");
 
     if !sdk.is_dir() {
         panic!("No such directory: {}", sdk.display());
