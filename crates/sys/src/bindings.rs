@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 458757;
+pub const API_VERSION: u32 = 655361;
 pub type wint_t = core::ffi::c_ushort;
 pub type _off_t = core::ffi::c_long;
 pub type _fpos_t = core::ffi::c_long;
@@ -2142,7 +2142,7 @@ pub type FuriThreadCallback =
 #[doc = " @param      size     data size @warning your handler must consume everything"]
 pub type FuriThreadStdoutWriteCallback =
     ::core::option::Option<unsafe extern "C" fn(data: *const core::ffi::c_char, size: usize)>;
-#[doc = " FuriThread state change calback called upon thread state change"]
+#[doc = " FuriThread state change callback called upon thread state change"]
 #[doc = " @param      state    new thread state"]
 #[doc = " @param      context  callback context"]
 pub type FuriThreadStateCallback = ::core::option::Option<
@@ -2153,6 +2153,21 @@ extern "C" {
     #[doc = ""]
     #[doc = " @return     FuriThread instance"]
     pub fn furi_thread_alloc() -> *mut FuriThread;
+}
+extern "C" {
+    #[doc = " Allocate FuriThread, shortcut version"]
+    #[doc = ""]
+    #[doc = " @param name"]
+    #[doc = " @param stack_size"]
+    #[doc = " @param callback"]
+    #[doc = " @param context"]
+    #[doc = " @return FuriThread*"]
+    pub fn furi_thread_alloc_ex(
+        name: *const core::ffi::c_char,
+        stack_size: u32,
+        callback: FuriThreadCallback,
+        context: *mut core::ffi::c_void,
+    ) -> *mut FuriThread;
 }
 extern "C" {
     #[doc = " Release FuriThread"]
@@ -6273,9 +6288,9 @@ pub const InputType_InputTypePress: InputType = 0;
 pub const InputType_InputTypeRelease: InputType = 1;
 #[doc = "< Short event, emitted after InputTypeRelease done withing INPUT_LONG_PRESS interval"]
 pub const InputType_InputTypeShort: InputType = 2;
-#[doc = "< Long event, emmited after INPUT_LONG_PRESS interval, asynchronouse to InputTypeRelease"]
+#[doc = "< Long event, emitted after INPUT_LONG_PRESS_COUNTS interval, asynchronous to InputTypeRelease"]
 pub const InputType_InputTypeLong: InputType = 3;
-#[doc = "< Repeat event, emmited with INPUT_REPEATE_PRESS period after InputTypeLong event"]
+#[doc = "< Repeat event, emitted with INPUT_LONG_PRESS_COUNTS period after InputTypeLong event"]
 pub const InputType_InputTypeRepeat: InputType = 4;
 #[doc = "< Special value for exceptional"]
 pub const InputType_InputTypeMAX: InputType = 5;
@@ -6553,7 +6568,9 @@ extern "C" {
     pub fn file_browser_configure(
         browser: *mut FileBrowser,
         extension: *const core::ffi::c_char,
+        base_path: *const core::ffi::c_char,
         skip_assets: bool,
+        hide_dot_files: bool,
         file_icon: *const Icon,
         hide_ext: bool,
     );
@@ -6585,7 +6602,9 @@ pub struct DialogsApp {
 }
 #[doc = " File browser dialog extra options"]
 #[doc = " @param extension file extension to be offered for selection"]
+#[doc = " @param base_path root folder path for navigation with back key"]
 #[doc = " @param skip_assets true - do not show assets folders"]
+#[doc = " @param hide_dot_files true - hide dot files"]
 #[doc = " @param icon file icon pointer, NULL for default icon"]
 #[doc = " @param hide_ext true - hide extensions for files"]
 #[doc = " @param item_loader_callback callback function for providing custom icon & entry name"]
@@ -6594,7 +6613,9 @@ pub struct DialogsApp {
 #[derive(Debug, Copy, Clone)]
 pub struct DialogsFileBrowserOptions {
     pub extension: *const core::ffi::c_char,
+    pub base_path: *const core::ffi::c_char,
     pub skip_assets: bool,
+    pub hide_dot_files: bool,
     pub icon: *const Icon,
     pub hide_ext: bool,
     pub item_loader_callback: FileBrowserLoadItemCallback,
@@ -6607,7 +6628,7 @@ fn bindgen_test_layout_DialogsFileBrowserOptions() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<DialogsFileBrowserOptions>(),
-        48usize,
+        56usize,
         concat!("Size of: ", stringify!(DialogsFileBrowserOptions))
     );
     assert_eq!(
@@ -6626,8 +6647,18 @@ fn bindgen_test_layout_DialogsFileBrowserOptions() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).skip_assets) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).base_path) as usize - ptr as usize },
         8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(DialogsFileBrowserOptions),
+            "::",
+            stringify!(base_path)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).skip_assets) as usize - ptr as usize },
+        16usize,
         concat!(
             "Offset of field: ",
             stringify!(DialogsFileBrowserOptions),
@@ -6636,8 +6667,18 @@ fn bindgen_test_layout_DialogsFileBrowserOptions() {
         )
     );
     assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).hide_dot_files) as usize - ptr as usize },
+        17usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(DialogsFileBrowserOptions),
+            "::",
+            stringify!(hide_dot_files)
+        )
+    );
+    assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).icon) as usize - ptr as usize },
-        16usize,
+        24usize,
         concat!(
             "Offset of field: ",
             stringify!(DialogsFileBrowserOptions),
@@ -6647,7 +6688,7 @@ fn bindgen_test_layout_DialogsFileBrowserOptions() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).hide_ext) as usize - ptr as usize },
-        24usize,
+        32usize,
         concat!(
             "Offset of field: ",
             stringify!(DialogsFileBrowserOptions),
@@ -6657,7 +6698,7 @@ fn bindgen_test_layout_DialogsFileBrowserOptions() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).item_loader_callback) as usize - ptr as usize },
-        32usize,
+        40usize,
         concat!(
             "Offset of field: ",
             stringify!(DialogsFileBrowserOptions),
@@ -6667,7 +6708,7 @@ fn bindgen_test_layout_DialogsFileBrowserOptions() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).item_loader_context) as usize - ptr as usize },
-        40usize,
+        48usize,
         concat!(
             "Offset of field: ",
             stringify!(DialogsFileBrowserOptions),
@@ -7024,7 +7065,7 @@ extern "C" {
     #[doc = ""]
     #[doc = " @param   canvas                  Canvas instance"]
     #[doc = " @param   x, y                    coordinates based on align param"]
-    #[doc = " @param   horizontal, vertical    aligment of multiline text"]
+    #[doc = " @param   horizontal, vertical    alignment of multiline text"]
     #[doc = " @param   text                    string (possible multiline)"]
     pub fn elements_multiline_text_aligned(
         canvas: *mut Canvas,
@@ -7733,8 +7774,8 @@ extern "C" {
     #[doc = " @param      text        text to be shown, can be multiline"]
     #[doc = " @param      x           x position"]
     #[doc = " @param      y           y position"]
-    #[doc = " @param      horizontal  horizontal text aligment"]
-    #[doc = " @param      vertical    vertical text aligment"]
+    #[doc = " @param      horizontal  horizontal text alignment"]
+    #[doc = " @param      vertical    vertical text alignment"]
     pub fn dialog_ex_set_header(
         dialog_ex: *mut DialogEx,
         text: *const core::ffi::c_char,
@@ -7753,8 +7794,8 @@ extern "C" {
     #[doc = " @param      text        text to be shown, can be multiline"]
     #[doc = " @param      x           x position"]
     #[doc = " @param      y           y position"]
-    #[doc = " @param      horizontal  horizontal text aligment"]
-    #[doc = " @param      vertical    vertical text aligment"]
+    #[doc = " @param      horizontal  horizontal text alignment"]
+    #[doc = " @param      vertical    vertical text alignment"]
     pub fn dialog_ex_set_text(
         dialog_ex: *mut DialogEx,
         text: *const core::ffi::c_char,
@@ -7883,8 +7924,10 @@ pub type BrowserWorkerLongLoadCallback =
 extern "C" {
     pub fn file_browser_worker_alloc(
         path: *mut FuriString,
+        base_path: *const core::ffi::c_char,
         filter_ext: *const core::ffi::c_char,
         skip_assets: bool,
+        hide_dot_files: bool,
     ) -> *mut BrowserWorker;
 }
 extern "C" {
@@ -7926,6 +7969,7 @@ extern "C" {
         path: *mut FuriString,
         filter_ext: *const core::ffi::c_char,
         skip_assets: bool,
+        hide_dot_files: bool,
     );
 }
 extern "C" {
@@ -7934,6 +7978,9 @@ extern "C" {
         path: *mut FuriString,
         item_idx: i32,
     );
+}
+extern "C" {
+    pub fn file_browser_worker_is_in_start_folder(browser: *mut BrowserWorker) -> bool;
 }
 extern "C" {
     pub fn file_browser_worker_folder_exit(browser: *mut BrowserWorker);
@@ -8086,7 +8133,7 @@ extern "C" {
     #[doc = " @param      x           x position"]
     #[doc = " @param      y           y position"]
     #[doc = " @param      horizontal  horizontal alignment"]
-    #[doc = " @param      vertical    vertical aligment"]
+    #[doc = " @param      vertical    vertical alignment"]
     pub fn popup_set_header(
         popup: *mut Popup,
         text: *const core::ffi::c_char,
@@ -8106,7 +8153,7 @@ extern "C" {
     #[doc = " @param      x           x position"]
     #[doc = " @param      y           y position"]
     #[doc = " @param      horizontal  horizontal alignment"]
-    #[doc = " @param      vertical    vertical aligment"]
+    #[doc = " @param      vertical    vertical alignment"]
     pub fn popup_set_text(
         popup: *mut Popup,
         text: *const core::ffi::c_char,
@@ -10241,6 +10288,7 @@ pub struct PowerInfo {
     pub is_charging: bool,
     pub current_charger: f32,
     pub current_gauge: f32,
+    pub voltage_battery_charging: f32,
     pub voltage_charger: f32,
     pub voltage_gauge: f32,
     pub voltage_vbus: f32,
@@ -10257,7 +10305,7 @@ fn bindgen_test_layout_PowerInfo() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<PowerInfo>(),
-        44usize,
+        48usize,
         concat!("Size of: ", stringify!(PowerInfo))
     );
     assert_eq!(
@@ -10306,8 +10354,18 @@ fn bindgen_test_layout_PowerInfo() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).voltage_charger) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).voltage_battery_charging) as usize - ptr as usize },
         12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(PowerInfo),
+            "::",
+            stringify!(voltage_battery_charging)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).voltage_charger) as usize - ptr as usize },
+        16usize,
         concat!(
             "Offset of field: ",
             stringify!(PowerInfo),
@@ -10317,7 +10375,7 @@ fn bindgen_test_layout_PowerInfo() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).voltage_gauge) as usize - ptr as usize },
-        16usize,
+        20usize,
         concat!(
             "Offset of field: ",
             stringify!(PowerInfo),
@@ -10327,7 +10385,7 @@ fn bindgen_test_layout_PowerInfo() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).voltage_vbus) as usize - ptr as usize },
-        20usize,
+        24usize,
         concat!(
             "Offset of field: ",
             stringify!(PowerInfo),
@@ -10337,7 +10395,7 @@ fn bindgen_test_layout_PowerInfo() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).capacity_remaining) as usize - ptr as usize },
-        24usize,
+        28usize,
         concat!(
             "Offset of field: ",
             stringify!(PowerInfo),
@@ -10347,7 +10405,7 @@ fn bindgen_test_layout_PowerInfo() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).capacity_full) as usize - ptr as usize },
-        28usize,
+        32usize,
         concat!(
             "Offset of field: ",
             stringify!(PowerInfo),
@@ -10357,7 +10415,7 @@ fn bindgen_test_layout_PowerInfo() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).temperature_charger) as usize - ptr as usize },
-        32usize,
+        36usize,
         concat!(
             "Offset of field: ",
             stringify!(PowerInfo),
@@ -10367,7 +10425,7 @@ fn bindgen_test_layout_PowerInfo() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).temperature_gauge) as usize - ptr as usize },
-        36usize,
+        40usize,
         concat!(
             "Offset of field: ",
             stringify!(PowerInfo),
@@ -10377,7 +10435,7 @@ fn bindgen_test_layout_PowerInfo() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).charge) as usize - ptr as usize },
-        40usize,
+        44usize,
         concat!(
             "Offset of field: ",
             stringify!(PowerInfo),
@@ -10387,7 +10445,7 @@ fn bindgen_test_layout_PowerInfo() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).health) as usize - ptr as usize },
-        41usize,
+        45usize,
         concat!(
             "Offset of field: ",
             stringify!(PowerInfo),
@@ -10446,7 +10504,7 @@ pub type RpcBufferIsEmptyCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
 #[doc = " Callback to notify transport layer that close_session command"]
 #[doc = " is received. Any other actions lays on transport layer."]
-#[doc = " No destruction or session close preformed."]
+#[doc = " No destruction or session close performed."]
 pub type RpcSessionClosedCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
 #[doc = " Callback to notify transport layer that session was closed"]
@@ -10563,6 +10621,9 @@ pub type RpcAppSystemEvent = core::ffi::c_uchar;
 pub type RpcAppSystemCallback = ::core::option::Option<
     unsafe extern "C" fn(event: RpcAppSystemEvent, context: *mut core::ffi::c_void),
 >;
+pub type RpcAppSystemDataExchangeCallback = ::core::option::Option<
+    unsafe extern "C" fn(data: *const u8, data_size: usize, context: *mut core::ffi::c_void),
+>;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct RpcAppSystem {
@@ -10591,6 +10652,32 @@ extern "C" {
         result: bool,
     );
 }
+extern "C" {
+    pub fn rpc_system_app_set_error_code(rpc_app: *mut RpcAppSystem, error_code: u32);
+}
+extern "C" {
+    pub fn rpc_system_app_set_error_text(
+        rpc_app: *mut RpcAppSystem,
+        error_text: *const core::ffi::c_char,
+    );
+}
+extern "C" {
+    pub fn rpc_system_app_error_reset(rpc_app: *mut RpcAppSystem);
+}
+extern "C" {
+    pub fn rpc_system_app_set_data_exchange_callback(
+        rpc_app: *mut RpcAppSystem,
+        callback: RpcAppSystemDataExchangeCallback,
+        ctx: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    pub fn rpc_system_app_exchange_data(
+        rpc_app: *mut RpcAppSystem,
+        data: *const u8,
+        data_size: usize,
+    );
+}
 #[doc = "< Read access"]
 pub const FS_AccessMode_FSAM_READ: FS_AccessMode = 1;
 #[doc = "< Write access"]
@@ -10615,7 +10702,7 @@ pub type FS_OpenMode = core::ffi::c_uchar;
 pub const FS_Error_FSE_OK: FS_Error = 0;
 #[doc = "< FS not ready"]
 pub const FS_Error_FSE_NOT_READY: FS_Error = 1;
-#[doc = "< File/Dir alrady exist"]
+#[doc = "< File/Dir already exist"]
 pub const FS_Error_FSE_EXIST: FS_Error = 2;
 #[doc = "< File/Dir does not exist"]
 pub const FS_Error_FSE_NOT_EXIST: FS_Error = 3;
@@ -10627,7 +10714,7 @@ pub const FS_Error_FSE_DENIED: FS_Error = 5;
 pub const FS_Error_FSE_INVALID_NAME: FS_Error = 6;
 #[doc = "< Internal error"]
 pub const FS_Error_FSE_INTERNAL: FS_Error = 7;
-#[doc = "< Functon not implemented"]
+#[doc = "< Function not implemented"]
 pub const FS_Error_FSE_NOT_IMPLEMENTED: FS_Error = 8;
 #[doc = "< File/Dir already opened"]
 pub const FS_Error_FSE_ALREADY_OPEN: FS_Error = 9;
@@ -11037,13 +11124,13 @@ extern "C" {
 }
 extern "C" {
     #[doc = " Retrieves the error id from the file object"]
-    #[doc = " @param file pointer to file object. Pointer must not point to NULL. YOU CANNOT RETREIVE THE ERROR ID IF THE FILE HAS BEEN CLOSED"]
+    #[doc = " @param file pointer to file object. Pointer must not point to NULL. YOU CANNOT RETRIEVE THE ERROR ID IF THE FILE HAS BEEN CLOSED"]
     #[doc = " @return FS_Error error id"]
     pub fn storage_file_get_error(file: *mut File) -> FS_Error;
 }
 extern "C" {
     #[doc = " Retrieves the error text from the file object"]
-    #[doc = " @param file pointer to file object. Pointer must not point to NULL. YOU CANNOT RETREIVE THE ERROR TEXT IF THE FILE HAS BEEN CLOSED"]
+    #[doc = " @param file pointer to file object. Pointer must not point to NULL. YOU CANNOT RETRIEVE THE ERROR TEXT IF THE FILE HAS BEEN CLOSED"]
     #[doc = " @return const char* error text"]
     pub fn storage_file_get_error_desc(file: *mut File) -> *const core::ffi::c_char;
 }
@@ -13761,6 +13848,126 @@ extern "C" {
     #[doc = " @param      sequence  Sequence to execute"]
     pub fn furi_hal_light_sequence(sequence: *const core::ffi::c_char);
 }
+#[doc = " Callback type called every time another key-value pair of device information is ready"]
+#[doc = ""]
+#[doc = " @param      key[in]      device information type identifier"]
+#[doc = " @param      value[in]    device information value"]
+#[doc = " @param      last[in]     whether the passed key-value pair is the last one"]
+#[doc = " @param      context[in]  to pass to callback"]
+pub type PropertyValueCallback = ::core::option::Option<
+    unsafe extern "C" fn(
+        key: *const core::ffi::c_char,
+        value: *const core::ffi::c_char,
+        last: bool,
+        context: *mut core::ffi::c_void,
+    ),
+>;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct PropertyValueContext {
+    #[doc = "< key string buffer, must be initialised before use"]
+    pub key: *mut FuriString,
+    #[doc = "< value string buffer, must be initialised before use"]
+    pub value: *mut FuriString,
+    #[doc = "< output callback function"]
+    pub out: PropertyValueCallback,
+    #[doc = "< separator character between key parts"]
+    pub sep: core::ffi::c_char,
+    #[doc = "< flag to indicate last element"]
+    pub last: bool,
+    #[doc = "< user-defined context, passed through to out callback"]
+    pub context: *mut core::ffi::c_void,
+}
+#[test]
+fn bindgen_test_layout_PropertyValueContext() {
+    const UNINIT: ::core::mem::MaybeUninit<PropertyValueContext> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<PropertyValueContext>(),
+        40usize,
+        concat!("Size of: ", stringify!(PropertyValueContext))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<PropertyValueContext>(),
+        8usize,
+        concat!("Alignment of ", stringify!(PropertyValueContext))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(PropertyValueContext),
+            "::",
+            stringify!(key)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).value) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(PropertyValueContext),
+            "::",
+            stringify!(value)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).out) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(PropertyValueContext),
+            "::",
+            stringify!(out)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).sep) as usize - ptr as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(PropertyValueContext),
+            "::",
+            stringify!(sep)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).last) as usize - ptr as usize },
+        25usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(PropertyValueContext),
+            "::",
+            stringify!(last)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).context) as usize - ptr as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(PropertyValueContext),
+            "::",
+            stringify!(context)
+        )
+    );
+}
+extern "C" {
+    #[doc = " Builds key and value strings and outputs them via a callback function"]
+    #[doc = ""]
+    #[doc = " @param       ctx[in]     local property context"]
+    #[doc = " @param       fmt[in]     value format, set to NULL to bypass formatting"]
+    #[doc = " @param       nparts[in]  number of key parts (separated by character)"]
+    #[doc = " @param       ...[in]     list of key parts followed by value"]
+    pub fn property_value_out(
+        ctx: *mut PropertyValueContext,
+        fmt: *const core::ffi::c_char,
+        nparts: core::ffi::c_uint,
+        ...
+    );
+}
 pub const FuriHalPowerIC_FuriHalPowerICCharger: FuriHalPowerIC = 0;
 pub const FuriHalPowerIC_FuriHalPowerICFuelGauge: FuriHalPowerIC = 1;
 #[doc = " Power IC type"]
@@ -13859,6 +14066,22 @@ extern "C" {
     pub fn furi_hal_power_is_otg_enabled() -> bool;
 }
 extern "C" {
+    #[doc = " Get battery charging voltage in V"]
+    #[doc = ""]
+    #[doc = " @return     voltage in V"]
+    pub fn furi_hal_power_get_battery_charging_voltage() -> f32;
+}
+extern "C" {
+    #[doc = " Set battery charging voltage in V"]
+    #[doc = ""]
+    #[doc = " Invalid values will be clamped to the nearest valid value."]
+    #[doc = ""]
+    #[doc = " @param      voltage[in]  voltage in V"]
+    #[doc = ""]
+    #[doc = " @return     voltage in V"]
+    pub fn furi_hal_power_set_battery_charging_voltage(voltage: f32);
+}
+extern "C" {
     #[doc = " Get remaining battery battery capacity in mAh"]
     #[doc = ""]
     #[doc = " @return     capacity in mAh"]
@@ -13907,10 +14130,6 @@ extern "C" {
     pub fn furi_hal_power_get_usb_voltage() -> f32;
 }
 extern "C" {
-    #[doc = " Get power system component state"]
-    pub fn furi_hal_power_dump_state();
-}
-extern "C" {
     #[doc = " Enable 3.3v on external gpio and sd card"]
     pub fn furi_hal_power_enable_external_3_3v();
 }
@@ -13928,27 +14147,25 @@ extern "C" {
     #[doc = " Exit supress charge mode"]
     pub fn furi_hal_power_suppress_charge_exit();
 }
-#[doc = " Callback type called by furi_hal_power_info_get every time another key-value pair of information is ready"]
-#[doc = ""]
-#[doc = " @param      key[in]      power information type identifier"]
-#[doc = " @param      value[in]    power information value"]
-#[doc = " @param      last[in]     whether the passed key-value pair is the last one"]
-#[doc = " @param      context[in]  to pass to callback"]
-pub type FuriHalPowerInfoCallback = ::core::option::Option<
-    unsafe extern "C" fn(
-        key: *const core::ffi::c_char,
-        value: *const core::ffi::c_char,
-        last: bool,
-        context: *mut core::ffi::c_void,
-    ),
->;
 extern "C" {
     #[doc = " Get power information"]
     #[doc = ""]
     #[doc = " @param[in]  callback     callback to provide with new data"]
+    #[doc = " @param[in]  sep          category separator character"]
     #[doc = " @param[in]  context      context to pass to callback"]
     pub fn furi_hal_power_info_get(
-        callback: FuriHalPowerInfoCallback,
+        callback: PropertyValueCallback,
+        sep: core::ffi::c_char,
+        context: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = " Get power debug information"]
+    #[doc = ""]
+    #[doc = " @param[in]  callback     callback to provide with new data"]
+    #[doc = " @param[in]  context      context to pass to callback"]
+    pub fn furi_hal_power_debug_get(
+        callback: PropertyValueCallback,
         context: *mut core::ffi::c_void,
     );
 }
@@ -16479,7 +16696,7 @@ pub type usbd_hw_ep_read = ::core::option::Option<
 #[doc = " \\param blen size of data will be written"]
 #[doc = " \\return number of written bytes"]
 pub type usbd_hw_ep_write = ::core::option::Option<
-    unsafe extern "C" fn(ep: u8, buf: *mut core::ffi::c_void, blen: u16) -> i32,
+    unsafe extern "C" fn(ep: u8, buf: *const core::ffi::c_void, blen: u16) -> i32,
 >;
 #[doc = " Stalls and unstalls endpoint"]
 #[doc = " \\param ep endpoint address"]
@@ -17247,26 +17464,17 @@ extern "C" {
     #[doc = " @param      button  key code"]
     pub fn furi_hal_hid_consumer_key_release(button: u16) -> bool;
 }
-#[doc = " Callback type called every time another key-value pair of device information is ready"]
-#[doc = ""]
-#[doc = " @param      key[in]      device information type identifier"]
-#[doc = " @param      value[in]    device information value"]
-#[doc = " @param      last[in]     whether the passed key-value pair is the last one"]
-#[doc = " @param      context[in]  to pass to callback"]
-pub type FuriHalInfoValueCallback = ::core::option::Option<
-    unsafe extern "C" fn(
-        key: *const core::ffi::c_char,
-        value: *const core::ffi::c_char,
-        last: bool,
-        context: *mut core::ffi::c_void,
-    ),
->;
 extern "C" {
     #[doc = " Get device information"]
     #[doc = ""]
     #[doc = " @param[in]  callback     callback to provide with new data"]
+    #[doc = " @param[in]  sep          category separator character"]
     #[doc = " @param[in]  context      context to pass to callback"]
-    pub fn furi_hal_info_get(callback: FuriHalInfoValueCallback, context: *mut core::ffi::c_void);
+    pub fn furi_hal_info_get(
+        callback: PropertyValueCallback,
+        sep: core::ffi::c_char,
+        context: *mut core::ffi::c_void,
+    );
 }
 extern "C" {
     #[doc = " Get random value"]
@@ -21387,6 +21595,7 @@ fn bindgen_test_layout_EmvData() {
 pub const MfUltralightAuthMethod_MfUltralightAuthMethodManual: MfUltralightAuthMethod = 0;
 pub const MfUltralightAuthMethod_MfUltralightAuthMethodAmeebo: MfUltralightAuthMethod = 1;
 pub const MfUltralightAuthMethod_MfUltralightAuthMethodXiaomi: MfUltralightAuthMethod = 2;
+pub const MfUltralightAuthMethod_MfUltralightAuthMethodAuto: MfUltralightAuthMethod = 3;
 pub type MfUltralightAuthMethod = core::ffi::c_uchar;
 pub const MfUltralightType_MfUltralightTypeUnknown: MfUltralightType = 0;
 pub const MfUltralightType_MfUltralightTypeNTAG203: MfUltralightType = 1;
@@ -21517,7 +21726,6 @@ pub struct MfUltralightData {
     pub signature: [u8; 32usize],
     pub counter: [u32; 3usize],
     pub tearing: [u8; 3usize],
-    pub has_auth: bool,
     pub auth_method: MfUltralightAuthMethod,
     pub auth_key: [u8; 4usize],
     pub auth_success: bool,
@@ -21591,18 +21799,8 @@ fn bindgen_test_layout_MfUltralightData() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).has_auth) as usize - ptr as usize },
-        59usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfUltralightData),
-            "::",
-            stringify!(has_auth)
-        )
-    );
-    assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).auth_method) as usize - ptr as usize },
-        60usize,
+        59usize,
         concat!(
             "Offset of field: ",
             stringify!(MfUltralightData),
@@ -21612,7 +21810,7 @@ fn bindgen_test_layout_MfUltralightData() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).auth_key) as usize - ptr as usize },
-        61usize,
+        60usize,
         concat!(
             "Offset of field: ",
             stringify!(MfUltralightData),
@@ -21622,7 +21820,7 @@ fn bindgen_test_layout_MfUltralightData() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).auth_success) as usize - ptr as usize },
-        65usize,
+        64usize,
         concat!(
             "Offset of field: ",
             stringify!(MfUltralightData),
@@ -21668,6 +21866,131 @@ fn bindgen_test_layout_MfUltralightData() {
             stringify!(MfUltralightData),
             "::",
             stringify!(data_read)
+        )
+    );
+}
+#[repr(C, packed)]
+#[derive(Copy, Clone)]
+pub struct MfUltralightAuth {
+    pub pwd: MfUltralightAuth__bindgen_ty_1,
+    pub pack: MfUltralightAuth__bindgen_ty_2,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union MfUltralightAuth__bindgen_ty_1 {
+    pub raw: [u8; 4usize],
+    pub value: u32,
+}
+#[test]
+fn bindgen_test_layout_MfUltralightAuth__bindgen_ty_1() {
+    const UNINIT: ::core::mem::MaybeUninit<MfUltralightAuth__bindgen_ty_1> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfUltralightAuth__bindgen_ty_1>(),
+        4usize,
+        concat!("Size of: ", stringify!(MfUltralightAuth__bindgen_ty_1))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfUltralightAuth__bindgen_ty_1>(),
+        4usize,
+        concat!("Alignment of ", stringify!(MfUltralightAuth__bindgen_ty_1))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).raw) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfUltralightAuth__bindgen_ty_1),
+            "::",
+            stringify!(raw)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).value) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfUltralightAuth__bindgen_ty_1),
+            "::",
+            stringify!(value)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union MfUltralightAuth__bindgen_ty_2 {
+    pub raw: [u8; 2usize],
+    pub value: u16,
+}
+#[test]
+fn bindgen_test_layout_MfUltralightAuth__bindgen_ty_2() {
+    const UNINIT: ::core::mem::MaybeUninit<MfUltralightAuth__bindgen_ty_2> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfUltralightAuth__bindgen_ty_2>(),
+        2usize,
+        concat!("Size of: ", stringify!(MfUltralightAuth__bindgen_ty_2))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfUltralightAuth__bindgen_ty_2>(),
+        2usize,
+        concat!("Alignment of ", stringify!(MfUltralightAuth__bindgen_ty_2))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).raw) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfUltralightAuth__bindgen_ty_2),
+            "::",
+            stringify!(raw)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).value) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfUltralightAuth__bindgen_ty_2),
+            "::",
+            stringify!(value)
+        )
+    );
+}
+#[test]
+fn bindgen_test_layout_MfUltralightAuth() {
+    const UNINIT: ::core::mem::MaybeUninit<MfUltralightAuth> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfUltralightAuth>(),
+        6usize,
+        concat!("Size of: ", stringify!(MfUltralightAuth))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfUltralightAuth>(),
+        1usize,
+        concat!("Alignment of ", stringify!(MfUltralightAuth))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).pwd) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfUltralightAuth),
+            "::",
+            stringify!(pwd)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).pack) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfUltralightAuth),
+            "::",
+            stringify!(pack)
         )
     );
 }
@@ -22750,6 +23073,7 @@ pub struct NfcDeviceData {
 pub union NfcDeviceData__bindgen_ty_1 {
     pub reader_data: NfcReaderRequestData,
     pub mf_classic_dict_attack_data: NfcMfClassicDictAttackData,
+    pub mf_ul_auth: MfUltralightAuth,
 }
 #[test]
 fn bindgen_test_layout_NfcDeviceData__bindgen_ty_1() {
@@ -22786,6 +23110,16 @@ fn bindgen_test_layout_NfcDeviceData__bindgen_ty_1() {
             stringify!(NfcDeviceData__bindgen_ty_1),
             "::",
             stringify!(mf_classic_dict_attack_data)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).mf_ul_auth) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcDeviceData__bindgen_ty_1),
+            "::",
+            stringify!(mf_ul_auth)
         )
     );
 }
