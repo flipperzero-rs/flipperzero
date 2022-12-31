@@ -17,12 +17,13 @@ This means it's not possible to use anything the [`std`](https://doc.rust-lang.o
 
 ## SDK version
 
-Currently supports SDK 10.1 ([flipperzero-firmware@0.73.1](https://github.com/flipperdevices/flipperzero-firmware/tree/0.73.1)).
+Currently supports SDK 11.2 ([flipperzero-firmware@0.74.2](https://github.com/flipperdevices/flipperzero-firmware/tree/0.74.2)).
 
 The Rust crate version number will be updated after a major [API version](https://github.com/flipperdevices/flipperzero-firmware/blob/release/firmware/targets/f7/api_symbols.csv) bump in the Flipper Zero firmware.
 
 | Crate version | API version |
 | ------------- | ----------- |
+| 0.6.x         | 11.2        |
 | 0.5.x         | 10.1        |
 | 0.4.x         | 7.5         |
 | 0.3.x         | 2.2         |

@@ -14,25 +14,25 @@ dependencies = [
 
 [[package]]
 name = "flipperzero"
-version = "0.5.0"
+version = "0.6.0-alpha"
 dependencies = [
  "flipperzero-sys",
 ]
 
 [[package]]
 name = "flipperzero-alloc"
-version = "0.5.0"
+version = "0.6.0-alpha"
 dependencies = [
  "flipperzero-sys",
 ]
 
 [[package]]
 name = "flipperzero-rt"
-version = "0.5.0"
+version = "0.6.0-alpha"
 dependencies = [
  "flipperzero-sys",
 ]
 
 [[package]]
 name = "flipperzero-sys"
-version = "0.5.0"
+version = "0.6.0-alpha"
