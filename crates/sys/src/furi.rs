@@ -1,5 +1,6 @@
 //! Furi helpers.
 
+use core::ffi::c_char;
 use core::fmt::Display;
 use core::time::Duration;
 
@@ -78,6 +79,39 @@ impl Display for Status {
 impl From<i32> for Status {
     fn from(code: i32) -> Self {
         Status(code)
+    }
+}
+
+/// Low-level wrapper of a record handle.
+pub struct UnsafeRecord<T> {
+    name: *const c_char,
+    data: *mut T,
+}
+
+impl<T> UnsafeRecord<T> {
+    /// Opens a record.
+    ///
+    /// Safety: The caller must ensure that `record_name` lives for the
+    /// duration of the object lifetime.
+    pub unsafe fn open(name: *const c_char) -> Self {
+        Self {
+            name,
+            data: crate::furi_record_open(name) as *mut T,
+        }
+    }
+
+    /// Returns the record data as a raw pointer.
+    pub fn as_ptr(&self) -> *mut T {
+        self.data
+    }
+}
+
+impl<T> Drop for UnsafeRecord<T> {
+    fn drop(&mut self) {
+        unsafe {
+            // decrement the holders count
+            crate::furi_record_close(self.name);
+        }
     }
 }
 

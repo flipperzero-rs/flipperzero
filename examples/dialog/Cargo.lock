@@ -3,7 +3,24 @@
 version = 3
 
 [[package]]
+name = "dialog"
+version = "0.1.0"
+dependencies = [
+ "flipperzero",
+ "flipperzero-alloc",
+ "flipperzero-rt",
+ "flipperzero-sys",
+]
+
+[[package]]
 name = "flipperzero"
+version = "0.6.0-alpha"
+dependencies = [
+ "flipperzero-sys",
+]
+
+[[package]]
+name = "flipperzero-alloc"
 version = "0.6.0-alpha"
 dependencies = [
  "flipperzero-sys",
@@ -19,12 +36,3 @@ dependencies = [
 [[package]]
 name = "flipperzero-sys"
 version = "0.6.0-alpha"
-
-[[package]]
-name = "gui"
-version = "0.1.0"
-dependencies = [
- "flipperzero",
- "flipperzero-rt",
- "flipperzero-sys",
-]
