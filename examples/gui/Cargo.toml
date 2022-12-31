@@ -17,3 +17,4 @@ test = false
 flipperzero = { version = "0.6.0-alpha", path = "../../crates/flipperzero" }
 flipperzero-sys = { version = "0.6.0-alpha", path = "../../crates/sys" }
 flipperzero-rt = { version = "0.6.0-alpha", path = "../../crates/rt" }
+flipperzero-gui = { version = "0.6.0-alpha", path = "../../crates/gui" }
