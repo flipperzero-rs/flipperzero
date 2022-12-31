@@ -65,7 +65,7 @@ impl<'a> DialogMessage<'a> {
     }
 
     /// Sets the labels of the buttons.
-    pub fn set_buttons_c(
+    pub fn set_buttons(
         &mut self,
         left: Option<&'a CStr>,
         center: Option<&'a CStr>,
@@ -81,7 +81,7 @@ impl<'a> DialogMessage<'a> {
     }
 
     /// Sets the header text.
-    pub fn set_header_c(
+    pub fn set_header(
         &mut self,
         header: &'a CStr,
         x: u8,
@@ -102,7 +102,7 @@ impl<'a> DialogMessage<'a> {
     }
 
     /// Sets the body text.
-    pub fn set_text_c(&mut self, text: &'a CStr, x: u8, y: u8, horizontal: Align, vertical: Align) {
+    pub fn set_text(&mut self, text: &'a CStr, x: u8, y: u8, horizontal: Align, vertical: Align) {
         unsafe {
             sys::dialog_message_set_text(
                 self.data,
@@ -172,8 +172,8 @@ pub fn alert(text: &str) {
     let mut dialogs = DialogsApp::open();
     let mut message = DialogMessage::new();
 
-    message.set_text_c(&text, 0, 0, Align::Left, Align::Top);
-    message.set_buttons_c(None, Some(BUTTON_OK), None);
+    message.set_text(&text, 0, 0, Align::Left, Align::Top);
+    message.set_buttons(None, Some(BUTTON_OK), None);
 
     dialogs.show(&message);
 }
