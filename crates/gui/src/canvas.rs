@@ -1,11 +1,12 @@
 //! ViewPort APIs
 
 use crate::gui::Gui;
+use core::ptr::{null_mut, NonNull};
 use core::{ffi::CStr, num::NonZeroU8};
 use flipperzero::furi::canvas::Align;
 use flipperzero_sys::{
-    self as sys, Canvas as SysCanvas, CanvasFontParameters as SysCanvasFontParameters,
-    Color as SysColor, Font as SysFont,
+    self as sys, Canvas as SysCanvas, CanvasDirection as SysCanvasDirection,
+    CanvasFontParameters as SysCanvasFontParameters, Color as SysColor, Font as SysFont,
 };
 
 /// System Canvas.
@@ -39,7 +40,7 @@ impl<'a> Canvas<'a> {
     /// let ptr = canvas.into_raw();
     /// let canvas = unsafe { Canvas::from_raw(gui, ptr) };
     /// ```
-    pub unsafe fn from_raw(parent: &mut Gui, raw: NonNull<SysViewPort>) -> Self {
+    pub unsafe fn from_raw(parent: &'a mut Gui, raw: NonNull<SysCanvas>) -> Self {
         Self {
             _parent: parent,
             canvas: raw.as_ptr(),
@@ -140,8 +141,7 @@ impl<'a> Canvas<'a> {
         unsafe { sys::canvas_set_font(self.canvas, font) };
     }
 
-    pub fn draw_str(&mut self, x: u8, y: u8, str: impl AsRef<CStr<'_>>) {
-        let font = font.into();
+    pub fn draw_str(&mut self, x: u8, y: u8, str: impl AsRef<CStr>) {
         let str = str.as_ref().as_ptr();
         // SAFETY: `self.canvas` is always a valid pointer
         // and `text` is guaranteed to be a valid pointer since it was created from `CStr`
@@ -154,9 +154,8 @@ impl<'a> Canvas<'a> {
         y: u8,
         horizontal: Align,
         vertical: Align,
-        str: impl AsRef<CStr<'_>>,
+        str: impl AsRef<CStr>,
     ) {
-        let font = font.into();
         let horizontal = horizontal.into();
         let vertical = vertical.into();
         let str = str.as_ref().as_ptr();
@@ -266,7 +265,7 @@ impl Drop for Canvas<'_> {
 }
 
 pub struct CanvasFontParameters<'a> {
-    _parent: &'a Canvas,
+    _parent: &'a Canvas<'a>,
     raw: *mut SysCanvasFontParameters,
 }
 
@@ -471,57 +470,57 @@ impl From<Font> for SysFont {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
-pub enum CanvasOrientation {
-    Horizontal,
-    HorizontalFlip,
-    Vertical,
-    VerticalFlip,
-}
-
-#[derive(Clone, Copy, Debug)]
-pub enum FromSysCanvasOrientationError {
-    Invalid(SysCanvasOrientation),
-}
-
-impl TryFrom<SysCanvasOrientation> for CanvasOrientation {
-    type Error = FromSysCanvasOrientationError;
-
-    fn try_from(value: SysCanvasOrientation) -> Result<Self, Self::Error> {
-        use sys::{
-            CanvasOrientation_CanvasOrientationHorizontal as SYS_CANVAS_ORIENTATION_HORIZONTAL,
-            CanvasOrientation_CanvasOrientationHorizontalFlip as SYS_CANVAS_ORIENTATION_HORIZONTAL_FLIP,
-            CanvasOrientation_CanvasOrientationVertical as SYS_CANVAS_ORIENTATION_VERTICAL,
-            CanvasOrientation_CanvasOrientationVerticalFlip as SYS_CANVAS_ORIENTATION_VERTICAL_FLIP,
-        };
-
-        Ok(match value {
-            SYS_CANVAS_ORIENTATION_HORIZONTAL => Self::Horizontal,
-            SYS_CANVAS_ORIENTATION_HORIZONTAL_FLIP => Self::HorizontalFlip,
-            SYS_CANVAS_ORIENTATION_VERTICAL => Self::Vertical,
-            SYS_CANVAS_ORIENTATION_VERTICAL_FLIP => Self::VerticalFlip,
-            invalid => Err(Self::Error::Invalid(invalid))?,
-        })
-    }
-}
-
-impl From<CanvasOrientation> for SysCanvasOrientation {
-    fn from(value: CanvasOrientation) -> Self {
-        use sys::{
-            CanvasOrientation_CanvasOrientationHorizontal as SYS_CANVAS_ORIENTATION_HORIZONTAL,
-            CanvasOrientation_CanvasOrientationHorizontalFlip as SYS_CANVAS_ORIENTATION_HORIZONTAL_FLIP,
-            CanvasOrientation_CanvasOrientationVertical as SYS_CANVAS_ORIENTATION_VERTICAL,
-            CanvasOrientation_CanvasOrientationVerticalFlip as SYS_CANVAS_ORIENTATION_VERTICAL_FLIP,
-        };
-
-        match value {
-            CanvasOrientation::Horizontal => SYS_CANVAS_ORIENTATION_HORIZONTAL,
-            CanvasOrientation::HorizontalFlip => SYS_CANVAS_ORIENTATION_HORIZONTAL_FLIP,
-            CanvasOrientation::Vertical => SYS_CANVAS_ORIENTATION_VERTICAL,
-            CanvasOrientation::VerticalFlip => SYS_CANVAS_ORIENTATION_VERTICAL_FLIP,
-        }
-    }
-}
+// #[derive(Clone, Copy, Debug)]
+// pub enum CanvasOrientation {
+//     Horizontal,
+//     HorizontalFlip,
+//     Vertical,
+//     VerticalFlip,
+// }
+//
+// #[derive(Clone, Copy, Debug)]
+// pub enum FromSysCanvasOrientationError {
+//     Invalid(SysCanvasOrientation),
+// }
+//
+// impl TryFrom<SysCanvasOrientation> for CanvasOrientation {
+//     type Error = FromSysCanvasOrientationError;
+//
+//     fn try_from(value: SysCanvasOrientation) -> Result<Self, Self::Error> {
+//         use sys::{
+//             CanvasOrientation_CanvasOrientationHorizontal as SYS_CANVAS_ORIENTATION_HORIZONTAL,
+//             CanvasOrientation_CanvasOrientationHorizontalFlip as SYS_CANVAS_ORIENTATION_HORIZONTAL_FLIP,
+//             CanvasOrientation_CanvasOrientationVertical as SYS_CANVAS_ORIENTATION_VERTICAL,
+//             CanvasOrientation_CanvasOrientationVerticalFlip as SYS_CANVAS_ORIENTATION_VERTICAL_FLIP,
+//         };
+//
+//         Ok(match value {
+//             SYS_CANVAS_ORIENTATION_HORIZONTAL => Self::Horizontal,
+//             SYS_CANVAS_ORIENTATION_HORIZONTAL_FLIP => Self::HorizontalFlip,
+//             SYS_CANVAS_ORIENTATION_VERTICAL => Self::Vertical,
+//             SYS_CANVAS_ORIENTATION_VERTICAL_FLIP => Self::VerticalFlip,
+//             invalid => Err(Self::Error::Invalid(invalid))?,
+//         })
+//     }
+// }
+//
+// impl From<CanvasOrientation> for SysCanvasOrientation {
+//     fn from(value: CanvasOrientation) -> Self {
+//         use sys::{
+//             CanvasOrientation_CanvasOrientationHorizontal as SYS_CANVAS_ORIENTATION_HORIZONTAL,
+//             CanvasOrientation_CanvasOrientationHorizontalFlip as SYS_CANVAS_ORIENTATION_HORIZONTAL_FLIP,
+//             CanvasOrientation_CanvasOrientationVertical as SYS_CANVAS_ORIENTATION_VERTICAL,
+//             CanvasOrientation_CanvasOrientationVerticalFlip as SYS_CANVAS_ORIENTATION_VERTICAL_FLIP,
+//         };
+//
+//         match value {
+//             CanvasOrientation::Horizontal => SYS_CANVAS_ORIENTATION_HORIZONTAL,
+//             CanvasOrientation::HorizontalFlip => SYS_CANVAS_ORIENTATION_HORIZONTAL_FLIP,
+//             CanvasOrientation::Vertical => SYS_CANVAS_ORIENTATION_VERTICAL,
+//             CanvasOrientation::VerticalFlip => SYS_CANVAS_ORIENTATION_VERTICAL_FLIP,
+//         }
+//     }
+// }
 
 #[derive(Clone, Copy, Debug)]
 pub enum CanvasDirection {
@@ -541,17 +540,17 @@ impl TryFrom<SysCanvasDirection> for CanvasDirection {
 
     fn try_from(value: SysCanvasDirection) -> Result<Self, Self::Error> {
         use sys::{
-            CanvasDirection_BottomToTop as SYS_CANVAS_DIRECTION_BOTTOM_TO_TOP,
-            CanvasDirection_LeftToRight as SYS_CANVAS_DIRECTION_LEFT_TO_RIGHT,
-            CanvasDirection_RightToLeft as SYS_CANVAS_DIRECTION_RIGHT_TO_LEFT,
-            CanvasDirection_TopToBottom as SYS_CANVAS_DIRECTION_TOP_TO_BOTTOM,
+            CanvasDirection_CanvasDirectionBottomToTop as SYS_CANVAS_DIRECTION_BOTTOM_TO_TOP,
+            CanvasDirection_CanvasDirectionLeftToRight as SYS_CANVAS_DIRECTION_LEFT_TO_RIGHT,
+            CanvasDirection_CanvasDirectionRightToLeft as SYS_CANVAS_DIRECTION_RIGHT_TO_LEFT,
+            CanvasDirection_CanvasDirectionTopToBottom as SYS_CANVAS_DIRECTION_TOP_TO_BOTTOM,
         };
 
         Ok(match value {
-            SYS_CANVAS_LEFT_TO_RIGHT => Self::LeftToRight,
-            SYS_CANVAS_TOP_TO_BOTTOM => Self::TopToBottom,
-            SYS_CANVAS_RIGHT_TO_LEFT => Self::RightToLeft,
-            SYS_CANVAS_BOTTOM_TO_TOP => Self::BottomToTop,
+            SYS_CANVAS_DIRECTION_LEFT_TO_RIGHT => Self::LeftToRight,
+            SYS_CANVAS_DIRECTION_TOP_TO_BOTTOM => Self::TopToBottom,
+            SYS_CANVAS_DIRECTION_RIGHT_TO_LEFT => Self::RightToLeft,
+            SYS_CANVAS_DIRECTION_BOTTOM_TO_TOP => Self::BottomToTop,
             invalid => Err(Self::Error::Invalid(invalid))?,
         })
     }
@@ -560,10 +559,10 @@ impl TryFrom<SysCanvasDirection> for CanvasDirection {
 impl From<CanvasDirection> for SysCanvasDirection {
     fn from(value: CanvasDirection) -> Self {
         use sys::{
-            CanvasDirection_BottomToTop as SYS_CANVAS_DIRECTION_BOTTOM_TO_TOP,
-            CanvasDirection_LeftToRight as SYS_CANVAS_DIRECTION_LEFT_TO_RIGHT,
-            CanvasDirection_RightToLeft as SYS_CANVAS_DIRECTION_RIGHT_TO_LEFT,
-            CanvasDirection_TopToBottom as SYS_CANVAS_DIRECTION_TOP_TO_BOTTOM,
+            CanvasDirection_CanvasDirectionBottomToTop as SYS_CANVAS_DIRECTION_BOTTOM_TO_TOP,
+            CanvasDirection_CanvasDirectionLeftToRight as SYS_CANVAS_DIRECTION_LEFT_TO_RIGHT,
+            CanvasDirection_CanvasDirectionRightToLeft as SYS_CANVAS_DIRECTION_RIGHT_TO_LEFT,
+            CanvasDirection_CanvasDirectionTopToBottom as SYS_CANVAS_DIRECTION_TOP_TO_BOTTOM,
         };
 
         match value {

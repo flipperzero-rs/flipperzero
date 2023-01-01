@@ -52,6 +52,8 @@ impl Gui {
         unsafe { sys::gui_set_lockdown(gui, lockdown) }
     }
 
+    // TODO: separate `GuiCanvas` (locking the parent)
+    //  and `Canvas` (independent of the parent)
     pub fn direct_draw_acquire(&self) -> Canvas<'_> {
         // SAFETY: `self.gui` is owned by this `Gui`
         let gui = unsafe { self.gui.as_raw() }.as_ptr();
@@ -62,7 +64,7 @@ impl Gui {
 
         // SAFETY: `self` os the parent of `canvas`
         // and `canvas` is a freshly created valid pointer
-        unsafe { Canvas::from_raw(self, canvas) }
+        // unsafe { Canvas::from_raw(self, canvas) }
     }
 
     // TODO: canvas method
