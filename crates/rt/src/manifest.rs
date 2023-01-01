@@ -23,7 +23,7 @@ const DEFAULT_STACK_SIZE: u16 = 2048; // 2 KiB
 /// ```
 #[macro_export]
 macro_rules! manifest {
-    ($($field:ident = $value:tt),*) => {
+    ($($field:ident = $value:expr),* $(,)?) => {
         #[no_mangle]
         #[link_section = ".fapmeta"]
         static FAP_MANIFEST: $crate::manifest::ApplicationManifestV1 = $crate::manifest::ApplicationManifestV1 {

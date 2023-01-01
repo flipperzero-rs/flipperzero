@@ -6,7 +6,7 @@ macro_rules! print {
         $crate::furi::io::_print(core::format_args!($pat, $($args)*));
     }};
 
-    ($msg:expr) => {{
+    ($msg:expr $(,)?) => {{
         $crate::furi::io::_write_str($msg);
     }};
 }
@@ -17,7 +17,7 @@ macro_rules! println {
         $crate::furi::io::_print(core::format_args!(concat!($pat, "\r\n"), $($args)*));
     }};
 
-    ($msg:expr) => {{
+    ($msg:expr $(,)?) => {{
         $crate::furi::io::_write_str(concat!($msg, "\r\n"));
     }};
 }
