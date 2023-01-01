@@ -13,7 +13,7 @@ mod bindings;
 /// Will automatically add a NUL terminator.
 #[macro_export]
 macro_rules! c_string {
-    ($str:literal) => {{
+    ($str:literal $(,)?) => {{
         concat!($str, "\0").as_ptr() as *const core::ffi::c_char
     }};
 }
@@ -21,7 +21,7 @@ macro_rules! c_string {
 /// Crash the system.
 #[macro_export]
 macro_rules! crash {
-    ($msg:literal) => {
+    ($msg:literal $(,)?) => {
         unsafe {
             // Crash message is passed via r12
             let msg = $crate::c_string!($msg);

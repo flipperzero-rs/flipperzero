@@ -2,12 +2,10 @@
 //!
 //! Usage: `generate-bindings flipperzero-firmware/build/f7-firmware-D/sdk/`
 
-extern crate bindgen;
-
+use std::path::{Path, PathBuf};
 use std::{env, fs};
-use std::path::{PathBuf, Path};
 
-use clap::{self, value_parser, crate_authors, crate_description, crate_version};
+use clap::{self, crate_authors, crate_description, crate_version, value_parser};
 use serde::Deserialize;
 
 const OUTFILE: &str = "bindings.rs";
@@ -16,9 +14,9 @@ const SDK_OPTS: &str = "sdk.opts";
 const TOOLCHAIN: &str = "../../../toolchain/i686-windows/arm-none-eabi/include";
 #[cfg(all(windows, target_arch = "x86_64"))]
 const TOOLCHAIN: &str = "../../../toolchain/x86_64-windows/arm-none-eabi/include";
-#[cfg(all(linux, target_arch = "x86"))]
+#[cfg(all(unix, target_arch = "x86"))]
 const TOOLCHAIN: &str = "../../../toolchain/i686-linux/arm-none-eabi/include";
-#[cfg(all(linux, target_arch = "x86_64"))]
+#[cfg(all(unix, target_arch = "x86_64"))]
 const TOOLCHAIN: &str = "../../../toolchain/x86_64-linux/arm-none-eabi/include";
 const VISIBILITY_PUBLIC: &str = "+";
 
@@ -34,8 +32,7 @@ struct ApiSymbols {
 fn load_symbols<T: AsRef<Path>>(path: T) -> ApiSymbols {
     let path = path.as_ref();
 
-    let mut reader = csv::Reader::from_path(path)
-        .expect("failed to load symbol file");
+    let mut reader = csv::Reader::from_path(path).expect("failed to load symbol file");
 
     let mut api_version: u32 = 0;
     let mut headers = Vec::new();
@@ -54,27 +51,27 @@ fn load_symbols<T: AsRef<Path>>(path: T) -> ApiSymbols {
 
         match name {
             "Version" => {
-                let v = value.split_once('.')
+                let v = value
+                    .split_once('.')
                     .expect("failed to parse symbol version");
                 let major: u16 = v.0.parse().unwrap();
                 let minor: u16 = v.1.parse().unwrap();
 
                 api_version = ((major as u32) << 16) | (minor as u32);
-            },
-            "Header" => {
-                headers.push(value.to_string())
-            },
-            "Function" => {
-                functions.push(value.to_string())
-            },
-            "Variable" => {
-                variables.push(value.to_string())
-            },
+            }
+            "Header" => headers.push(value.to_string()),
+            "Function" => functions.push(value.to_string()),
+            "Variable" => variables.push(value.to_string()),
             _ => (),
         }
     }
 
-    ApiSymbols { api_version, headers, functions, variables }
+    ApiSymbols {
+        api_version,
+        headers,
+        functions,
+        variables,
+    }
 }
 
 #[allow(dead_code)]
@@ -86,11 +83,9 @@ struct SdkOpts {
 
 /// Load `sdk.opts` file of compiler flags.
 fn load_sdk_opts<T: AsRef<Path>>(path: T) -> SdkOpts {
-    let file = fs::File::open(path.as_ref())
-        .expect("failed to open sdk.opts");
+    let file = fs::File::open(path.as_ref()).expect("failed to open sdk.opts");
 
-    let sdk_opts: SdkOpts = serde_json::from_reader(file)
-        .expect("failed to parse sdk.opts JSON");
+    let sdk_opts: SdkOpts = serde_json::from_reader(file).expect("failed to parse sdk.opts JSON");
 
     sdk_opts
 }
@@ -99,11 +94,14 @@ fn load_sdk_opts<T: AsRef<Path>>(path: T) -> SdkOpts {
 fn generate_bindings_header(api_symbols: &ApiSymbols) -> String {
     let mut lines = Vec::new();
 
-    lines.push(format!("#define API_VERSION 0x{:08X}", api_symbols.api_version));
-    lines.push(format!("#include \"furi/furi.h\""));
+    lines.push(format!(
+        "#define API_VERSION 0x{:08X}",
+        api_symbols.api_version
+    ));
+    lines.push("#include \"furi/furi.h\"".to_string());
 
     for header in &api_symbols.headers {
-        lines.push(format!("#include \"{}\"", header))
+        lines.push(format!("#include \"{header}\""))
     }
 
     lines.join("\n")
@@ -115,17 +113,16 @@ fn parse_args() -> clap::ArgMatches {
         .version(crate_version!())
         .author(crate_authors!())
         .about(crate_description!())
-        .arg(
-            clap::Arg::new("sdk")
-                .value_parser(value_parser!(PathBuf))
-        )
+        .arg(clap::Arg::new("sdk").value_parser(value_parser!(PathBuf)))
         .get_matches()
 }
 
 fn main() {
     let matches = parse_args();
 
-    let sdk = matches.get_one::<PathBuf>("sdk").expect("failed to find SDK directory");
+    let sdk = matches
+        .get_one::<PathBuf>("sdk")
+        .expect("failed to find SDK directory");
 
     if !sdk.is_dir() {
         panic!("No such directory: {}", sdk.display());
@@ -135,7 +132,7 @@ fn main() {
     // `Path::canonicalize` returns a `\\?\C:\...` style path that is not
     // compatible with Clang.
     let cwd = env::current_dir().unwrap();
-    let sdk = cwd.join(&sdk);
+    let sdk = cwd.join(sdk);
 
     let toolchain = sdk.join(TOOLCHAIN);
     if !toolchain.is_dir() {
@@ -150,7 +147,8 @@ fn main() {
 
     let replace_sdk_root_dir = |s: &str| {
         // Need to use '/' on Windows, or else include paths don't work
-        s.replace("SDK_ROOT_DIR", sdk.to_str().unwrap()).replace("\\", "/")
+        s.replace("SDK_ROOT_DIR", sdk.to_str().unwrap())
+            .replace('\\', "/")
     };
 
     // Load SDK compiler flags
@@ -162,13 +160,16 @@ fn main() {
 
     // Some of the values are shell-quoted
     let cc_flags = shlex::split(&sdk_opts.cc_args).expect("failed to split sdk.opts cc_args");
-    let cc_flags: Vec<String> = cc_flags.into_iter().map(|arg| {
-        match arg.as_str() {
-            // Force word relocations by disallowing MOVW / MOVT
-            "-mword-relocations" => String::from("-mno-movt"),
-            a => replace_sdk_root_dir(a),
-        }
-    }).collect();
+    let cc_flags: Vec<String> = cc_flags
+        .into_iter()
+        .map(|arg| {
+            match arg.as_str() {
+                // Force word relocations by disallowing MOVW / MOVT
+                "-mword-relocations" => String::from("-mno-movt"),
+                a => replace_sdk_root_dir(a),
+            }
+        })
+        .collect();
 
     // Generate bindings
     eprintln!("Generating bindings for SDK {:08X}", symbols.api_version);
@@ -197,8 +198,8 @@ fn main() {
     let bindings = match bindings.generate() {
         Ok(b) => b,
         Err(e) => {
-            // Seperate errror output from the preceding clang diag output for legibility
-            println!("\n{}", e);
+            // Separate error output from the preceding clang diag output for legibility
+            println!("\n{e}");
             panic!("failed to generate bindings")
         }
     };
@@ -206,7 +207,8 @@ fn main() {
     // `-working-directory` also affects `Bindings::write_to_file`
     let outfile = cwd.join(OUTFILE);
 
-    eprintln!("Writing to {:?}", OUTFILE);
-    bindings.write_to_file(outfile)
+    eprintln!("Writing to {OUTFILE:?}");
+    bindings
+        .write_to_file(outfile)
         .expect("failed to write bindings");
 }

@@ -13,9 +13,10 @@ use flipperzero_rt::{entry, manifest};
 // Define the FAP Manifest for this application
 manifest!(
     name = "Hello, Rust!",
+    app_version = 1,
     has_icon = true,
     // See `docs/icons.md` for icon format
-    icon = "rustacean-10x10.icon"
+    icon = "rustacean-10x10.icon",
 );
 
 // Define the entry function
