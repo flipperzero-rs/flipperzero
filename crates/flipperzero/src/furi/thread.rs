@@ -1,15 +1,19 @@
 //! Furi Thread API.
 
+use core::time::Duration;
 use flipperzero_sys as sys;
 
 /// Puts the current thread to sleep for at least the specified amount of time.
-pub fn sleep(duration: core::time::Duration) {
+pub fn sleep(duration: Duration) {
+    const MAX_US_DURATION: Duration = Duration::from_secs(3600);
+
     unsafe {
         // For durations of 1h+, use delay_ms so uint32_t doesn't overflow
-        if duration < core::time::Duration::from_secs(3600) {
+        if duration < MAX_US_DURATION {
             sys::furi_delay_us(duration.as_micros() as u32);
         } else {
             sys::furi_delay_ms(duration.as_millis() as u32);
+            // TODO: add reamining us-part
         }
     }
 }

@@ -216,7 +216,7 @@ impl ViewPort {
     /// ```
     pub fn get_orientation(&self) -> ViewPortOrientation {
         // SAFETY: `self.view_port` is always valid
-        unsafe { sys::view_port_get_orientation(self.view_port) }
+        unsafe { sys::view_port_get_orientation(self.view_port as *const _) }
             .try_into()
             .expect("`view_port_get_orientation` should produce a valid `ViewPort`")
     }
@@ -246,6 +246,7 @@ impl ViewPort {
     ///
     /// Basic usage:
     ///
+    ///
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
@@ -260,7 +261,7 @@ impl ViewPort {
     /// Construct a `ViewPort` from a raw non-null pointer.
     ///
     /// After calling this function, the raw pointer is owned by the resulting `ViewPort`.
-    /// Specifically, the `ViewPort` destructor wil free the allocated memory.
+    /// Specifically, the `ViewPort` destructor will free the allocated memory.
     ///
     /// # Safety
     ///
@@ -269,7 +270,7 @@ impl ViewPort {
     /// # Examples
     ///
     /// Recreate a `ViewPort`
-    /// which was preciously converted to a raw pointer using [`ViewPort::into_raw`].
+    /// which vas previously converted to a raw pointer using [`ViewPort::into_raw`].
     ///
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
@@ -292,7 +293,7 @@ impl ViewPort {
     /// such as by calling [`sys::view_port_free`].
     /// The easiest way to do this is to convert the raw pointer
     /// back into a `ViewPort` with the [ViewPort::from_raw] function,
-    /// allowing the `ViewPort`` destructor to perform the cleanup.
+    /// allowing the `ViewPort` destructor to perform the cleanup.
     ///
     /// # Example
     ///
@@ -312,6 +313,16 @@ impl ViewPort {
         // since it only becomes null after call to this function
         // which consumes the wrapper
         unsafe { NonNull::new_unchecked(raw_pointer) }
+    }
+
+    /// Creates a copy of the non-null raw pointer to the [`SysViewPort`].
+    ///
+    /// # Safety
+    ///
+    /// Caller must ensure that the provided pointer does not outlive this wrapper.
+    pub unsafe fn as_raw(&self) -> NonNull<SysViewPort> {
+        // SAFETY: the pointer is guaranteed to be non-null
+        unsafe { NonNull::new_unchecked(self.view_port) }
     }
 }
 
@@ -350,7 +361,7 @@ pub enum FromSysViewPortOrientationError {
 impl TryFrom<SysViewPortOrientation> for ViewPortOrientation {
     type Error = FromSysViewPortOrientationError;
 
-    fn try_from(value: SysViewPortOrientation) -> Result<ViewPortOrientation, Self::Error> {
+    fn try_from(value: SysViewPortOrientation) -> Result<Self, Self::Error> {
         use sys::{
             ViewPortOrientation_ViewPortOrientationHorizontal as SYS_VIEW_PORT_ORIENTATION_HORIZONTAL,
             ViewPortOrientation_ViewPortOrientationHorizontalFlip as SYS_VIEW_PORT_ORIENTATION_HORIZONTAL_FLIP,
@@ -359,14 +370,14 @@ impl TryFrom<SysViewPortOrientation> for ViewPortOrientation {
             ViewPortOrientation_ViewPortOrientationVerticalFlip as SYS_VIEW_PORT_ORIENTATION_VERTICAL_FLIP,
         };
 
-        match value {
-            SYS_VIEW_PORT_ORIENTATION_HORIZONTAL => Ok(Self::Horizontal),
-            SYS_VIEW_PORT_ORIENTATION_HORIZONTAL_FLIP => Ok(Self::HorizontalFlip),
-            SYS_VIEW_PORT_ORIENTATION_VERTICAL => Ok(Self::Vertical),
-            SYS_VIEW_PORT_ORIENTATION_VERTICAL_FLIP => Ok(Self::VerticalFlip),
-            SYS_VIEW_PORT_ORIENTATION_MAX => Err(Self::Error::Max),
-            invalid => Err(Self::Error::Invalid(invalid)),
-        }
+        Ok(match value {
+            SYS_VIEW_PORT_ORIENTATION_HORIZONTAL => Self::Horizontal,
+            SYS_VIEW_PORT_ORIENTATION_HORIZONTAL_FLIP => Self::HorizontalFlip,
+            SYS_VIEW_PORT_ORIENTATION_VERTICAL => Self::Vertical,
+            SYS_VIEW_PORT_ORIENTATION_VERTICAL_FLIP => Self::VerticalFlip,
+            SYS_VIEW_PORT_ORIENTATION_MAX => Err(Self::Error::Max)?,
+            invalid => Err(Self::Error::Invalid(invalid))?,
+        })
     }
 }
 
@@ -375,15 +386,15 @@ impl From<ViewPortOrientation> for SysViewPortOrientation {
         use sys::{
             ViewPortOrientation_ViewPortOrientationHorizontal as SYS_VIEW_PORT_ORIENTATION_HORIZONTAL,
             ViewPortOrientation_ViewPortOrientationHorizontalFlip as SYS_VIEW_PORT_ORIENTATION_HORIZONTAL_FLIP,
-            ViewPortOrientation_ViewPortOrientationMAX as SYS_VIEW_PORT_ORIENTATION_MAX,
             ViewPortOrientation_ViewPortOrientationVertical as SYS_VIEW_PORT_ORIENTATION_VERTICAL,
+            ViewPortOrientation_ViewPortOrientationVerticalFlip as SYS_VIEW_PORT_ORIENTATION_VERTICAL_FLIP,
         };
 
         match value {
             ViewPortOrientation::Horizontal => SYS_VIEW_PORT_ORIENTATION_HORIZONTAL,
             ViewPortOrientation::HorizontalFlip => SYS_VIEW_PORT_ORIENTATION_HORIZONTAL_FLIP,
-            ViewPortOrientation::Vertical => SYS_VIEW_PORT_ORIENTATION_MAX,
-            ViewPortOrientation::VerticalFlip => SYS_VIEW_PORT_ORIENTATION_VERTICAL,
+            ViewPortOrientation::Vertical => SYS_VIEW_PORT_ORIENTATION_VERTICAL,
+            ViewPortOrientation::VerticalFlip => SYS_VIEW_PORT_ORIENTATION_VERTICAL_FLIP,
         }
     }
 }

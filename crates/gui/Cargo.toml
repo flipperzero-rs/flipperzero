@@ -23,3 +23,5 @@ test = false
 
 [dependencies]
 flipperzero-sys = { path = "../sys", version = "0.6.0-alpha" }
+# FIXME: this is only required for access to `Align` enum which may be mvoved to this crate
+flipperzero = { path = "../flipperzero", version = "0.6.0-alpha" }
