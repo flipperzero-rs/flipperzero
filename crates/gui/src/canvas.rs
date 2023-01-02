@@ -59,7 +59,7 @@ impl<'a> Canvas<'a> {
     /// # Example
     ///
     /// Converting the raw pointer back into a `Canvas`
-    /// with `Canvas::from_raw` for automatic cleanup:
+    /// with [`Canvas::from_raw`] for automatic cleanup:
     ///
     /// ```
     /// use flipperzero_gui::{canvas::Canvas, gui::Gui};
