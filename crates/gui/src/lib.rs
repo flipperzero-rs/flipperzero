@@ -1,8 +1,8 @@
 //! Safe wrappers for Flipper GUI APIs.
 
 #![no_std]
+#![feature(thin_box)]
 
-#[cfg(feature = "alloc")]
 extern crate alloc;
 
 pub mod canvas;

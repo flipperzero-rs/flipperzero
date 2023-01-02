@@ -18,4 +18,4 @@ flipperzero = { version = "0.6.0-alpha", path = "../../crates/flipperzero" }
 flipperzero-sys = { version = "0.6.0-alpha", path = "../../crates/sys" }
 flipperzero-rt = { version = "0.6.0-alpha", path = "../../crates/rt" }
 flipperzero-alloc = { version = "0.6.0-alpha", path = "../../crates/alloc" }
-flipperzero-gui = { version = "0.6.0-alpha", path = "../../crates/gui", features = ["alloc"] }
+flipperzero-gui = { version = "0.6.0-alpha", path = "../../crates/gui" }

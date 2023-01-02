@@ -14,28 +14,16 @@ use core::time::Duration;
 
 use flipperzero::furi::thread::sleep;
 use flipperzero_gui::gui::{Gui, GuiLayer};
-use flipperzero_gui::view_port::{ViewPort, ViewPortDrawCallback};
+use flipperzero_gui::view_port::{ViewPort, ViewPortCallbacks};
 use flipperzero_rt::{entry, manifest};
 use flipperzero_sys as sys;
+use flipperzero_sys::Canvas;
 
 manifest!(name = "Rust GUI example");
 entry!(main);
 
-/// View draw handler.
-fn draw_callback(canvas: *mut sys::Canvas) {
-    // # SAFETY: `canvas` should be a valid pointer
-    unsafe {
-        sys::canvas_draw_str(canvas, 39, 31, sys::c_string!("Hello, Rust!"));
-    }
-}
-
 fn main(_args: *mut u8) -> i32 {
-    // Currently there is no high level GUI bindings,
-    // so this all has to be done using the `sys` bindings.
-    let mut view_port = ViewPort::new();
-
-    view_port.set_draw_callback(ViewPortDrawCallback::boxed(draw_callback));
-
+    let view_port = new_view_port();
     let mut gui = Gui::new();
     let mut view_port = gui.add_view_port(view_port, GuiLayer::Fullscreen);
 
@@ -44,4 +32,22 @@ fn main(_args: *mut u8) -> i32 {
     view_port.view_port_mut().set_enabled(false);
 
     0
+}
+
+fn new_view_port() -> ViewPort<impl ViewPortCallbacks> {
+    let mut view_port = ViewPort::new();
+
+    struct Callbacks;
+
+    impl ViewPortCallbacks for Callbacks {
+        fn on_draw(&mut self, canvas: *mut Canvas) {
+            // # SAFETY: `canvas` should be a valid pointer
+            unsafe {
+                sys::canvas_draw_str(canvas, 39, 31, sys::c_string!("Hello, Rust!"));
+            }
+        }
+    }
+    view_port.set_callbacks(Callbacks);
+
+    view_port
 }

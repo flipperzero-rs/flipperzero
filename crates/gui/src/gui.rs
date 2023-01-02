@@ -1,7 +1,7 @@
 //! GUI APIs
 
 use crate::canvas::Canvas;
-use crate::view_port::ViewPort;
+use crate::view_port::{ViewPort, ViewPortCallbacks};
 use core::ffi::c_char;
 use core::fmt::Debug;
 use flipperzero_sys::{self as sys, furi::UnsafeRecord, Gui as SysGui, GuiLayer as SysGuiLayer};
@@ -22,7 +22,11 @@ impl Gui {
         Self { gui }
     }
 
-    pub fn add_view_port(&mut self, view_port: ViewPort, layer: GuiLayer) -> GuiViewPort<'_> {
+    pub fn add_view_port<VPC: ViewPortCallbacks>(
+        &mut self,
+        view_port: ViewPort<VPC>,
+        layer: GuiLayer,
+    ) -> GuiViewPort<'_, VPC> {
         // SAFETY: `self.gui` is owned by this `Gui`
         let gui = unsafe { self.gui.as_raw() }.as_ptr();
         // SAFETY: `view_port` should outlive this `Gui`
@@ -78,17 +82,17 @@ impl Default for Gui {
 }
 
 /// `ViewPort` bound to a `Gui`.
-pub struct GuiViewPort<'a> {
+pub struct GuiViewPort<'a, VPC: ViewPortCallbacks> {
     parent: &'a Gui,
-    view_port: ViewPort,
+    view_port: ViewPort<VPC>,
 }
 
-impl<'a> GuiViewPort<'a> {
-    pub fn view_port(&self) -> &ViewPort {
+impl<'a, VPC: ViewPortCallbacks> GuiViewPort<'a, VPC> {
+    pub fn view_port(&self) -> &ViewPort<VPC> {
         &self.view_port
     }
 
-    pub fn view_port_mut(&mut self) -> &mut ViewPort {
+    pub fn view_port_mut(&mut self) -> &mut ViewPort<VPC> {
         &mut self.view_port
     }
 
@@ -112,7 +116,7 @@ impl<'a> GuiViewPort<'a> {
     // }
 }
 
-impl Drop for GuiViewPort<'_> {
+impl<VPC: ViewPortCallbacks> Drop for GuiViewPort<'_, VPC> {
     fn drop(&mut self) {
         // # SAFETY: `self.parent` outlives this `GuiVewPort`
         let gui = unsafe { self.parent.gui.as_raw() }.as_ptr();
