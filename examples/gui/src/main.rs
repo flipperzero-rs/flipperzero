@@ -10,6 +10,7 @@ extern crate flipperzero_rt;
 extern crate alloc;
 extern crate flipperzero_alloc;
 
+use core::ffi::c_char;
 use core::time::Duration;
 
 use flipperzero::furi::thread::sleep;
@@ -35,19 +36,15 @@ fn main(_args: *mut u8) -> i32 {
 }
 
 fn new_view_port() -> ViewPort<impl ViewPortCallbacks> {
-    let mut view_port = ViewPort::new();
-
-    struct Callbacks;
+    struct Callbacks(*const c_char);
 
     impl ViewPortCallbacks for Callbacks {
         fn on_draw(&mut self, canvas: *mut Canvas) {
             // # SAFETY: `canvas` should be a valid pointer
             unsafe {
-                sys::canvas_draw_str(canvas, 39, 31, sys::c_string!("Hello, Rust!"));
+                sys::canvas_draw_str(canvas, 39, 31, self.0);
             }
         }
     }
-    view_port.set_callbacks(Callbacks);
-
-    view_port
+    ViewPort::new(Callbacks(sys::c_string!("Hello, Rust!")))
 }

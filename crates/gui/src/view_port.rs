@@ -1,25 +1,15 @@
 //! ViewPort APIs
 
-#[cfg(feature = "alloc")]
-pub use self::alloc_features::*;
-
-use alloc::boxed::{Box, ThinBox};
-use core::{
-    ffi::c_void,
-    mem::{size_of, size_of_val},
-    num::NonZeroU8,
-    pin::Pin,
-    ptr::{null_mut, NonNull},
-};
+use alloc::boxed::Box;
+use core::{ffi::c_void, mem::size_of, num::NonZeroU8, ptr::NonNull};
 use flipperzero_sys::{
-    self as sys, Canvas, InputEvent, ViewPort as SysViewPort,
-    ViewPortOrientation as SysViewPortOrientation,
+    self as sys, ViewPort as SysViewPort, ViewPortOrientation as SysViewPortOrientation,
 };
 
 /// System ViewPort.
 pub struct ViewPort<C: ViewPortCallbacks> {
-    raw: *mut SysViewPort,
-    callbacks: Option<Pin<Box<C>>>,
+    raw: NonNull<SysViewPort>,
+    callbacks: NonNull<C>,
 }
 
 impl<C: ViewPortCallbacks> ViewPort<C> {
@@ -32,89 +22,50 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let view_port = ViewPort::new();
+    /// let view_port = ViewPort::new(todo!());
     /// ```
-    pub fn new() -> Self {
+    pub fn new(callbacks: C) -> Self {
         // SAFETY: allocation either succeeds producing the valid pointer
         // or stops the system on OOM
-        let raw = unsafe { sys::view_port_alloc() };
+        let raw = unsafe { NonNull::new_unchecked(sys::view_port_alloc()) };
+        let callbacks = NonNull::from(Box::leak(Box::new(callbacks)));
 
-        Self {
-            raw,
-            callbacks: None,
+        let mut view_port = Self { raw, callbacks };
+
+        pub unsafe extern "C" fn dispatch_draw<C: ViewPortCallbacks>(
+            canvas: *mut sys::Canvas,
+            context: *mut c_void,
+        ) {
+            let context: *mut C = context.cast();
+            // SAFETY: `context` is stored in a `Box` which is a member of `ViewPort`
+            // and the callback is accessed exclusively by this function
+            (unsafe { &mut *context }).on_draw(canvas);
         }
-    }
+        pub unsafe extern "C" fn dispatch_input<C: ViewPortCallbacks>(
+            canvas: *mut sys::InputEvent,
+            context: *mut c_void,
+        ) {
+            let context: *mut C = context.cast();
+            // SAFETY: `context` is stored in a pinned Box which is a member of `ViewPort`
+            // and the callback is accessed exclusively by this function
+            (unsafe { &mut *context }).on_input(canvas);
+        }
 
-    // Unsound (and probably not needed)
-    // /// Construct a `ViewPort` from a raw non-null pointer.
-    // ///
-    // /// After calling this function, the raw pointer is owned by the resulting `ViewPort`.
-    // /// Specifically, the `ViewPort` destructor will free the allocated memory.
-    // ///
-    // /// # Safety
-    // ///
-    // /// `raw` should be a valid pointer to [`SysViewPort`].
-    // ///
-    // /// # Examples
-    // ///
-    // /// Recreate a `ViewPort`
-    // /// which vas previously converted to a raw pointer using [`ViewPort::into_raw`].
-    // ///
-    // /// ```
-    // /// use flipperzero_gui::view_port::ViewPort;
-    // ///
-    // /// let view_port = ViewPort::new();
-    // /// let (raw, draw_callback) = view_port.into_raw();
-    // /// let view_port = unsafe { ViewPort::from_raw(raw, draw_callback) };
-    // /// ```
-    // pub unsafe fn from_raw(
-    //     raw: NonNull<SysViewPort>,
-    //     draw_callback: Option<PinnedViewPortDrawCallback>,
-    // ) -> Self {
-    //     Self {
-    //         raw: raw.as_ptr(),
-    //         #[cfg(feature = "alloc")]
-    //         draw_callback,
-    //     }
-    // }
-    //
-    // /// Consumes this wrapper, returning a non-null raw pointer.
-    // ///
-    // /// After calling this function, the caller is responsible
-    // /// for the memory previously managed by the `ViewPort`.
-    // /// In particular, the caller should properly destroy `SysViewPort` and release the memory
-    // /// such as by calling [`sys::view_port_free`].
-    // /// The easiest way to do this is to convert the raw pointer
-    // /// back into a `ViewPort` with the [ViewPort::from_raw] function,
-    // /// allowing the `ViewPort` destructor to perform the cleanup.
-    // ///
-    // /// # Example
-    // ///
-    // /// Converting the raw pointer back into a `ViewPort`
-    // /// with [`ViewPort::from_raw`] for automatic cleanup:
-    // ///
-    // /// ```
-    // /// use flipperzero_gui::view_port::ViewPort;
-    // ///
-    // /// let view_port = ViewPort::new();
-    // /// let (raw, draw_callback) = view_port.into_raw();
-    // /// let view_port = unsafe { ViewPort::from_raw(raw, draw_callback) };
-    // /// ```
-    // pub fn into_raw(mut self) -> (NonNull<SysViewPort>, Option<PinnedViewPortDrawCallback>) {
-    //     let raw_pointer = core::mem::replace(&mut self.raw, null_mut());
-    //     (
-    //         // SAFETY: `self.raw` is guaranteed to be non-null
-    //         // since it only becomes null after call to this function
-    //         // which consumes the wrapper
-    //         unsafe { NonNull::new_unchecked(raw_pointer) },
-    //         self.draw_callback.take(),
-    //     )
-    // }
+        // SAFETY: `callbacks` is a valid pointer and
+        let context = unsafe { view_port.callbacks.as_ptr() }.cast();
+
+        let raw = raw.as_ptr();
+        unsafe {
+            sys::view_port_draw_callback_set(raw, Some(dispatch_draw::<C>), context);
+            sys::view_port_input_callback_set(raw, Some(dispatch_input::<C>), context);
+        };
+
+        view_port
+    }
 
     /// Creates a copy of the non-null raw pointer to the [`SysViewPort`].
     pub fn as_raw(&self) -> NonNull<SysViewPort> {
-        // SAFETY: the pointer is guaranteed to be non-null
-        unsafe { NonNull::new_unchecked(self.raw) }
+        self.raw.clone()
     }
 
     /// Sets the width of this `ViewPort`.
@@ -128,7 +79,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// use std::num::NonZeroU8;
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new();
+    /// let mut view_port = ViewPort::new(todo!());
     /// view_port.set_width(NonZeroU8::new(128u8));
     /// ```
     ///
@@ -137,14 +88,15 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new();
+    /// let mut view_port = ViewPort::new(todo!());
     /// view_port.set_width(None);
     /// ```
     pub fn set_width(&mut self, width: Option<NonZeroU8>) {
         let width = width.map_or(0u8, NonZeroU8::into);
-        // SAFETY: `self.raw` is always valid
+        let raw = self.as_raw().as_ptr();
+        // SAFETY: `raw` is always valid
         // and there are no `width` constraints
-        unsafe { sys::view_port_set_width(self.raw, width) }
+        unsafe { sys::view_port_set_width(raw, width) }
     }
 
     /// Gets the width of this `ViewPort`.
@@ -156,12 +108,13 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let view_port = ViewPort::new();
+    /// let view_port = ViewPort::new(todo!());
     /// let width = view_port.get_width();
     /// ```
     pub fn get_width(&self) -> NonZeroU8 {
-        // SAFETY: `self.raw` is always valid
-        unsafe { sys::view_port_get_width(self.raw) }
+        let raw = self.as_raw().as_ptr();
+        // SAFETY: `raw` is always valid
+        unsafe { sys::view_port_get_width(raw) }
             .try_into()
             .expect("`view_port_get_width` should produce a positive value")
     }
@@ -177,7 +130,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// use std::num::NonZeroU8;
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new();
+    /// let mut view_port = ViewPort::new(todo!());
     /// view_port.set_height(NonZeroU8::new(128u8));
     /// ```
     ///
@@ -186,14 +139,15 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new();
+    /// let mut view_port = ViewPort::new(todo!());
     /// view_port.set_height(None);
     /// ```
     pub fn set_height(&mut self, height: Option<NonZeroU8>) {
         let height = height.map_or(0u8, NonZeroU8::into);
-        // SAFETY: `self.raw` is always valid
+        let raw = self.as_raw().as_ptr();
+        // SAFETY: `raw` is always valid
         // and there are no `height` constraints
-        unsafe { sys::view_port_set_height(self.raw, height) }
+        unsafe { sys::view_port_set_height(raw, height) }
     }
 
     /// Gets the height of this `ViewPort`.
@@ -205,12 +159,13 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let view_port = ViewPort::new();
+    /// let view_port = ViewPort::new(todo!());
     /// let height = view_port.get_height();
     /// ```
     pub fn get_height(&self) -> NonZeroU8 {
-        // SAFETY: `self.raw` is always valid
-        unsafe { sys::view_port_get_height(self.raw) }
+        let raw = self.as_raw().as_ptr();
+        // SAFETY: `raw` is always valid
+        unsafe { sys::view_port_get_height(raw) }
             .try_into()
             .expect("`view_port_get_height` should produce a positive value")
     }
@@ -226,7 +181,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// use std::num::NonZeroU8;
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new();
+    /// let mut view_port = ViewPort::new(todo!());
     /// view_port.set_dimensions(Some((NonZeroU8::new(120).unwrap(), NonZeroU8::new(80).unwrap())));
     /// ```
     ///
@@ -235,7 +190,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new();
+    /// let mut view_port = ViewPort::new(todo!());
     /// view_port.set_dimensions(None);
     /// ```
     pub fn set_dimensions(&mut self, dimensions: Option<(NonZeroU8, NonZeroU8)>) {
@@ -260,7 +215,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let view_port = ViewPort::new();
+    /// let view_port = ViewPort::new(todo!());
     /// let (width, height) = view_port.get_dimensions();
     /// ```
     pub fn get_dimensions(&self) -> (NonZeroU8, NonZeroU8) {
@@ -275,15 +230,16 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     ///
     /// ```
     /// use flipperzero_gui::view_port::{ViewPort, ViewPortOrientation};
-    /// let mut view_port = ViewPort::new();
+    /// let mut view_port = ViewPort::new(todo!());
     /// view_port.set_orientation(ViewPortOrientation::Vertical);
     /// ```
     pub fn set_orientation(&mut self, orientation: ViewPortOrientation) {
         let orientation = SysViewPortOrientation::from(orientation);
 
-        // SAFETY: `self.raw` is always valid
+        let raw = self.as_raw().as_ptr();
+        // SAFETY: `raw` is always valid
         // and `orientation` is guaranteed to be valid by `From` implementation
-        unsafe { sys::view_port_set_orientation(self.raw, orientation) }
+        unsafe { sys::view_port_set_orientation(raw, orientation) }
     }
 
     /// Gets the orientation of this `ViewPort`.
@@ -296,12 +252,13 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// use std::num::NonZeroU8;
     /// use flipperzero_gui::view_port::{ViewPort, ViewPortOrientation};
     ///
-    /// let mut view_port = ViewPort::new();
+    /// let mut view_port = ViewPort::new(todo!());
     /// let orientation = view_port.get_orientation();
     /// ```
     pub fn get_orientation(&self) -> ViewPortOrientation {
-        // SAFETY: `self.raw` is always valid
-        unsafe { sys::view_port_get_orientation(self.raw as *const _) }
+        let raw = self.as_raw().as_ptr().cast_const();
+        // SAFETY: `raw` is always valid
+        unsafe { sys::view_port_get_orientation(raw) }
             .try_into()
             .expect("`view_port_get_orientation` should produce a valid `ViewPort`")
     }
@@ -317,12 +274,13 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new();
+    /// let mut view_port = ViewPort::new(todo!());
     /// view_port.set_enabled(false);
     /// ```
     pub fn set_enabled(&mut self, enabled: bool) {
-        // SAFETY: `self.raw` is always valid
-        unsafe { sys::view_port_enabled_set(self.raw, enabled) }
+        let raw = self.as_raw().as_ptr();
+        // SAFETY: `raw` is always valid
+        unsafe { sys::view_port_enabled_set(raw, enabled) }
     }
 
     /// Checks if this `ViewPort` is enabled.
@@ -335,49 +293,28 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new();
+    /// let mut view_port = ViewPort::new(todo!());
     /// let enabled = view_port.is_enabled();
     /// ```
     pub fn is_enabled(&self) -> bool {
-        // SAFETY: `self.raw` is always valid
-        unsafe { sys::view_port_is_enabled(self.raw) }
-    }
-    //
-    // pub fn set_static_draw_callback<'a: 'b, 'b, F: Fn(*mut sys::Canvas)>(
-    //     &'a mut self,
-    //     callback: &'static fn(*mut sys::Canvas),
-    // ) {
-    //     pub unsafe extern "C" fn dispatch<F: Fn(*mut sys::Canvas)>(
-    //         canvas: *mut sys::Canvas,
-    //         context: *mut core::ffi::c_void,
-    //     ) {
-    //         // SAFETY: `context` is always a valid pointer
-    //         let context = NonNull::new_unchecked(context as *const F as *mut F);
-    //         // SAFETY: context is a valid pointer
-    //         (unsafe { context.as_ref() })(canvas);
-    //     }
-    //     // FIXME: flipperzero-firmware: function pointer should be const
-    //     let ptr = callback.as_ref().get_ref() as *const F as *mut c_void;
-    //
-    //     unsafe { sys::view_port_draw_callback_set(self.raw, Some(dispatch::<F>), ptr) }
-    // }
-}
-
-impl<C: ViewPortCallbacks> Default for ViewPort<C> {
-    fn default() -> Self {
-        Self::new()
+        let raw = self.as_raw().as_ptr();
+        // SAFETY: `raw` is always valid
+        unsafe { sys::view_port_is_enabled(raw) }
     }
 }
 
 impl<C: ViewPortCallbacks> Drop for ViewPort<C> {
     fn drop(&mut self) {
-        // `self.raw` is `null` iff it has been taken by call to `into_raw()`
-        if !self.raw.is_null() {
-            // FIXME: unregister from system (whatever this means)
-            // SAFETY: `self.raw` is always valid
-            // and it should have been unregistered from the system by now
-            unsafe { sys::view_port_free(self.raw) }
-        }
+        // FIXME: unregister from system (whatever this means)
+
+        let raw = self.raw.as_ptr();
+        // SAFETY: `self.raw` is always valid
+        // and it should have been unregistered from the system by now
+        unsafe { sys::view_port_free(raw) }
+
+        let callbacks = self.callbacks.as_ptr();
+        // SAFETY: `callbacks` was created using `Box::into_raw()` on `ViewPort` creation
+        let _ = unsafe { Box::from_raw(callbacks) };
     }
 }
 
@@ -436,116 +373,7 @@ impl From<ViewPortOrientation> for SysViewPortOrientation {
     }
 }
 
-impl<C: ViewPortCallbacks> ViewPort<C> {
-    // pub fn set_draw_callback(&mut self, callback: ViewPortDrawCallback) {
-    //     type CallbackPtr = *mut ViewPortDrawCallback;
-    //
-    //     pub unsafe extern "C" fn dispatch(canvas: *mut sys::Canvas, context: *mut c_void) {
-    //         let context: CallbackPtr = context.cast();
-    //         // SAFETY: `context` is stored in a pinned Box which is a member of `ViewPort`
-    //         // and the callback is accessed exclusively by this function
-    //         (unsafe { NonNull::new_unchecked(context).as_mut() }).0(canvas);
-    //     }
-    //
-    //     let mut callback = Box::pin(callback);
-    //     let ptr = callback.as_mut().get_mut() as CallbackPtr as *mut c_void;
-    //     // keep old cllback alive until the new one is written
-    //     let old_callback = self.callbacks.replace(callback);
-    //
-    //     const _: () = assert!(
-    //         size_of::<*const ViewPortDrawCallback>() == size_of::<*mut c_void>(),
-    //         "`ViewPortDrawCallback` should be a thin pointer"
-    //     );
-    //
-    //     unsafe { sys::view_port_draw_callback_set(self.raw, Some(dispatch), ptr) }
-    //
-    //     drop(old_callback);
-    // }
-    pub fn set_callbacks(&mut self, callbacks: C)
-    where
-        C: Unpin,
-    {
-        pub unsafe extern "C" fn dispatch_draw<C: ViewPortCallbacks>(
-            canvas: *mut sys::Canvas,
-            context: *mut c_void,
-        ) {
-            let context: *mut C = context.cast();
-            // SAFETY: `context` is stored in a pinned Box which is a member of `ViewPort`
-            // and the callback is accessed exclusively by this function
-            (unsafe { NonNull::new_unchecked(context).as_mut() }).on_draw(canvas);
-        }
-        pub unsafe extern "C" fn dispatch_input<C: ViewPortCallbacks>(
-            canvas: *mut sys::InputEvent,
-            context: *mut c_void,
-        ) {
-            let context: *mut C = context.cast();
-            // SAFETY: `context` is stored in a pinned Box which is a member of `ViewPort`
-            // and the callback is accessed exclusively by this function
-            (unsafe { NonNull::new_unchecked(context).as_mut() }).on_input(canvas);
-        }
-
-        let mut callback = Box::pin(callbacks);
-        let ptr = callback.as_mut().get_mut() as *mut C as *mut c_void;
-        // keep old cllback alive until the new one is written
-        let old_callback = self.callbacks.replace(callback);
-
-        // const _: () = assert!(
-        //     size_of::<*mut C>() == size_of::<*mut c_void>(),
-        //     "`*mut C` should be a thin pointer"
-        // );
-
-        unsafe { sys::view_port_draw_callback_set(self.raw, Some(dispatch_draw::<C>), ptr) }
-        unsafe { sys::view_port_input_callback_set(self.raw, Some(dispatch_input::<C>), ptr) }
-
-        drop(old_callback);
-    }
-}
-
 pub trait ViewPortCallbacks {
-    fn on_draw(&mut self, canvas: *mut sys::Canvas) {}
-    fn on_input(&mut self, canvas: *mut sys::InputEvent) {}
-}
-
-pub struct DynamicViewPortCallbacks {
-    on_draw: Option<Box<dyn Fn(*mut sys::Canvas)>>,
-    on_input: Option<Box<dyn Fn(*mut sys::InputEvent)>>,
-}
-
-impl DynamicViewPortCallbacks {
-    fn new() -> Self {
-        Self {
-            on_draw: None,
-            on_input: None,
-        }
-    }
-
-    // pub fn on_draw(&mut self, callback: Box<dyn Fn(*mut sys::Canvas)>) {
-    //     self.on_draw = Some(callback)
-    // }
-    //
-    // pub fn on_input_none(&mut self, callback: Box<dyn Fn(*mut sys::Canvas)>) {
-    //     self.on_input = None
-    // }
-    //
-    // pub fn on_input(&mut self, callback: Box<dyn Fn(*mut sys::Canvas)>) {
-    //     self.on_input = Some(callback)
-    // }
-    //
-    // pub fn on_input_none(&mut self, callback: Box<dyn Fn(*mut sys::Canvas)>) {
-    //     self.on_input = None
-    // }
-}
-
-impl ViewPortCallbacks for DynamicViewPortCallbacks {
-    fn on_draw(&mut self, canvas: *mut Canvas) {
-        if let Some(callback) = &self.on_draw {
-            callback(canvas)
-        }
-    }
-
-    fn on_input(&mut self, canvas: *mut InputEvent) {
-        if let Some(callback) = &self.on_input {
-            callback(canvas)
-        }
-    }
+    fn on_draw(&mut self, _canvas: *mut sys::Canvas) {}
+    fn on_input(&mut self, _event: *mut sys::InputEvent) {}
 }
