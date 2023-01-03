@@ -2,7 +2,6 @@
 
 use core::ffi::c_char;
 use core::fmt::Display;
-use core::ptr::NonNull;
 use core::time::Duration;
 
 /// Operation status.

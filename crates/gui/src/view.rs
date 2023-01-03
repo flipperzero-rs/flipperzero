@@ -1,4 +1,3 @@
-use core::ptr::{null_mut, NonNull};
 use flipperzero_sys::{self as sys, View as SysView};
 
 pub struct View {

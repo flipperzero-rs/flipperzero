@@ -1,8 +1,11 @@
 //! ViewPort APIs
 
 use crate::gui::Gui;
-use core::ptr::{null_mut, NonNull};
-use core::{ffi::CStr, num::NonZeroU8};
+use core::{
+    ffi::CStr,
+    num::NonZeroU8,
+    ptr::{null_mut, NonNull},
+};
 use flipperzero::furi::canvas::Align;
 use flipperzero_sys::{
     self as sys, Canvas as SysCanvas, CanvasDirection as SysCanvasDirection,
@@ -10,12 +13,11 @@ use flipperzero_sys::{
 };
 
 /// System Canvas.
-pub struct Canvas<'a> {
-    _parent: &'a Gui,
-    canvas: *mut SysCanvas,
+pub struct CanvasView {
+    raw: *mut SysCanvas,
 }
 
-impl<'a> Canvas<'a> {
+impl CanvasView {
     /// Construct a `Canvas` from a raw non-null pointer.
     ///
     /// After calling this function, the raw pointer is owned by the resulting `Canvas`.
@@ -25,26 +27,21 @@ impl<'a> Canvas<'a> {
     ///
     /// - `parent` should be the `Gui` which owns this canvas;
     ///
-    /// - `raw` should be a valid pointer to [`Canvas`].
+    /// - `raw` should be a valid pointer to [`CanvasView`].
     ///
     /// # Examples
     ///
     /// Recreate a `Canvas`
-    /// which vas previously converted to a raw pointer using [`Canvas::into_raw`].
+    /// which vas previously converted to a raw pointer using [`CanvasView::into_raw`].
     ///
     /// ```
-    /// use flipperzero_gui::{canvas::Canvas, gui::Gui};
+    /// use flipperzero_gui::canvas::CanvasView;
     ///
-    /// let mut gui = Gui::new();
-    /// let canvas = gui.direct_draw_acquire();
-    /// let ptr = canvas.into_raw();
-    /// let canvas = unsafe { Canvas::from_raw(gui, ptr) };
+    /// let ptr = todo!();
+    /// let canvas = unsafe { CanvasView::from_raw(ptr) };
     /// ```
-    pub unsafe fn from_raw(parent: &'a mut Gui, raw: NonNull<SysCanvas>) -> Self {
-        Self {
-            _parent: parent,
-            canvas: raw.as_ptr(),
-        }
+    pub unsafe fn from_raw(raw: NonNull<SysCanvas>) -> Self {
+        Self { raw: raw.as_ptr() }
     }
 
     /// Consumes this wrapper, returning a non-null raw pointer.
@@ -59,18 +56,18 @@ impl<'a> Canvas<'a> {
     /// # Example
     ///
     /// Converting the raw pointer back into a `Canvas`
-    /// with [`Canvas::from_raw`] for automatic cleanup:
+    /// with [`CanvasView::from_raw`] for automatic cleanup:
     ///
     /// ```
-    /// use flipperzero_gui::{canvas::Canvas, gui::Gui};
+    /// use flipperzero_gui::{canvas::CanvasView, gui::Gui};
     ///
     /// let mut gui = Gui::new();
     /// let canvas = gui.direct_draw_acquire();
     /// let ptr = canvas.into_raw();
-    /// let canvas = unsafe { Canvas::from_raw(gui, ptr) };
+    /// let canvas = unsafe { CanvasView::from_raw(gui, ptr) };
     /// ```
     pub fn into_raw(mut self) -> NonNull<SysCanvas> {
-        let raw_pointer = core::mem::replace(&mut self.canvas, null_mut());
+        let raw_pointer = core::mem::replace(&mut self.raw, null_mut());
         // SAFETY: `self.canvas` is guaranteed to be non-null
         // since it only becomes null after call to this function
         // which consumes the wrapper
@@ -83,21 +80,21 @@ impl<'a> Canvas<'a> {
 
     pub fn width(&self) -> NonZeroU8 {
         // SAFETY: `self.canvas` is always a valid pointer
-        unsafe { sys::canvas_width(self.canvas) }
+        unsafe { sys::canvas_width(self.raw) }
             .try_into()
             .expect("`canvas_width` should produce a positive value")
     }
 
     pub fn height(&self) -> NonZeroU8 {
         // SAFETY: `self.canvas` is always a valid pointer
-        unsafe { sys::canvas_height(self.canvas) }
+        unsafe { sys::canvas_height(self.raw) }
             .try_into()
             .expect("`canvas_height` should produce a positive value")
     }
 
     pub fn current_font_height(&self) -> NonZeroU8 {
         // SAFETY: `self.canvas` is always a valid pointer
-        unsafe { sys::canvas_current_font_height(self.canvas) }
+        unsafe { sys::canvas_current_font_height(self.raw) }
             .try_into()
             .expect("`canvas_current_font_height` should produce a positive value")
     }
@@ -106,46 +103,46 @@ impl<'a> Canvas<'a> {
         let font = font.into();
         // SAFETY: `self.canvas` is always a valid pointer
         // and `font` is guaranteed to be a valid value by `From` implementation
-        let raw = unsafe { sys::canvas_get_font_params(self.canvas, font) };
+        let raw = unsafe { sys::canvas_get_font_params(self.raw, font) };
         CanvasFontParameters { _parent: self, raw }
     }
 
     pub fn clear(&mut self) {
         // SAFETY: `self.canvas` is always a valid pointer
-        unsafe { sys::canvas_clear(self.canvas) };
+        unsafe { sys::canvas_clear(self.raw) };
     }
 
     pub fn set_color(&mut self, color: Color) {
         let color = color.into();
         // SAFETY: `self.canvas` is always a valid pointer
         // and `font` is guaranteed to be a valid value by `From` implementation
-        unsafe { sys::canvas_set_color(self.canvas, color) };
+        unsafe { sys::canvas_set_color(self.raw, color) };
     }
 
     pub fn set_font_direction(&mut self, font_direction: CanvasDirection) {
         let font_direction = font_direction.into();
         // SAFETY: `self.canvas` is always a valid pointer
         // and `font_direction` is guaranteed to be a valid value by `From` implementation
-        unsafe { sys::canvas_set_font_direction(self.canvas, font_direction) };
+        unsafe { sys::canvas_set_font_direction(self.raw, font_direction) };
     }
 
     pub fn invert_color(&mut self) {
         // SAFETY: `self.canvas` is always a valid pointer
-        unsafe { sys::canvas_invert_color(self.canvas) };
+        unsafe { sys::canvas_invert_color(self.raw) };
     }
 
     pub fn set_font(&mut self, font: Font) {
         let font = font.into();
         // SAFETY: `self.canvas` is always a valid pointer
         // and `font` is guaranteed to be a valid value by `From` implementation
-        unsafe { sys::canvas_set_font(self.canvas, font) };
+        unsafe { sys::canvas_set_font(self.raw, font) };
     }
 
     pub fn draw_str(&mut self, x: u8, y: u8, str: impl AsRef<CStr>) {
         let str = str.as_ref().as_ptr();
         // SAFETY: `self.canvas` is always a valid pointer
         // and `text` is guaranteed to be a valid pointer since it was created from `CStr`
-        unsafe { sys::canvas_draw_str(self.canvas, x, y, str) };
+        unsafe { sys::canvas_draw_str(self.raw, x, y, str) };
     }
 
     pub fn draw_str_aligned(
@@ -162,7 +159,7 @@ impl<'a> Canvas<'a> {
         // SAFETY: `self.canvas` is always a valid pointer,
         // `horixontal` and `vertival` are guaranteed to be valid by `From` implementation
         // and `text` is guaranteed to be a valid pointer since it was created from `CStr`
-        unsafe { sys::canvas_draw_str_aligned(self.canvas, x, y, horizontal, vertical, str) };
+        unsafe { sys::canvas_draw_str_aligned(self.raw, x, y, horizontal, vertical, str) };
     }
 
     // TODO:
@@ -177,42 +174,42 @@ impl<'a> Canvas<'a> {
 
     pub fn draw_dot(&mut self, x: u8, y: u8) {
         // SAFETY: `self.canvas` is always a valid pointer,
-        unsafe { sys::canvas_draw_dot(self.canvas, x, y) }
+        unsafe { sys::canvas_draw_dot(self.raw, x, y) }
     }
 
     // TODO: do we need range checks?
     // TODO: do `width` and `height` have to be non-zero
     pub fn draw_box(&mut self, x: u8, y: u8, width: u8, height: u8) {
         // SAFETY: `self.canvas` is always a valid pointer,
-        unsafe { sys::canvas_draw_box(self.canvas, x, y, width, height) }
+        unsafe { sys::canvas_draw_box(self.raw, x, y, width, height) }
     }
 
     // TODO: do we need range checks?
     // TODO: do `width` and `height` have to be non-zero
     pub fn draw_frame(&mut self, x: u8, y: u8, width: u8, height: u8) {
         // SAFETY: `self.canvas` is always a valid pointer,
-        unsafe { sys::canvas_draw_frame(self.canvas, x, y, width, height) }
+        unsafe { sys::canvas_draw_frame(self.raw, x, y, width, height) }
     }
 
     // TODO: do we need range checks?
     // TODO: do `x2` and `y2` have to be non-zero
     pub fn draw_line(&mut self, x1: u8, y1: u8, x2: u8, y2: u8) {
         // SAFETY: `self.canvas` is always a valid pointer,
-        unsafe { sys::canvas_draw_line(self.canvas, x1, y1, x2, y2) }
+        unsafe { sys::canvas_draw_line(self.raw, x1, y1, x2, y2) }
     }
 
     // TODO: do we need range checks?
     // TODO: does `radius` have to be non-zero
     pub fn draw_circle(&mut self, x: u8, y: u8, radius: u8) {
         // SAFETY: `self.canvas` is always a valid pointer,
-        unsafe { sys::canvas_draw_circle(self.canvas, x, y, radius) }
+        unsafe { sys::canvas_draw_circle(self.raw, x, y, radius) }
     }
 
     // TODO: do we need range checks?
     // TODO: does `radius` have to be non-zero
     pub fn draw_disc(&mut self, x: u8, y: u8, radius: u8) {
         // SAFETY: `self.canvas` is always a valid pointer,
-        unsafe { sys::canvas_draw_disc(self.canvas, x, y, radius) }
+        unsafe { sys::canvas_draw_disc(self.raw, x, y, radius) }
     }
 
     // TODO: do we need range checks?
@@ -228,44 +225,44 @@ impl<'a> Canvas<'a> {
         let direction = direction.into();
         // SAFETY: `self.canvas` is always a valid pointer,
         // and `direction` is guaranteed to be valid by `From` implementation
-        unsafe { sys::canvas_draw_triangle(self.canvas, x, y, base, height, direction) }
+        unsafe { sys::canvas_draw_triangle(self.raw, x, y, base, height, direction) }
     }
 
     // TODO: do we need range checks?
     // TODO: does `character` have to be of a wrapper type
     pub fn draw_glyph(&mut self, x: u8, y: u8, character: u16) {
         // SAFETY: `self.canvas` is always a valid pointer,
-        unsafe { sys::canvas_draw_glyph(self.canvas, x, y, character) }
+        unsafe { sys::canvas_draw_glyph(self.raw, x, y, character) }
     }
 
     pub fn set_bitmap_mode(&mut self, alpha: bool) {
         // SAFETY: `self.canvas` is always a valid pointer,
-        unsafe { sys::canvas_set_bitmap_mode(self.canvas, alpha) }
+        unsafe { sys::canvas_set_bitmap_mode(self.raw, alpha) }
     }
 
     // TODO: do we need range checks?
     // TODO: do `width`, `height` and `radius` have to be non-zero
     pub fn draw_rframe(&mut self, x: u8, y: u8, width: u8, height: u8, radius: u8) {
         // SAFETY: `self.canvas` is always a valid pointer,
-        unsafe { sys::canvas_draw_rframe(self.canvas, x, y, width, height, radius) }
+        unsafe { sys::canvas_draw_rframe(self.raw, x, y, width, height, radius) }
     }
 
     // TODO: do we need range checks?
     // TODO: do `width`, `height` and `radius` have to be non-zero
     pub fn draw_rbox(&mut self, x: u8, y: u8, width: u8, height: u8, radius: u8) {
         // SAFETY: `self.canvas` is always a valid pointer,
-        unsafe { sys::canvas_draw_rbox(self.canvas, x, y, width, height, radius) }
+        unsafe { sys::canvas_draw_rbox(self.raw, x, y, width, height, radius) }
     }
 }
 
-impl Drop for Canvas<'_> {
+impl Drop for CanvasView {
     fn drop(&mut self) {
         // unsafe { sys::gui_direct_draw_release(self.parent...) }
     }
 }
 
 pub struct CanvasFontParameters<'a> {
-    _parent: &'a Canvas<'a>,
+    _parent: &'a CanvasView,
     raw: *mut SysCanvasFontParameters,
 }
 
@@ -326,7 +323,7 @@ impl<'a> CanvasFontParameters<'a> {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub struct CanvasFontParametersSnapshot {
     leading_default: NonZeroU8,
     leading_min: NonZeroU8,
@@ -334,7 +331,7 @@ pub struct CanvasFontParametersSnapshot {
     descender: u8,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysGuiLayerError {
     ZeroLeadingDefault,
     ZeroLeadingMin,
@@ -371,7 +368,7 @@ impl From<CanvasFontParametersSnapshot> for SysCanvasFontParameters {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum Color {
     White,
     Black,
@@ -379,7 +376,7 @@ pub enum Color {
     // Xor,
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysColor {
     Invalid(SysColor),
 }
@@ -419,7 +416,7 @@ impl From<Color> for SysColor {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum Font {
     Primary,
     Secondary,
@@ -427,7 +424,7 @@ pub enum Font {
     BigNumbers,
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysFont {
     TotalNumber,
     Invalid(SysFont),
@@ -522,7 +519,7 @@ impl From<Font> for SysFont {
 //     }
 // }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum CanvasDirection {
     LeftToRight,
     TopToBottom,
@@ -530,7 +527,7 @@ pub enum CanvasDirection {
     BottomToTop,
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysCanvasDirectionError {
     Invalid(SysCanvasDirection),
 }

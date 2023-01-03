@@ -1,9 +1,11 @@
 //! ViewPort APIs
 
+use crate::canvas::CanvasView;
+use crate::input::InputEvent;
 use alloc::boxed::Box;
 use core::{ffi::c_void, num::NonZeroU8, ptr::NonNull};
 use flipperzero_sys::{
-    self as sys, ViewPort as SysViewPort, ViewPortOrientation as SysViewPortOrientation,
+    self as sys, Canvas, ViewPort as SysViewPort, ViewPortOrientation as SysViewPortOrientation,
 };
 
 /// System ViewPort.
@@ -30,29 +32,36 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
         let raw = unsafe { NonNull::new_unchecked(sys::view_port_alloc()) };
         let callbacks = NonNull::from(Box::leak(Box::new(callbacks)));
 
-        let mut view_port = Self { raw, callbacks };
+        let view_port = Self { raw, callbacks };
 
         pub unsafe extern "C" fn dispatch_draw<C: ViewPortCallbacks>(
             canvas: *mut sys::Canvas,
             context: *mut c_void,
         ) {
+            // SAFETY: `canvas` is guaranteed to be a valid pointer
+            let mut canvas = unsafe { CanvasView::from_raw(NonNull::new_unchecked(canvas)) };
+
             let context: *mut C = context.cast();
             // SAFETY: `context` is stored in a `Box` which is a member of `ViewPort`
             // and the callback is accessed exclusively by this function
-            (unsafe { &mut *context }).on_draw(canvas);
+            unsafe { &mut *context }.on_draw(&mut canvas);
         }
         pub unsafe extern "C" fn dispatch_input<C: ViewPortCallbacks>(
-            canvas: *mut sys::InputEvent,
+            input_event: *mut sys::InputEvent,
             context: *mut c_void,
         ) {
+            let input_event: InputEvent = (&unsafe { *input_event })
+                .try_into()
+                .expect("`input_event` should be a valid event");
+
             let context: *mut C = context.cast();
             // SAFETY: `context` is stored in a pinned Box which is a member of `ViewPort`
             // and the callback is accessed exclusively by this function
-            (unsafe { &mut *context }).on_input(canvas);
+            unsafe { &mut *context }.on_input(input_event);
         }
 
         // SAFETY: `callbacks` is a valid pointer and
-        let context = unsafe { view_port.callbacks.as_ptr() }.cast();
+        let context = view_port.callbacks.as_ptr().cast();
 
         let raw = raw.as_ptr();
         unsafe {
@@ -314,7 +323,7 @@ impl<C: ViewPortCallbacks> Drop for ViewPort<C> {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum ViewPortOrientation {
     Horizontal,
     HorizontalFlip,
@@ -322,7 +331,7 @@ pub enum ViewPortOrientation {
     VerticalFlip,
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysViewPortOrientationError {
     Max,
     Invalid(SysViewPortOrientation),
@@ -370,6 +379,6 @@ impl From<ViewPortOrientation> for SysViewPortOrientation {
 }
 
 pub trait ViewPortCallbacks {
-    fn on_draw(&mut self, _canvas: *mut sys::Canvas) {}
-    fn on_input(&mut self, _event: *mut sys::InputEvent) {}
+    fn on_draw(&mut self, _canvas: &mut CanvasView) {}
+    fn on_input(&mut self, _event: InputEvent) {}
 }

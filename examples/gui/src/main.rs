@@ -3,6 +3,7 @@
 
 #![no_main]
 #![no_std]
+#![forbid(unsafe_code)]
 
 // Required for panic handler
 extern crate flipperzero_rt;
@@ -10,41 +11,86 @@ extern crate flipperzero_rt;
 extern crate alloc;
 extern crate flipperzero_alloc;
 
-use core::ffi::c_char;
-use core::time::Duration;
+use alloc::ffi::CString;
+use core::{ffi::CStr, time::Duration};
 
-use flipperzero::furi::thread::sleep;
-use flipperzero_gui::gui::{Gui, GuiLayer};
-use flipperzero_gui::view_port::{ViewPort, ViewPortCallbacks};
+use flipperzero::{furi::message_queue::MessageQueue, println};
+use flipperzero_gui::{
+    canvas::CanvasView,
+    gui::{Gui, GuiLayer},
+    input::{InputEvent, InputKey, InputType},
+    view_port::{ViewPort, ViewPortCallbacks},
+};
 use flipperzero_rt::{entry, manifest};
-use flipperzero_sys as sys;
-use flipperzero_sys::Canvas;
+use flipperzero_sys::furi::Status;
 
 manifest!(name = "Rust GUI example");
 entry!(main);
 
 fn main(_args: *mut u8) -> i32 {
-    let view_port = new_view_port();
-    let mut gui = Gui::new();
-    let mut view_port = gui.add_view_port(view_port, GuiLayer::Fullscreen);
+    let exit_event_queue = MessageQueue::new(32);
 
-    sleep(Duration::from_secs(1));
+    struct State<'a> {
+        text: &'a CStr,
+        exit_event_queue: &'a MessageQueue<()>,
+        counter: u8,
+    }
 
-    view_port.view_port_mut().set_enabled(false);
+    impl ViewPortCallbacks for State<'_> {
+        fn on_draw(&mut self, canvas: &mut CanvasView) {
+            canvas.draw_str(10, 31, self.text);
+            let bottom_text = CString::new(alloc::format!("Value = {}", self.counter).as_bytes())
+                .expect("should be a valid string");
+            canvas.draw_str(5, 62, bottom_text);
+        }
 
-    0
-}
-
-fn new_view_port() -> ViewPort<impl ViewPortCallbacks> {
-    struct Callbacks(*const c_char);
-
-    impl ViewPortCallbacks for Callbacks {
-        fn on_draw(&mut self, canvas: *mut Canvas) {
-            // # SAFETY: `canvas` should be a valid pointer
-            unsafe {
-                sys::canvas_draw_str(canvas, 39, 31, self.0);
+        fn on_input(&mut self, event: InputEvent) {
+            if event.r#type == InputType::Press {
+                match event.key {
+                    InputKey::Up => {
+                        self.counter = (self.counter + 1) % 10;
+                    }
+                    InputKey::Down => {
+                        self.counter = if self.counter == 0 {
+                            10
+                        } else {
+                            self.counter - 1
+                        };
+                    }
+                    InputKey::Back => {
+                        self.exit_event_queue
+                            .put((), Duration::MAX)
+                            .expect("failed to put event into the queue");
+                    }
+                    _ => {}
+                }
             }
         }
     }
-    ViewPort::new(Callbacks(sys::c_string!("Hello, Rust!")))
+    let view_port = ViewPort::new(State {
+        text: CStr::from_bytes_with_nul(b"Hi there!\0").expect("correct string"),
+        exit_event_queue: &exit_event_queue,
+        counter: 0,
+    });
+
+    let mut gui = Gui::new();
+    let mut view_port = gui.add_view_port(view_port, GuiLayer::Fullscreen);
+
+    let status = loop {
+        match exit_event_queue.get(Duration::from_millis(100)) {
+            Ok(()) => {
+                println!("Exit pressed");
+                break 0;
+            }
+            Err(e) => {
+                if e != Status::ERR_TIMEOUT {
+                    println!("ERROR while receiving event: {:?}", e);
+                    break 1;
+                }
+            }
+        }
+    };
+    view_port.view_port_mut().set_enabled(false);
+
+    status
 }

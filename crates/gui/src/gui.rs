@@ -1,6 +1,7 @@
 //! GUI APIs
 
-use crate::canvas::Canvas;
+use crate::canvas::CanvasView;
+use crate::input::InputEvent;
 use crate::view_port::{ViewPort, ViewPortCallbacks};
 use core::ffi::c_char;
 use core::fmt::Debug;
@@ -54,7 +55,7 @@ impl Gui {
 
     // TODO: separate `GuiCanvas` (locking the parent)
     //  and `Canvas` (independent of the parent)
-    pub fn direct_draw_acquire(&self) -> Canvas<'_> {
+    pub fn direct_draw_acquire(&self) -> CanvasView {
         let gui = self.gui.as_raw();
 
         // SAFETY: `gui` is always a valid pointer
@@ -117,7 +118,7 @@ impl<VPC: ViewPortCallbacks> Drop for GuiViewPort<'_, VPC> {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum GuiLayer {
     Desktop,
     Window,
@@ -126,7 +127,7 @@ pub enum GuiLayer {
     Fullscreen,
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysGuiLayerError {
     Max,
     Invalid(SysGuiLayer),
@@ -179,5 +180,5 @@ impl From<GuiLayer> for SysGuiLayer {
 
 pub trait GuiCallbacks {
     fn on_draw(&mut self, _canvas: *mut sys::Canvas) {}
-    fn on_input(&mut self, _event: *mut sys::InputEvent) {}
+    fn on_input(&mut self, _event: InputEvent) {}
 }
