@@ -1,7 +1,7 @@
 //! ViewPort APIs
 
 use alloc::boxed::Box;
-use core::{ffi::c_void, mem::size_of, num::NonZeroU8, ptr::NonNull};
+use core::{ffi::c_void, num::NonZeroU8, ptr::NonNull};
 use flipperzero_sys::{
     self as sys, ViewPort as SysViewPort, ViewPortOrientation as SysViewPortOrientation,
 };
@@ -63,9 +63,9 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
         view_port
     }
 
-    /// Creates a copy of the non-null raw pointer to the [`SysViewPort`].
-    pub fn as_raw(&self) -> NonNull<SysViewPort> {
-        self.raw.clone()
+    /// Creates a copy of the raw pointer to the [`SysViewPort`].
+    pub fn as_raw(&self) -> *mut SysViewPort {
+        self.raw.as_ptr()
     }
 
     /// Sets the width of this `ViewPort`.
@@ -93,7 +93,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     pub fn set_width(&mut self, width: Option<NonZeroU8>) {
         let width = width.map_or(0u8, NonZeroU8::into);
-        let raw = self.as_raw().as_ptr();
+        let raw = self.as_raw();
         // SAFETY: `raw` is always valid
         // and there are no `width` constraints
         unsafe { sys::view_port_set_width(raw, width) }
@@ -111,12 +111,10 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// let view_port = ViewPort::new(todo!());
     /// let width = view_port.get_width();
     /// ```
-    pub fn get_width(&self) -> NonZeroU8 {
-        let raw = self.as_raw().as_ptr();
+    pub fn get_width(&self) -> Option<NonZeroU8> {
+        let raw = self.as_raw();
         // SAFETY: `raw` is always valid
-        unsafe { sys::view_port_get_width(raw) }
-            .try_into()
-            .expect("`view_port_get_width` should produce a positive value")
+        NonZeroU8::new(unsafe { sys::view_port_get_width(raw) })
     }
 
     /// Sets the height of this `ViewPort`.
@@ -144,7 +142,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     pub fn set_height(&mut self, height: Option<NonZeroU8>) {
         let height = height.map_or(0u8, NonZeroU8::into);
-        let raw = self.as_raw().as_ptr();
+        let raw = self.as_raw();
         // SAFETY: `raw` is always valid
         // and there are no `height` constraints
         unsafe { sys::view_port_set_height(raw, height) }
@@ -162,12 +160,10 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// let view_port = ViewPort::new(todo!());
     /// let height = view_port.get_height();
     /// ```
-    pub fn get_height(&self) -> NonZeroU8 {
-        let raw = self.as_raw().as_ptr();
+    pub fn get_height(&self) -> Option<NonZeroU8> {
+        let raw = self.as_raw();
         // SAFETY: `raw` is always valid
-        unsafe { sys::view_port_get_height(raw) }
-            .try_into()
-            .expect("`view_port_get_height` should produce a positive value")
+        NonZeroU8::new(unsafe { sys::view_port_get_height(raw) })
     }
 
     /// Sets the dimensions of this `ViewPort`.
@@ -218,7 +214,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// let view_port = ViewPort::new(todo!());
     /// let (width, height) = view_port.get_dimensions();
     /// ```
-    pub fn get_dimensions(&self) -> (NonZeroU8, NonZeroU8) {
+    pub fn get_dimensions(&self) -> (Option<NonZeroU8>, Option<NonZeroU8>) {
         (self.get_width(), self.get_height())
     }
 
@@ -236,7 +232,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     pub fn set_orientation(&mut self, orientation: ViewPortOrientation) {
         let orientation = SysViewPortOrientation::from(orientation);
 
-        let raw = self.as_raw().as_ptr();
+        let raw = self.as_raw();
         // SAFETY: `raw` is always valid
         // and `orientation` is guaranteed to be valid by `From` implementation
         unsafe { sys::view_port_set_orientation(raw, orientation) }
@@ -256,7 +252,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// let orientation = view_port.get_orientation();
     /// ```
     pub fn get_orientation(&self) -> ViewPortOrientation {
-        let raw = self.as_raw().as_ptr().cast_const();
+        let raw = self.as_raw().cast_const();
         // SAFETY: `raw` is always valid
         unsafe { sys::view_port_get_orientation(raw) }
             .try_into()
@@ -278,7 +274,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// view_port.set_enabled(false);
     /// ```
     pub fn set_enabled(&mut self, enabled: bool) {
-        let raw = self.as_raw().as_ptr();
+        let raw = self.as_raw();
         // SAFETY: `raw` is always valid
         unsafe { sys::view_port_enabled_set(raw, enabled) }
     }
@@ -297,7 +293,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// let enabled = view_port.is_enabled();
     /// ```
     pub fn is_enabled(&self) -> bool {
-        let raw = self.as_raw().as_ptr();
+        let raw = self.as_raw();
         // SAFETY: `raw` is always valid
         unsafe { sys::view_port_is_enabled(raw) }
     }

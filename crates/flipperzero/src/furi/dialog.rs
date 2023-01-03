@@ -15,7 +15,7 @@ use super::canvas::Align;
 const RECORD_DIALOGS: *const c_char = sys::c_string!("dialogs");
 
 #[cfg(feature = "alloc")]
-const BUTTON_OK: &'static CStr = unsafe { CStr::from_bytes_with_nul_unchecked(b"OK\0") };
+const BUTTON_OK: &CStr = unsafe { CStr::from_bytes_with_nul_unchecked(b"OK\0") };
 
 /// A handle to the Dialogs app.
 pub struct DialogsApp {
@@ -46,8 +46,8 @@ impl DialogsApp {
 
     /// Displays a message.
     pub fn show(&mut self, message: &DialogMessage) -> DialogMessageButton {
-        let button_sys =
-            unsafe { sys::dialog_message_show(self.data.as_raw().as_ptr(), message.data) };
+        let data = self.data.as_raw();
+        let button_sys = unsafe { sys::dialog_message_show(data, message.data) };
 
         DialogMessageButton::from_sys(button_sys).expect("Invalid button")
     }

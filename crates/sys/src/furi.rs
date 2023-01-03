@@ -104,13 +104,8 @@ impl<T> UnsafeRecord<T> {
     }
 
     /// Returns the record data as a raw pointer.
-    ///
-    /// # Safety
-    ///
-    /// Caller must ensure that the provided pointer does not outlive this wrapper.
-    pub unsafe fn as_raw(&self) -> NonNull<T> {
-        // SAFETY: the pointer is guaranteed to be non-null
-        unsafe { NonNull::new_unchecked(self.data) }
+    pub fn as_raw(&self) -> *mut T {
+        self.data
     }
 }
 

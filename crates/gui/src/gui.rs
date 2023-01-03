@@ -27,10 +27,8 @@ impl Gui {
         view_port: ViewPort<VPC>,
         layer: GuiLayer,
     ) -> GuiViewPort<'_, VPC> {
-        // SAFETY: `self.gui` is owned by this `Gui`
-        let gui = unsafe { self.gui.as_raw() }.as_ptr();
-        // SAFETY: `view_port` should outlive this `Gui`
-        let view_port_ptr = unsafe { view_port.as_raw() }.as_ptr();
+        let gui = self.gui.as_raw();
+        let view_port_ptr = view_port.as_raw();
         let layer = layer.into();
 
         // SAFETY: all pointers are valid and `view_port` outlives this `Gui`
@@ -43,15 +41,13 @@ impl Gui {
     }
 
     pub fn get_frame_buffer_size(&self) -> usize {
-        // SAFETY: `self.gui` is owned by this `Gui`
-        let gui = unsafe { self.gui.as_raw() }.as_ptr();
+        let gui = self.gui.as_raw();
         // SAFETY: `gui` is always a valid pointer
         unsafe { sys::gui_get_framebuffer_size(gui) }
     }
 
     pub fn set_lockdown(&self, lockdown: bool) {
-        // SAFETY: `self.gui` is owned by this `Gui`
-        let gui = unsafe { self.gui.as_raw() }.as_ptr();
+        let gui = self.gui.as_raw();
         // SAFETY: `gui` is always a valid pointer
         unsafe { sys::gui_set_lockdown(gui, lockdown) }
     }
@@ -59,8 +55,7 @@ impl Gui {
     // TODO: separate `GuiCanvas` (locking the parent)
     //  and `Canvas` (independent of the parent)
     pub fn direct_draw_acquire(&self) -> Canvas<'_> {
-        // SAFETY: `self.gui` is owned by this `Gui`
-        let gui = unsafe { self.gui.as_raw() }.as_ptr();
+        let gui = self.gui.as_raw();
 
         // SAFETY: `gui` is always a valid pointer
         // let canvas = unsafe { sys::gui_direct_draw_acquire(gui) }
@@ -97,10 +92,8 @@ impl<'a, VPC: ViewPortCallbacks> GuiViewPort<'a, VPC> {
     }
 
     pub fn send_to_front(&mut self) {
-        // # SAFETY: `self.parent` outlives this `GuiVewPort`
-        let gui = unsafe { self.parent.gui.as_raw() }.as_ptr();
-        // # SAFETY: `self.view_port` is owned
-        let view_port = unsafe { self.view_port.as_raw() }.as_ptr();
+        let gui = self.parent.gui.as_raw();
+        let view_port = self.view_port.as_raw();
 
         // # SAFETY: `self.parent` outlives this `GuiVewPort`
         unsafe { sys::gui_view_port_send_to_front(gui, view_port) };
@@ -108,9 +101,8 @@ impl<'a, VPC: ViewPortCallbacks> GuiViewPort<'a, VPC> {
 
     // FIXME(Coles): `gui_view_port_send_to_back` is not present in bindings
     // pub fn send_to_back(&mut self) {
-    //     // # SAFETY: `self.parent` outlives this `GuiVewPort`
-    //     let gui = unsafe { self.parent.gui.as_raw() }.as_ptr();
-    //     let view_port = unsafe { self.view_port.as_raw() }.as_ptr();
+    //     let gui = self.gui.as_raw();
+    //     let view_port = self.view_port.as_raw();
     //
     //     unsafe { sys::gui_view_port_send_to_back(gui, view_port) };
     // }
@@ -118,10 +110,8 @@ impl<'a, VPC: ViewPortCallbacks> GuiViewPort<'a, VPC> {
 
 impl<VPC: ViewPortCallbacks> Drop for GuiViewPort<'_, VPC> {
     fn drop(&mut self) {
-        // # SAFETY: `self.parent` outlives this `GuiVewPort`
-        let gui = unsafe { self.parent.gui.as_raw() }.as_ptr();
-        // # SAFETY: `self.view_port` is owned
-        let view_port = unsafe { self.view_port.as_raw() }.as_ptr();
+        let gui = self.parent.gui.as_raw();
+        let view_port = self.view_port().as_raw();
 
         unsafe { sys::gui_remove_view_port(gui, view_port) }
     }
@@ -185,4 +175,9 @@ impl From<GuiLayer> for SysGuiLayer {
             GuiLayer::Fullscreen => SYS_GUI_LAYER_FULLSCREN,
         }
     }
+}
+
+pub trait GuiCallbacks {
+    fn on_draw(&mut self, _canvas: *mut sys::Canvas) {}
+    fn on_input(&mut self, _event: *mut sys::InputEvent) {}
 }
