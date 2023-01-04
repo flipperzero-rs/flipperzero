@@ -1,11 +1,15 @@
 //! ViewPort APIs
 
-use crate::canvas::CanvasView;
-use crate::input::InputEvent;
+use crate::{canvas::CanvasView, input::InputEvent};
 use alloc::boxed::Box;
-use core::{ffi::c_void, num::NonZeroU8, ptr::NonNull};
+use core::{
+    ffi::c_void,
+    num::NonZeroU8,
+    ptr::{self, NonNull},
+};
 use flipperzero_sys::{
-    self as sys, Canvas, ViewPort as SysViewPort, ViewPortOrientation as SysViewPortOrientation,
+    self as sys, Canvas as SysCanvas, ViewPort as SysViewPort,
+    ViewPortOrientation as SysViewPortOrientation,
 };
 
 /// System ViewPort.
@@ -24,7 +28,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let view_port = ViewPort::new(todo!());
+    /// let view_port = ViewPort::new(());
     /// ```
     pub fn new(callbacks: C) -> Self {
         // SAFETY: allocation either succeeds producing the valid pointer
@@ -35,16 +39,16 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
         let view_port = Self { raw, callbacks };
 
         pub unsafe extern "C" fn dispatch_draw<C: ViewPortCallbacks>(
-            canvas: *mut sys::Canvas,
+            canvas: *mut SysCanvas,
             context: *mut c_void,
         ) {
             // SAFETY: `canvas` is guaranteed to be a valid pointer
-            let mut canvas = unsafe { CanvasView::from_raw(NonNull::new_unchecked(canvas)) };
+            let canvas = unsafe { CanvasView::from_raw(canvas) };
 
             let context: *mut C = context.cast();
             // SAFETY: `context` is stored in a `Box` which is a member of `ViewPort`
             // and the callback is accessed exclusively by this function
-            unsafe { &mut *context }.on_draw(&mut canvas);
+            unsafe { &mut *context }.on_draw(canvas);
         }
         pub unsafe extern "C" fn dispatch_input<C: ViewPortCallbacks>(
             input_event: *mut sys::InputEvent,
@@ -60,14 +64,30 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
             unsafe { &mut *context }.on_input(input_event);
         }
 
-        // SAFETY: `callbacks` is a valid pointer and
-        let context = view_port.callbacks.as_ptr().cast();
-
-        let raw = raw.as_ptr();
-        unsafe {
-            sys::view_port_draw_callback_set(raw, Some(dispatch_draw::<C>), context);
-            sys::view_port_input_callback_set(raw, Some(dispatch_input::<C>), context);
-        };
+        if !ptr::eq(
+            C::on_draw as *const c_void,
+            <() as ViewPortCallbacks>::on_draw as *const c_void,
+        ) {
+            let context = view_port.callbacks.as_ptr().cast();
+            let raw = raw.as_ptr();
+            // SAFETY: `raw` is valid
+            // and `callbacks` is valid and lives with this struct
+            unsafe {
+                sys::view_port_draw_callback_set(raw, Some(dispatch_draw::<C>), context);
+            }
+        }
+        if !ptr::eq(
+            C::on_input as *const c_void,
+            <() as ViewPortCallbacks>::on_input as *const c_void,
+        ) {
+            let context = view_port.callbacks.as_ptr().cast();
+            let raw = raw.as_ptr();
+            // SAFETY: `raw` is valid
+            // and `callbacks` is valid and lives with this struct
+            unsafe {
+                sys::view_port_input_callback_set(raw, Some(dispatch_input::<C>), context);
+            };
+        }
 
         view_port
     }
@@ -88,7 +108,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// use std::num::NonZeroU8;
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new(todo!());
+    /// let mut view_port = ViewPort::new(());
     /// view_port.set_width(NonZeroU8::new(128u8));
     /// ```
     ///
@@ -97,7 +117,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new(todo!());
+    /// let mut view_port = ViewPort::new(());
     /// view_port.set_width(None);
     /// ```
     pub fn set_width(&mut self, width: Option<NonZeroU8>) {
@@ -117,7 +137,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let view_port = ViewPort::new(todo!());
+    /// let view_port = ViewPort::new(());
     /// let width = view_port.get_width();
     /// ```
     pub fn get_width(&self) -> Option<NonZeroU8> {
@@ -137,7 +157,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// use std::num::NonZeroU8;
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new(todo!());
+    /// let mut view_port = ViewPort::new(());
     /// view_port.set_height(NonZeroU8::new(128u8));
     /// ```
     ///
@@ -146,7 +166,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new(todo!());
+    /// let mut view_port = ViewPort::new(());
     /// view_port.set_height(None);
     /// ```
     pub fn set_height(&mut self, height: Option<NonZeroU8>) {
@@ -166,7 +186,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let view_port = ViewPort::new(todo!());
+    /// let view_port = ViewPort::new(());
     /// let height = view_port.get_height();
     /// ```
     pub fn get_height(&self) -> Option<NonZeroU8> {
@@ -186,7 +206,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// use std::num::NonZeroU8;
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new(todo!());
+    /// let mut view_port = ViewPort::new(());
     /// view_port.set_dimensions(Some((NonZeroU8::new(120).unwrap(), NonZeroU8::new(80).unwrap())));
     /// ```
     ///
@@ -195,7 +215,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new(todo!());
+    /// let mut view_port = ViewPort::new(());
     /// view_port.set_dimensions(None);
     /// ```
     pub fn set_dimensions(&mut self, dimensions: Option<(NonZeroU8, NonZeroU8)>) {
@@ -220,7 +240,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let view_port = ViewPort::new(todo!());
+    /// let view_port = ViewPort::new(());
     /// let (width, height) = view_port.get_dimensions();
     /// ```
     pub fn get_dimensions(&self) -> (Option<NonZeroU8>, Option<NonZeroU8>) {
@@ -235,7 +255,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     ///
     /// ```
     /// use flipperzero_gui::view_port::{ViewPort, ViewPortOrientation};
-    /// let mut view_port = ViewPort::new(todo!());
+    /// let mut view_port = ViewPort::new(());
     /// view_port.set_orientation(ViewPortOrientation::Vertical);
     /// ```
     pub fn set_orientation(&mut self, orientation: ViewPortOrientation) {
@@ -257,7 +277,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// use std::num::NonZeroU8;
     /// use flipperzero_gui::view_port::{ViewPort, ViewPortOrientation};
     ///
-    /// let mut view_port = ViewPort::new(todo!());
+    /// let mut view_port = ViewPort::new(());
     /// let orientation = view_port.get_orientation();
     /// ```
     pub fn get_orientation(&self) -> ViewPortOrientation {
@@ -279,7 +299,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new(todo!());
+    /// let mut view_port = ViewPort::new(());
     /// view_port.set_enabled(false);
     /// ```
     pub fn set_enabled(&mut self, enabled: bool) {
@@ -298,7 +318,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// ```
     /// use flipperzero_gui::view_port::ViewPort;
     ///
-    /// let mut view_port = ViewPort::new(todo!());
+    /// let mut view_port = ViewPort::new(());
     /// let enabled = view_port.is_enabled();
     /// ```
     pub fn is_enabled(&self) -> bool {
@@ -379,6 +399,8 @@ impl From<ViewPortOrientation> for SysViewPortOrientation {
 }
 
 pub trait ViewPortCallbacks {
-    fn on_draw(&mut self, _canvas: &mut CanvasView) {}
+    fn on_draw(&mut self, _canvas: CanvasView) {}
     fn on_input(&mut self, _event: InputEvent) {}
 }
+
+impl ViewPortCallbacks for () {}

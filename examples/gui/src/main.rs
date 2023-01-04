@@ -37,7 +37,8 @@ fn main(_args: *mut u8) -> i32 {
     }
 
     impl ViewPortCallbacks for State<'_> {
-        fn on_draw(&mut self, canvas: &mut CanvasView) {
+        fn on_draw(&mut self, mut canvas: CanvasView) {
+            println!("Draw callback");
             canvas.draw_str(10, 31, self.text);
             let bottom_text = CString::new(alloc::format!("Value = {}", self.counter).as_bytes())
                 .expect("should be a valid string");

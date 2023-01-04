@@ -1,3 +1,4 @@
+use core::ffi::CStr;
 // FIXME: in flipperzero-firmware, this is a separate service
 use flipperzero_sys::{
     self as sys, InputEvent as SysInputEvent, InputKey as SysInputKey, InputType as SysInputType,
@@ -59,6 +60,15 @@ pub enum InputType {
     Repeat,
 }
 
+impl InputType {
+    pub fn name(self) -> &'static CStr {
+        let this = SysInputType::from(self);
+        // SAFETY: `this` is always a valid enum value
+        // and the returned string is a static string
+        unsafe { CStr::from_ptr(sys::input_get_type_name(this)) }
+    }
+}
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysInputTypeError {
     Max,
@@ -118,6 +128,15 @@ pub enum InputKey {
     Left,
     Ok,
     Back,
+}
+
+impl InputKey {
+    pub fn name(self) -> &'static CStr {
+        let this = SysInputKey::from(self);
+        // SAFETY: `this` is always a valid enum value
+        // and the returned string is a static string
+        unsafe { CStr::from_ptr(sys::input_get_key_name(this)) }
+    }
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]

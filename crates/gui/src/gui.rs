@@ -1,13 +1,14 @@
 //! GUI APIs
 
-use crate::canvas::CanvasView;
-use crate::input::InputEvent;
-use crate::view_port::{ViewPort, ViewPortCallbacks};
-use core::ffi::c_char;
-use core::fmt::Debug;
+use crate::{
+    canvas::CanvasView,
+    input::InputEvent,
+    view_port::{ViewPort, ViewPortCallbacks},
+};
+use core::{ffi::c_char, fmt::Debug};
 use flipperzero_sys::{self as sys, furi::UnsafeRecord, Gui as SysGui, GuiLayer as SysGuiLayer};
 
-/// System ViewPort.
+/// System Gui wrapper.
 pub struct Gui {
     gui: UnsafeRecord<SysGui>,
 }
@@ -100,7 +101,7 @@ impl<'a, VPC: ViewPortCallbacks> GuiViewPort<'a, VPC> {
         unsafe { sys::gui_view_port_send_to_front(gui, view_port) };
     }
 
-    // FIXME(Coles): `gui_view_port_send_to_back` is not present in bindings
+    // FIXME: `gui_view_port_send_to_back` is not present in bindings
     // pub fn send_to_back(&mut self) {
     //     let gui = self.gui.as_raw();
     //     let view_port = self.view_port.as_raw();
@@ -114,6 +115,8 @@ impl<VPC: ViewPortCallbacks> Drop for GuiViewPort<'_, VPC> {
         let gui = self.parent.gui.as_raw();
         let view_port = self.view_port().as_raw();
 
+        // SAFETY: `gui` and `view_port` are valid pointers
+        // and this view port should have been added to the gui on creation
         unsafe { sys::gui_remove_view_port(gui, view_port) }
     }
 }
