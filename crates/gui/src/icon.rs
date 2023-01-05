@@ -47,12 +47,12 @@ impl Icon {
         (self.get_width(), self.get_height())
     }
 
-    pub fn get_data(&self) -> XbmImage<'_> {
+    pub fn get_data(&self) -> XbmImage<&'_ [u8]> {
         let (width, height) = self.get_dimensions();
 
         let raw = self.raw.as_ptr();
         // SAFETY: `raw` is always valid
         // and `width` and `height` are always in sync with data
-        unsafe { XbmImage::from_raw(height, width, sys::icon_get_data(raw)) }
+        unsafe { XbmImage::from_raw(width, height, sys::icon_get_data(raw)) }
     }
 }

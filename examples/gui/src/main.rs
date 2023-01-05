@@ -30,7 +30,7 @@ use flipperzero_sys::furi::Status;
 manifest!(name = "Rust GUI example");
 entry!(main);
 
-const PLUS_IMAGE: XbmImage = XbmImage::new(
+const PLUS_IMAGE: XbmImage<&'static [u8]> = XbmImage::new_from_static(
     8,
     8,
     &[
@@ -45,7 +45,7 @@ const PLUS_IMAGE: XbmImage = XbmImage::new(
     ],
 );
 
-const RS_IMAGE: XbmImage = XbmImage::new(
+const RS_IMAGE: XbmImage<&'static [u8]> = XbmImage::new_from_static(
     8,
     8,
     &[

@@ -4,6 +4,7 @@ use crate::icon::Icon;
 use crate::icon_animation::{IconAnimation, IconAnimationCallbacks};
 use crate::xbm::XbmImage;
 use core::ffi::c_char;
+use core::ops::Deref;
 use core::{ffi::CStr, marker::PhantomData, num::NonZeroU8, ptr::NonNull};
 use flipperzero::furi::canvas::Align;
 use flipperzero_sys::{
@@ -186,7 +187,12 @@ impl CanvasView<'_> {
 
     // TODO: do we need other range checks?
     //  what is the best return type?
-    pub fn draw_xbm(&mut self, x: u8, y: u8, xbm: &XbmImage) -> Option<()> {
+    pub fn draw_xbm(
+        &mut self,
+        x: u8,
+        y: u8,
+        xbm: &XbmImage<impl Deref<Target = [u8]>>,
+    ) -> Option<()> {
         let raw = self.raw.as_ptr();
         let width = xbm.width();
         let height = xbm.height();
