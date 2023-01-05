@@ -13,14 +13,8 @@ pub mod furi;
 #[allow(non_snake_case)]
 mod bindings;
 
-/// Create a static C string.
-/// Will automatically add a NUL terminator.
-#[macro_export]
-macro_rules! c_string {
-    ($str:literal $(,)?) => {{
-        concat!($str, "\0").as_ptr() as *const core::ffi::c_char
-    }};
-}
+// Re-export macro for safe compile-time c-string creation
+pub use real_c_string::real_c_string as c_string;
 
 /// Crash the system.
 #[macro_export]

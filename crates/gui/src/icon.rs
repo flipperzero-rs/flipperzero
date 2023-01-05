@@ -1,5 +1,5 @@
 use crate::xbm::XbmImage;
-use core::{ptr::NonNull, slice};
+use core::ptr::NonNull;
 use flipperzero_sys::{self as sys, Icon as SysIcon};
 
 pub struct Icon {
@@ -53,6 +53,6 @@ impl Icon {
         let raw = self.raw.as_ptr();
         // SAFETY: `raw` is always valid
         // and `width` and `height` are always in sync with data
-        unsafe { XbmImage::from_raw(sys::icon_get_data(raw), width, height) }
+        unsafe { XbmImage::from_raw(height, width, sys::icon_get_data(raw)) }
     }
 }

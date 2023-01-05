@@ -57,7 +57,9 @@ impl<'a, C: IconAnimationCallbacks> IconAnimation<'a, C> {
         icon_animation
     }
 
-    // TODO: callbacks
+    pub fn as_raw(&self) -> *mut SysIconAnimation {
+        self.raw.as_ptr()
+    }
 
     pub fn get_width(&self) -> u8 {
         let raw = self.raw.as_ptr();

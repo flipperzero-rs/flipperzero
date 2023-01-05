@@ -9,7 +9,7 @@ pub struct XbmImage<'a> {
 }
 
 impl<'a> XbmImage<'a> {
-    pub fn new(data: &'a [u8], width: u8, height: u8) -> Self {
+    pub const fn new(height: u8, width: u8, data: &'a [u8]) -> Self {
         assert!(
             (width * height).div_ceil(8) as usize == data.len(),
             "dimensions should correspond to data size"
@@ -22,7 +22,19 @@ impl<'a> XbmImage<'a> {
         }
     }
 
-    pub unsafe fn from_raw(data: *const u8, width: u8, height: u8) -> Self {
+    pub const fn width(&self) -> u8 {
+        self.width
+    }
+
+    pub const fn height(&self) -> u8 {
+        self.height
+    }
+
+    pub const fn data(&self) -> &[u8] {
+        self.data
+    }
+
+    pub unsafe fn from_raw(height: u8, width: u8, data: *const u8) -> Self {
         // each byte stores 8 dot-bits,
         // if the value is not divisible by 8 then the last byte is used partially
         let size = (width * height).div_ceil(8) as usize;
@@ -101,6 +113,22 @@ impl<'a> XbmImageMut<'a> {
         }
     }
 
+    pub const fn width(&self) -> u8 {
+        self.width
+    }
+
+    pub const fn height(&self) -> u8 {
+        self.height
+    }
+
+    pub const fn data(&self) -> &[u8] {
+        self.data
+    }
+
+    pub const fn data_mut(&self) -> &[u8] {
+        self.data
+    }
+
     #[inline]
     const fn offset(&self, x: u8, y: u8) -> Option<u8> {
         if x >= self.width || y >= self.height {
@@ -151,5 +179,15 @@ impl<'a> XbmImageMut<'a> {
         let (byte, shift) = self.offsets(x, y)?;
         self.data[byte as usize] ^= 1 << (7 - shift);
         Some(())
+    }
+}
+
+impl<'a> From<XbmImageMut<'a>> for XbmImage<'a> {
+    fn from(value: XbmImageMut<'a>) -> Self {
+        Self {
+            data: value.data,
+            width: value.width,
+            height: value.height,
+        }
     }
 }

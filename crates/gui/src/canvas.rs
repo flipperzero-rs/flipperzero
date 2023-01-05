@@ -1,5 +1,9 @@
 //! ViewPort APIs
 
+use crate::icon::Icon;
+use crate::icon_animation::{IconAnimation, IconAnimationCallbacks};
+use crate::xbm::XbmImage;
+use core::ffi::c_char;
 use core::{ffi::CStr, marker::PhantomData, num::NonZeroU8, ptr::NonNull};
 use flipperzero::furi::canvas::Align;
 use flipperzero_sys::{
@@ -94,7 +98,7 @@ impl CanvasView<'_> {
     pub fn set_font_direction(&mut self, font_direction: CanvasDirection) {
         let raw = self.raw.as_ptr();
         let font_direction = font_direction.into();
-        // SAFETY: `self.canvas` is always valid
+        // SAFETY: `raw` is always valid
         // and `font_direction` is guaranteed to be a valid value by `From` implementation
         unsafe { sys::canvas_set_font_direction(raw, font_direction) };
     }
@@ -108,17 +112,17 @@ impl CanvasView<'_> {
     pub fn set_font(&mut self, font: Font) {
         let raw = self.raw.as_ptr();
         let font = font.into();
-        // SAFETY: `self.canvas` is always valid
+        // SAFETY: `raw` is always valid
         // and `font` is guaranteed to be a valid value by `From` implementation
         unsafe { sys::canvas_set_font(raw, font) };
     }
 
-    pub fn draw_str(&mut self, x: u8, y: u8, str: impl AsRef<CStr>) {
+    pub fn draw_str(&mut self, x: u8, y: u8, string: impl AsRef<CStr>) {
         let raw = self.raw.as_ptr();
-        let str = str.as_ref().as_ptr();
-        // SAFETY: `self.canvas` is always valid
-        // and `text` is guaranteed to be a valid pointer since it was created from `CStr`
-        unsafe { sys::canvas_draw_str(raw, x, y, str) };
+        let string = string.as_ref().as_ptr();
+        // SAFETY: `raw` is always valid
+        // and `string` is guaranteed to be a valid pointer since it was created from `CStr`
+        unsafe { sys::canvas_draw_str(raw, x, y, string) };
     }
 
     pub fn draw_str_aligned(
@@ -133,19 +137,75 @@ impl CanvasView<'_> {
         let horizontal = horizontal.into();
         let vertical = vertical.into();
         let str = str.as_ref().as_ptr();
-        // SAFETY: `self.canvas` is always valid,
+        // SAFETY: `raw` is always valid,
         // `horixontal` and `vertival` are guaranteed to be valid by `From` implementation
         // and `text` is guaranteed to be a valid pointer since it was created from `CStr`
         unsafe { sys::canvas_draw_str_aligned(raw, x, y, horizontal, vertical, str) };
     }
 
+    // note: for some reason, this mutates internal state
+    pub fn string_width(&mut self, string: impl AsRef<CStr>) -> u16 {
+        let raw = self.raw.as_ptr();
+        let string = string.as_ref().as_ptr();
+        // SAFETY: `raw` is always valid
+        // and `string` is guaranteed to be a valid pointer since it was created from `CStr`
+        unsafe { sys::canvas_string_width(raw, string) }
+    }
+
+    // note: for some reason, this mutates internal state
+    pub fn glyph_width(&mut self, glyph: c_char) -> u8 {
+        let raw = self.raw.as_ptr();
+        // SAFETY: `raw` is always valid
+        unsafe { sys::canvas_glyph_width(raw, glyph) }
+    }
+
+    // TODO `canvas_draw_bitmap` compressed bitmap support
+
+    // TODO: do we need range checks?
+    pub fn draw_icon_animation<'a, 'b: 'a>(
+        &'a mut self,
+        x: u8,
+        y: u8,
+        icon_animation: &'b IconAnimation<'_, impl IconAnimationCallbacks>,
+    ) {
+        let raw = self.raw.as_ptr();
+        let icon_animation = icon_animation.as_raw();
+        // SAFETY: `raw` is always valid
+        // and `icon_animation` is always valid and outlives this canvas view
+        unsafe { sys::canvas_draw_icon_animation(raw, x, y, icon_animation) }
+    }
+
+    // TODO: do we need range checks?
+    pub fn draw_icon<'a, 'b: 'a>(&'a mut self, x: u8, y: u8, animation: &'b Icon) {
+        let raw = self.raw.as_ptr();
+        let icon = animation.as_raw();
+        // SAFETY: `raw` is always valid
+        // and `icon` is always valid and outlives this canvas view
+        unsafe { sys::canvas_draw_icon(raw, x, y, icon) }
+    }
+
+    // TODO: do we need other range checks?
+    //  what is the best return type?
+    pub fn draw_xbm(&mut self, x: u8, y: u8, xbm: &XbmImage) -> Option<()> {
+        let raw = self.raw.as_ptr();
+        let width = xbm.width();
+        let height = xbm.height();
+
+        // ensure that the image is not too big
+        let _ = x.checked_add(width)?;
+        let _ = y.checked_add(height)?;
+
+        let data = xbm.data().as_ptr();
+
+        // SAFETY: `raw` is always valid
+        // and `data` is always valid and does not have to outlive the view
+        // as it is copied
+        unsafe { sys::canvas_draw_xbm(raw, x, y, width, height, data) };
+        Some(())
+    }
+
     // TODO:
-    // - `canvas_string_width` this API looks quite strange yet
-    // - `canvas_flyph_width` this API looks quite strange yet
-    // - `canvas_draw_bitmap` bitmap constraints
-    // - `canvas_draw_icon_animation` animation lifetimes
     // - `canvas_draw_icon` icon lifetimes
-    // - `canvas_draw_xbm` bitmap constraints
 
     // TODO: decide if we want to pack x-y pairs into tuples
 

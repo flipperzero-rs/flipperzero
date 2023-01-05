@@ -15,6 +15,7 @@ use alloc::ffi::CString;
 use core::{ffi::CStr, time::Duration};
 
 use flipperzero::{furi::message_queue::MessageQueue, println};
+use flipperzero_gui::xbm::XbmImage;
 use flipperzero_gui::{
     canvas::CanvasView,
     gui::{Gui, GuiLayer},
@@ -27,6 +28,36 @@ use flipperzero_sys::furi::Status;
 manifest!(name = "Rust GUI example");
 entry!(main);
 
+const PLUS_IMAGE: XbmImage = XbmImage::new(
+    8,
+    8,
+    &[
+        0b00_11_11_00,
+        0b00_11_11_00,
+        0b11_11_11_11,
+        0b11_11_11_11,
+        0b11_11_11_11,
+        0b11_11_11_11,
+        0b00_11_11_00,
+        0b10_11_11_01,
+    ],
+);
+
+const RS_IMAGE: XbmImage = XbmImage::new(
+    8,
+    8,
+    &[
+        0b11100000u8.reverse_bits(),
+        0b10010000u8.reverse_bits(),
+        0b11100000u8.reverse_bits(),
+        0b10100110u8.reverse_bits(),
+        0b10011000u8.reverse_bits(),
+        0b00000110u8.reverse_bits(),
+        0b00000001u8.reverse_bits(),
+        0b00000110u8.reverse_bits(),
+    ],
+);
+
 fn main(_args: *mut u8) -> i32 {
     let exit_event_queue = MessageQueue::new(32);
 
@@ -38,11 +69,12 @@ fn main(_args: *mut u8) -> i32 {
 
     impl ViewPortCallbacks for State<'_> {
         fn on_draw(&mut self, mut canvas: CanvasView) {
-            println!("Draw callback");
+            canvas.draw_xbm(2, 2, &PLUS_IMAGE);
             canvas.draw_str(10, 31, self.text);
             let bottom_text = CString::new(alloc::format!("Value = {}", self.counter).as_bytes())
                 .expect("should be a valid string");
-            canvas.draw_str(5, 62, bottom_text);
+            canvas.draw_str(5, 40, bottom_text);
+            canvas.draw_xbm(100, 50, &RS_IMAGE);
         }
 
         fn on_input(&mut self, event: InputEvent) {
