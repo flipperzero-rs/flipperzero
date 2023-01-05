@@ -17,6 +17,7 @@ use alloc::{ffi::CString, format};
 use core::{ffi::CStr, time::Duration};
 
 use flipperzero::{furi::message_queue::MessageQueue, println};
+use flipperzero_gui::xbm::ByteArray;
 use flipperzero_gui::{
     canvas::CanvasView,
     gui::{Gui, GuiLayer},
@@ -30,35 +31,27 @@ use flipperzero_sys::furi::Status;
 manifest!(name = "Rust GUI example");
 entry!(main);
 
-const PLUS_IMAGE: XbmImage<&'static [u8]> = XbmImage::new_from_static(
-    8,
-    8,
-    &[
-        0b00_11_11_00,
-        0b00_11_11_00,
-        0b11_11_11_11,
-        0b11_11_11_11,
-        0b11_11_11_11,
-        0b11_11_11_11,
-        0b00_11_11_00,
-        0b10_11_11_01,
-    ],
-);
+const PLUS_IMAGE: XbmImage<ByteArray<8>> = XbmImage::new_from_array::<8, 8>([
+    0b00_11_11_00,
+    0b00_11_11_00,
+    0b11_11_11_11,
+    0b11_11_11_11,
+    0b11_11_11_11,
+    0b11_11_11_11,
+    0b00_11_11_00,
+    0b10_11_11_01,
+]);
 
-const RS_IMAGE: XbmImage<&'static [u8]> = XbmImage::new_from_static(
-    8,
-    8,
-    &[
-        0b11100000u8.reverse_bits(),
-        0b10010000u8.reverse_bits(),
-        0b11100000u8.reverse_bits(),
-        0b10100110u8.reverse_bits(),
-        0b10011000u8.reverse_bits(),
-        0b00000110u8.reverse_bits(),
-        0b00000001u8.reverse_bits(),
-        0b00000110u8.reverse_bits(),
-    ],
-);
+const RS_IMAGE: XbmImage<ByteArray<8>> = XbmImage::new_from_array::<8, 8>([
+    0b11100000u8.reverse_bits(),
+    0b10010000u8.reverse_bits(),
+    0b11100000u8.reverse_bits(),
+    0b10100110u8.reverse_bits(),
+    0b10011000u8.reverse_bits(),
+    0b00000110u8.reverse_bits(),
+    0b00000001u8.reverse_bits(),
+    0b00000110u8.reverse_bits(),
+]);
 
 fn main(_args: *mut u8) -> i32 {
     let exit_event_queue = MessageQueue::new(32);
