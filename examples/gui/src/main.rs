@@ -5,22 +5,24 @@
 #![no_std]
 #![forbid(unsafe_code)]
 
+mod ferris_xbm;
+
 // Required for panic handler
 extern crate flipperzero_rt;
 // Alloc
 extern crate alloc;
 extern crate flipperzero_alloc;
 
-use alloc::ffi::CString;
+use alloc::{ffi::CString, format};
 use core::{ffi::CStr, time::Duration};
 
 use flipperzero::{furi::message_queue::MessageQueue, println};
-use flipperzero_gui::xbm::XbmImage;
 use flipperzero_gui::{
     canvas::CanvasView,
     gui::{Gui, GuiLayer},
     input::{InputEvent, InputKey, InputType},
     view_port::{ViewPort, ViewPortCallbacks},
+    xbm::XbmImage,
 };
 use flipperzero_rt::{entry, manifest};
 use flipperzero_sys::furi::Status;
@@ -71,10 +73,11 @@ fn main(_args: *mut u8) -> i32 {
         fn on_draw(&mut self, mut canvas: CanvasView) {
             canvas.draw_xbm(2, 2, &PLUS_IMAGE);
             canvas.draw_str(10, 31, self.text);
-            let bottom_text = CString::new(alloc::format!("Value = {}", self.counter).as_bytes())
+            let bottom_text = CString::new(format!("Value = {}", self.counter).as_bytes())
                 .expect("should be a valid string");
-            canvas.draw_str(5, 40, bottom_text);
+            canvas.draw_str(80, 10, bottom_text);
             canvas.draw_xbm(100, 50, &RS_IMAGE);
+            canvas.draw_xbm(0, 32, &ferris_xbm::IMAGE);
         }
 
         fn on_input(&mut self, event: InputEvent) {

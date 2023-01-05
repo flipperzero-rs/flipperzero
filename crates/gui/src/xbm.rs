@@ -9,10 +9,11 @@ pub struct XbmImage<'a> {
 }
 
 impl<'a> XbmImage<'a> {
-    pub const fn new(height: u8, width: u8, data: &'a [u8]) -> Self {
+    pub const fn new(width: u8, height: u8, data: &'a [u8]) -> Self {
+        let bytes = xds_bytes(width, height);
         assert!(
-            (width * height).div_ceil(8) as usize == data.len(),
-            "dimensions should correspond to data size"
+            bytes == data.len(),
+            "bit-dimensions don't match bit-size of data"
         );
 
         Self {
@@ -35,13 +36,11 @@ impl<'a> XbmImage<'a> {
     }
 
     pub unsafe fn from_raw(height: u8, width: u8, data: *const u8) -> Self {
-        // each byte stores 8 dot-bits,
-        // if the value is not divisible by 8 then the last byte is used partially
-        let size = (width * height).div_ceil(8) as usize;
+        let bytes = xds_bytes(width, height);
 
         // SAFETY: the size is exactly calculated based on width and height
         // and caller upholds the `data` validity invariant
-        let data = unsafe { slice::from_raw_parts(data, size) };
+        let data = unsafe { slice::from_raw_parts(data, bytes) };
 
         Self {
             data,
@@ -83,11 +82,16 @@ pub struct XbmImageMut<'a> {
     height: u8,
 }
 
+const fn xds_bytes(width: u8, height: u8) -> usize {
+    (width as usize * height as usize).div_ceil(8)
+}
+
 impl<'a> XbmImageMut<'a> {
     pub fn new(data: &'a mut [u8], width: u8, height: u8) -> Self {
+        let bytes = xds_bytes(width, height);
         assert!(
-            (width * height).div_ceil(8) as usize == data.len(),
-            "dimensions should correspond to data size"
+            bytes == data.len(),
+            "bit-dimensions don't match bit-size of data"
         );
 
         Self {
@@ -98,13 +102,11 @@ impl<'a> XbmImageMut<'a> {
     }
 
     pub unsafe fn from_raw(data: *mut u8, width: u8, height: u8) -> Self {
-        // each byte stores 8 dot-bits,
-        // if the value is not divisible by 8 then the last byte is used partially
-        let size = (width * height).div_ceil(8) as usize;
+        let bytes = xds_bytes(width, height);
 
         // SAFETY: the size is exactly calculated based on width and height
         // and caller upholds the `data` validity invariant
-        let data = unsafe { slice::from_raw_parts_mut(data, size) };
+        let data = unsafe { slice::from_raw_parts_mut(data, bytes) };
 
         Self {
             data,
@@ -190,4 +192,21 @@ impl<'a> From<XbmImageMut<'a>> for XbmImage<'a> {
             height: value.height,
         }
     }
+}
+
+#[macro_export]
+macro_rules! xbm {
+    (
+        #define $_width_ident:ident $width:literal
+        #define $_height_ident:ident $height:literal
+        $(
+            #define $_hotspot_x_ident:ident $_hotspot_x:literal
+            #define $_hotspot_y_ident:ident $_hotspot_y:literal
+        )?
+        static char $_bits_ident:ident[] = {
+            $($byte:literal),* $(,)?
+        };
+    ) => {{
+        $crate::xbm::XbmImage::new($width, $height, &[$($byte,)*])
+    }};
 }
