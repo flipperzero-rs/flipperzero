@@ -69,7 +69,7 @@ impl<'a> XbmImage<'a> {
 
     pub const fn get(&self, (x, y): (u8, u8)) -> Option<bool> {
         if let Some((byte, shift)) = self.offsets(x, y) {
-            Some((self.data[byte as usize] >> (7 - shift)) & 0b1 != 0)
+            Some((self.data[byte as usize] >> shift) & 0b1 != 0)
         } else {
             None
         }
@@ -151,7 +151,7 @@ impl<'a> XbmImageMut<'a> {
 
     pub const fn get(&self, (x, y): (u8, u8)) -> Option<bool> {
         if let Some((byte, shift)) = self.offsets(x, y) {
-            Some((self.data[byte as usize] >> (7 - shift)) & 0b1 != 0)
+            Some((self.data[byte as usize] >> shift) & 0b1 != 0)
         } else {
             None
         }
@@ -167,19 +167,19 @@ impl<'a> XbmImageMut<'a> {
 
     pub fn set_1(&mut self, (x, y): (u8, u8)) -> Option<()> {
         let (byte, shift) = self.offsets(x, y)?;
-        self.data[byte as usize] |= 1 << (7 - shift);
+        self.data[byte as usize] |= 1 << shift;
         Some(())
     }
 
     pub fn set_0(&mut self, (x, y): (u8, u8)) -> Option<()> {
         let (byte, shift) = self.offsets(x, y)?;
-        self.data[byte as usize] &= !(1 << (7 - shift));
+        self.data[byte as usize] &= !(1 << shift);
         Some(())
     }
 
     pub fn xor(&mut self, (x, y): (u8, u8)) -> Option<()> {
         let (byte, shift) = self.offsets(x, y)?;
-        self.data[byte as usize] ^= 1 << (7 - shift);
+        self.data[byte as usize] ^= 1 << shift;
         Some(())
     }
 }
@@ -209,4 +209,58 @@ macro_rules! xbm {
     ) => {{
         $crate::xbm::XbmImage::new($width, $height, &[$($byte,)*])
     }};
+}
+
+// TODO: enable test execution
+#[cfg(test)]
+mod tests {
+
+    #[test]
+    fn valid_byte_reading() {
+        // 0100110000111100
+        // 0000001111111100
+        let image = xbm!(
+            #define xbm_test_width 16
+            #define xbm_test_height 2
+            static char xbm_test_bits[] = {
+                0x32, // 0b00110010 ~ 0b01001100
+                0x3C, // 0b00111100 ~ 0b00111100
+                0xC0, // 0b11000000 ~ 0b00000011
+                0x3F, // 0b00111111 ~ 0b11111100
+            };
+        );
+
+        assert!(!image.get((0, 0)));
+        assert!(image.get((0, 1)));
+        assert!(!image.get((0, 2)));
+        assert!(!image.get((0, 3)));
+        assert!(image.get((0, 4)));
+        assert!(image.get((0, 5)));
+        assert!(!image.get((0, 6)));
+        assert!(!image.get((0, 7)));
+        assert!(!image.get((0, 8)));
+        assert!(!image.get((0, 9)));
+        assert!(image.get((0, 10)));
+        assert!(image.get((0, 11)));
+        assert!(image.get((0, 12)));
+        assert!(image.get((0, 13)));
+        assert!(!image.get((0, 14)));
+        assert!(!image.get((0, 15)));
+        assert!(!image.get((1, 0)));
+        assert!(!image.get((1, 1)));
+        assert!(!image.get((1, 2)));
+        assert!(!image.get((1, 3)));
+        assert!(!image.get((1, 4)));
+        assert!(!image.get((1, 5)));
+        assert!(image.get((1, 6)));
+        assert!(image.get((1, 7)));
+        assert!(image.get((1, 8)));
+        assert!(image.get((1, 9)));
+        assert!(image.get((1, 10)));
+        assert!(image.get((1, 11)));
+        assert!(image.get((1, 12)));
+        assert!(image.get((1, 13)));
+        assert!(!image.get((1, 14)));
+        assert!(!image.get((1, 15)));
+    }
 }
