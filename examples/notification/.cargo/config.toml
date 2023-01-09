@@ -1,0 +1,23 @@
+[target.thumbv7em-none-eabihf]
+rustflags = [
+    # CPU is Cortex-M4 (STM32WB55)
+    "-C", "target-cpu=cortex-m4",
+
+    # Size optimizations
+    "-C", "panic=abort",
+    "-C", "debuginfo=0",
+    "-C", "opt-level=z",
+
+    # LTO helps reduce binary size
+    "-C", "embed-bitcode=yes",
+    "-C", "lto=yes",
+
+    # Linker flags for relocatable binary
+    "-C", "link-args=--script=flipperzero-rt.ld --Bstatic --relocatable --discard-all --strip-all --lto-O3 --lto-whole-program-visibility",
+
+    # Required to link with `lld`
+    "-Z", "no-unique-section-names=yes",
+]
+
+[build]
+target = "thumbv7em-none-eabihf"
