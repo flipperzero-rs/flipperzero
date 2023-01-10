@@ -1,0 +1,23 @@
+name: Reusable workflow for build and test.
+
+on:
+  workflow_call:
+    inputs:
+      target:
+        required: true
+        type: string
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.target }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Rustup
+      run: rustup +nightly target add thumbv7em-none-eabihf
+    - name: Build
+      run: cargo +nightly build --verbose
+    - name: Run tests
+      run: cargo +nightly test --verbose
