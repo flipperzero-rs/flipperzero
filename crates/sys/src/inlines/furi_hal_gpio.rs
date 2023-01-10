@@ -1,0 +1,39 @@
+//! Inlines for Furi HAL GPIO interface.
+//! 
+//! See: https://github.com/flipperdevices/flipperzero-firmware/blob/release/firmware/targets/f7/furi_hal/furi_hal_gpio.h
+
+use crate as sys;
+
+/// Number of GPIO on one port.
+pub const GPIO_NUMBER: usize = 16;
+
+/// GPIO write pin.
+#[inline]
+pub unsafe extern "C" fn furi_hal_gpio_write(gpio: *const sys::GpioPin, state: bool) {
+    let port = (*gpio).port;
+    let pin = (*gpio).pin;
+
+    furi_hal_gpio_write_port_pin(port, pin, state)
+}
+
+/// GPIO write pin.
+#[inline]
+pub unsafe extern "C" fn furi_hal_gpio_write_port_pin(port: *mut sys::GPIO_TypeDef, pin: u16, state: bool) {
+    // writing to BSSR is an atomic operation
+    (*port).BSRR = (pin as u32) << if state { 0 } else { GPIO_NUMBER };
+}
+
+/// GPIO read pin.
+#[inline]
+pub unsafe extern "C" fn furi_hal_gpio_read(gpio: *const sys::GpioPin) -> bool {
+    let port = (*gpio).port;
+    let pin = (*gpio).pin;
+
+    furi_hal_gpio_read_port_pin(port, pin)
+}
+
+/// GPIO read pin.
+#[inline]
+pub unsafe extern "C" fn furi_hal_gpio_read_port_pin(port: *mut sys::GPIO_TypeDef, pin: u16) -> bool {
+    (*port).IDR != 0 && pin != 0x00
+}
