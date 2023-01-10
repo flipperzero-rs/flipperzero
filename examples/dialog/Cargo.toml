@@ -14,7 +14,7 @@ bench = false
 test = false
 
 [dependencies]
-flipperzero = { version = "0.6.0-alpha", path = "../../crates/flipperzero", features = ["alloc"] }
-flipperzero-alloc = { version = "0.6.0-alpha", path = "../../crates/alloc" }
-flipperzero-sys = { version = "0.6.0-alpha", path = "../../crates/sys" }
-flipperzero-rt = { version = "0.6.0-alpha", path = "../../crates/rt" }
+flipperzero = { version = "0.6.0", path = "../../crates/flipperzero", features = ["alloc"] }
+flipperzero-alloc = { version = "0.6.0", path = "../../crates/alloc" }
+flipperzero-sys = { version = "0.6.0", path = "../../crates/sys" }
+flipperzero-rt = { version = "0.6.0", path = "../../crates/rt" }
