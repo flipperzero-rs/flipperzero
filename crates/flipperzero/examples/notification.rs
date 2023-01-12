@@ -1,4 +1,4 @@
-//! Demonstrates use of the Flipper Zero notification API.
+//! Example of using the Flipper Zero notification API.
 //! This currently uses the `flipperzero-sys` crate as it is not currently
 //! exposed in the high-level `flipperzero` crate.
 //!
@@ -12,13 +12,15 @@
 extern crate flipperzero_rt;
 
 // Required for allocator
-#[cfg(feature = "alloc")]
 extern crate flipperzero_alloc;
 
 use core::ffi::c_char;
 use core::time::Duration;
 
-use flipperzero::furi::thread::sleep;
+use flipperzero::{
+    furi::thread::sleep,
+    notification::{messages, notes, NotificationApp, NotificationMessage, NotificationSequence},
+};
 use flipperzero_rt::{entry, manifest};
 use flipperzero_sys as sys;
 
@@ -33,23 +35,46 @@ entry!(main);
 
 // Entry point
 fn main(_args: *mut u8) -> i32 {
-    let notification_app =
-        unsafe { sys::furi::UnsafeRecord::<sys::NotificationApp>::open(RECORD_NOTIFICATION) };
+    let mut app = NotificationApp::open();
 
     unsafe {
         // Set the notification LED to different colours
-        for sequence in [
-            &sys::sequence_set_only_red_255,
-            &sys::sequence_set_only_green_255,
-            &sys::sequence_set_only_blue_255,
-        ] {
-            sys::notification_message(notification_app.as_ptr(), sequence);
+        for message in [&messages::RED_255, &messages::GREEN_255, &messages::BLUE_255] {
+            let light = [
+                &messages::RED_0,
+                &messages::GREEN_0,
+                &messages::BLUE_0,
+                message,
+                &messages::DO_NOT_RESET,
+                &messages::END,
+            ];
+
+            app.notify(light);
             sleep(Duration::from_secs(1));
         }
-        sys::notification_message(notification_app.as_ptr(), &sys::sequence_reset_rgb);
+
+        let reset_rgb = [&messages::RED_0, &messages::GREEN_0, &messages::BLUE_0, &messages::END];
+        app.notify(reset_rgb);
 
         // Success!
-        sys::notification_message(notification_app.as_ptr(), &sys::sequence_success);
+        let success = [
+            &messages::DISPLAY_BACKLIGHT_ON,
+            &messages::GREEN_255,
+            &messages::VIBRO_ON,
+            &notes::C5,
+            &messages::DELAY_50,
+            &messages::VIBRO_OFF,
+            &notes::E5,
+            &messages::DELAY_50,
+            &notes::G5,
+            &messages::DELAY_50,
+            &notes::C6,
+            &messages::DELAY_50,
+            &messages::SOUND_OFF,
+            &messages::END,
+        ];
+        app.notify(success);
+        sleep(Duration::from_secs(1));
     }
 
     0

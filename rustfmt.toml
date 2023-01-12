@@ -1,2 +1,3 @@
 #imports_granularity = "Module" # Nightly
 #group_imports = "StdExternalCrate" # Nightly
+max_width = 120
