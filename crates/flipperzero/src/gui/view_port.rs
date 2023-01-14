@@ -1,6 +1,6 @@
 //! ViewPort APIs
 
-use crate::{canvas::CanvasView, input::InputEvent};
+use crate::{gui::canvas::CanvasView, input::InputEvent};
 use alloc::boxed::Box;
 use core::{
     ffi::c_void,
@@ -26,7 +26,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// Basic usage:
     ///
     /// ```
-    /// use flipperzero_gui::view_port::ViewPort;
+    /// use flipperzero::gui::view_port::ViewPort;
     ///
     /// let view_port = ViewPort::new(());
     /// ```
@@ -106,7 +106,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     ///
     /// ```
     /// use std::num::NonZeroU8;
-    /// use flipperzero_gui::view_port::ViewPort;
+    /// use flipperzero::gui::view_port::ViewPort;
     ///
     /// let mut view_port = ViewPort::new(());
     /// view_port.set_width(NonZeroU8::new(128u8));
@@ -115,7 +115,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// Resize `ViewPort` to automatically selected width:
     ///
     /// ```
-    /// use flipperzero_gui::view_port::ViewPort;
+    /// use flipperzero::gui::view_port::ViewPort;
     ///
     /// let mut view_port = ViewPort::new(());
     /// view_port.set_width(None);
@@ -135,7 +135,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// Basic usage:
     ///
     /// ```
-    /// use flipperzero_gui::view_port::ViewPort;
+    /// use flipperzero::gui::view_port::ViewPort;
     ///
     /// let view_port = ViewPort::new(());
     /// let width = view_port.get_width();
@@ -155,7 +155,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     ///
     /// ```
     /// use std::num::NonZeroU8;
-    /// use flipperzero_gui::view_port::ViewPort;
+    /// use flipperzero::gui::view_port::ViewPort;
     ///
     /// let mut view_port = ViewPort::new(());
     /// view_port.set_height(NonZeroU8::new(128u8));
@@ -164,7 +164,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// Resize `ViewPort` to automatically selected height:
     ///
     /// ```
-    /// use flipperzero_gui::view_port::ViewPort;
+    /// use flipperzero::gui::view_port::ViewPort;
     ///
     /// let mut view_port = ViewPort::new(());
     /// view_port.set_height(None);
@@ -184,7 +184,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// Basic usage:
     ///
     /// ```
-    /// use flipperzero_gui::view_port::ViewPort;
+    /// use flipperzero::gui::view_port::ViewPort;
     ///
     /// let view_port = ViewPort::new(());
     /// let height = view_port.get_height();
@@ -204,7 +204,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     ///
     /// ```
     /// use std::num::NonZeroU8;
-    /// use flipperzero_gui::view_port::ViewPort;
+    /// use flipperzero::gui::view_port::ViewPort;
     ///
     /// let mut view_port = ViewPort::new(());
     /// view_port.set_dimensions(Some((NonZeroU8::new(120).unwrap(), NonZeroU8::new(80).unwrap())));
@@ -213,7 +213,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// Resize `ViewPort` to automatically selected dimensions:
     ///
     /// ```
-    /// use flipperzero_gui::view_port::ViewPort;
+    /// use flipperzero::gui::view_port::ViewPort;
     ///
     /// let mut view_port = ViewPort::new(());
     /// view_port.set_dimensions(None);
@@ -238,7 +238,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// Basic usage:
     ///
     /// ```
-    /// use flipperzero_gui::view_port::ViewPort;
+    /// use flipperzero::gui::view_port::ViewPort;
     ///
     /// let view_port = ViewPort::new(());
     /// let (width, height) = view_port.get_dimensions();
@@ -254,7 +254,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// Basic usage:
     ///
     /// ```
-    /// use flipperzero_gui::view_port::{ViewPort, ViewPortOrientation};
+    /// use flipperzero::gui::view_port::{ViewPort, ViewPortOrientation};
     /// let mut view_port = ViewPort::new(());
     /// view_port.set_orientation(ViewPortOrientation::Vertical);
     /// ```
@@ -275,7 +275,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     ///
     /// ```
     /// use std::num::NonZeroU8;
-    /// use flipperzero_gui::view_port::{ViewPort, ViewPortOrientation};
+    /// use flipperzero::gui::view_port::{ViewPort, ViewPortOrientation};
     ///
     /// let mut view_port = ViewPort::new(());
     /// let orientation = view_port.get_orientation();
@@ -297,7 +297,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// Basic usage:
     ///
     /// ```
-    /// use flipperzero_gui::view_port::ViewPort;
+    /// use flipperzero::gui::view_port::ViewPort;
     ///
     /// let mut view_port = ViewPort::new(());
     /// view_port.set_enabled(false);
@@ -316,7 +316,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     ///
     ///
     /// ```
-    /// use flipperzero_gui::view_port::ViewPort;
+    /// use flipperzero::gui::view_port::ViewPort;
     ///
     /// let mut view_port = ViewPort::new(());
     /// let enabled = view_port.is_enabled();

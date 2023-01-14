@@ -1,9 +1,10 @@
 //! User-friendly wrappers of XDM images.
 
-use alloc::vec;
-use alloc::vec::Vec;
-use core::ops::{Deref, DerefMut};
-use core::slice;
+use alloc::{vec, vec::Vec};
+use core::{
+    ops::{Deref, DerefMut},
+    slice,
+};
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct XbmImage<D> {
@@ -32,7 +33,7 @@ impl<D> XbmImage<D> {
 
     #[inline]
     const fn bits_to_min_required_bytes(bits: u16) -> u16 {
-        bits.div_ceil(8)
+        crate::internals::ops::div_ceil_u16(bits, 8)
     }
 
     #[inline]
@@ -188,7 +189,7 @@ impl XbmImage<&'static [u8]> {
     /// Basic usage:
     ///
     /// ```rust
-    /// use flipperzero_gui::xbm::XbmImage;
+    /// use flipperzero::gui::xbm::XbmImage;
     ///
     /// const IMAGE: XbmImage<&'static [u8]> = XbmImage::new_from_static(4, 4, &[0xFE, 0x12]);
     /// ```
@@ -216,7 +217,7 @@ impl<const SIZE: usize> XbmImage<ByteArray<SIZE>> {
     /// Basic usage:
     ///
     /// ```rust
-    /// use flipperzero_gui::xbm::XbmImage;
+    /// use flipperzero::gui::xbm::XbmImage;
     ///
     /// const IMAGE: XbmImage<[u8; 2]> = XbmImage::new_from_array::<4, 4>([0xFE, 0x12]);
     /// ```
@@ -263,7 +264,7 @@ macro_rules! xbm {
             $($byte:literal),* $(,)?
         };
     ) => {{
-        $crate::xbm::XbmImage::new_from_array::<$width, $height>([$($byte,)*])
+        $crate::gui::xbm::XbmImage::new_from_array::<$width, $height>([$($byte,)*])
     }};
 }
 

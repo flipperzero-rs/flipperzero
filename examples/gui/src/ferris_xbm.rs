@@ -1,6 +1,6 @@
-use flipperzero_gui::xbm::{ByteArray, XbmImage};
+use flipperzero::gui::xbm::{ByteArray, XbmImage};
 
-pub const IMAGE: XbmImage<ByteArray<192>> = flipperzero_gui::xbm! {
+pub const IMAGE: XbmImage<ByteArray<192>> = flipperzero::xbm! {
   #define ferris_width 48
   #define ferris_height 32
   static char ferris_bits[] = {

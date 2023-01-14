@@ -1,4 +1,4 @@
-use crate::xbm::XbmImage;
+use crate::gui::xbm::XbmImage;
 use core::ptr::NonNull;
 use flipperzero_sys::{self as sys, Icon as SysIcon};
 
@@ -18,7 +18,7 @@ impl Icon {
     /// Basic usage:
     ///
     /// ```
-    /// use flipperzero_gui::icon::Icon;
+    /// use flipperzero::gui::icon::Icon;
     ///
     /// let ptr = todo!();
     /// let canvas = unsafe { Icon::from_raw(ptr) };

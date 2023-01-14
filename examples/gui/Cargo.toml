@@ -17,8 +17,7 @@ bench = false
 test = false
 
 [dependencies]
-flipperzero = { version = "0.6.0", path = "../../crates/flipperzero" }
+flipperzero = { version = "0.6.0", path = "../../crates/flipperzero", features = ["service-gui"] }
 flipperzero-sys = { version = "0.6.0", path = "../../crates/sys" }
 flipperzero-rt = { version = "0.6.0", path = "../../crates/rt" }
 flipperzero-alloc = { version = "0.6.0", path = "../../crates/alloc" }
-flipperzero-gui = { version = "0.6.0", path = "../../crates/gui" }

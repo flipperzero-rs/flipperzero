@@ -17,14 +17,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "flipperzero-gui"
-version = "0.6.0"
-dependencies = [
- "flipperzero",
- "flipperzero-sys",
-]
-
-[[package]]
 name = "flipperzero-rt"
 version = "0.6.0"
 dependencies = [
@@ -44,7 +36,6 @@ version = "0.1.0"
 dependencies = [
  "flipperzero",
  "flipperzero-alloc",
- "flipperzero-gui",
  "flipperzero-rt",
  "flipperzero-sys",
 ]

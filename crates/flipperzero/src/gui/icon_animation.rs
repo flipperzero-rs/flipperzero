@@ -1,4 +1,4 @@
-use crate::icon::Icon;
+use crate::gui::icon::Icon;
 use alloc::boxed::Box;
 use core::{
     ffi::c_void,
@@ -123,7 +123,7 @@ impl IconAnimationView<'_> {
     /// Basic usage:
     ///
     /// ```
-    /// use flipperzero_gui::icon_animation::IconAnimationView;
+    /// use flipperzero::gui::icon_animation::IconAnimationView;
     ///
     /// let ptr = todo!();
     /// let icon_anumation = unsafe { IconAnimationView::from_raw(ptr) };

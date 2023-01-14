@@ -12,7 +12,7 @@ impl View {
     /// Basic usage:
     ///
     /// ```
-    /// use flipperzero_gui::view::View;
+    /// use flipperzero::gui::view::View;
     ///
     /// let view = View::new();
     /// ```

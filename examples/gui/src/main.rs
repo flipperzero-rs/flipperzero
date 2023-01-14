@@ -16,14 +16,16 @@ extern crate flipperzero_alloc;
 use alloc::{ffi::CString, format};
 use core::{ffi::CStr, time::Duration};
 
-use flipperzero::{furi::message_queue::MessageQueue, println};
-use flipperzero_gui::xbm::ByteArray;
-use flipperzero_gui::{
-    canvas::CanvasView,
-    gui::{Gui, GuiLayer},
+use flipperzero::{
+    furi::message_queue::MessageQueue,
+    gui::xbm::{ByteArray, XbmImage},
+    gui::{
+        canvas::CanvasView,
+        gui::{Gui, GuiLayer},
+        view_port::{ViewPort, ViewPortCallbacks},
+    },
     input::{InputEvent, InputKey, InputType},
-    view_port::{ViewPort, ViewPortCallbacks},
-    xbm::XbmImage,
+    println,
 };
 use flipperzero_rt::{entry, manifest};
 use flipperzero_sys::furi::Status;

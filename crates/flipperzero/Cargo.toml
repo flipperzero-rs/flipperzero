@@ -27,8 +27,14 @@ flipperzero-sys = { path = "../sys", version = "0.6.0" }
 flipperzero-rt = { path = "../rt", version = "0.6.0" }
 
 [features]
-default = ["unstable_lints"]
+default = ["unstable_lints", "unstable_intrinsics"]
+# enables all optional services
+all-services = ["service-gui"]
 # enables features requiring an allocator
 alloc = []
+# enables unstable Rust intrinsics
+unstable_intrinsics = []
 # enables unstable Rust lints on types provided by this crate
 unstable_lints = []
+# enables GUI APIs of Flipper
+service-gui = ["alloc"]

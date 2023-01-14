@@ -46,3 +46,25 @@ const _: () = {
         "`PhantomData<Unsend>` should be a ZST"
     );
 };
+
+/// Operations which have unstable implementations
+/// but still may be implemented manually on `stable` channel.
+///
+/// This will use core implementations if `unstable_intrinsics` feature is enabled
+/// falling back to ad-hoc implementations otherwise.
+pub(crate) mod ops {
+    pub const fn div_ceil_u16(divident: u16, divisor: u16) -> u16 {
+        #[cfg(feature = "unstable_intrinsics")]
+        {
+            divident.div_ceil(divisor)
+        }
+        #[cfg(not(feature = "unstable_intrinsics"))]
+        {
+            if divident % divisor == 0 {
+                divident / divisor
+            } else {
+                divident / divisor + 1
+            }
+        }
+    }
+}

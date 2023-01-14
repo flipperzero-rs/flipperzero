@@ -1,5 +1,4 @@
 use core::ffi::CStr;
-// FIXME: in flipperzero-firmware, this is a separate service
 use flipperzero_sys::{
     self as sys, InputEvent as SysInputEvent, InputKey as SysInputKey, InputType as SysInputType,
 };

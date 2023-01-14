@@ -1,9 +1,11 @@
 //! GUI APIs
 
 use crate::{
-    canvas::CanvasView,
+    gui::{
+        canvas::CanvasView,
+        view_port::{ViewPort, ViewPortCallbacks},
+    },
     input::InputEvent,
-    view_port::{ViewPort, ViewPortCallbacks},
 };
 use core::{ffi::c_char, fmt::Debug};
 use flipperzero_sys::{self as sys, furi::UnsafeRecord, Gui as SysGui, GuiLayer as SysGuiLayer};
