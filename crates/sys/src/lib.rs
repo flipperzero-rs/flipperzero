@@ -3,6 +3,7 @@
 #![no_std]
 
 pub mod furi;
+mod inlines;
 
 #[allow(non_upper_case_globals)]
 #[allow(non_camel_case_types)]
@@ -36,3 +37,6 @@ macro_rules! crash {
 
 /// Re-export bindings
 pub use bindings::*;
+
+/// Definition of inline functions
+pub use inlines::furi_hal_gpio::*;

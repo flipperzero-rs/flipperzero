@@ -1,4 +1,4 @@
-//! Furi dialogs.
+//! Flipper Zero dialogs.
 
 #[cfg(feature = "alloc")]
 use alloc::ffi::CString;
@@ -10,7 +10,7 @@ use core::ptr;
 use flipperzero_sys as sys;
 use flipperzero_sys::furi::UnsafeRecord;
 
-use super::canvas::Align;
+use crate::gui::canvas::Align;
 
 const RECORD_DIALOGS: *const c_char = sys::c_string!("dialogs");
 

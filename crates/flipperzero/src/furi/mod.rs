@@ -1,7 +1,5 @@
 //! Furi API.
 
-pub mod canvas;
-pub mod dialog;
 pub mod io;
 pub mod message_queue;
 pub mod sync;

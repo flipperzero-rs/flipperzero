@@ -1,5 +1,5 @@
 [package]
-name = "dialog"
+name = "gpio"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.64.0"
@@ -9,12 +9,11 @@ autotests = false
 autobenches = false
 
 [[bin]]
-name = "dialog"
+name = "gpio"
 bench = false
 test = false
 
 [dependencies]
-flipperzero = { version = "0.6.0", path = "../../crates/flipperzero", features = ["alloc"] }
-flipperzero-alloc = { version = "0.6.0", path = "../../crates/alloc" }
+flipperzero = { version = "0.6.0", path = "../../crates/flipperzero" }
 flipperzero-sys = { version = "0.6.0", path = "../../crates/sys" }
 flipperzero-rt = { version = "0.6.0", path = "../../crates/rt" }
