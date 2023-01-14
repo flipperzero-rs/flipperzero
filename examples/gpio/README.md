@@ -29,7 +29,7 @@ cargo build --release
     This can either be done using [qFlipper](https://flipperzero.one/update) or the [`flipperzero-firmware`](https://github.com/flipperdevices/flipperzero-firmware) scripts:
     ```
     ${FLIPPERZERO_FIRMWARE}/scripts/storage.py mkdir /ext/apps/Examples
-    ${FLIPPERZERO_FIRMWARE}/scripts/storage.py send target/thumbv7em-none-eabihf/release/gpio /ext/apps/Examples/gpio.fap
+    ${FLIPPERZERO_FIRMWARE}/scripts/storage.py send target/thumbv7em-none-eabihf/release/gpio.fap /ext/apps/Examples/gpio.fap
     ```
 
 After that you can launch the app on Flipper via `Menu → Applications → Examples → Rust GPIO example`.

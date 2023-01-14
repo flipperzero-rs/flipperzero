@@ -1,3 +1,5 @@
+cargo-features = ["different-binary-name"]
+
 [package]
 name = "gpio"
 version = "0.1.0"
@@ -10,6 +12,7 @@ autobenches = false
 
 [[bin]]
 name = "gpio"
+filename = "gpio.fap"
 bench = false
 test = false
 

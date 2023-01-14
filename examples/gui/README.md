@@ -22,11 +22,11 @@ the `0.67` release and some Rust-specific fixes which are included in `0.68.1` r
 4. Copy to the Flipper Zero as a `.fap`:
     This can either be done using [qFlipper](https://flipperzero.one/update) or the [`flipperzero-firmware`](https://github.com/flipperdevices/flipperzero-firmware) scripts:
     ```
-    ${FLIPPERZERO_FIRMWARE}/scripts/storage.py mkdir /ext/apps/Misc
-    ${FLIPPERZERO_FIRMWARE}/scripts/storage.py send target/thumbv7em-none-eabihf/release/hello-rust /ext/apps/Misc/hello-rust.fap
+    ${FLIPPERZERO_FIRMWARE}/scripts/storage.py mkdir /ext/apps/Examples
+    ${FLIPPERZERO_FIRMWARE}/scripts/storage.py send target/thumbv7em-none-eabihf/release/gui.fap /ext/apps/Examples/gui.fap
     ```
 
-After that you can launch the app on Flipper via `Menu → Applications → Misc → Hello, Rust!`.
+After that you can launch the app on Flipper via `Menu → Applications → Examples → Hello, Rust!`.
 
 ## License
 

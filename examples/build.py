@@ -34,8 +34,9 @@ def main():
 
         if args.install:
             # Assume that the binary has the name as the 
-            binary = path / 'target' / 'thumbv7em-none-eabihf' / 'release' / path.name
-            target = INSTALL_PATH / f'{path.name}.fap'
+            filename = f'{path.name}.fap'
+            binary = path / 'target' / 'thumbv7em-none-eabihf' / 'release' / filename
+            target = INSTALL_PATH / filename
 
             logging.info('Copying %s to %s', binary, target)
             run([PYTHON, STORAGE_SCRIPT, 'send', os.fspath(binary), os.fspath(target)], check=True)
