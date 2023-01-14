@@ -1,4 +1,4 @@
-use core::ffi::{c_char, CStr};
+use core::ffi::c_char;
 
 use flipperzero_sys as sys;
 use flipperzero_sys::furi::UnsafeRecord;
@@ -48,6 +48,7 @@ impl Error {
             sys::FS_Error_FSE_INTERNAL => Self::Internal,
             sys::FS_Error_FSE_NOT_IMPLEMENTED => Self::NotImplemented,
             sys::FS_Error_FSE_ALREADY_OPEN => Self::AlreadyOpen,
+            _ => unimplemented!(),
         }
     }
 }
@@ -102,15 +103,120 @@ pub trait Write {
         while !buf.is_empty() {
             match self.write(buf) {
                 Ok(0) => {
-                    return Err(Error::from_sys(unsafe {
-                        sys::buffered_file_stream_get_error(self.0)
-                    }));
+                    // TODO
                 }
                 Ok(n) => buf = &buf[n..],
                 Err(e) => return Err(e),
             }
         }
         Ok(())
+    }
+}
+
+struct OpenOptions(u8, u8);
+
+impl OpenOptions {
+    fn new() -> Self {
+        Self(0, 0)
+    }
+
+    /// Read access
+    fn read(self, set: bool) -> Self {
+        OpenOptions(
+            if set {
+                self.0 | sys::FS_AccessMode_FSAM_READ
+            } else {
+                self.0 & !sys::FS_AccessMode_FSAM_READ
+            },
+            self.1,
+        )
+    }
+
+    /// Write access
+    fn write(self, set: bool) -> Self {
+        OpenOptions(
+            if set {
+                self.0 | sys::FS_AccessMode_FSAM_WRITE
+            } else {
+                self.0 & !sys::FS_AccessMode_FSAM_WRITE
+            },
+            self.1,
+        )
+    }
+
+    /// Open file, fail if file doesn't exist
+    fn open_existing(self, set: bool) -> Self {
+        OpenOptions(
+            self.0,
+            if set {
+                self.1 | sys::FS_OpenMode_FSOM_OPEN_EXISTING
+            } else {
+                self.1 & !sys::FS_OpenMode_FSOM_OPEN_EXISTING
+            },
+        )
+    }
+
+    /// Open file. Create new file if not exist
+    fn open_always(self, set: bool) -> Self {
+        OpenOptions(
+            self.0,
+            if set {
+                self.1 | sys::FS_OpenMode_FSOM_OPEN_ALWAYS
+            } else {
+                self.1 & !sys::FS_OpenMode_FSOM_OPEN_ALWAYS
+            },
+        )
+    }
+
+    /// Open file. Create new file if not exist. Set R/W pointer to EOF
+    fn open_append(self, set: bool) -> Self {
+        OpenOptions(
+            self.0,
+            if set {
+                self.1 | sys::FS_OpenMode_FSOM_OPEN_APPEND
+            } else {
+                self.1 & !sys::FS_OpenMode_FSOM_OPEN_APPEND
+            },
+        )
+    }
+
+    /// Creates a new file. Fails if the file is exist
+    fn create_new(self, set: bool) -> Self {
+        OpenOptions(
+            self.0,
+            if set {
+                self.1 | sys::FS_OpenMode_FSOM_CREATE_NEW
+            } else {
+                self.1 & !sys::FS_OpenMode_FSOM_CREATE_NEW
+            },
+        )
+    }
+
+    /// Creates a new file. If file exist, truncate to zero size
+    fn create_always(self, set: bool) -> Self {
+        OpenOptions(
+            self.0,
+            if set {
+                self.1 | sys::FS_OpenMode_FSOM_CREATE_ALWAYS
+            } else {
+                self.1 & !sys::FS_OpenMode_FSOM_CREATE_ALWAYS
+            },
+        )
+    }
+
+    fn open(self, path: &str) -> Result<BufferedFile, Error> {
+        let f = BufferedFile::new();
+        if unsafe {
+            sys::buffered_file_stream_open(f.0, path.as_ptr() as *const i8, self.0, self.1)
+        } {
+            Ok(f)
+        } else {
+            // Per docs, "you need to close the file even if the open operation
+            // failed," but this is handled by `Drop`.
+            Err(Error::from_sys(unsafe {
+                sys::buffered_file_stream_get_error(f.0)
+            }))
+        }
     }
 }
 
@@ -153,15 +259,13 @@ impl Seek for BufferedFile {
             if sys::stream_seek(self.0, offset, offset_type) {
                 Ok(sys::stream_tell(self.0))
             } else {
-                Err(Error::from_sys(unsafe {
-                    sys::buffered_file_stream_get_error(self.0)
-                }))
+                Err(Error::from_sys(sys::buffered_file_stream_get_error(self.0)))
             }
         }
     }
 
     fn rewind(&mut self) -> Result<(), Error> {
-        Ok(unsafe { sys::stream_rewind(self.0) });
+        unsafe { sys::stream_rewind(self.0) };
         Ok(())
     }
 
