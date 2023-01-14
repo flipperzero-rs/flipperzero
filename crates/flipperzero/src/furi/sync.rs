@@ -1,19 +1,17 @@
 //! Furi syncronization primitives.
 
-use core::cell::UnsafeCell;
-use core::marker::PhantomData;
-use core::ops::{Deref, DerefMut};
+use core::{
+    cell::UnsafeCell,
+    marker::PhantomData,
+    ops::{Deref, DerefMut},
+};
 
 use flipperzero_sys as sys;
 use sys::furi::Status;
 
-use crate::furi;
+use crate::{furi, internals::UnsendUnsync};
 
 const MUTEX_TYPE: u8 = sys::FuriMutexType_FuriMutexTypeNormal;
-
-/// Negative trait bounds are not implemented (see rust-lang/rust#68318).
-/// As a workaround we can force `!Send`/`!Sync` by pretending we own a raw pointer.
-type UnsendUnsync = PhantomData<*const ()>;
 
 /// A mutual exclusion primitive useful for protecting shared data.
 pub struct Mutex<T: ?Sized> {
@@ -50,7 +48,13 @@ unsafe impl<T: ?Sized + Send> Sync for Mutex<T> {}
 
 /// An RAII implementation of a "scoped lock" of a mutex.
 /// When this structure is dropped (falls out of scope), the lock will be unlocked.
-pub struct MutexGuard<'a, T: ?Sized + 'a>(&'a Mutex<T>, UnsendUnsync);
+#[cfg_attr(
+    feature = "unstable_lints",
+    must_not_suspend = "holding a MutexGuard across suspend \
+    points can cause deadlocks, delays, \
+    and cause Futures to not implement `Send`"
+)]
+pub struct MutexGuard<'a, T: ?Sized + 'a>(&'a Mutex<T>, PhantomData<UnsendUnsync>);
 
 impl<T> Deref for MutexGuard<'_, T> {
     type Target = T;

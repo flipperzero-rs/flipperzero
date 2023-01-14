@@ -1,7 +1,7 @@
 //! Furi I/O API.
 
 use core::ffi::c_char;
-use core::fmt::{Write, Arguments};
+use core::fmt::{Arguments, Write};
 
 use flipperzero_sys as sys;
 
@@ -39,7 +39,7 @@ pub fn _print(args: Arguments) {
 }
 
 #[doc(hidden)]
-pub fn _write_str(s: &str) {
-    // Adoid generating exception machinery
+pub fn _print_str(s: &str) {
+    // Avoid generating exception machinery
     Stdout.write_str(s).ok();
 }

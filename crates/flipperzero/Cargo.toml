@@ -27,5 +27,8 @@ flipperzero-sys = { path = "../sys", version = "0.6.0-alpha" }
 flipperzero-rt = { path = "../rt", version = "0.6.0-alpha" }
 
 [features]
+default = ["unstable_lints"]
 # enables features requiring an allocator
 alloc = []
+# enables unstable Rust lints on types provided by this crate
+unstable_lints = []
