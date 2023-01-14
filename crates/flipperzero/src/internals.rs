@@ -52,6 +52,7 @@ const _: () = {
 ///
 /// This will use core implementations if `unstable_intrinsics` feature is enabled
 /// falling back to ad-hoc implementations otherwise.
+#[allow(dead_code)] // this functions may be unused if a specific feature set does not require them
 pub(crate) mod ops {
     pub const fn div_ceil_u16(divident: u16, divisor: u16) -> u16 {
         #[cfg(feature = "unstable_intrinsics")]

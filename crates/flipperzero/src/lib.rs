@@ -7,6 +7,7 @@
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
+#[cfg(feature = "service-dialogs")]
 pub mod dialogs;
 pub mod furi;
 #[cfg(feature = "service-gui")]

@@ -3,15 +3,14 @@
 #[cfg(feature = "alloc")]
 use alloc::ffi::CString;
 
-use core::ffi::{c_char, CStr};
-use core::marker::PhantomData;
-use core::ptr;
-use core::ptr::NonNull;
-
-use flipperzero_sys as sys;
-use flipperzero_sys::furi::UnsafeRecord;
-
 use crate::gui::canvas::Align;
+use core::{
+    ffi::{c_char, CStr},
+    marker::PhantomData,
+    ptr,
+    ptr::NonNull,
+};
+use flipperzero_sys::{self as sys, furi::UnsafeRecord};
 
 /// A handle to the Dialogs app.
 pub struct DialogsApp {

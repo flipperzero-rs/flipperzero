@@ -29,7 +29,7 @@ flipperzero-rt = { path = "../rt", version = "0.6.0" }
 [features]
 default = ["unstable_lints", "unstable_intrinsics"]
 # enables all optional services
-all-services = ["service-gui"]
+all-services = ["service-gui", "service-dialogs"]
 # enables features requiring an allocator
 alloc = []
 # enables unstable Rust intrinsics
@@ -38,3 +38,5 @@ unstable_intrinsics = []
 unstable_lints = []
 # enables GUI APIs of Flipper
 service-gui = ["alloc"]
+# enables Dialogs APIs of Flipper
+service-dialogs = ["service-gui"]

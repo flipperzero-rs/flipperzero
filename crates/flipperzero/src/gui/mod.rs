@@ -1,6 +1,7 @@
 //! GUI service.
 
 pub mod canvas;
+#[cfg(feature = "service-gui")]
 pub mod gui;
 pub mod icon;
 pub mod icon_animation;
