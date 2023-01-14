@@ -113,15 +113,15 @@ pub trait Write {
     }
 }
 
-struct OpenOptions(u8, u8);
+pub struct OpenOptions(u8, u8);
 
 impl OpenOptions {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self(0, 0)
     }
 
     /// Read access
-    fn read(self, set: bool) -> Self {
+    pub fn read(self, set: bool) -> Self {
         OpenOptions(
             if set {
                 self.0 | sys::FS_AccessMode_FSAM_READ
@@ -133,7 +133,7 @@ impl OpenOptions {
     }
 
     /// Write access
-    fn write(self, set: bool) -> Self {
+    pub fn write(self, set: bool) -> Self {
         OpenOptions(
             if set {
                 self.0 | sys::FS_AccessMode_FSAM_WRITE
@@ -145,7 +145,7 @@ impl OpenOptions {
     }
 
     /// Open file, fail if file doesn't exist
-    fn open_existing(self, set: bool) -> Self {
+    pub fn open_existing(self, set: bool) -> Self {
         OpenOptions(
             self.0,
             if set {
@@ -157,7 +157,7 @@ impl OpenOptions {
     }
 
     /// Open file. Create new file if not exist
-    fn open_always(self, set: bool) -> Self {
+    pub fn open_always(self, set: bool) -> Self {
         OpenOptions(
             self.0,
             if set {
@@ -169,7 +169,7 @@ impl OpenOptions {
     }
 
     /// Open file. Create new file if not exist. Set R/W pointer to EOF
-    fn open_append(self, set: bool) -> Self {
+    pub fn open_append(self, set: bool) -> Self {
         OpenOptions(
             self.0,
             if set {
@@ -181,7 +181,7 @@ impl OpenOptions {
     }
 
     /// Creates a new file. Fails if the file is exist
-    fn create_new(self, set: bool) -> Self {
+    pub fn create_new(self, set: bool) -> Self {
         OpenOptions(
             self.0,
             if set {
@@ -193,7 +193,7 @@ impl OpenOptions {
     }
 
     /// Creates a new file. If file exist, truncate to zero size
-    fn create_always(self, set: bool) -> Self {
+    pub fn create_always(self, set: bool) -> Self {
         OpenOptions(
             self.0,
             if set {
@@ -204,7 +204,7 @@ impl OpenOptions {
         )
     }
 
-    fn open(self, path: &str) -> Result<BufferedFile, Error> {
+    pub fn open(self, path: &str) -> Result<BufferedFile, Error> {
         let f = BufferedFile::new();
         if unsafe {
             sys::buffered_file_stream_open(f.0, path.as_ptr() as *const i8, self.0, self.1)
@@ -221,7 +221,7 @@ impl OpenOptions {
 }
 
 /// File stream with buffered read operations.
-struct BufferedFile(*mut sys::Stream);
+pub struct BufferedFile(*mut sys::Stream);
 
 impl BufferedFile {
     pub fn new() -> Self {
