@@ -1,4 +1,4 @@
-use core::ffi::c_char;
+use core::ffi::{c_char, CStr};
 
 use flipperzero_sys as sys;
 use flipperzero_sys::furi::UnsafeRecord;
@@ -204,7 +204,7 @@ impl OpenOptions {
         )
     }
 
-    pub fn open(self, path: &str) -> Result<BufferedFile, Error> {
+    pub fn open(self, path: &CStr) -> Result<BufferedFile, Error> {
         let f = BufferedFile::new();
         if unsafe {
             sys::buffered_file_stream_open(f.0, path.as_ptr() as *const i8, self.0, self.1)

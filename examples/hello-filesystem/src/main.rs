@@ -7,6 +7,8 @@
 // Required for panic handler
 extern crate flipperzero_rt;
 
+use core::ffi::CStr;
+
 use flipperzero::filesystem::*;
 use flipperzero::println;
 use flipperzero_rt::{entry, manifest};
@@ -18,7 +20,7 @@ fn main(_args: *mut u8) -> i32 {
     let file = OpenOptions::new()
         .write(true)
         .create_always(true)
-        .open("hello-rust.txt");
+        .open(CStr::from_bytes_with_nul(b"/ext/hello-rust.txt\0").unwrap());
 
     if let Ok(mut handle) = file {
         if handle.write(b"Hello, Rust!").is_err() {
