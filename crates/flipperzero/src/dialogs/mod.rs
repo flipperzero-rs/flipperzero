@@ -1,4 +1,4 @@
-//! Furi dialogs.
+//! Flipper Zero dialogs.
 
 #[cfg(feature = "alloc")]
 use alloc::ffi::CString;
@@ -11,7 +11,7 @@ use core::ptr::NonNull;
 use flipperzero_sys as sys;
 use flipperzero_sys::furi::UnsafeRecord;
 
-use super::canvas::Align;
+use crate::gui::canvas::Align;
 
 /// A handle to the Dialogs app.
 pub struct DialogsApp {

@@ -1,6 +1,6 @@
 [package]
 name = "flipperzero"
-version = "0.6.0-alpha"
+version = "0.6.0"
 description = "Rust for Flipper Zero"
 repository = "https://github.com/dcoles/flipperzero-rs"
 readme = "../../README.md"
@@ -21,10 +21,10 @@ bench = false
 test = false
 
 [dependencies]
-flipperzero-sys = { path = "../sys", version = "0.6.0-alpha" }
+flipperzero-sys = { path = "../sys", version = "0.6.0" }
 
 [dev-dependencies]
-flipperzero-rt = { path = "../rt", version = "0.6.0-alpha" }
+flipperzero-rt = { path = "../rt", version = "0.6.0" }
 
 [features]
 default = ["unstable_lints"]

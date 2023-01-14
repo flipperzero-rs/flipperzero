@@ -24,7 +24,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "hello-rust"
+name = "gpio"
 version = "0.1.0"
 dependencies = [
  "flipperzero",

@@ -1,7 +1,7 @@
 cargo-features = ["different-binary-name"]
 
 [package]
-name = "hello-rust"
+name = "gpio"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.64.0"
@@ -11,8 +11,8 @@ autotests = false
 autobenches = false
 
 [[bin]]
-name = "hello-rust"
-filename = "hello-rust.fap"
+name = "gpio"
+filename = "gpio.fap"
 bench = false
 test = false
 

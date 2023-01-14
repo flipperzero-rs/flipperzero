@@ -5,8 +5,11 @@
 /// Re-export bindings
 pub use bindings::*;
 use core::hint::unreachable_unchecked;
+/// Definition of inline functions
+pub use inlines::furi_hal_gpio::*;
 
 pub mod furi;
+mod inlines;
 
 #[allow(non_upper_case_globals)]
 #[allow(non_camel_case_types)]

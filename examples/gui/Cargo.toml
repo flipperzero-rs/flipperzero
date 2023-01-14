@@ -1,3 +1,5 @@
+cargo-features = ["different-binary-name"]
+
 [package]
 name = "gui"
 version = "0.1.0"
@@ -10,12 +12,13 @@ autobenches = false
 
 [[bin]]
 name = "gui"
+filename = "gui.fap"
 bench = false
 test = false
 
 [dependencies]
-flipperzero = { version = "0.6.0-alpha", path = "../../crates/flipperzero" }
-flipperzero-sys = { version = "0.6.0-alpha", path = "../../crates/sys" }
-flipperzero-rt = { version = "0.6.0-alpha", path = "../../crates/rt" }
-flipperzero-alloc = { version = "0.6.0-alpha", path = "../../crates/alloc" }
-flipperzero-gui = { version = "0.6.0-alpha", path = "../../crates/gui" }
+flipperzero = { version = "0.6.0", path = "../../crates/flipperzero" }
+flipperzero-sys = { version = "0.6.0", path = "../../crates/sys" }
+flipperzero-rt = { version = "0.6.0", path = "../../crates/rt" }
+flipperzero-alloc = { version = "0.6.0", path = "../../crates/alloc" }
+flipperzero-gui = { version = "0.6.0", path = "../../crates/gui" }

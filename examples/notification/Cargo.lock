@@ -24,7 +24,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "hello-rust"
+name = "notification"
 version = "0.1.0"
 dependencies = [
  "flipperzero",

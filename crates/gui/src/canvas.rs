@@ -6,7 +6,7 @@ use crate::xbm::XbmImage;
 use core::ffi::c_char;
 use core::ops::Deref;
 use core::{ffi::CStr, marker::PhantomData, num::NonZeroU8, ptr::NonNull};
-use flipperzero::furi::canvas::Align;
+use flipperzero::gui::canvas::Align;
 use flipperzero_sys::{
     self as sys, Canvas as SysCanvas, CanvasDirection as SysCanvasDirection,
     CanvasFontParameters as SysCanvasFontParameters, Color as SysColor, Font as SysFont,

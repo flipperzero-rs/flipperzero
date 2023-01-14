@@ -6,7 +6,9 @@
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
+pub mod dialogs;
 pub mod furi;
+pub mod gui;
 pub(crate) mod internals;
 pub mod kernel;
 pub mod macros;
