@@ -7,6 +7,7 @@ use core::{
 };
 use flipperzero_sys::{self as sys, IconAnimation as SysIconAnimation};
 
+/// System Icon Animation wrapper.
 pub struct IconAnimation<'a, C: IconAnimationCallbacks> {
     raw: NonNull<SysIconAnimation>,
     callbacks: NonNull<C>,
@@ -105,13 +106,16 @@ impl<C: IconAnimationCallbacks> Drop for IconAnimation<'_, C> {
     }
 }
 
+/// View over system Icon Animation.
+///
+/// This is passed to [callbacks](IconAnimationCallbacks) of [`IconAnimation`].
 pub struct IconAnimationView<'a> {
     raw: NonNull<SysIconAnimation>,
     _lifetime: PhantomData<&'a ()>,
 }
 
 impl IconAnimationView<'_> {
-    /// Construct a `CanvasView` from a raw pointer.
+    /// Construct an `IconAnimationView` from a raw pointer.
     ///
     /// # Safety
     ///
@@ -126,7 +130,7 @@ impl IconAnimationView<'_> {
     /// use flipperzero::gui::icon_animation::IconAnimationView;
     ///
     /// let ptr = todo!();
-    /// let icon_anumation = unsafe { IconAnimationView::from_raw(ptr) };
+    /// let icon_animation = unsafe { IconAnimationView::from_raw(ptr) };
     /// ```
     pub unsafe fn from_raw(raw: *mut SysIconAnimation) -> Self {
         Self {
@@ -135,8 +139,6 @@ impl IconAnimationView<'_> {
             _lifetime: PhantomData,
         }
     }
-
-    // TODO: callbacks
 
     pub fn get_width(&self) -> u8 {
         let raw = self.raw.as_ptr();
@@ -154,7 +156,8 @@ impl IconAnimationView<'_> {
         (self.get_width(), self.get_height())
     }
 
-    // TODO: decide if these methods should be available in view
+    // TODO: decide if these methods should be available in view,
+    //  i.e. if it is sound to call start/stop from callbacks
     // pub fn start(&mut self) {
     //     let raw = self.raw.as_ptr();
     //     // SAFETY: `raw` is always valid
