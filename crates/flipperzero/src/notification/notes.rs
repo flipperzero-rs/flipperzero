@@ -1,438 +1,121 @@
 use super::NotificationMessage;
+use flipperzero_sys as sys;
 
-pub const CLICK: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 1.0,
-    volume: 1.0,
-};
-pub const C0: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 16.35,
-    volume: 1.0,
-};
-pub const CS0: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 17.32,
-    volume: 1.0,
-};
-pub const D0: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 18.35,
-    volume: 1.0,
-};
-pub const DS0: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 19.45,
-    volume: 1.0,
-};
-pub const E0: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 20.6,
-    volume: 1.0,
-};
-pub const F0: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 21.83,
-    volume: 1.0,
-};
-pub const FS0: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 23.12,
-    volume: 1.0,
-};
-pub const G0: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 24.5,
-    volume: 1.0,
-};
-pub const GS0: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 25.96,
-    volume: 1.0,
-};
-pub const A0: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 27.5,
-    volume: 1.0,
-};
-pub const AS0: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 29.14,
-    volume: 1.0,
-};
-pub const B0: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 30.87,
-    volume: 1.0,
-};
-pub const C1: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 32.7,
-    volume: 1.0,
-};
-pub const CS1: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 34.65,
-    volume: 1.0,
-};
-pub const D1: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 36.71,
-    volume: 1.0,
-};
-pub const DS1: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 38.89,
-    volume: 1.0,
-};
-pub const E1: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 41.2,
-    volume: 1.0,
-};
-pub const F1: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 43.65,
-    volume: 1.0,
-};
-pub const FS1: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 46.25,
-    volume: 1.0,
-};
-pub const G1: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 49.0,
-    volume: 1.0,
-};
-pub const GS1: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 51.91,
-    volume: 1.0,
-};
-pub const A1: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 55.0,
-    volume: 1.0,
-};
-pub const AS1: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 58.27,
-    volume: 1.0,
-};
-pub const B1: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 61.74,
-    volume: 1.0,
-};
-pub const C2: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 65.41,
-    volume: 1.0,
-};
-pub const CS2: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 69.3,
-    volume: 1.0,
-};
-pub const D2: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 73.42,
-    volume: 1.0,
-};
-pub const DS2: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 77.78,
-    volume: 1.0,
-};
-pub const E2: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 82.41,
-    volume: 1.0,
-};
-pub const F2: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 87.31,
-    volume: 1.0,
-};
-pub const FS2: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 92.5,
-    volume: 1.0,
-};
-pub const G2: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 98.0,
-    volume: 1.0,
-};
-pub const GS2: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 103.83,
-    volume: 1.0,
-};
-pub const A2: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 110.0,
-    volume: 1.0,
-};
-pub const AS2: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 116.54,
-    volume: 1.0,
-};
-pub const B2: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 123.47,
-    volume: 1.0,
-};
-pub const C3: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 130.81,
-    volume: 1.0,
-};
-pub const CS3: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 138.59,
-    volume: 1.0,
-};
-pub const D3: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 146.83,
-    volume: 1.0,
-};
-pub const DS3: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 155.56,
-    volume: 1.0,
-};
-pub const E3: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 164.81,
-    volume: 1.0,
-};
-pub const F3: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 174.61,
-    volume: 1.0,
-};
-pub const FS3: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 185.0,
-    volume: 1.0,
-};
-pub const G3: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 196.0,
-    volume: 1.0,
-};
-pub const GS3: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 207.65,
-    volume: 1.0,
-};
-pub const A3: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 220.0,
-    volume: 1.0,
-};
-pub const AS3: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 233.08,
-    volume: 1.0,
-};
-pub const B3: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 246.94,
-    volume: 1.0,
-};
-pub const C4: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 261.63,
-    volume: 1.0,
-};
-pub const CS4: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 277.18,
-    volume: 1.0,
-};
-pub const D4: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 293.66,
-    volume: 1.0,
-};
-pub const DS4: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 311.13,
-    volume: 1.0,
-};
-pub const E4: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 329.63,
-    volume: 1.0,
-};
-pub const F4: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 349.23,
-    volume: 1.0,
-};
-pub const FS4: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 369.99,
-    volume: 1.0,
-};
-pub const G4: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 392.0,
-    volume: 1.0,
-};
-pub const GS4: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 415.3,
-    volume: 1.0,
-};
-pub const A4: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 440.0,
-    volume: 1.0,
-};
-pub const AS4: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 466.16,
-    volume: 1.0,
-};
-pub const B4: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 493.88,
-    volume: 1.0,
-};
-pub const C5: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 523.25,
-    volume: 1.0,
-};
-pub const CS5: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 554.37,
-    volume: 1.0,
-};
-pub const D5: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 587.33,
-    volume: 1.0,
-};
-pub const DS5: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 622.25,
-    volume: 1.0,
-};
-pub const E5: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 659.26,
-    volume: 1.0,
-};
-pub const F5: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 698.46,
-    volume: 1.0,
-};
-pub const FS5: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 739.99,
-    volume: 1.0,
-};
-pub const G5: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 783.99,
-    volume: 1.0,
-};
-pub const GS5: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 830.61,
-    volume: 1.0,
-};
-pub const A5: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 880.0,
-    volume: 1.0,
-};
-pub const AS5: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 932.33,
-    volume: 1.0,
-};
-pub const B5: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 987.77,
-    volume: 1.0,
-};
-pub const C6: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 1046.5,
-    volume: 1.0,
-};
-pub const CS6: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 1108.73,
-    volume: 1.0,
-};
-pub const D6: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 1174.66,
-    volume: 1.0,
-};
-pub const DS6: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 1244.51,
-    volume: 1.0,
-};
-pub const E6: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 1318.51,
-    volume: 1.0,
-};
-pub const F6: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 1396.91,
-    volume: 1.0,
-};
-pub const FS6: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 1479.98,
-    volume: 1.0,
-};
-pub const G6: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 1567.98,
-    volume: 1.0,
-};
-pub const GS6: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 1661.22,
-    volume: 1.0,
-};
-pub const A6: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 1760.0,
-    volume: 1.0,
-};
-pub const AS6: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 1864.66,
-    volume: 1.0,
-};
-pub const B6: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 1975.53,
-    volume: 1.0,
-};
-pub const C7: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 2093.0,
-    volume: 1.0,
-};
-pub const CS7: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 2217.46,
-    volume: 1.0,
-};
-pub const D7: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 2349.32,
-    volume: 1.0,
-};
-pub const DS7: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 2489.02,
-    volume: 1.0,
-};
-pub const E7: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 2637.02,
-    volume: 1.0,
-};
-pub const F7: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 2793.83,
-    volume: 1.0,
-};
-pub const FS7: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 2959.96,
-    volume: 1.0,
-};
-pub const G7: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 3135.96,
-    volume: 1.0,
-};
-pub const GS7: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 3322.44,
-    volume: 1.0,
-};
-pub const A7: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 3520.0,
-    volume: 1.0,
-};
-pub const AS7: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 3729.31,
-    volume: 1.0,
-};
-pub const B7: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 3951.07,
-    volume: 1.0,
-};
-pub const C8: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 4186.01,
-    volume: 1.0,
-};
-pub const CS8: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 4434.92,
-    volume: 1.0,
-};
-pub const D8: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 4698.64,
-    volume: 1.0,
-};
-pub const DS8: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 4978.03,
-    volume: 1.0,
-};
-pub const E8: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 5274.04,
-    volume: 1.0,
-};
-pub const F8: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 5587.65,
-    volume: 1.0,
-};
-pub const FS8: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 5919.91,
-    volume: 1.0,
-};
-pub const G8: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 6271.93,
-    volume: 1.0,
-};
-pub const GS8: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 6644.88,
-    volume: 1.0,
-};
-pub const A8: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 7040.0,
-    volume: 1.0,
-};
-pub const AS8: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 7458.62,
-    volume: 1.0,
-};
-pub const B8: NotificationMessage = NotificationMessage::SoundOn {
-    frequency: 7902.13,
-    volume: 1.0,
-};
+pub static CLICK: NotificationMessage = unsafe { NotificationMessage(sys::message_click) };
+
+pub static C0: NotificationMessage = unsafe { NotificationMessage(sys::message_note_c0) };
+pub static CS0: NotificationMessage = unsafe { NotificationMessage(sys::message_note_cs0) };
+pub static D0: NotificationMessage = unsafe { NotificationMessage(sys::message_note_d0) };
+pub static DS0: NotificationMessage = unsafe { NotificationMessage(sys::message_note_ds0) };
+pub static E0: NotificationMessage = unsafe { NotificationMessage(sys::message_note_e0) };
+pub static F0: NotificationMessage = unsafe { NotificationMessage(sys::message_note_f0) };
+pub static FS0: NotificationMessage = unsafe { NotificationMessage(sys::message_note_fs0) };
+pub static G0: NotificationMessage = unsafe { NotificationMessage(sys::message_note_g0) };
+pub static GS0: NotificationMessage = unsafe { NotificationMessage(sys::message_note_gs0) };
+pub static A0: NotificationMessage = unsafe { NotificationMessage(sys::message_note_a0) };
+pub static AS0: NotificationMessage = unsafe { NotificationMessage(sys::message_note_as0) };
+pub static B0: NotificationMessage = unsafe { NotificationMessage(sys::message_note_b0) };
+
+pub static C1: NotificationMessage = unsafe { NotificationMessage(sys::message_note_c1) };
+pub static CS1: NotificationMessage = unsafe { NotificationMessage(sys::message_note_cs1) };
+pub static D1: NotificationMessage = unsafe { NotificationMessage(sys::message_note_d1) };
+pub static DS1: NotificationMessage = unsafe { NotificationMessage(sys::message_note_ds1) };
+pub static E1: NotificationMessage = unsafe { NotificationMessage(sys::message_note_e1) };
+pub static F1: NotificationMessage = unsafe { NotificationMessage(sys::message_note_f1) };
+pub static FS1: NotificationMessage = unsafe { NotificationMessage(sys::message_note_fs1) };
+pub static G1: NotificationMessage = unsafe { NotificationMessage(sys::message_note_g1) };
+pub static GS1: NotificationMessage = unsafe { NotificationMessage(sys::message_note_gs1) };
+pub static A1: NotificationMessage = unsafe { NotificationMessage(sys::message_note_a1) };
+pub static AS1: NotificationMessage = unsafe { NotificationMessage(sys::message_note_as1) };
+pub static B1: NotificationMessage = unsafe { NotificationMessage(sys::message_note_b1) };
+
+pub static C2: NotificationMessage = unsafe { NotificationMessage(sys::message_note_c2) };
+pub static CS2: NotificationMessage = unsafe { NotificationMessage(sys::message_note_cs2) };
+pub static D2: NotificationMessage = unsafe { NotificationMessage(sys::message_note_d2) };
+pub static DS2: NotificationMessage = unsafe { NotificationMessage(sys::message_note_ds2) };
+pub static E2: NotificationMessage = unsafe { NotificationMessage(sys::message_note_e2) };
+pub static F2: NotificationMessage = unsafe { NotificationMessage(sys::message_note_f2) };
+pub static FS2: NotificationMessage = unsafe { NotificationMessage(sys::message_note_fs2) };
+pub static G2: NotificationMessage = unsafe { NotificationMessage(sys::message_note_g2) };
+pub static GS2: NotificationMessage = unsafe { NotificationMessage(sys::message_note_gs2) };
+pub static A2: NotificationMessage = unsafe { NotificationMessage(sys::message_note_a2) };
+pub static AS2: NotificationMessage = unsafe { NotificationMessage(sys::message_note_as2) };
+pub static B2: NotificationMessage = unsafe { NotificationMessage(sys::message_note_b2) };
+
+pub static C3: NotificationMessage = unsafe { NotificationMessage(sys::message_note_c3) };
+pub static CS3: NotificationMessage = unsafe { NotificationMessage(sys::message_note_cs3) };
+pub static D3: NotificationMessage = unsafe { NotificationMessage(sys::message_note_d3) };
+pub static DS3: NotificationMessage = unsafe { NotificationMessage(sys::message_note_ds3) };
+pub static E3: NotificationMessage = unsafe { NotificationMessage(sys::message_note_e3) };
+pub static F3: NotificationMessage = unsafe { NotificationMessage(sys::message_note_f3) };
+pub static FS3: NotificationMessage = unsafe { NotificationMessage(sys::message_note_fs3) };
+pub static G3: NotificationMessage = unsafe { NotificationMessage(sys::message_note_g3) };
+pub static GS3: NotificationMessage = unsafe { NotificationMessage(sys::message_note_gs3) };
+pub static A3: NotificationMessage = unsafe { NotificationMessage(sys::message_note_a3) };
+pub static AS3: NotificationMessage = unsafe { NotificationMessage(sys::message_note_as3) };
+pub static B3: NotificationMessage = unsafe { NotificationMessage(sys::message_note_b3) };
+
+pub static C4: NotificationMessage = unsafe { NotificationMessage(sys::message_note_c4) };
+pub static CS4: NotificationMessage = unsafe { NotificationMessage(sys::message_note_cs4) };
+pub static D4: NotificationMessage = unsafe { NotificationMessage(sys::message_note_d4) };
+pub static DS4: NotificationMessage = unsafe { NotificationMessage(sys::message_note_ds4) };
+pub static E4: NotificationMessage = unsafe { NotificationMessage(sys::message_note_e4) };
+pub static F4: NotificationMessage = unsafe { NotificationMessage(sys::message_note_f4) };
+pub static FS4: NotificationMessage = unsafe { NotificationMessage(sys::message_note_fs4) };
+pub static G4: NotificationMessage = unsafe { NotificationMessage(sys::message_note_g4) };
+pub static GS4: NotificationMessage = unsafe { NotificationMessage(sys::message_note_gs4) };
+pub static A4: NotificationMessage = unsafe { NotificationMessage(sys::message_note_a4) };
+pub static AS4: NotificationMessage = unsafe { NotificationMessage(sys::message_note_as4) };
+pub static B4: NotificationMessage = unsafe { NotificationMessage(sys::message_note_b4) };
+
+pub static C5: NotificationMessage = unsafe { NotificationMessage(sys::message_note_c5) };
+pub static CS5: NotificationMessage = unsafe { NotificationMessage(sys::message_note_cs5) };
+pub static D5: NotificationMessage = unsafe { NotificationMessage(sys::message_note_d5) };
+pub static DS5: NotificationMessage = unsafe { NotificationMessage(sys::message_note_ds5) };
+pub static E5: NotificationMessage = unsafe { NotificationMessage(sys::message_note_e5) };
+pub static F5: NotificationMessage = unsafe { NotificationMessage(sys::message_note_f5) };
+pub static FS5: NotificationMessage = unsafe { NotificationMessage(sys::message_note_fs5) };
+pub static G5: NotificationMessage = unsafe { NotificationMessage(sys::message_note_g5) };
+pub static GS5: NotificationMessage = unsafe { NotificationMessage(sys::message_note_gs5) };
+pub static A5: NotificationMessage = unsafe { NotificationMessage(sys::message_note_a5) };
+pub static AS5: NotificationMessage = unsafe { NotificationMessage(sys::message_note_as5) };
+pub static B5: NotificationMessage = unsafe { NotificationMessage(sys::message_note_b5) };
+
+pub static C6: NotificationMessage = unsafe { NotificationMessage(sys::message_note_c6) };
+pub static CS6: NotificationMessage = unsafe { NotificationMessage(sys::message_note_cs6) };
+pub static D6: NotificationMessage = unsafe { NotificationMessage(sys::message_note_d6) };
+pub static DS6: NotificationMessage = unsafe { NotificationMessage(sys::message_note_ds6) };
+pub static E6: NotificationMessage = unsafe { NotificationMessage(sys::message_note_e6) };
+pub static F6: NotificationMessage = unsafe { NotificationMessage(sys::message_note_f6) };
+pub static FS6: NotificationMessage = unsafe { NotificationMessage(sys::message_note_fs6) };
+pub static G6: NotificationMessage = unsafe { NotificationMessage(sys::message_note_g6) };
+pub static GS6: NotificationMessage = unsafe { NotificationMessage(sys::message_note_gs6) };
+pub static A6: NotificationMessage = unsafe { NotificationMessage(sys::message_note_a6) };
+pub static AS6: NotificationMessage = unsafe { NotificationMessage(sys::message_note_as6) };
+pub static B6: NotificationMessage = unsafe { NotificationMessage(sys::message_note_b6) };
+
+pub static C7: NotificationMessage = unsafe { NotificationMessage(sys::message_note_c7) };
+pub static CS7: NotificationMessage = unsafe { NotificationMessage(sys::message_note_cs7) };
+pub static D7: NotificationMessage = unsafe { NotificationMessage(sys::message_note_d7) };
+pub static DS7: NotificationMessage = unsafe { NotificationMessage(sys::message_note_ds7) };
+pub static E7: NotificationMessage = unsafe { NotificationMessage(sys::message_note_e7) };
+pub static F7: NotificationMessage = unsafe { NotificationMessage(sys::message_note_f7) };
+pub static FS7: NotificationMessage = unsafe { NotificationMessage(sys::message_note_fs7) };
+pub static G7: NotificationMessage = unsafe { NotificationMessage(sys::message_note_g7) };
+pub static GS7: NotificationMessage = unsafe { NotificationMessage(sys::message_note_gs7) };
+pub static A7: NotificationMessage = unsafe { NotificationMessage(sys::message_note_a7) };
+pub static AS7: NotificationMessage = unsafe { NotificationMessage(sys::message_note_as7) };
+pub static B7: NotificationMessage = unsafe { NotificationMessage(sys::message_note_b7) };
+
+pub static C8: NotificationMessage = unsafe { NotificationMessage(sys::message_note_c8) };
+pub static CS8: NotificationMessage = unsafe { NotificationMessage(sys::message_note_cs8) };
+pub static D8: NotificationMessage = unsafe { NotificationMessage(sys::message_note_d8) };
+pub static DS8: NotificationMessage = unsafe { NotificationMessage(sys::message_note_ds8) };
+pub static E8: NotificationMessage = unsafe { NotificationMessage(sys::message_note_e8) };
+pub static F8: NotificationMessage = unsafe { NotificationMessage(sys::message_note_f8) };
+pub static FS8: NotificationMessage = unsafe { NotificationMessage(sys::message_note_fs8) };
+pub static G8: NotificationMessage = unsafe { NotificationMessage(sys::message_note_g8) };
+pub static GS8: NotificationMessage = unsafe { NotificationMessage(sys::message_note_gs8) };
+pub static A8: NotificationMessage = unsafe { NotificationMessage(sys::message_note_a8) };
+pub static AS8: NotificationMessage = unsafe { NotificationMessage(sys::message_note_as8) };
+pub static B8: NotificationMessage = unsafe { NotificationMessage(sys::message_note_b8) };

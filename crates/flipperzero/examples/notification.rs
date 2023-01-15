@@ -19,7 +19,10 @@ use core::time::Duration;
 
 use flipperzero::{
     furi::thread::sleep,
-    notification::{messages, notes, NotificationApp, NotificationMessage, NotificationSequence},
+    notification::{
+        /*messages, notes,*/ NotificationApp, NotificationMessage, NotificationSequence,
+    },
+    notification_sequence,
 };
 use flipperzero_rt::{entry, manifest};
 use flipperzero_sys as sys;
@@ -39,43 +42,57 @@ fn main(_args: *mut u8) -> i32 {
 
     unsafe {
         // Set the notification LED to different colours
-        for message in [&messages::RED_255, &messages::GREEN_255, &messages::BLUE_255] {
-            let light = [
-                &messages::RED_0,
-                &messages::GREEN_0,
-                &messages::BLUE_0,
-                message,
-                &messages::DO_NOT_RESET,
-                &messages::END,
-            ];
-
-            app.notify(light);
+        for sequence in [ONLY_RED, ONLY_GREEN, ONLY_BLUE] {
+            app.notify(sequence);
             sleep(Duration::from_secs(1));
         }
 
-        let reset_rgb = [&messages::RED_0, &messages::GREEN_0, &messages::BLUE_0, &messages::END];
+        let reset_rgb = notification_sequence![
+            NotificationMessage::led_red(0),
+            NotificationMessage::led_green(0),
+            NotificationMessage::led_blue(0),
+        ];
         app.notify(reset_rgb);
 
         // Success!
-        let success = [
-            &messages::DISPLAY_BACKLIGHT_ON,
-            &messages::GREEN_255,
-            &messages::VIBRO_ON,
-            &notes::C5,
-            &messages::DELAY_50,
-            &messages::VIBRO_OFF,
-            &notes::E5,
-            &messages::DELAY_50,
-            &notes::G5,
-            &messages::DELAY_50,
-            &notes::C6,
-            &messages::DELAY_50,
-            &messages::SOUND_OFF,
-            &messages::END,
+        let success = notification_sequence![
+            NotificationMessage::display_backlight(0xFF),
+            NotificationMessage::led_green(255),
+            NotificationMessage::vibro(true),
+            NotificationMessage::sound_on(523.25, 1.0),
+            NotificationMessage::delay(50),
+            NotificationMessage::vibro(false),
+            NotificationMessage::sound_on(659.26, 1.0),
+            NotificationMessage::delay(50),
+            NotificationMessage::sound_on(783.99, 1.0),
+            NotificationMessage::delay(50),
+            NotificationMessage::sound_on(1046.5, 1.0),
+            NotificationMessage::delay(50),
+            NotificationMessage::sound_off(),
         ];
         app.notify(success);
-        sleep(Duration::from_secs(1));
     }
 
     0
 }
+
+const ONLY_RED: NotificationSequence = notification_sequence![
+    NotificationMessage::led_red(255),
+    NotificationMessage::led_green(0),
+    NotificationMessage::led_blue(0),
+    NotificationMessage::do_not_reset(),
+];
+
+const ONLY_GREEN: NotificationSequence = notification_sequence![
+    NotificationMessage::led_red(0),
+    NotificationMessage::led_green(255),
+    NotificationMessage::led_blue(0),
+    NotificationMessage::do_not_reset(),
+];
+
+const ONLY_BLUE: NotificationSequence = notification_sequence![
+    NotificationMessage::led_red(0),
+    NotificationMessage::led_green(0),
+    NotificationMessage::led_blue(255),
+    NotificationMessage::do_not_reset(),
+];
