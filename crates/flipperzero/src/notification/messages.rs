@@ -1,67 +1,61 @@
-use super::NotificationMessage;
-use flipperzero_sys as sys;
+use super::{Light, NotificationMessage};
 
-pub static DISPLAY_BACKLIGHT_ON: NotificationMessage =
-    NotificationMessage(unsafe { sys::message_display_backlight_on });
-pub static DISPLAY_BACKLIGHT_OFF: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_display_backlight_off) };
-pub static DISPLAY_BACKLIGHT_ENFORCE_ON: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_display_backlight_enforce_on) };
-pub static DISPLAY_BACKLIGHT_ENFORCE_AUTO: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_display_backlight_enforce_auto) };
+pub const DISPLAY_BACKLIGHT_ON: NotificationMessage = NotificationMessage::display_backlight(0xFF);
+pub const DISPLAY_BACKLIGHT_OFF: NotificationMessage = NotificationMessage::display_backlight(0x00);
+pub const DISPLAY_BACKLIGHT_ENFORCE_ON: NotificationMessage =
+    NotificationMessage::display_backlight_enforce_on();
+pub const DISPLAY_BACKLIGHT_ENFORCE_AUTO: NotificationMessage =
+    NotificationMessage::display_backlight_enforce_auto();
 
-pub static RED_255: NotificationMessage = unsafe { NotificationMessage(sys::message_red_255) };
-pub static GREEN_255: NotificationMessage = unsafe { NotificationMessage(sys::message_green_255) };
-pub static BLUE_255: NotificationMessage = unsafe { NotificationMessage(sys::message_blue_255) };
-pub static RED_0: NotificationMessage = unsafe { NotificationMessage(sys::message_red_0) };
-pub static GREEN_0: NotificationMessage = unsafe { NotificationMessage(sys::message_green_0) };
-pub static BLUE_0: NotificationMessage = unsafe { NotificationMessage(sys::message_blue_0) };
+pub const RED_255: NotificationMessage = NotificationMessage::led_red(255);
+pub const GREEN_255: NotificationMessage = NotificationMessage::led_green(255);
+pub const BLUE_255: NotificationMessage = NotificationMessage::led_blue(255);
+pub const RED_0: NotificationMessage = NotificationMessage::led_red(0);
+pub const GREEN_0: NotificationMessage = NotificationMessage::led_green(0);
+pub const BLUE_0: NotificationMessage = NotificationMessage::led_blue(0);
 
-pub static BLINK_START_10: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_blink_start_10) };
-pub static BLINK_START_100: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_blink_start_100) };
-pub static BLINK_STOP: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_blink_stop) };
+pub const BLINK_START_10: NotificationMessage =
+    NotificationMessage::led_blink_start(10, 100, Light::Off);
+pub const BLINK_START_100: NotificationMessage =
+    NotificationMessage::led_blink_start(100, 1000, Light::Off);
+pub const BLINK_STOP: NotificationMessage = NotificationMessage::led_blink_stop();
 
-pub static BLINK_SET_COLOR_RED: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_blink_set_color_red) };
-pub static BLINK_SET_COLOR_GREEN: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_blink_set_color_green) };
-pub static BLINK_SET_COLOR_BLUE: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_blink_set_color_blue) };
-pub static BLINK_SET_COLOR_CYAN: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_blink_set_color_cyan) };
-pub static BLINK_SET_COLOR_MAGENTA: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_blink_set_color_magenta) };
-pub static BLINK_SET_COLOR_YELLOW: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_blink_set_color_yellow) };
-pub static BLINK_SET_COLOR_WHITE: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_blink_set_color_white) };
+pub const BLINK_SET_COLOR_RED: NotificationMessage =
+    NotificationMessage::led_blink_color(Light::Red);
+pub const BLINK_SET_COLOR_GREEN: NotificationMessage =
+    NotificationMessage::led_blink_color(Light::Green);
+pub const BLINK_SET_COLOR_BLUE: NotificationMessage =
+    NotificationMessage::led_blink_color(Light::Blue);
+pub const BLINK_SET_COLOR_CYAN: NotificationMessage =
+    NotificationMessage::led_blink_color(Light::Cyan);
+pub const BLINK_SET_COLOR_MAGENTA: NotificationMessage =
+    NotificationMessage::led_blink_color(Light::Magenta);
+pub const BLINK_SET_COLOR_YELLOW: NotificationMessage =
+    NotificationMessage::led_blink_color(Light::Yellow);
+pub const BLINK_SET_COLOR_WHITE: NotificationMessage =
+    NotificationMessage::led_blink_color(Light::White);
 
-pub static DELAY_1: NotificationMessage = unsafe { NotificationMessage(sys::message_delay_1) };
-pub static DELAY_10: NotificationMessage = unsafe { NotificationMessage(sys::message_delay_10) };
-pub static DELAY_25: NotificationMessage = unsafe { NotificationMessage(sys::message_delay_25) };
-pub static DELAY_50: NotificationMessage = unsafe { NotificationMessage(sys::message_delay_50) };
-pub static DELAY_100: NotificationMessage = unsafe { NotificationMessage(sys::message_delay_100) };
-pub static DELAY_250: NotificationMessage = unsafe { NotificationMessage(sys::message_delay_250) };
-pub static DELAY_500: NotificationMessage = unsafe { NotificationMessage(sys::message_delay_500) };
-pub static DELAY_1000: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_delay_1000) };
+pub const DELAY_1: NotificationMessage = NotificationMessage::delay(1);
+pub const DELAY_10: NotificationMessage = NotificationMessage::delay(10);
+pub const DELAY_25: NotificationMessage = NotificationMessage::delay(25);
+pub const DELAY_50: NotificationMessage = NotificationMessage::delay(50);
+pub const DELAY_100: NotificationMessage = NotificationMessage::delay(100);
+pub const DELAY_250: NotificationMessage = NotificationMessage::delay(250);
+pub const DELAY_500: NotificationMessage = NotificationMessage::delay(500);
+pub const DELAY_1000: NotificationMessage = NotificationMessage::delay(1000);
 
-pub static SOUND_OFF: NotificationMessage = unsafe { NotificationMessage(sys::message_sound_off) };
+pub const SOUND_OFF: NotificationMessage = NotificationMessage::sound_off();
 
-pub static VIBRO_ON: NotificationMessage = unsafe { NotificationMessage(sys::message_vibro_on) };
-pub static VIBRO_OFF: NotificationMessage = unsafe { NotificationMessage(sys::message_vibro_off) };
+pub const VIBRO_ON: NotificationMessage = NotificationMessage::vibro(true);
+pub const VIBRO_OFF: NotificationMessage = NotificationMessage::vibro(false);
 
-pub static DO_NOT_RESET: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_do_not_reset) };
+pub const DO_NOT_RESET: NotificationMessage = NotificationMessage::do_not_reset();
 
-pub static FORCE_SPEAKER_VOLUME_SETTING_1: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_force_speaker_volume_setting_1f) };
-pub static FORCE_VIBRO_SETTING_ON: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_force_vibro_setting_on) };
-pub static FORCE_VIBRO_SETTING_OFF: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_force_vibro_setting_off) };
-pub static FORCE_DISPLAY_BRIGHTNESS_SETTING_1: NotificationMessage =
-    unsafe { NotificationMessage(sys::message_force_display_brightness_setting_1f) };
+pub const FORCE_SPEAKER_VOLUME_SETTING_1: NotificationMessage =
+    NotificationMessage::force_speaker_volume_setting(1.0);
+pub const FORCE_VIBRO_SETTING_ON: NotificationMessage =
+    NotificationMessage::force_vibro_setting(true);
+pub const FORCE_VIBRO_SETTING_OFF: NotificationMessage =
+    NotificationMessage::force_vibro_setting(false);
+pub const FORCE_DISPLAY_BRIGHTNESS_SETTING_1: NotificationMessage =
+    NotificationMessage::force_display_bightness_setting(1.0);

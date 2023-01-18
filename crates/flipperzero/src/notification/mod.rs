@@ -6,11 +6,11 @@ use flipperzero_sys as sys;
 use flipperzero_sys::furi::UnsafeRecord;
 
 ///Default notification messages.
-//TODO pub mod messages;
+pub mod messages;
 ///Default notification notes.
-//TODO pub mod notes;
+pub mod notes;
 ///Default notification sequences.
-//TODO pub mod sequences;
+pub mod sequences;
 
 const RECORD_NOTIFICATION: *const c_char = sys::c_string!("notification");
 
@@ -28,8 +28,19 @@ impl NotificationApp {
     }
 
     /// Runs a notification sequence.
-    pub fn notify(&mut self, sequence: NotificationSequence) {
+    ///
+    /// #Safety
+    /// Due to how rust interacts with the firmware this function is not safe to use at any time
+    /// where the application might exit directly afterwards as the rust runtime will free the
+    /// sequence before the firmware has finished reading it. At any time where this is an issue
+    /// `notify_blocking` should be used instead..
+    pub fn notify(&mut self, sequence: &'static NotificationSequence) {
         unsafe { sys::notification_message(self.data.as_ptr(), sequence.to_sys()) };
+    }
+
+    /// Runs a notification sequence and blocks the thread.
+    pub fn notify_blocking(&mut self, sequence: &'static NotificationSequence) {
+        unsafe { sys::notification_message_block(self.data.as_ptr(), sequence.to_sys()) };
     }
 }
 
