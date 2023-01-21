@@ -51,8 +51,9 @@ impl CanvasView<'_> {
     }
 
     // FIXME:
-    // - canvas_reset
-    // - canvas_commit
+    //  - canvas_reset
+    //  - canvas_commit
+    //  This are currently not available in bindings
 
     pub fn width(&self) -> NonZeroU8 {
         let raw = self.raw.as_ptr();
@@ -85,7 +86,10 @@ impl CanvasView<'_> {
         // SAFETY: `raw` is always a valid pointer
         // and `font` is guaranteed to be a valid value by `From` implementation
         let raw = unsafe { NonNull::new_unchecked(sys::canvas_get_font_params(raw, font)) };
-        CanvasFontParameters { raw, _parent: self }
+        CanvasFontParameters {
+            raw,
+            _parent: PhantomData,
+        }
     }
 
     pub fn clear(&mut self) {
@@ -317,11 +321,11 @@ impl CanvasView<'_> {
 
 pub struct CanvasFontParameters<'a> {
     raw: NonNull<SysCanvasFontParameters>,
-    _parent: &'a CanvasView<'a>,
+    _parent: PhantomData<&'a CanvasView<'a>>,
 }
 
 impl<'a> CanvasFontParameters<'a> {
-    fn leading_default(&self) -> NonZeroU8 {
+    pub fn leading_default(&self) -> NonZeroU8 {
         let raw = self.raw.as_ptr();
         // SAFETY: `raw` is always valid and this allways outlives its parent
         unsafe { *raw }
@@ -330,7 +334,7 @@ impl<'a> CanvasFontParameters<'a> {
             .expect("`leading_default` should always be positive")
     }
 
-    fn leading_min(&self) -> NonZeroU8 {
+    pub fn leading_min(&self) -> NonZeroU8 {
         let raw = self.raw.as_ptr();
         // SAFETY: `raw` is always valid and this allways outlives its parent
         unsafe { *raw }
@@ -339,7 +343,7 @@ impl<'a> CanvasFontParameters<'a> {
             .expect("`leading_min` should always be positive")
     }
 
-    fn height(&self) -> NonZeroU8 {
+    pub fn height(&self) -> NonZeroU8 {
         let raw = self.raw.as_ptr();
         // SAFETY: `raw` is always valid and this allways outlives its parent
         unsafe { *raw }
@@ -348,13 +352,13 @@ impl<'a> CanvasFontParameters<'a> {
             .expect("`height` should always be positive")
     }
 
-    fn descender(&self) -> u8 {
+    pub fn descender(&self) -> u8 {
         let raw = self.raw.as_ptr();
         // SAFETY: `raw` is always valid and this allways outlives its parent
         unsafe { *raw }.descender
     }
 
-    fn snapshot(&self) -> CanvasFontParametersSnapshot {
+    pub fn snapshot(&self) -> CanvasFontParametersSnapshot {
         let raw = self.raw.as_ptr();
         // SAFETY: `raw` is always valid and this allways outlives its parent
         unsafe { *raw }
@@ -365,10 +369,10 @@ impl<'a> CanvasFontParameters<'a> {
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub struct CanvasFontParametersSnapshot {
-    leading_default: NonZeroU8,
-    leading_min: NonZeroU8,
-    height: NonZeroU8,
-    descender: u8,
+    pub leading_default: NonZeroU8,
+    pub leading_min: NonZeroU8,
+    pub height: NonZeroU8,
+    pub descender: u8,
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
@@ -506,58 +510,6 @@ impl From<Font> for SysFont {
         }
     }
 }
-
-// #[derive(Clone, Copy, Debug)]
-// pub enum CanvasOrientation {
-//     Horizontal,
-//     HorizontalFlip,
-//     Vertical,
-//     VerticalFlip,
-// }
-//
-// #[derive(Clone, Copy, Debug)]
-// pub enum FromSysCanvasOrientationError {
-//     Invalid(SysCanvasOrientation),
-// }
-//
-// impl TryFrom<SysCanvasOrientation> for CanvasOrientation {
-//     type Error = FromSysCanvasOrientationError;
-//
-//     fn try_from(value: SysCanvasOrientation) -> Result<Self, Self::Error> {
-//         use sys::{
-//             CanvasOrientation_CanvasOrientationHorizontal as SYS_CANVAS_ORIENTATION_HORIZONTAL,
-//             CanvasOrientation_CanvasOrientationHorizontalFlip as SYS_CANVAS_ORIENTATION_HORIZONTAL_FLIP,
-//             CanvasOrientation_CanvasOrientationVertical as SYS_CANVAS_ORIENTATION_VERTICAL,
-//             CanvasOrientation_CanvasOrientationVerticalFlip as SYS_CANVAS_ORIENTATION_VERTICAL_FLIP,
-//         };
-//
-//         Ok(match value {
-//             SYS_CANVAS_ORIENTATION_HORIZONTAL => Self::Horizontal,
-//             SYS_CANVAS_ORIENTATION_HORIZONTAL_FLIP => Self::HorizontalFlip,
-//             SYS_CANVAS_ORIENTATION_VERTICAL => Self::Vertical,
-//             SYS_CANVAS_ORIENTATION_VERTICAL_FLIP => Self::VerticalFlip,
-//             invalid => Err(Self::Error::Invalid(invalid))?,
-//         })
-//     }
-// }
-//
-// impl From<CanvasOrientation> for SysCanvasOrientation {
-//     fn from(value: CanvasOrientation) -> Self {
-//         use sys::{
-//             CanvasOrientation_CanvasOrientationHorizontal as SYS_CANVAS_ORIENTATION_HORIZONTAL,
-//             CanvasOrientation_CanvasOrientationHorizontalFlip as SYS_CANVAS_ORIENTATION_HORIZONTAL_FLIP,
-//             CanvasOrientation_CanvasOrientationVertical as SYS_CANVAS_ORIENTATION_VERTICAL,
-//             CanvasOrientation_CanvasOrientationVerticalFlip as SYS_CANVAS_ORIENTATION_VERTICAL_FLIP,
-//         };
-//
-//         match value {
-//             CanvasOrientation::Horizontal => SYS_CANVAS_ORIENTATION_HORIZONTAL,
-//             CanvasOrientation::HorizontalFlip => SYS_CANVAS_ORIENTATION_HORIZONTAL_FLIP,
-//             CanvasOrientation::Vertical => SYS_CANVAS_ORIENTATION_VERTICAL,
-//             CanvasOrientation::VerticalFlip => SYS_CANVAS_ORIENTATION_VERTICAL_FLIP,
-//         }
-//     }
-// }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum CanvasDirection {

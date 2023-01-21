@@ -99,7 +99,7 @@ impl<'a, VPC: ViewPortCallbacks> GuiViewPort<'a, VPC> {
         let gui = self.parent.gui.as_raw();
         let view_port = self.view_port.as_raw();
 
-        // # SAFETY: `self.parent` outlives this `GuiVewPort`
+        // SAFETY: `self.parent` outlives this `GuiVewPort`
         unsafe { sys::gui_view_port_send_to_front(gui, view_port) };
     }
 
