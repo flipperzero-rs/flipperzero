@@ -305,13 +305,7 @@ impl Seek for BufferedFile {
 
 impl Write for BufferedFile {
     fn write(&mut self, buf: &[u8]) -> Result<usize, Error> {
-        if unsafe { sys::stream_insert(self.0, buf.as_ptr(), buf.len()) } {
-            Ok(buf.len())
-        } else {
-            Err(Error::from_sys(unsafe {
-                sys::buffered_file_stream_get_error(self.0)
-            }))
-        }
+        Ok(unsafe { sys::stream_write(self.0, buf.as_ptr(), buf.len()) })
     }
 
     fn flush(&mut self) -> Result<(), Error> {
