@@ -9,11 +9,11 @@ extern crate flipperzero_rt;
 
 use core::ffi::CStr;
 
-use flipperzero::filesystem::*;
 use flipperzero::println;
+use flipperzero::storage::*;
 use flipperzero_rt::{entry, manifest};
 
-manifest!(name = "Rust filesystem example");
+manifest!(name = "Rust storage example");
 entry!(main);
 
 fn main(_args: *mut u8) -> i32 {
