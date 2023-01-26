@@ -1,4 +1,4 @@
-use core::ffi::{c_char, CStr};
+use core::ffi::{c_char, c_void, CStr};
 use core::fmt;
 
 use flipperzero_sys as sys;
@@ -223,10 +223,10 @@ impl OpenOptions {
         )
     }
 
-    pub fn open(self, path: &CStr) -> Result<BufferedFile, Error> {
-        let f = BufferedFile::new();
+    pub fn open(self, path: &CStr) -> Result<File, Error> {
+        let f = File::new();
         if unsafe {
-            sys::buffered_file_stream_open(
+            sys::storage_file_open(
                 f.0,
                 path.as_ptr() as *const i8,
                 self.access_mode,
@@ -237,84 +237,87 @@ impl OpenOptions {
         } else {
             // Per docs, "you need to close the file even if the open operation
             // failed," but this is handled by `Drop`.
-            Err(Error::from_sys(unsafe {
-                sys::buffered_file_stream_get_error(f.0)
-            }))
+            Err(Error::from_sys(unsafe { sys::storage_file_get_error(f.0) }))
         }
     }
 }
 
 /// File stream with buffered read operations.
-pub struct BufferedFile(*mut sys::Stream);
+pub struct File(*mut sys::File);
 
-impl BufferedFile {
+impl File {
     pub fn new() -> Self {
         unsafe {
-            BufferedFile(sys::buffered_file_stream_alloc(
+            File(sys::storage_file_alloc(
                 UnsafeRecord::open(RECORD_STORAGE).as_ptr(),
             ))
         }
     }
 }
 
-impl Drop for BufferedFile {
+impl Drop for File {
     fn drop(&mut self) {
         unsafe {
-            // `buffered_file_stream_close` calls `buffered_file_stream_sync`
+            // `storage_file_close` calls `storage_file_sync`
             // internally, so it's not necesssary to call it here.
-            sys::buffered_file_stream_close(self.0);
+            sys::storage_file_close(self.0);
         }
     }
 }
 
-impl Read for BufferedFile {
+impl Read for File {
     fn read(&mut self, buf: &mut [u8]) -> Result<usize, Error> {
-        Ok(unsafe { sys::stream_read(self.0, buf.as_mut_ptr(), buf.len()) })
+        Ok(unsafe {
+            sys::storage_file_read(
+                self.0,
+                buf.as_mut_ptr() as *mut c_void,
+                buf.len().try_into().unwrap(),
+            )
+        } as usize)
     }
 }
 
-impl Seek for BufferedFile {
+impl Seek for File {
     fn seek(&mut self, pos: SeekFrom) -> Result<usize, Error> {
         let (offset_type, offset) = match pos {
-            SeekFrom::Start(n) => (sys::StreamOffset_StreamOffsetFromStart, n),
-            SeekFrom::End(n) => (sys::StreamOffset_StreamOffsetFromEnd, n),
-            SeekFrom::Current(n) => (sys::StreamOffset_StreamOffsetFromCurrent, n),
+            SeekFrom::Start(n) => (true, n),
+            SeekFrom::End(n) => (false, n),
+            SeekFrom::Current(n) => (false, n),
         };
         unsafe {
-            if sys::stream_seek(self.0, offset, offset_type) {
-                Ok(sys::stream_tell(self.0))
+            if sys::storage_file_seek(self.0, offset.try_into().unwrap(), offset_type) {
+                Ok(sys::storage_file_tell(self.0).try_into().unwrap())
             } else {
-                Err(Error::from_sys(sys::buffered_file_stream_get_error(self.0)))
+                Err(Error::from_sys(sys::storage_file_get_error(self.0)))
             }
         }
     }
 
     fn rewind(&mut self) -> Result<(), Error> {
-        unsafe { sys::stream_rewind(self.0) };
-        Ok(())
+        self.seek(SeekFrom::Start(0)).map(|_| {})
     }
 
     fn stream_len(&mut self) -> Result<usize, Error> {
-        Ok(unsafe { sys::stream_size(self.0) })
+        Ok(unsafe { sys::storage_file_size(self.0).try_into().unwrap() })
     }
 
     fn stream_position(&mut self) -> Result<usize, Error> {
-        Ok(unsafe { sys::stream_tell(self.0) })
+        Ok(unsafe { sys::storage_file_tell(self.0).try_into().unwrap() })
     }
 }
 
-impl Write for BufferedFile {
+impl Write for File {
     fn write(&mut self, buf: &[u8]) -> Result<usize, Error> {
-        Ok(unsafe { sys::stream_write(self.0, buf.as_ptr(), buf.len()) })
+        Ok(unsafe {
+            sys::storage_file_write(
+                self.0,
+                buf.as_ptr() as *mut c_void,
+                buf.len().try_into().unwrap(),
+            )
+        } as usize)
     }
 
     fn flush(&mut self) -> Result<(), Error> {
-        if unsafe { sys::buffered_file_stream_sync(self.0) } {
-            Ok(())
-        } else {
-            Err(Error::from_sys(unsafe {
-                sys::buffered_file_stream_get_error(self.0)
-            }))
-        }
+        Ok(())
     }
 }
