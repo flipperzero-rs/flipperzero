@@ -1,4 +1,5 @@
 use core::ffi::{c_char, CStr};
+use core::fmt;
 
 use flipperzero_sys as sys;
 use flipperzero_sys::furi::UnsafeRecord;
@@ -50,6 +51,13 @@ impl Error {
             sys::FS_Error_FSE_ALREADY_OPEN => Self::AlreadyOpen,
             _ => unimplemented!(),
         }
+    }
+}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let msg = unsafe { CStr::from_ptr(sys::filesystem_api_error_get_desc(self.to_sys())) };
+        write!(f, "{}", msg.to_bytes().escape_ascii())
     }
 }
 
