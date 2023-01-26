@@ -121,93 +121,104 @@ pub trait Write {
     }
 }
 
-pub struct OpenOptions(u8, u8);
+#[derive(Debug, Default, Clone, Copy)]
+pub struct OpenOptions {
+    access_mode: u8,
+    open_mode: u8,
+}
 
 impl OpenOptions {
     pub fn new() -> Self {
-        Self(0, 0)
+        Self::default()
+    }
+
+    fn from_parts(access_mode: u8, open_mode: u8) -> Self {
+        OpenOptions {
+            access_mode,
+            open_mode,
+        }
     }
 
     /// Read access
     pub fn read(self, set: bool) -> Self {
-        OpenOptions(
+        OpenOptions::from_parts(
             if set {
-                self.0 | sys::FS_AccessMode_FSAM_READ
+                self.access_mode | sys::FS_AccessMode_FSAM_READ
             } else {
-                self.0 & !sys::FS_AccessMode_FSAM_READ
+                self.access_mode & !sys::FS_AccessMode_FSAM_READ
             },
-            self.1,
+            self.open_mode,
         )
     }
 
     /// Write access
     pub fn write(self, set: bool) -> Self {
-        OpenOptions(
+        OpenOptions::from_parts(
             if set {
-                self.0 | sys::FS_AccessMode_FSAM_WRITE
+                self.access_mode | sys::FS_AccessMode_FSAM_WRITE
             } else {
-                self.0 & !sys::FS_AccessMode_FSAM_WRITE
+                self.access_mode & !sys::FS_AccessMode_FSAM_WRITE
             },
-            self.1,
+            self.open_mode,
         )
     }
 
     /// Open file, fail if file doesn't exist
     pub fn open_existing(self, set: bool) -> Self {
-        OpenOptions(
-            self.0,
+        OpenOptions::from_parts(
+            self.access_mode,
             if set {
-                self.1 | sys::FS_OpenMode_FSOM_OPEN_EXISTING
+                self.open_mode | sys::FS_OpenMode_FSOM_OPEN_EXISTING
             } else {
-                self.1 & !sys::FS_OpenMode_FSOM_OPEN_EXISTING
+                self.open_mode & !sys::FS_OpenMode_FSOM_OPEN_EXISTING
             },
         )
     }
 
     /// Open file. Create new file if not exist
     pub fn open_always(self, set: bool) -> Self {
-        OpenOptions(
-            self.0,
+        OpenOptions::from_parts(
+            self.access_mode,
             if set {
-                self.1 | sys::FS_OpenMode_FSOM_OPEN_ALWAYS
+                self.open_mode | sys::FS_OpenMode_FSOM_OPEN_ALWAYS
             } else {
-                self.1 & !sys::FS_OpenMode_FSOM_OPEN_ALWAYS
+                self.open_mode & !sys::FS_OpenMode_FSOM_OPEN_ALWAYS
             },
         )
     }
 
     /// Open file. Create new file if not exist. Set R/W pointer to EOF
     pub fn open_append(self, set: bool) -> Self {
-        OpenOptions(
-            self.0,
+        OpenOptions::from_parts(
+            self.access_mode,
             if set {
-                self.1 | sys::FS_OpenMode_FSOM_OPEN_APPEND
+                self.open_mode | sys::FS_OpenMode_FSOM_OPEN_APPEND
             } else {
-                self.1 & !sys::FS_OpenMode_FSOM_OPEN_APPEND
+                self.open_mode & !sys::FS_OpenMode_FSOM_OPEN_APPEND
             },
         )
     }
 
     /// Creates a new file. Fails if the file is exist
     pub fn create_new(self, set: bool) -> Self {
-        OpenOptions(
-            self.0,
+        OpenOptions::from_parts(
+            self.access_mode,
             if set {
-                self.1 | sys::FS_OpenMode_FSOM_CREATE_NEW
+                self.open_mode | sys::FS_OpenMode_FSOM_CREATE_NEW
             } else {
-                self.1 & !sys::FS_OpenMode_FSOM_CREATE_NEW
+                self.open_mode & !sys::FS_OpenMode_FSOM_CREATE_NEW
             },
         )
     }
 
     /// Creates a new file. If file exist, truncate to zero size
     pub fn create_always(self, set: bool) -> Self {
-        OpenOptions(
-            self.0,
+        OpenOptions::from_parts(
+            self.access_mode,
             if set {
-                self.1 | sys::FS_OpenMode_FSOM_CREATE_ALWAYS
+                self.open_mode | sys::FS_OpenMode_FSOM_CREATE_ALWAYS
             } else {
-                self.1 & !sys::FS_OpenMode_FSOM_CREATE_ALWAYS
+                self.open_mode & !sys::FS_OpenMode_FSOM_CREATE_ALWAYS
             },
         )
     }
@@ -215,7 +226,12 @@ impl OpenOptions {
     pub fn open(self, path: &CStr) -> Result<BufferedFile, Error> {
         let f = BufferedFile::new();
         if unsafe {
-            sys::buffered_file_stream_open(f.0, path.as_ptr() as *const i8, self.0, self.1)
+            sys::buffered_file_stream_open(
+                f.0,
+                path.as_ptr() as *const i8,
+                self.access_mode,
+                self.open_mode,
+            )
         } {
             Ok(f)
         } else {
