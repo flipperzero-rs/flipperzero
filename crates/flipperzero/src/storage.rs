@@ -260,7 +260,8 @@ impl BufferedFile {
 impl Drop for BufferedFile {
     fn drop(&mut self) {
         unsafe {
-            sys::buffered_file_stream_sync(self.0);
+            // `buffered_file_stream_close` calls `buffered_file_stream_sync`
+            // internally, so it's not necesssary to call it here.
             sys::buffered_file_stream_close(self.0);
         }
     }
