@@ -204,13 +204,18 @@ impl Seek for File {
 
 impl Write for File {
     fn write(&mut self, buf: &[u8]) -> Result<usize, Error> {
-        Ok(unsafe {
-            sys::storage_file_write(
-                self.0,
-                buf.as_ptr() as *mut c_void,
-                buf.len().try_into().map_err(|_| Error::InvalidParameter)?,
-            )
-        } as usize)
+        let to_write = buf.len().try_into().map_err(|_| Error::InvalidParameter)?;
+        let bytes_written =
+            unsafe { sys::storage_file_write(self.0, buf.as_ptr() as *mut c_void, to_write) };
+        if bytes_written == to_write
+            || bytes_written < to_write && unsafe { sys::storage_file_eof(self.0) }
+        {
+            Ok(bytes_written as usize)
+        } else {
+            Err(Error::from_sys(unsafe {
+                sys::storage_file_get_error(self.0)
+            }))
+        }
     }
 
     fn flush(&mut self) -> Result<(), Error> {
