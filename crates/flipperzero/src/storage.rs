@@ -70,9 +70,9 @@ pub trait Read {
 ///
 /// It is used by the Seek trait.
 pub enum SeekFrom {
-    Start(i32),
-    End(i32),
-    Current(i32),
+    Start(u64),
+    End(i64),
+    Current(i64),
 }
 
 /// Trait comparable to `std::Seek` for the Flipper stream API
@@ -91,7 +91,9 @@ pub trait Seek {
         // Avoid seeking a third time when we were already at the end of the
         // stream. The branch is usually way cheaper than a seek operation.
         if old_pos != len {
-            self.seek(SeekFrom::Start(old_pos as i32))?;
+            self.seek(SeekFrom::Start(
+                old_pos.try_into().map_err(|_| Error::InvalidParameter)?,
+            ))?;
         }
 
         Ok(len)
@@ -280,12 +282,12 @@ impl Read for File {
 impl Seek for File {
     fn seek(&mut self, pos: SeekFrom) -> Result<usize, Error> {
         let (offset_type, offset) = match pos {
-            SeekFrom::Start(n) => (true, n),
-            SeekFrom::End(n) => (false, n),
-            SeekFrom::Current(n) => (false, n),
+            SeekFrom::Start(n) => (true, n.try_into().map_err(|_| Error::InvalidParameter)?),
+            SeekFrom::End(n) => (false, n.try_into().map_err(|_| Error::InvalidParameter)?),
+            SeekFrom::Current(n) => (false, n.try_into().map_err(|_| Error::InvalidParameter)?),
         };
         unsafe {
-            if sys::storage_file_seek(self.0, offset.try_into().unwrap(), offset_type) {
+            if sys::storage_file_seek(self.0, offset, offset_type) {
                 Ok(sys::storage_file_tell(self.0).try_into().unwrap())
             } else {
                 Err(Error::from_sys(sys::storage_file_get_error(self.0)))
