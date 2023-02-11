@@ -110,13 +110,31 @@ impl OpenOptions {
     }
 
     pub fn open(self, path: &CStr) -> Result<File, Error> {
+        // It's possible to produce a nonsensical `open_mode` using the above
+        // operations, so we have some logic here to drop any extraneous
+        // information. The possible open modes form a partial order (for
+        // example, `create_new` is more specialized than `truncate`) so we
+        // search for the first "on" bit in this sequence, and use that as the
+        // open mode.
+        let canonicalized_open_mode = if self.open_mode & sys::FS_OpenMode_FSOM_CREATE_NEW != 0 {
+            sys::FS_OpenMode_FSOM_CREATE_NEW
+        } else if self.open_mode & sys::FS_OpenMode_FSOM_CREATE_ALWAYS != 0 {
+            sys::FS_OpenMode_FSOM_CREATE_ALWAYS
+        } else if self.open_mode & sys::FS_OpenMode_FSOM_OPEN_APPEND != 0 {
+            sys::FS_OpenMode_FSOM_OPEN_APPEND
+        } else if self.open_mode & sys::FS_OpenMode_FSOM_OPEN_ALWAYS != 0 {
+            sys::FS_OpenMode_FSOM_OPEN_ALWAYS
+        } else {
+            sys::FS_OpenMode_FSOM_OPEN_EXISTING
+        };
+
         let f = File::new();
         if unsafe {
             sys::storage_file_open(
                 f.0,
                 path.as_ptr() as *const i8,
                 self.access_mode,
-                self.open_mode,
+                canonicalized_open_mode,
             )
         } {
             Ok(f)
