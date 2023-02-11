@@ -273,7 +273,7 @@ impl Read for File {
             sys::storage_file_read(
                 self.0,
                 buf.as_mut_ptr() as *mut c_void,
-                buf.len().try_into().unwrap(),
+                buf.len().try_into().map_err(|_| Error::InvalidParameter)?,
             )
         } as usize)
     }
@@ -288,7 +288,9 @@ impl Seek for File {
         };
         unsafe {
             if sys::storage_file_seek(self.0, offset, offset_type) {
-                Ok(sys::storage_file_tell(self.0).try_into().unwrap())
+                Ok(sys::storage_file_tell(self.0)
+                    .try_into()
+                    .map_err(|_| Error::InvalidParameter)?)
             } else {
                 Err(Error::from_sys(sys::storage_file_get_error(self.0)))
             }
@@ -300,11 +302,19 @@ impl Seek for File {
     }
 
     fn stream_len(&mut self) -> Result<usize, Error> {
-        Ok(unsafe { sys::storage_file_size(self.0).try_into().unwrap() })
+        Ok(unsafe {
+            sys::storage_file_size(self.0)
+                .try_into()
+                .map_err(|_| Error::InvalidParameter)?
+        })
     }
 
     fn stream_position(&mut self) -> Result<usize, Error> {
-        Ok(unsafe { sys::storage_file_tell(self.0).try_into().unwrap() })
+        Ok(unsafe {
+            sys::storage_file_tell(self.0)
+                .try_into()
+                .map_err(|_| Error::InvalidParameter)?
+        })
     }
 }
 
@@ -314,7 +324,7 @@ impl Write for File {
             sys::storage_file_write(
                 self.0,
                 buf.as_ptr() as *mut c_void,
-                buf.len().try_into().unwrap(),
+                buf.len().try_into().map_err(|_| Error::InvalidParameter)?,
             )
         } as usize)
     }
