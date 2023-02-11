@@ -8,5 +8,6 @@ extern crate alloc;
 pub mod dialogs;
 pub mod furi;
 pub mod gui;
+pub mod io;
 pub mod macros;
 pub mod storage;
