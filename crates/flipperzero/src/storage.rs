@@ -323,3 +323,9 @@ impl Write for File {
         Ok(())
     }
 }
+
+impl Default for File {
+    fn default() -> Self {
+        Self::new()
+    }
+}
