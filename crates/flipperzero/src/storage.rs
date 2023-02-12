@@ -171,13 +171,17 @@ impl Drop for File {
 
 impl Read for File {
     fn read(&mut self, buf: &mut [u8]) -> Result<usize, Error> {
-        Ok(unsafe {
-            sys::storage_file_read(
-                self.0,
-                buf.as_mut_ptr() as *mut c_void,
-                buf.len().try_into().map_err(|_| Error::InvalidParameter)?,
-            )
-        } as usize)
+        let to_read = buf.len().try_into().map_err(|_| Error::InvalidParameter)?;
+        let bytes_read =
+            unsafe { sys::storage_file_read(self.0, buf.as_mut_ptr() as *mut c_void, to_read) };
+        if bytes_read == to_read || bytes_read < to_read && unsafe { sys::storage_file_eof(self.0) }
+        {
+            Ok(bytes_read as usize)
+        } else {
+            Err(Error::from_sys(unsafe {
+                sys::storage_file_get_error(self.0)
+            }))
+        }
     }
 }
 
