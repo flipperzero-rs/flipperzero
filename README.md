@@ -13,7 +13,7 @@ so it can be used to build binaries with no external dependencies.
 These crates only support the [`core`](https://doc.rust-lang.org/core/) and [`alloc`](https://doc.rust-lang.org/alloc/) crates.
 
 The Rust `thumbv7em-none-eabihf` target currently only supports [`no_std`](https://rust-embedded.github.io/book/intro/no-std.html) development.
-This means it's not possible to use anything the [`std`](https://doc.rust-lang.org/std/) crate.
+This means it's not possible to use anything in the [`std`](https://doc.rust-lang.org/std/) crate.
 
 ## SDK version
 
