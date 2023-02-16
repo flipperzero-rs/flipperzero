@@ -10,10 +10,10 @@ This project allows writing Rust-based applications for the [Flipper Zero](https
 It doesn't have any direct dependency on [`flipperzero-firmware`](https://github.com/flipperdevices/flipperzero-firmware) or toolchain,
 so it can be used to build binaries with no external dependencies.
 
-These crates only support the [`core`](https://doc.rust-lang.org/alloc/) and [`alloc`](https://doc.rust-lang.org/alloc/) crates.
+These crates only support the [`core`](https://doc.rust-lang.org/core/) and [`alloc`](https://doc.rust-lang.org/alloc/) crates.
 
 The Rust `thumbv7em-none-eabihf` target currently only supports [`no_std`](https://rust-embedded.github.io/book/intro/no-std.html) development.
-This means it's not possible to use anything the [`std`](https://doc.rust-lang.org/alloc/) crate.
+This means it's not possible to use anything the [`std`](https://doc.rust-lang.org/std/) crate.
 
 ## SDK version
 
