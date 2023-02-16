@@ -4,7 +4,6 @@ members = [
     "flipperzero",
     "sys",
     "rt",
-    "gui",
 ]
 resolver = "2"
 

@@ -1,7 +1,7 @@
 # Rust for Flipper Zero 🐬❤️🦀
 
 [![crates.io](https://img.shields.io/crates/v/flipperzero)](https://crates.io/crates/flipperzero)
-[![Flipper Zero API](https://img.shields.io/badge/Flipper%20Zero%20API-10.1-orange)](https://github.com/flipperdevices/flipperzero-firmware/blob/0.73.1/firmware/targets/f7/api_symbols.csv)
+[![Flipper Zero API](https://img.shields.io/badge/Flipper%20Zero%20API-14.0-orange)](https://github.com/flipperdevices/flipperzero-firmware/blob/0.77.1/firmware/targets/f7/api_symbols.csv)
 [![docs.rs](https://img.shields.io/docsrs/flipperzero)](https://docs.rs/flipperzero)
 [![MIT license](https://img.shields.io/crates/l/flipperzero)](LICENSE)
 
@@ -13,16 +13,17 @@ so it can be used to build binaries with no external dependencies.
 These crates only support the [`core`](https://doc.rust-lang.org/core/) and [`alloc`](https://doc.rust-lang.org/alloc/) crates.
 
 The Rust `thumbv7em-none-eabihf` target currently only supports [`no_std`](https://rust-embedded.github.io/book/intro/no-std.html) development.
-This means it's not possible to use anything the [`std`](https://doc.rust-lang.org/std/) crate.
+This means it's not possible to use anything in the [`std`](https://doc.rust-lang.org/std/) crate.
 
 ## SDK version
 
-Currently supports SDK 11.2 ([flipperzero-firmware@0.74.2](https://github.com/flipperdevices/flipperzero-firmware/tree/0.74.2)).
+Currently supports SDK 14.0 ([flipperzero-firmware@0.77.1](https://github.com/flipperdevices/flipperzero-firmware/tree/0.77.1)).
 
-The Rust crate version number will be updated after a major [API version](https://github.com/flipperdevices/flipperzero-firmware/blob/release/firmware/targets/f7/api_symbols.csv) bump in the Flipper Zero firmware.
+The crate major version number will be updated after a bump in [API version](https://github.com/flipperdevices/flipperzero-firmware/blob/release/firmware/targets/f7/api_symbols.csv) in the Flipper Zero firmware.
 
 | Crate version | API version |
 | ------------- | ----------- |
+| 0.7.x         | 14.0        |
 | 0.6.x         | 11.2        |
 | 0.5.x         | 10.1        |
 | 0.4.x         | 7.5         |

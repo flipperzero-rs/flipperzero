@@ -85,7 +85,10 @@ impl CanvasView<'_> {
         let font = font.into();
         // SAFETY: `raw` is always a valid pointer
         // and `font` is guaranteed to be a valid value by `From` implementation
-        let raw = unsafe { NonNull::new_unchecked(sys::canvas_get_font_params(raw, font)) };
+        // `cast_mut` is required since `NonNull` can only be created froma mut-pointer
+        let raw = unsafe { sys::canvas_get_font_params(raw, font) }.cast_mut();
+        // SAFETY: `raw` is always a valid pointer
+        let raw = unsafe { NonNull::new_unchecked(raw) };
         CanvasFontParameters {
             raw,
             _parent: PhantomData,
@@ -320,6 +323,7 @@ impl CanvasView<'_> {
 }
 
 pub struct CanvasFontParameters<'a> {
+    // this wraps an effectively const pointer thus it should never be used for weiting
     raw: NonNull<SysCanvasFontParameters>,
     _parent: PhantomData<&'a CanvasView<'a>>,
 }
