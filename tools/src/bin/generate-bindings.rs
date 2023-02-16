@@ -2,9 +2,9 @@
 //!
 //! Usage: `generate-bindings flipperzero-firmware/build/f7-firmware-D/sdk/`
 
-use std::path::{Path, PathBuf};
 use std::{env, fs};
 
+use camino::{Utf8Path, Utf8PathBuf};
 use clap::{self, crate_authors, crate_description, crate_version, value_parser};
 use serde::Deserialize;
 
@@ -29,7 +29,7 @@ struct ApiSymbols {
 }
 
 /// Load symbols from `api_symbols.csv`.
-fn load_symbols<T: AsRef<Path>>(path: T) -> ApiSymbols {
+fn load_symbols<T: AsRef<Utf8Path>>(path: T) -> ApiSymbols {
     let path = path.as_ref();
 
     let mut reader = csv::Reader::from_path(path).expect("failed to load symbol file");
@@ -82,7 +82,7 @@ struct SdkOpts {
 }
 
 /// Load `sdk.opts` file of compiler flags.
-fn load_sdk_opts<T: AsRef<Path>>(path: T) -> SdkOpts {
+fn load_sdk_opts<T: AsRef<Utf8Path>>(path: T) -> SdkOpts {
     let file = fs::File::open(path.as_ref()).expect("failed to open sdk.opts");
 
     let sdk_opts: SdkOpts = serde_json::from_reader(file).expect("failed to parse sdk.opts JSON");
@@ -113,7 +113,7 @@ fn parse_args() -> clap::ArgMatches {
         .version(crate_version!())
         .author(crate_authors!())
         .about(crate_description!())
-        .arg(clap::Arg::new("sdk").value_parser(value_parser!(PathBuf)))
+        .arg(clap::Arg::new("sdk").value_parser(value_parser!(Utf8PathBuf)))
         .get_matches()
 }
 
@@ -121,17 +121,17 @@ fn main() {
     let matches = parse_args();
 
     let sdk = matches
-        .get_one::<PathBuf>("sdk")
+        .get_one::<Utf8PathBuf>("sdk")
         .expect("failed to find SDK directory");
 
     if !sdk.is_dir() {
-        panic!("No such directory: {}", sdk.display());
+        panic!("No such directory: {}", sdk);
     }
 
     // We must provide absolute paths to Clang. Unfortunately on Windows
     // `Path::canonicalize` returns a `\\?\C:\...` style path that is not
     // compatible with Clang.
-    let cwd = env::current_dir().unwrap();
+    let cwd = Utf8PathBuf::try_from(env::current_dir().unwrap()).unwrap();
     let sdk = cwd.join(sdk);
 
     let toolchain = sdk.join(TOOLCHAIN);
@@ -147,7 +147,7 @@ fn main() {
 
     let replace_sdk_root_dir = |s: &str| {
         // Need to use '/' on Windows, or else include paths don't work
-        s.replace("SDK_ROOT_DIR", sdk.to_str().unwrap())
+        s.replace("SDK_ROOT_DIR", sdk.as_str())
             .replace('\\', "/")
     };
 
@@ -175,9 +175,9 @@ fn main() {
     eprintln!("Generating bindings for SDK {:08X}", symbols.api_version);
     let mut bindings = bindgen::builder()
         .clang_arg("-working-directory")
-        .clang_arg(&sdk.display().to_string())
+        .clang_arg(sdk.as_str())
         .clang_args(["--system-header-prefix=f7_sdk/"])
-        .clang_args(["-isystem", &toolchain.display().to_string()])
+        .clang_args(["-isystem", toolchain.as_str()])
         .clang_args(&cc_flags)
         .clang_arg("-Wno-error")
         .clang_arg("-fshort-enums")
