@@ -8,6 +8,7 @@ use camino::{Utf8Path, Utf8PathBuf};
 use clap::{self, crate_authors, crate_description, crate_version, value_parser};
 use serde::Deserialize;
 
+const TARGET: &str = "thumbv7em-none-eabihf";
 const OUTFILE: &str = "bindings.rs";
 const SDK_OPTS: &str = "sdk.opts";
 #[cfg(all(windows, target_arch = "x86"))]
@@ -174,8 +175,8 @@ fn main() {
     // Generate bindings
     eprintln!("Generating bindings for SDK {:08X}", symbols.api_version);
     let mut bindings = bindgen::builder()
-        .clang_arg("-working-directory")
-        .clang_arg(sdk.as_str())
+        .clang_args(["-target", TARGET])
+        .clang_args(["-working-directory", sdk.as_str()])
         .clang_args(["--system-header-prefix=f7_sdk/"])
         .clang_args(["-isystem", toolchain.as_str()])
         .clang_args(&cc_flags)
