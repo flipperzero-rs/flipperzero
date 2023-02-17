@@ -5,17 +5,14 @@ use core::{
 };
 use flipperzero_sys::{self as sys, furi::Status};
 
-// FIXME: make this available via flipperzero-firnmware
-fn interrupted() -> bool {
-    // FIXME: this is currently obviously unsound and cannot be implemmented,
-    //  see https://github.com/flipperdevices/flipperzero-firmware/pull/2276 for details
-    // // SAFETY: this function has no invariant to uphold
-    // unsafe { furi_is_irq_context() }
-    false
+#[inline(always)]
+fn is_irq_or_masked() -> bool {
+    // SAFETY: this function has no invariants to uphold
+    unsafe { sys::furi_kernel_is_irq_or_masked() }
 }
 
 pub fn lock() -> Result<LockGuard, LockError> {
-    if interrupted() {
+    if is_irq_or_masked() {
         Err(LockError::Interrupted)
     } else {
         // SAFETY: kernel is not interrupted
@@ -55,7 +52,7 @@ impl LockGuard {
 
 impl Drop for LockGuard {
     fn drop(&mut self) {
-        // SAFETY: no invariant has to be upheld
+        // SAFETY: since `LockGuard` is `!Send` it cannot escape valid (non-interrupt) context
         let _ = unsafe { sys::furi_kernel_unlock() };
     }
 }
