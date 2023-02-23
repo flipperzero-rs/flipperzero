@@ -1,47 +1,40 @@
+use crate::{gui::canvas::CanvasView, gui::view_port::ViewPortCallbacks, input::InputEvent};
+use alloc::boxed::Box;
+use core::ptr::NonNull;
 use flipperzero_sys::{self as sys, View as SysView};
 
-pub struct View {
-    raw: *mut SysView,
+pub struct View<C: ViewCallbacks> {
+    raw: NonNull<SysView>,
+    callbacks: Box<C>,
 }
 
-impl View {
-    /// Creates a new `View`.
-    ///
-    /// # Example
-    ///
-    /// Basic usage:
-    ///
-    /// ```
-    /// use flipperzero::gui::view::View;
-    ///
-    /// let view = View::new();
-    /// ```
-    pub fn new() -> View {
-        // SAFETY: allocation either succeeds producing the valid pointer
+impl<C: ViewCallbacks> View<C> {
+    pub fn new(callbacks: C) -> Self {
+        // SAFETY: allocation either succeeds producing a valid non-null pointer
         // or stops the system on OOM
-        let view = unsafe { sys::view_alloc() };
-        Self { raw: view }
+        let raw = unsafe { NonNull::new_unchecked(sys::view_alloc()) };
+        let callbacks = Box::new(callbacks);
+
+        Self { raw, callbacks }
     }
 
     /// Creates a copy of raw pointer to the [`SysView`].
-    pub unsafe fn as_raw(&self) -> *mut SysView {
-        self.raw
+    pub fn as_raw(&self) -> *mut SysView {
+        self.raw.as_ptr()
     }
 }
 
-impl Default for View {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl Drop for View {
+impl<C: ViewCallbacks> Drop for View<C> {
     fn drop(&mut self) {
-        // `self.raw` is `null` iff it has been taken by call to `into_raw()`
-        if !self.raw.is_null() {
-            // SAFETY: `self.raw` is always valid
-            // and it should have been unregistered from the system by now
-            unsafe { sys::view_free(self.raw) }
-        }
+        let raw = self.raw.as_ptr();
+        // SAFETY: `raw` is always valid
+        unsafe { sys::view_free(raw) }
     }
 }
+
+pub trait ViewCallbacks {
+    fn on_draw(&mut self, _canvas: CanvasView) {}
+    fn on_input(&mut self, _event: InputEvent) {}
+}
+
+impl ViewCallbacks for () {}

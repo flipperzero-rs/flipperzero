@@ -10,7 +10,7 @@ use flipperzero_sys::{self as sys, IconAnimation as SysIconAnimation};
 /// System Icon Animation wrapper.
 pub struct IconAnimation<'a, C: IconAnimationCallbacks> {
     raw: NonNull<SysIconAnimation>,
-    callbacks: NonNull<C>,
+    callbacks: Box<C>,
     _parent_lifetime: PhantomData<&'a ()>,
 }
 
@@ -21,7 +21,7 @@ impl<'a, C: IconAnimationCallbacks> IconAnimation<'a, C> {
         // or stops the system on OOM,
         // `icon` is a valid pointer and `icon` outlives this animation
         let raw = unsafe { NonNull::new_unchecked(sys::icon_animation_alloc(icon)) };
-        let callbacks = NonNull::from(Box::leak(Box::new(callbacks)));
+        let callbacks = Box::new(callbacks);
 
         let icon_animation = Self {
             raw,
@@ -46,13 +46,13 @@ impl<'a, C: IconAnimationCallbacks> IconAnimation<'a, C> {
             C::on_update as *const c_void,
             <() as IconAnimationCallbacks>::on_update as *const c_void,
         ) {
-            let context = icon_animation.callbacks.as_ptr().cast();
+            let context = (&*icon_animation.callbacks as *const C).cast_mut().cast();
             let raw = raw.as_ptr();
-            // SAFETY: `raw` is valid
-            // and `callbacks` is valid and lives with this struct
-            unsafe {
-                sys::icon_animation_set_update_callback(raw, Some(dispatch_update::<C>), context)
-            }
+            let callback = Some(dispatch_update::<C> as _);
+
+            // SAFETY: `raw` and `callback` are valid
+            // and `context` is valid as the box lives with this struct
+            unsafe { sys::icon_animation_set_update_callback(raw, callback, context) }
         }
 
         icon_animation

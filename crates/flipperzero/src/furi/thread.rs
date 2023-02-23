@@ -16,7 +16,7 @@ pub mod sync {
                 sys::furi_delay_us(duration.as_micros() as u32);
             } else {
                 sys::furi_delay_ms(duration.as_millis() as u32);
-                // TODO: add reamining us-part
+                // TODO: add remaining us-part
             }
         }
     }

@@ -7,12 +7,18 @@ use crate::{
     },
     input::InputEvent,
 };
-use core::{ffi::c_char, fmt::Debug};
-use flipperzero_sys::{self as sys, furi::UnsafeRecord, Gui as SysGui, GuiLayer as SysGuiLayer};
+use core::{
+    ffi::c_char,
+    fmt::Debug,
+    ops::{Deref, DerefMut},
+};
+use flipperzero_sys::{
+    self as sys, furi::UnsafeRecord, Canvas as SysCanvas, Gui as SysGui, GuiLayer as SysGuiLayer,
+};
 
 /// System Gui wrapper.
 pub struct Gui {
-    gui: UnsafeRecord<SysGui>,
+    raw: UnsafeRecord<SysGui>,
 }
 
 impl Gui {
@@ -23,7 +29,11 @@ impl Gui {
         // SAFETY: `RECORD` is a constant
         let gui = unsafe { UnsafeRecord::open(Self::RECORD) };
 
-        Self { gui }
+        Self { raw: gui }
+    }
+
+    pub fn as_raw(&self) -> *mut SysGui {
+        self.raw.as_raw()
     }
 
     pub fn add_view_port<VPC: ViewPortCallbacks>(
@@ -31,12 +41,12 @@ impl Gui {
         view_port: ViewPort<VPC>,
         layer: GuiLayer,
     ) -> GuiViewPort<'_, VPC> {
-        let gui = self.gui.as_raw();
+        let raw = self.as_raw();
         let view_port_ptr = view_port.as_raw();
         let layer = layer.into();
 
         // SAFETY: all pointers are valid and `view_port` outlives this `Gui`
-        unsafe { sys::gui_add_view_port(gui, view_port_ptr, layer) };
+        unsafe { sys::gui_add_view_port(raw, view_port_ptr, layer) };
 
         GuiViewPort {
             parent: self,
@@ -45,29 +55,26 @@ impl Gui {
     }
 
     pub fn get_frame_buffer_size(&self) -> usize {
-        let gui = self.gui.as_raw();
-        // SAFETY: `gui` is always a valid pointer
-        unsafe { sys::gui_get_framebuffer_size(gui) }
+        let raw = self.as_raw();
+        // SAFETY: `raw` is always a valid pointer
+        unsafe { sys::gui_get_framebuffer_size(raw) }
     }
 
     pub fn set_lockdown(&self, lockdown: bool) {
-        let gui = self.gui.as_raw();
-        // SAFETY: `gui` is always a valid pointer
-        unsafe { sys::gui_set_lockdown(gui, lockdown) }
+        let raw = self.raw.as_raw();
+        // SAFETY: `raw` is always a valid pointer
+        unsafe { sys::gui_set_lockdown(raw, lockdown) }
     }
 
     // TODO: separate `GuiCanvas` (locking the parent)
     //  and `Canvas` (independent of the parent)
-    pub fn direct_draw_acquire(&self) -> CanvasView {
-        let gui = self.gui.as_raw();
+    pub fn direct_draw_acquire(&mut self) -> ExclusiveCanvas<'_> {
+        let raw = self.as_raw();
 
-        // SAFETY: `gui` is always a valid pointer
-        // let canvas = unsafe { sys::gui_direct_draw_acquire(gui) }
-        let canvas = unimplemented!("");
+        // SAFETY: `raw` is always a valid pointer
+        let canvas = unsafe { CanvasView::from_raw(sys::gui_direct_draw_acquire(raw)) };
 
-        // SAFETY: `self` os the parent of `canvas`
-        // and `canvas` is a freshly created valid pointer
-        // unsafe { Canvas::from_raw(self, canvas) }
+        ExclusiveCanvas { gui: self, canvas }
     }
 
     // TODO: canvas method
@@ -96,7 +103,7 @@ impl<'a, VPC: ViewPortCallbacks> GuiViewPort<'a, VPC> {
     }
 
     pub fn send_to_front(&mut self) {
-        let gui = self.parent.gui.as_raw();
+        let gui = self.parent.raw.as_raw();
         let view_port = self.view_port.as_raw();
 
         // SAFETY: `self.parent` outlives this `GuiVewPort`
@@ -114,7 +121,7 @@ impl<'a, VPC: ViewPortCallbacks> GuiViewPort<'a, VPC> {
 
 impl<VPC: ViewPortCallbacks> Drop for GuiViewPort<'_, VPC> {
     fn drop(&mut self) {
-        let gui = self.parent.gui.as_raw();
+        let gui = self.parent.raw.as_raw();
         let view_port = self.view_port().as_raw();
 
         // SAFETY: `gui` and `view_port` are valid pointers
@@ -184,6 +191,38 @@ impl From<GuiLayer> for SysGuiLayer {
 }
 
 pub trait GuiCallbacks {
-    fn on_draw(&mut self, _canvas: *mut sys::Canvas) {}
+    fn on_draw(&mut self, _canvas: *mut SysCanvas) {}
     fn on_input(&mut self, _event: InputEvent) {}
+}
+
+impl GuiCallbacks for () {}
+
+/// Exclusively accessible canvas.
+pub struct ExclusiveCanvas<'a> {
+    gui: &'a mut Gui,
+    canvas: CanvasView<'a>,
+}
+
+impl Drop for ExclusiveCanvas<'_> {
+    fn drop(&mut self) {
+        let gui = self.gui.as_raw();
+        // SAFETY: this instance should have been created from `gui`
+        // using `gui_direct_draw_acquire`
+        // and will no longer be available since it is dropped
+        unsafe { sys::gui_direct_draw_release(gui) };
+    }
+}
+
+impl<'a> Deref for ExclusiveCanvas<'a> {
+    type Target = CanvasView<'a>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.canvas
+    }
+}
+
+impl<'a> DerefMut for ExclusiveCanvas<'a> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.canvas
+    }
 }

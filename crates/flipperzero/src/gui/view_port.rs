@@ -15,7 +15,7 @@ use flipperzero_sys::{
 /// System ViewPort.
 pub struct ViewPort<C: ViewPortCallbacks> {
     raw: NonNull<SysViewPort>,
-    callbacks: NonNull<C>,
+    callbacks: Box<C>,
 }
 
 impl<C: ViewPortCallbacks> ViewPort<C> {
@@ -34,59 +34,63 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
         // SAFETY: allocation either succeeds producing the valid pointer
         // or stops the system on OOM
         let raw = unsafe { NonNull::new_unchecked(sys::view_port_alloc()) };
-        let callbacks = NonNull::from(Box::leak(Box::new(callbacks)));
+        let callbacks = Box::new(callbacks);
 
         let view_port = Self { raw, callbacks };
 
-        pub unsafe extern "C" fn dispatch_draw<C: ViewPortCallbacks>(
-            canvas: *mut SysCanvas,
-            context: *mut c_void,
-        ) {
-            // SAFETY: `canvas` is guaranteed to be a valid pointer
-            let canvas = unsafe { CanvasView::from_raw(canvas) };
+        {
+            pub unsafe extern "C" fn dispatch_draw<C: ViewPortCallbacks>(
+                canvas: *mut SysCanvas,
+                context: *mut c_void,
+            ) {
+                // SAFETY: `canvas` is guaranteed to be a valid pointer
+                let canvas = unsafe { CanvasView::from_raw(canvas) };
 
-            let context: *mut C = context.cast();
-            // SAFETY: `context` is stored in a `Box` which is a member of `ViewPort`
-            // and the callback is accessed exclusively by this function
-            unsafe { &mut *context }.on_draw(canvas);
-        }
-        pub unsafe extern "C" fn dispatch_input<C: ViewPortCallbacks>(
-            input_event: *mut sys::InputEvent,
-            context: *mut c_void,
-        ) {
-            let input_event: InputEvent = (&unsafe { *input_event })
-                .try_into()
-                .expect("`input_event` should be a valid event");
+                let context: *mut C = context.cast();
+                // SAFETY: `context` is stored in a `Box` which is a member of `ViewPort`
+                // and the callback is accessed exclusively by this function
+                unsafe { &mut *context }.on_draw(canvas);
+            }
 
-            let context: *mut C = context.cast();
-            // SAFETY: `context` is stored in a pinned Box which is a member of `ViewPort`
-            // and the callback is accessed exclusively by this function
-            unsafe { &mut *context }.on_input(input_event);
-        }
-
-        if !ptr::eq(
-            C::on_draw as *const c_void,
-            <() as ViewPortCallbacks>::on_draw as *const c_void,
-        ) {
-            let context = view_port.callbacks.as_ptr().cast();
-            let raw = raw.as_ptr();
-            // SAFETY: `raw` is valid
-            // and `callbacks` is valid and lives with this struct
-            unsafe {
-                sys::view_port_draw_callback_set(raw, Some(dispatch_draw::<C>), context);
+            if !ptr::eq(
+                C::on_draw as *const c_void,
+                <() as ViewPortCallbacks>::on_draw as *const c_void,
+            ) {
+                let context = (&*view_port.callbacks as *const C).cast_mut().cast();
+                let raw = raw.as_ptr();
+                let callback = Some(dispatch_draw::<C> as _);
+                // SAFETY: `raw` is valid
+                // and `callbacks` is valid and lives with this struct
+                unsafe { sys::view_port_draw_callback_set(raw, callback, context) };
             }
         }
-        if !ptr::eq(
-            C::on_input as *const c_void,
-            <() as ViewPortCallbacks>::on_input as *const c_void,
-        ) {
-            let context = view_port.callbacks.as_ptr().cast();
-            let raw = raw.as_ptr();
-            // SAFETY: `raw` is valid
-            // and `callbacks` is valid and lives with this struct
-            unsafe {
-                sys::view_port_input_callback_set(raw, Some(dispatch_input::<C>), context);
-            };
+        {
+            pub unsafe extern "C" fn dispatch_input<C: ViewPortCallbacks>(
+                input_event: *mut sys::InputEvent,
+                context: *mut c_void,
+            ) {
+                let input_event: InputEvent = (&unsafe { *input_event })
+                    .try_into()
+                    .expect("`input_event` should be a valid event");
+
+                let context: *mut C = context.cast();
+                // SAFETY: `context` is stored in a pinned Box which is a member of `ViewPort`
+                // and the callback is accessed exclusively by this function
+                unsafe { &mut *context }.on_input(input_event);
+            }
+
+            if !ptr::eq(
+                C::on_input as *const c_void,
+                <() as ViewPortCallbacks>::on_input as *const c_void,
+            ) {
+                let context = (&*view_port.callbacks as *const C).cast_mut().cast();
+                let raw = raw.as_ptr();
+                let callback = Some(dispatch_input::<C> as _);
+
+                // SAFETY: `raw` is valid
+                // and `callbacks` is valid and lives with this struct
+                unsafe { sys::view_port_input_callback_set(raw, callback, context) };
+            }
         }
 
         view_port
@@ -336,10 +340,6 @@ impl<C: ViewPortCallbacks> Drop for ViewPort<C> {
         // SAFETY: `self.raw` is always valid
         // and it should have been unregistered from the system by now
         unsafe { sys::view_port_free(raw) }
-
-        let callbacks = self.callbacks.as_ptr();
-        // SAFETY: `callbacks` was created using `Box::into_raw()` on `ViewPort` creation
-        let _ = unsafe { Box::from_raw(callbacks) };
     }
 }
 
