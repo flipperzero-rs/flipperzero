@@ -7,6 +7,19 @@ members = [
 ]
 resolver = "2"
 
+[workspace.package]
+version = "0.7.0"
+description = "Rust for Flipper Zero"
+edition = "2021"
+rust-version = "1.64.0"
+repository = "https://github.com/dcoles/flipperzero-rs"
+readme = "../README.md"
+license = "MIT"
+
+[workspace.dependencies]
+flipperzero-sys = { path = "sys", version = "0.7.0" }
+flipperzero-rt = { path = "rt", version = "0.7.0" }
+
 [profile.dev]
 opt-level = "z"
 panic = "abort"
