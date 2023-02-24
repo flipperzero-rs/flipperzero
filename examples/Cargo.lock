@@ -36,3 +36,39 @@ dependencies = [
 [[package]]
 name = "flipperzero-sys"
 version = "0.7.0"
+
+[[package]]
+name = "gpio"
+version = "0.1.0"
+dependencies = [
+ "flipperzero",
+ "flipperzero-rt",
+ "flipperzero-sys",
+]
+
+[[package]]
+name = "gui"
+version = "0.1.0"
+dependencies = [
+ "flipperzero",
+ "flipperzero-rt",
+ "flipperzero-sys",
+]
+
+[[package]]
+name = "hello-rust"
+version = "0.1.0"
+dependencies = [
+ "flipperzero",
+ "flipperzero-rt",
+ "flipperzero-sys",
+]
+
+[[package]]
+name = "notification"
+version = "0.1.0"
+dependencies = [
+ "flipperzero",
+ "flipperzero-rt",
+ "flipperzero-sys",
+]

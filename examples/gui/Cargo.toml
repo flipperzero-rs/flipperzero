@@ -3,8 +3,10 @@ cargo-features = ["different-binary-name"]
 [package]
 name = "gui"
 version = "0.1.0"
-edition = "2021"
-rust-version = "1.64.0"
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
 autobins = false
 autoexamples = false
 autotests = false
@@ -17,6 +19,6 @@ bench = false
 test = false
 
 [dependencies]
-flipperzero = { version = "0.7.0", path = "../../crates/flipperzero" }
-flipperzero-sys = { version = "0.7.0", path = "../../crates/sys" }
-flipperzero-rt = { version = "0.7.0", path = "../../crates/rt" }
+flipperzero.workspace = true
+flipperzero-sys.workspace = true
+flipperzero-rt.workspace = true

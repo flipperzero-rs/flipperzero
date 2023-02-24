@@ -1,0 +1,29 @@
+[workspace]
+members = [
+    "dialog",
+    "gpio",
+    "gui",
+    "hello-rust",
+    "notification",
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+rust-version = "1.64.0"
+publish = false
+license = "MIT"
+
+[workspace.dependencies]
+flipperzero-sys = { path = "../crates/sys", version = "0.7.0" }
+flipperzero-rt = { path = "../crates/rt", version = "0.7.0" }
+flipperzero-alloc = { path = "../crates/alloc", version = "0.7.0" }
+flipperzero = { path = "../crates/flipperzero", version = "0.7.0" }
+
+[profile.dev]
+opt-level = "z"
+panic = "abort"
+
+[profile.release]
+opt-level = "z"
+panic = "abort"

@@ -23,7 +23,7 @@ manifest!(name = "Rust GUI example");
 entry!(main);
 
 /// View draw handler.
-pub extern "C" fn draw_callback(canvas: *mut sys::Canvas, _context: *mut c_void) {
+pub unsafe extern "C" fn draw_callback(canvas: *mut sys::Canvas, _context: *mut c_void) {
     unsafe {
         sys::canvas_draw_str(canvas, 39, 31, sys::c_string!("Hello, Rust!"));
     }

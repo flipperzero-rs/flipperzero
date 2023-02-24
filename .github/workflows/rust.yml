@@ -15,10 +15,11 @@ jobs:
       matrix:
         target:
           - crates
-          - examples/hello-rust
-          - examples/gui
-          - examples/notification
+          - examples/dialog
           - examples/gpio
+          - examples/gui
+          - examples/hello-rust
+          - examples/notification
     uses: ./.github/workflows/_build_and_test.yml
     with:
       target: ${{ matrix.target }}
