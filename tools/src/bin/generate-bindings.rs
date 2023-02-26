@@ -4,6 +4,7 @@
 
 use std::{env, fs};
 
+use bindgen::callbacks::ParseCallbacks;
 use camino::{Utf8Path, Utf8PathBuf};
 use clap::{self, crate_authors, crate_description, crate_version, value_parser};
 use serde::Deserialize;
@@ -118,6 +119,15 @@ fn parse_args() -> clap::ArgMatches {
         .get_matches()
 }
 
+#[derive(Debug)]
+struct Cb;
+
+impl ParseCallbacks for Cb {
+    fn process_comment(&self, comment: &str) -> Option<String> {
+        Some(doxygen_rs::transform(comment))
+    }
+}
+
 fn main() {
     let matches = parse_args();
 
@@ -184,6 +194,7 @@ fn main() {
         .clang_arg("-fshort-enums")
         .clang_arg("-fvisibility=default")
         .use_core()
+        .parse_callbacks(Box::new(Cb))
         .ctypes_prefix("core::ffi")
         .allowlist_var("API_VERSION")
         .header_contents("header.h", &bindings_header);
