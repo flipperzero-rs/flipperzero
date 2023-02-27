@@ -1,7 +1,11 @@
 use flipperzero_sys as sys;
 
 /// FlipperZero apps that can generate [`Deed`]s.
+///
+/// This list may grow over time, and it is not recommended to exhaustively match against
+/// it.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[non_exhaustive]
 pub enum App {
     SubGhz,
     Rfid,
@@ -10,6 +14,15 @@ pub enum App {
     Ibutton,
     Badusb,
     Plugin,
+
+    /// Any `DolphinApp` enum value from the Flipper Zero SDK that's not part of this
+    /// list.
+    ///
+    /// Apps that are `Uncategorized` now may move to a different or a new [`App`] variant
+    /// in the future.
+    #[non_exhaustive]
+    #[doc(hidden)]
+    Uncategorized(sys::DolphinApp),
 }
 
 impl App {
@@ -22,7 +35,7 @@ impl App {
             sys::DolphinApp_DolphinAppIbutton => App::Ibutton,
             sys::DolphinApp_DolphinAppBadusb => App::Badusb,
             sys::DolphinApp_DolphinAppPlugin => App::Plugin,
-            _ => panic!("Invalid DolphinApp value {}", raw),
+            raw => App::Uncategorized(raw),
         }
     }
 
@@ -35,6 +48,7 @@ impl App {
             App::Ibutton => sys::DolphinApp_DolphinAppIbutton,
             App::Badusb => sys::DolphinApp_DolphinAppBadusb,
             App::Plugin => sys::DolphinApp_DolphinAppPlugin,
+            App::Uncategorized(raw) => raw,
         }
     }
 
@@ -48,8 +62,12 @@ impl App {
 
 /// Deeds that can contribute to the level of your [`Dolphin`].
 ///
+/// This list may grow over time, and it is not recommended to exhaustively match against
+/// it.
+///
 /// [`Dolphin`]: super::Dolphin
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[non_exhaustive]
 pub enum Deed {
     SubGhzReceiverInfo,
     SubGhzSave,
@@ -91,6 +109,15 @@ pub enum Deed {
     PluginStart,
     PluginGameStart,
     PluginGameWin,
+
+    /// Any `DolphinDeed` enum value from the Flipper Zero SDK that's not part of this
+    /// list.
+    ///
+    /// Deeds that are `Uncategorized` now may move to a different or a new [`Deed`]
+    /// variant in the future.
+    #[non_exhaustive]
+    #[doc(hidden)]
+    Uncategorized(sys::DolphinDeed),
 }
 
 impl Deed {
@@ -129,6 +156,7 @@ impl Deed {
             Deed::PluginStart => sys::DolphinDeed_DolphinDeedPluginStart,
             Deed::PluginGameStart => sys::DolphinDeed_DolphinDeedPluginGameStart,
             Deed::PluginGameWin => sys::DolphinDeed_DolphinDeedPluginGameWin,
+            Deed::Uncategorized(raw) => raw,
         }
     }
 
