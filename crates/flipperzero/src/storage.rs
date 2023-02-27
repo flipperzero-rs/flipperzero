@@ -152,9 +152,8 @@ pub struct File(*mut sys::File, UnsafeRecord<sys::Storage>);
 impl File {
     pub fn new() -> Self {
         unsafe {
-            File(sys::storage_file_alloc(
-                UnsafeRecord::open(RECORD_STORAGE).as_ptr(),
-            ))
+            let record = UnsafeRecord::open(RECORD_STORAGE);
+            File(sys::storage_file_alloc(record.as_ptr()), record)
         }
     }
 }
