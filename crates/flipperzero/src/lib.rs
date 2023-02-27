@@ -6,6 +6,7 @@
 extern crate alloc;
 
 pub mod dialogs;
+pub mod dolphin;
 pub mod furi;
 pub mod gui;
 pub mod macros;
