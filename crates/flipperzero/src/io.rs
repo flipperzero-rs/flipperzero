@@ -79,14 +79,14 @@ impl fmt::Display for Error {
     }
 }
 
-/// Trait comparable to `std::Read` for the Flipper stream API
+/// Trait comparable to `std::Read` for the Flipper Zero API
 pub trait Read {
     /// Reads some bytes from this source into the given buffer, returning how many bytes
     /// were read.
     fn read(&mut self, buf: &mut [u8]) -> Result<usize, Error>;
 }
 
-/// Trait comparable to `std::Seek` for the Flipper stream API
+/// Trait comparable to `std::Seek` for the Flipper Zero API
 pub trait Seek {
     fn seek(&mut self, pos: SeekFrom) -> Result<usize, Error>;
 
@@ -115,7 +115,7 @@ pub trait Seek {
     }
 }
 
-/// Trait comparable to `std::Write` for the Flipper stream API
+/// Trait comparable to `std::Write` for the Flipper Zero API
 pub trait Write {
     fn write(&mut self, buf: &[u8]) -> Result<usize, Error>;
     fn flush(&mut self) -> Result<(), Error>;

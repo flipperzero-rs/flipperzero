@@ -132,7 +132,7 @@ impl OpenOptions {
         if unsafe {
             sys::storage_file_open(
                 f.0,
-                path.as_ptr() as *const i8,
+                path.as_ptr() as *const c_char,
                 self.access_mode,
                 canonicalized_open_mode,
             )
@@ -146,8 +146,8 @@ impl OpenOptions {
     }
 }
 
-/// File stream with buffered read operations.
-pub struct File(*mut sys::File);
+/// Basic, unbuffered file handle
+pub struct File(*mut sys::File, UnsafeRecord<sys::Storage>);
 
 impl File {
     pub fn new() -> Self {
