@@ -46,7 +46,7 @@ impl Error {
             Self::Internal => sys::FS_Error_FSE_INTERNAL,
             Self::NotImplemented => sys::FS_Error_FSE_NOT_IMPLEMENTED,
             Self::AlreadyOpen => sys::FS_Error_FSE_ALREADY_OPEN,
-            Self::Uncategorized(error_code) => error_code,
+            Self::Uncategorized(error_code) => *error_code,
         }
     }
 
