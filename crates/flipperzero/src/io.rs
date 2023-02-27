@@ -25,6 +25,11 @@ pub enum Error {
     NotImplemented,
     AlreadyOpen,
 
+    /// I/O error specific to `flipperzero-rs` to represent the case a call to
+    /// `write` returned `Ok(0)`, meaning that the operation could not be
+    /// completed.
+    WriteZero,
+
     /// Any I/O error from the Flipper Zero SDK that's not part of this list.
     ///
     /// Errors that are `Uncategorized` now may move to a different or a new [`Error`]
@@ -35,18 +40,19 @@ pub enum Error {
 }
 
 impl Error {
-    pub fn to_sys(&self) -> sys::FS_Error {
+    pub fn to_sys(&self) -> Option<sys::FS_Error> {
         match self {
-            Self::NotReady => sys::FS_Error_FSE_NOT_READY,
-            Self::Exists => sys::FS_Error_FSE_EXIST,
-            Self::NotExists => sys::FS_Error_FSE_NOT_EXIST,
-            Self::InvalidParameter => sys::FS_Error_FSE_INVALID_PARAMETER,
-            Self::Denied => sys::FS_Error_FSE_DENIED,
-            Self::InvalidName => sys::FS_Error_FSE_INVALID_NAME,
-            Self::Internal => sys::FS_Error_FSE_INTERNAL,
-            Self::NotImplemented => sys::FS_Error_FSE_NOT_IMPLEMENTED,
-            Self::AlreadyOpen => sys::FS_Error_FSE_ALREADY_OPEN,
-            Self::Uncategorized(error_code) => *error_code,
+            Self::NotReady => Some(sys::FS_Error_FSE_NOT_READY),
+            Self::Exists => Some(sys::FS_Error_FSE_EXIST),
+            Self::NotExists => Some(sys::FS_Error_FSE_NOT_EXIST),
+            Self::InvalidParameter => Some(sys::FS_Error_FSE_INVALID_PARAMETER),
+            Self::Denied => Some(sys::FS_Error_FSE_DENIED),
+            Self::InvalidName => Some(sys::FS_Error_FSE_INVALID_NAME),
+            Self::Internal => Some(sys::FS_Error_FSE_INTERNAL),
+            Self::NotImplemented => Some(sys::FS_Error_FSE_NOT_IMPLEMENTED),
+            Self::AlreadyOpen => Some(sys::FS_Error_FSE_ALREADY_OPEN),
+            Self::Uncategorized(error_code) => Some(*error_code),
+            _ => None,
         }
     }
 
@@ -73,9 +79,10 @@ use alloc::string::ToString;
 #[cfg(feature = "alloc")]
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let msg = unsafe { CStr::from_ptr(sys::filesystem_api_error_get_desc(self.to_sys())) };
         let escaped = msg.to_bytes().escape_ascii().to_string();
         f.write_str(&escaped)
+        let msg =
+            unsafe { CStr::from_ptr(sys::filesystem_api_error_get_desc(self.to_sys().unwrap())) };
     }
 }
 
@@ -123,9 +130,7 @@ pub trait Write {
     fn write_all(&mut self, mut buf: &[u8]) -> Result<(), Error> {
         while !buf.is_empty() {
             match self.write(buf) {
-                Ok(0) => {
-                    // TODO
-                }
+                Ok(0) => return Err(Error::WriteZero),
                 Ok(n) => buf = &buf[n..],
                 Err(e) => return Err(e),
             }
