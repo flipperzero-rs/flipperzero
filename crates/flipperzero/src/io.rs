@@ -24,7 +24,7 @@ pub enum Error {
     Internal,
     NotImplemented,
     AlreadyOpen,
-    
+
     /// Any I/O error from the Flipper Zero SDK that's not part of this list.
     ///
     /// Errors that are `Uncategorized` now may move to a different or a new [`Error`]

@@ -141,7 +141,7 @@ impl OpenOptions {
         } else {
             // Per docs, "you need to close the file even if the open operation
             // failed," but this is handled by `Drop`.
-            Err(Error::from_sys(unsafe { sys::storage_file_get_error(f.0) }))
+            Err(Error::from_sys(unsafe { sys::storage_file_get_error(f.0) }).unwrap())
         }
     }
 }
@@ -186,18 +186,31 @@ impl Read for File {
 
 impl Seek for File {
     fn seek(&mut self, pos: SeekFrom) -> Result<usize, Error> {
-        let (offset_type, offset) = match pos {
+        let (from_start, offset) = match pos {
             SeekFrom::Start(n) => (true, n.try_into().map_err(|_| Error::InvalidParameter)?),
-            SeekFrom::End(n) => (false, n.try_into().map_err(|_| Error::InvalidParameter)?),
             SeekFrom::Current(n) => (false, n.try_into().map_err(|_| Error::InvalidParameter)?),
+            SeekFrom::End(n) => {
+                // TODO: Per str4d, "for SeekFrom::End we will need to measure
+                // the length of the file, and then use from_start = true and
+                // offset = file_length - n."
+                //
+                // How can we perform this subtraction safely?
+                let file_length: i64 = self.stream_len()?.try_into().unwrap();
+                (
+                    true,
+                    (file_length - n)
+                        .try_into()
+                        .map_err(|_| Error::InvalidParameter)?,
+                )
+            }
         };
         unsafe {
-            if sys::storage_file_seek(self.0, offset, offset_type) {
+            if sys::storage_file_seek(self.0, offset, from_start) {
                 Ok(sys::storage_file_tell(self.0)
                     .try_into()
                     .map_err(|_| Error::InvalidParameter)?)
             } else {
-                Err(Error::from_sys(sys::storage_file_get_error(self.0)))
+                Err(Error::from_sys(sys::storage_file_get_error(self.0)).unwrap())
             }
         }
     }
