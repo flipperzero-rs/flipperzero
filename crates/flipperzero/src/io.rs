@@ -3,10 +3,18 @@ use core::fmt;
 
 use flipperzero_sys as sys;
 
-/// Stream and file system related error type
+/// Stream and file system related error kinds.
+///
+/// This list may grow over time, and it is not recommended to exhaustively
+/// match against it.
+///
+/// # Handling errors and matching on `Error`
+///
+/// In application code, use `match` for the `Error` values you are expecting;
+/// use `_` to match "all other errors".
 #[derive(Debug, Clone, Copy)]
+#[non_exhaustive]
 pub enum Error {
-    Ok,
     NotReady,
     Exists,
     NotExists,
@@ -16,12 +24,19 @@ pub enum Error {
     Internal,
     NotImplemented,
     AlreadyOpen,
+    
+    /// Any I/O error from the Flipper Zero SDK that's not part of this list.
+    ///
+    /// Errors that are `Uncategorized` now may move to a different or a new [`Error`]
+    /// variant in the future.
+    #[non_exhaustive]
+    #[doc(hidden)]
+    Uncategorized(sys::FS_Error),
 }
 
 impl Error {
     pub fn to_sys(&self) -> sys::FS_Error {
         match self {
-            Self::Ok => sys::FS_Error_FSE_OK,
             Self::NotReady => sys::FS_Error_FSE_NOT_READY,
             Self::Exists => sys::FS_Error_FSE_EXIST,
             Self::NotExists => sys::FS_Error_FSE_NOT_EXIST,
@@ -31,22 +46,23 @@ impl Error {
             Self::Internal => sys::FS_Error_FSE_INTERNAL,
             Self::NotImplemented => sys::FS_Error_FSE_NOT_IMPLEMENTED,
             Self::AlreadyOpen => sys::FS_Error_FSE_ALREADY_OPEN,
+            Self::Uncategorized(error_code) => error_code,
         }
     }
 
-    pub fn from_sys(err: sys::FS_Error) -> Self {
+    pub fn from_sys(err: sys::FS_Error) -> Option<Self> {
         match err {
-            sys::FS_Error_FSE_OK => Self::Ok,
-            sys::FS_Error_FSE_NOT_READY => Self::NotReady,
-            sys::FS_Error_FSE_EXIST => Self::Exists,
-            sys::FS_Error_FSE_NOT_EXIST => Self::NotExists,
-            sys::FS_Error_FSE_INVALID_PARAMETER => Self::InvalidParameter,
-            sys::FS_Error_FSE_DENIED => Self::Denied,
-            sys::FS_Error_FSE_INVALID_NAME => Self::InvalidName,
-            sys::FS_Error_FSE_INTERNAL => Self::Internal,
-            sys::FS_Error_FSE_NOT_IMPLEMENTED => Self::NotImplemented,
-            sys::FS_Error_FSE_ALREADY_OPEN => Self::AlreadyOpen,
-            _ => unimplemented!(),
+            sys::FS_Error_FSE_OK => None,
+            sys::FS_Error_FSE_NOT_READY => Some(Self::NotReady),
+            sys::FS_Error_FSE_EXIST => Some(Self::Exists),
+            sys::FS_Error_FSE_NOT_EXIST => Some(Self::NotExists),
+            sys::FS_Error_FSE_INVALID_PARAMETER => Some(Self::InvalidParameter),
+            sys::FS_Error_FSE_DENIED => Some(Self::Denied),
+            sys::FS_Error_FSE_INVALID_NAME => Some(Self::InvalidName),
+            sys::FS_Error_FSE_INTERNAL => Some(Self::Internal),
+            sys::FS_Error_FSE_NOT_IMPLEMENTED => Some(Self::NotImplemented),
+            sys::FS_Error_FSE_ALREADY_OPEN => Some(Self::AlreadyOpen),
+            error_code => Some(Self::Uncategorized(error_code)),
         }
     }
 }
@@ -60,6 +76,8 @@ impl fmt::Display for Error {
 
 /// Trait comparable to `std::Read` for the Flipper stream API
 pub trait Read {
+    /// Reads some bytes from this source into the given buffer, returning how many bytes
+    /// were read.
     fn read(&mut self, buf: &mut [u8]) -> Result<usize, Error>;
 }
 
