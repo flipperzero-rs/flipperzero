@@ -25,10 +25,12 @@ fn main(_args: *mut u8) -> i32 {
         .open(CStr::from_bytes_with_nul(b"/ext/hello-rust.txt\0").unwrap());
 
     match file {
-        Ok(mut handle) => if let Err(e) = handle.write(b"Hello, Rust!") {
-            println!("couldn't write to file: {}", e);
-        },
-        Err(e) => println!("couldn't open path: {}", e);
+        Ok(mut handle) => {
+            if let Err(e) = handle.write(b"Hello, Rust!") {
+                println!("couldn't write to file: {}", e);
+            }
+        }
+        Err(e) => println!("couldn't open path: {}", e),
     }
 
     // Now, we'll open it and read it back.
@@ -37,13 +39,12 @@ fn main(_args: *mut u8) -> i32 {
         .read(true)
         .open(CStr::from_bytes_with_nul(b"/ext/hello-rust.txt\0").unwrap());
 
-    if let Ok(mut handle) = file {
-        match handle.read(&mut buffer) {
+    match file {
+        Ok(mut handle) => match handle.read(&mut buffer) {
             Ok(n) => println!("Read from file: {:?}", &buffer[..n]),
-            Err(e) => println!("couldn't read from file: {}, e");
-        }
-    } else {
-        Err(e) => println!("couldn't open path: {}", e);
+            Err(e) => println!("couldn't read from file: {}", e),
+        },
+        Err(e) => println!("couldn't open path: {}", e),
     }
 
     0
