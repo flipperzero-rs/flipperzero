@@ -1,6 +1,6 @@
 [package]
 name = "flipperzero"
-version = "0.7.1"
+version = "0.7.2"
 description = "Rust for Flipper Zero"
 repository = "https://github.com/dcoles/flipperzero-rs"
 readme = "../../README.md"
@@ -21,10 +21,10 @@ bench = false
 test = false
 
 [dependencies]
-flipperzero-sys = { path = "../sys", version = "0.7.1" }
+flipperzero-sys = { path = "../sys", version = "0.7.2" }
 
 [dev-dependencies]
-flipperzero-rt = { path = "../rt", version = "0.7.1" }
+flipperzero-rt = { path = "../rt", version = "0.7.2" }
 
 [features]
 # enables features requiring an allocator

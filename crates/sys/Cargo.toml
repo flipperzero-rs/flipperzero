@@ -1,6 +1,6 @@
 [package]
 name = "flipperzero-sys"
-version = "0.7.1"
+version = "0.7.2"
 description = "Rust for Flipper Zero"
 repository = "https://github.com/dcoles/flipperzero-rs"
 readme = "../../README.md"

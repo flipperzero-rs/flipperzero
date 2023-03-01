@@ -4,21 +4,21 @@ version = 3
 
 [[package]]
 name = "flipperzero"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "flipperzero-sys",
 ]
 
 [[package]]
 name = "flipperzero-rt"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "flipperzero-sys",
 ]
 
 [[package]]
 name = "flipperzero-sys"
-version = "0.7.1"
+version = "0.7.2"
 
 [[package]]
 name = "notification"
