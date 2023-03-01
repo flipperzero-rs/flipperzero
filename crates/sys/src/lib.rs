@@ -35,8 +35,8 @@ macro_rules! crash {
     };
 }
 
-/// Re-export bindings
+// Re-export bindings
 pub use bindings::*;
 
-/// Definition of inline functions
+// Definition of inline functions
 pub use inlines::furi_hal_gpio::*;
