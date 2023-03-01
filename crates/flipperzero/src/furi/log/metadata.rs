@@ -158,7 +158,7 @@ pub struct Level(LevelInner);
 /// [`OFF`]: LevelFilter::OFF
 #[repr(transparent)]
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub struct LevelFilter(Option<Level>);
+pub struct LevelFilter(LevelFilterInner);
 
 /// Indicates that a string could not be parsed to a valid level.
 #[derive(Clone, Debug)]
@@ -281,7 +281,7 @@ impl From<Level> for LevelFilter {
 impl From<Option<Level>> for LevelFilter {
     #[inline]
     fn from(level: Option<Level>) -> Self {
-        Self(level)
+        level.map(Self::from_level).unwrap_or(Self::OFF)
     }
 }
 
@@ -296,7 +296,7 @@ impl LevelFilter {
     /// The "off" level.
     ///
     /// Designates that trace instrumentation should be completely disabled.
-    pub const OFF: LevelFilter = LevelFilter(None);
+    pub const OFF: LevelFilter = LevelFilter(LevelFilterInner::Off);
     /// The "error" level.
     ///
     /// Designates very serious errors.
@@ -316,12 +316,18 @@ impl LevelFilter {
     /// The "trace" level.
     ///
     /// Designates very low priority, often extremely verbose, information.
-    pub const TRACE: LevelFilter = LevelFilter(Some(Level::TRACE));
+    pub const TRACE: LevelFilter = LevelFilter::from_level(Level::TRACE);
 
     /// Returns a `LevelFilter` that enables spans and events with verbosity up
     /// to and including `level`.
     pub const fn from_level(level: Level) -> Self {
-        Self(Some(level))
+        Self(match level.0 {
+            LevelInner::Trace => LevelFilterInner::Trace,
+            LevelInner::Debug => LevelFilterInner::Debug,
+            LevelInner::Info => LevelFilterInner::Info,
+            LevelInner::Warn => LevelFilterInner::Warn,
+            LevelInner::Error => LevelFilterInner::Error,
+        })
     }
 
     /// Returns the most verbose [`Level`] that this filter accepts, or `None`
@@ -330,22 +336,24 @@ impl LevelFilter {
     /// [`Level`]: super::Level
     /// [`OFF`]: LevelFilter::OFF
     pub const fn into_level(self) -> Option<Level> {
-        self.0
+        match self.0 {
+            LevelFilterInner::Trace => Some(Level::TRACE),
+            LevelFilterInner::Debug => Some(Level::DEBUG),
+            LevelFilterInner::Info => Some(Level::INFO),
+            LevelFilterInner::Warn => Some(Level::WARN),
+            LevelFilterInner::Error => Some(Level::ERROR),
+            LevelFilterInner::Off => None,
+        }
     }
 
     // These consts are necessary because `as` casts are not allowed as
     // match patterns.
-    const ERROR_USIZE: usize = LevelInner::Error as usize;
-    const WARN_USIZE: usize = LevelInner::Warn as usize;
-    const INFO_USIZE: usize = LevelInner::Info as usize;
-    const DEBUG_USIZE: usize = LevelInner::Debug as usize;
-    const TRACE_USIZE: usize = LevelInner::Trace as usize;
-    // Using the value of the last variant + 1 ensures that we match the value
-    // for `Option::None` as selected by the niche optimization for
-    // `LevelFilter`. If this is the case, converting a `usize` value into a
-    // `LevelFilter` (in `LevelFilter::current`) will be an identity conversion,
-    // rather than generating a lookup table.
-    const OFF_USIZE: usize = LevelInner::Error as usize + 1;
+    const ERROR_USIZE: usize = LevelFilterInner::Error as usize;
+    const WARN_USIZE: usize = LevelFilterInner::Warn as usize;
+    const INFO_USIZE: usize = LevelFilterInner::Info as usize;
+    const DEBUG_USIZE: usize = LevelFilterInner::Debug as usize;
+    const TRACE_USIZE: usize = LevelFilterInner::Trace as usize;
+    const OFF_USIZE: usize = LevelFilterInner::Off as usize;
 
     /// Returns a `LevelFilter` that matches the most verbose [`Level`] that any
     /// currently active [collector] will enable.
@@ -406,10 +414,7 @@ impl LevelFilter {
     }
 
     pub(crate) fn set_max(LevelFilter(level): LevelFilter) {
-        let val = match level {
-            Some(Level(level)) => level as usize,
-            None => Self::OFF_USIZE,
-        };
+        let val = level as usize;
 
         // using an AcqRel swap ensures an ordered relationship of writes to the
         // max level.
@@ -498,6 +503,35 @@ impl fmt::Display for ParseLevelFilterError {
 #[cfg(feature = "std")]
 impl std::error::Error for ParseLevelFilterError {}
 
+#[repr(usize)]
+#[derive(Copy, Clone, Debug, Hash, Eq, PartialEq)]
+enum LevelFilterInner {
+    /// The "trace" level.
+    ///
+    /// Designates very low priority, often extremely verbose, information.
+    Trace = 0,
+    /// The "debug" level.
+    ///
+    /// Designates lower priority information.
+    Debug = 1,
+    /// The "info" level.
+    ///
+    /// Designates useful information.
+    Info = 2,
+    /// The "warn" level.
+    ///
+    /// Designates hazardous situations.
+    Warn = 3,
+    /// The "error" level.
+    ///
+    /// Designates very serious errors.
+    Error = 4,
+    /// The "off" level.
+    ///
+    /// Designates that trace instrumentation should be completely disabled.
+    Off = 5,
+}
+
 // ==== Level and LevelFilter comparisons ====
 
 // /!\ BIG, IMPORTANT WARNING /!\
@@ -511,13 +545,9 @@ impl std::error::Error for ParseLevelFilterError {}
 // 1. We want to do our best to ensure that rustc will generate integer-integer
 //    comparisons wherever possible.
 //
-//    The derived `Ord`/`PartialOrd` impls for `LevelFilter` will not do this,
-//    because `LevelFilter`s are represented by `Option<Level>`, rather than as
-//    a separate `#[repr(usize)]` enum. This was (unfortunately) necessary for
-//    backwards-compatibility reasons, as the  `tracing` crate's original
-//    version of `LevelFilter` defined `const fn` conversions between `Level`s
-//    and `LevelFilter`, so we're stuck with the `Option<Level>` repr.
-//    Therefore, we need hand-written `PartialOrd` impls that cast both sides of
+//    The derived `Ord`/`PartialOrd` impls for `LevelFilter` might do this,
+//    because `LevelFilter`s are represented as a `#[repr(usize)]` enum. For
+//    now, we have hand-written `PartialOrd` impls that cast both sides of
 //    the comparison to `usize`s, to force the compiler to generate integer
 //    compares.
 //
@@ -545,15 +575,10 @@ impl std::error::Error for ParseLevelFilterError {}
 //    other levels.
 //
 //    Why are the numeric values inverted? In order to ensure that `LevelFilter`
-//    (which, as previously mentioned, *has* to be internally represented by an
-//    `Option<Level>`) compiles down to a single integer value. This is
+//    compiles down to a single integer value. This is
 //    necessary for storing the global max in an `AtomicUsize`, and for ensuring
-//    that we use fast integer-integer comparisons, as mentioned previously. In
-//    order to ensure this, we exploit the niche optimization. The niche
-//    optimization for `Option<{enum with a numeric repr}>` will choose
-//    `(HIGHEST_DISCRIMINANT_VALUE + 1)` as the representation for `None`.
-//    Therefore, the integer representation of `LevelFilter::OFF` (which is
-//    `None`) will be the number 5. `OFF` must compare higher than every other
+//    that we use fast integer-integer comparisons, as mentioned previously.
+//    `OFF` must compare higher than every other
 //    level in order for it to filter as expected. Since we want to use a single
 //    `cmp` instruction, we can't special-case the integer value of `OFF` to
 //    compare higher, as that will generate more code. Instead, we need it to be
@@ -574,7 +599,7 @@ impl std::error::Error for ParseLevelFilterError {}
 impl PartialEq<LevelFilter> for Level {
     #[inline(always)]
     fn eq(&self, other: &LevelFilter) -> bool {
-        self.0 as usize == filter_as_usize(&other.0)
+        self.0 as usize == (other.0 as usize)
     }
 }
 
@@ -615,42 +640,34 @@ impl Ord for Level {
 impl PartialOrd<LevelFilter> for Level {
     #[inline(always)]
     fn partial_cmp(&self, other: &LevelFilter) -> Option<cmp::Ordering> {
-        Some(filter_as_usize(&other.0).cmp(&(self.0 as usize)))
+        Some((other.0 as usize).cmp(&(self.0 as usize)))
     }
 
     #[inline(always)]
     fn lt(&self, other: &LevelFilter) -> bool {
-        filter_as_usize(&other.0) < (self.0 as usize)
+        (other.0 as usize) < (self.0 as usize)
     }
 
     #[inline(always)]
     fn le(&self, other: &LevelFilter) -> bool {
-        filter_as_usize(&other.0) <= (self.0 as usize)
+        (other.0 as usize) <= (self.0 as usize)
     }
 
     #[inline(always)]
     fn gt(&self, other: &LevelFilter) -> bool {
-        filter_as_usize(&other.0) > (self.0 as usize)
+        (other.0 as usize) > (self.0 as usize)
     }
 
     #[inline(always)]
     fn ge(&self, other: &LevelFilter) -> bool {
-        filter_as_usize(&other.0) >= (self.0 as usize)
-    }
-}
-
-#[inline(always)]
-fn filter_as_usize(x: &Option<Level>) -> usize {
-    match x {
-        Some(Level(f)) => *f as usize,
-        None => LevelFilter::OFF_USIZE,
+        (other.0 as usize) >= (self.0 as usize)
     }
 }
 
 impl PartialEq<Level> for LevelFilter {
     #[inline(always)]
     fn eq(&self, other: &Level) -> bool {
-        filter_as_usize(&self.0) == other.0 as usize
+        (self.0 as usize) == other.0 as usize
     }
 }
 
@@ -662,56 +679,56 @@ impl PartialOrd for LevelFilter {
 
     #[inline(always)]
     fn lt(&self, other: &LevelFilter) -> bool {
-        filter_as_usize(&other.0) < filter_as_usize(&self.0)
+        (other.0 as usize) < (self.0 as usize)
     }
 
     #[inline(always)]
     fn le(&self, other: &LevelFilter) -> bool {
-        filter_as_usize(&other.0) <= filter_as_usize(&self.0)
+        (other.0 as usize) <= (self.0 as usize)
     }
 
     #[inline(always)]
     fn gt(&self, other: &LevelFilter) -> bool {
-        filter_as_usize(&other.0) > filter_as_usize(&self.0)
+        (other.0 as usize) > (self.0 as usize)
     }
 
     #[inline(always)]
     fn ge(&self, other: &LevelFilter) -> bool {
-        filter_as_usize(&other.0) >= filter_as_usize(&self.0)
+        (other.0 as usize) >= (self.0 as usize)
     }
 }
 
 impl Ord for LevelFilter {
     #[inline(always)]
     fn cmp(&self, other: &Self) -> cmp::Ordering {
-        filter_as_usize(&other.0).cmp(&filter_as_usize(&self.0))
+        (other.0 as usize).cmp(&(self.0 as usize))
     }
 }
 
 impl PartialOrd<Level> for LevelFilter {
     #[inline(always)]
     fn partial_cmp(&self, other: &Level) -> Option<cmp::Ordering> {
-        Some((other.0 as usize).cmp(&filter_as_usize(&self.0)))
+        Some((other.0 as usize).cmp(&(self.0 as usize)))
     }
 
     #[inline(always)]
     fn lt(&self, other: &Level) -> bool {
-        (other.0 as usize) < filter_as_usize(&self.0)
+        (other.0 as usize) < (self.0 as usize)
     }
 
     #[inline(always)]
     fn le(&self, other: &Level) -> bool {
-        (other.0 as usize) <= filter_as_usize(&self.0)
+        (other.0 as usize) <= (self.0 as usize)
     }
 
     #[inline(always)]
     fn gt(&self, other: &Level) -> bool {
-        (other.0 as usize) > filter_as_usize(&self.0)
+        (other.0 as usize) > (self.0 as usize)
     }
 
     #[inline(always)]
     fn ge(&self, other: &Level) -> bool {
-        (other.0 as usize) >= filter_as_usize(&self.0)
+        (other.0 as usize) >= (self.0 as usize)
     }
 }
 
@@ -764,12 +781,12 @@ mod tests {
     #[test]
     fn level_filter_reprs() {
         let mapping = [
-            (LevelFilter::OFF, LevelInner::Error as usize + 1),
-            (LevelFilter::ERROR, LevelInner::Error as usize),
-            (LevelFilter::WARN, LevelInner::Warn as usize),
-            (LevelFilter::INFO, LevelInner::Info as usize),
-            (LevelFilter::DEBUG, LevelInner::Debug as usize),
-            (LevelFilter::TRACE, LevelInner::Trace as usize),
+            (LevelFilter::OFF, LevelFilterInner::Off as usize),
+            (LevelFilter::ERROR, LevelFilterInner::Error as usize),
+            (LevelFilter::WARN, LevelFilterInner::Warn as usize),
+            (LevelFilter::INFO, LevelFilterInner::Info as usize),
+            (LevelFilter::DEBUG, LevelFilterInner::Debug as usize),
+            (LevelFilter::TRACE, LevelFilterInner::Trace as usize),
         ];
         for &(filter, expected) in &mapping {
             let repr = unsafe {
