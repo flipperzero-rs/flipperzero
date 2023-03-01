@@ -1,4 +1,7 @@
-//! Metadata describing trace data.
+//! Metadata describing log data.
+//
+// The structs and enums in this file are extracted from the `tracing-core` crate with
+// adaptions to Furi. The original code is copyright (c) 2019 Tokio Contributors
 use super::{callsite, field};
 use core::{
     cmp, fmt,
