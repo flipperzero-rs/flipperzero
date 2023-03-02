@@ -73,16 +73,11 @@ impl Error {
     }
 }
 
-#[cfg(feature = "alloc")]
-use alloc::string::ToString;
-
-#[cfg(feature = "alloc")]
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let escaped = msg.to_bytes().escape_ascii().to_string();
-        f.write_str(&escaped)
         let msg =
             unsafe { CStr::from_ptr(sys::filesystem_api_error_get_desc(self.to_sys().unwrap())) };
+        msg.to_bytes().escape_ascii().fmt(f)
     }
 }
 
