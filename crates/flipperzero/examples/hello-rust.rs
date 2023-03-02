@@ -11,7 +11,7 @@ extern crate flipperzero_rt;
 #[cfg(feature = "alloc")]
 extern crate flipperzero_alloc;
 
-use flipperzero::println;
+use flipperzero::{debug, info, println};
 use flipperzero_rt::{entry, manifest};
 
 // Define the FAP Manifest for this application
@@ -28,7 +28,10 @@ entry!(main);
 
 // Entry point
 fn main(_args: *mut u8) -> i32 {
+    info!("Hello, reader of the logs!");
     println!("Hello, {}!", "Rust");
 
-    0
+    let ret_code = 0;
+    debug!("Return code: {}", ret_code);
+    ret_code
 }
