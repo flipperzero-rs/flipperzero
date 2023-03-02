@@ -225,24 +225,14 @@ impl std::error::Error for ParseLevelError {}
 impl FromStr for Level {
     type Err = ParseLevelError;
     fn from_str(s: &str) -> Result<Self, ParseLevelError> {
-        s.parse::<usize>()
-            .map_err(|_| ParseLevelError { _p: () })
-            .and_then(|num| match num {
-                1 => Ok(Level::ERROR),
-                2 => Ok(Level::WARN),
-                3 => Ok(Level::INFO),
-                4 => Ok(Level::DEBUG),
-                5 => Ok(Level::TRACE),
-                _ => Err(ParseLevelError { _p: () }),
-            })
-            .or_else(|_| match s {
-                s if s.eq_ignore_ascii_case("error") => Ok(Level::ERROR),
-                s if s.eq_ignore_ascii_case("warn") => Ok(Level::WARN),
-                s if s.eq_ignore_ascii_case("info") => Ok(Level::INFO),
-                s if s.eq_ignore_ascii_case("debug") => Ok(Level::DEBUG),
-                s if s.eq_ignore_ascii_case("trace") => Ok(Level::TRACE),
-                _ => Err(ParseLevelError { _p: () }),
-            })
+        match s {
+            s if s.eq_ignore_ascii_case("error") => Ok(Level::ERROR),
+            s if s.eq_ignore_ascii_case("warn") => Ok(Level::WARN),
+            s if s.eq_ignore_ascii_case("info") => Ok(Level::INFO),
+            s if s.eq_ignore_ascii_case("debug") => Ok(Level::DEBUG),
+            s if s.eq_ignore_ascii_case("trace") => Ok(Level::TRACE),
+            _ => Err(ParseLevelError { _p: () }),
+        }
     }
 }
 
@@ -453,28 +443,17 @@ impl fmt::Debug for LevelFilter {
 impl FromStr for LevelFilter {
     type Err = ParseLevelFilterError;
     fn from_str(from: &str) -> Result<Self, Self::Err> {
-        from.parse::<usize>()
-            .ok()
-            .and_then(|num| match num {
-                0 => Some(LevelFilter::OFF),
-                1 => Some(LevelFilter::ERROR),
-                2 => Some(LevelFilter::WARN),
-                3 => Some(LevelFilter::INFO),
-                4 => Some(LevelFilter::DEBUG),
-                5 => Some(LevelFilter::TRACE),
-                _ => None,
-            })
-            .or_else(|| match from {
-                "" => Some(LevelFilter::ERROR),
-                s if s.eq_ignore_ascii_case("error") => Some(LevelFilter::ERROR),
-                s if s.eq_ignore_ascii_case("warn") => Some(LevelFilter::WARN),
-                s if s.eq_ignore_ascii_case("info") => Some(LevelFilter::INFO),
-                s if s.eq_ignore_ascii_case("debug") => Some(LevelFilter::DEBUG),
-                s if s.eq_ignore_ascii_case("trace") => Some(LevelFilter::TRACE),
-                s if s.eq_ignore_ascii_case("off") => Some(LevelFilter::OFF),
-                _ => None,
-            })
-            .ok_or(ParseLevelFilterError(()))
+        match from {
+            "" => Some(LevelFilter::ERROR),
+            s if s.eq_ignore_ascii_case("error") => Some(LevelFilter::ERROR),
+            s if s.eq_ignore_ascii_case("warn") => Some(LevelFilter::WARN),
+            s if s.eq_ignore_ascii_case("info") => Some(LevelFilter::INFO),
+            s if s.eq_ignore_ascii_case("debug") => Some(LevelFilter::DEBUG),
+            s if s.eq_ignore_ascii_case("trace") => Some(LevelFilter::TRACE),
+            s if s.eq_ignore_ascii_case("off") => Some(LevelFilter::OFF),
+            _ => None,
+        }
+        .ok_or(ParseLevelFilterError(()))
     }
 }
 
@@ -488,7 +467,7 @@ impl fmt::Display for ParseLevelError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.pad(
             "error parsing level: expected one of \"error\", \"warn\", \
-             \"info\", \"debug\", \"trace\", or a number 1-5",
+             \"info\", \"debug\", \"trace\"",
         )
     }
 }
@@ -497,7 +476,7 @@ impl fmt::Display for ParseLevelFilterError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.pad(
             "error parsing level filter: expected one of \"off\", \"error\", \
-            \"warn\", \"info\", \"debug\", \"trace\", or a number 0-5",
+            \"warn\", \"info\", \"debug\", \"trace\"",
         )
     }
 }
@@ -572,8 +551,6 @@ mod tests {
     #[test]
     fn level_from_str() {
         assert_eq!("error".parse::<Level>().unwrap(), Level::ERROR);
-        assert_eq!("4".parse::<Level>().unwrap(), Level::DEBUG);
-        assert!("0".parse::<Level>().is_err())
     }
 
     #[test]
