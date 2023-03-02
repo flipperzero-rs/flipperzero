@@ -3,11 +3,7 @@
 // The structs and enums in this file are extracted from the `tracing-core` crate with
 // adaptions to Furi. The original code is copyright (c) 2019 Tokio Contributors
 
-use core::{
-    cmp, fmt,
-    str::FromStr,
-    sync::atomic::{AtomicUsize, Ordering},
-};
+use core::{cmp, fmt, str::FromStr};
 
 use flipperzero_sys as sys;
 
@@ -165,8 +161,6 @@ pub struct LevelFilter(LevelFilterInner);
 /// Indicates that a string could not be parsed to a valid level.
 #[derive(Clone, Debug)]
 pub struct ParseLevelFilterError(());
-
-static MAX_LEVEL: AtomicUsize = AtomicUsize::new(LevelFilter::OFF_USIZE);
 
 // ===== impl Level =====
 
@@ -338,15 +332,6 @@ impl LevelFilter {
         }
     }
 
-    // These consts are necessary because `as` casts are not allowed as
-    // match patterns.
-    const ERROR_USIZE: usize = LevelFilterInner::Error as usize;
-    const WARN_USIZE: usize = LevelFilterInner::Warn as usize;
-    const INFO_USIZE: usize = LevelFilterInner::Info as usize;
-    const DEBUG_USIZE: usize = LevelFilterInner::Debug as usize;
-    const TRACE_USIZE: usize = LevelFilterInner::Trace as usize;
-    const OFF_USIZE: usize = LevelFilterInner::Off as usize;
-
     /// Returns a `LevelFilter` that matches the most verbose [`Level`] that any
     /// currently active [collector] will enable.
     ///
@@ -365,17 +350,19 @@ impl LevelFilter {
     /// [collector]: super::Collect
     #[inline(always)]
     pub fn current() -> Self {
-        match MAX_LEVEL.load(Ordering::Relaxed) {
-            Self::ERROR_USIZE => Self::ERROR,
-            Self::WARN_USIZE => Self::WARN,
-            Self::INFO_USIZE => Self::INFO,
-            Self::DEBUG_USIZE => Self::DEBUG,
-            Self::TRACE_USIZE => Self::TRACE,
-            Self::OFF_USIZE => Self::OFF,
+        match unsafe { sys::furi_log_get_level() } {
+            // Default log level is defined in `furi/core/log.c` in the FlipperZero firmware.
+            sys::FuriLogLevel_FuriLogLevelDefault => Self::INFO,
+            sys::FuriLogLevel_FuriLogLevelNone => Self::OFF,
+            sys::FuriLogLevel_FuriLogLevelError => Self::ERROR,
+            sys::FuriLogLevel_FuriLogLevelWarn => Self::WARN,
+            sys::FuriLogLevel_FuriLogLevelInfo => Self::INFO,
+            sys::FuriLogLevel_FuriLogLevelDebug => Self::DEBUG,
+            sys::FuriLogLevel_FuriLogLevelTrace => Self::TRACE,
             #[cfg(debug_assertions)]
             unknown => unreachable!(
                 "/!\\ `LevelFilter` representation seems to have changed! /!\\ \n\
-                This is a bug (and it's pretty bad). Please contact the `tracing` \
+                This is a bug (and it's pretty bad). Please contact the `flipperzero` \
                 maintainers. Thank you and I'm sorry.\n \
                 The offending repr was: {:?}",
                 unknown,
@@ -386,31 +373,33 @@ impl LevelFilter {
                 // `unreachable!()`) is necessary to ensure that rustc generates
                 // an identity conversion from integer -> discriminant, rather
                 // than generating a lookup table. We want to ensure this
-                // function is a single `mov` instruction (on x86) if at all
-                // possible, because it is called *every* time a span/event
+                // function is a single `bl` instruction (sometimes followed by
+                // a `subs` instruction to handle `FuriLogLevelDefault`) if at
+                // all possible, because it is called *every* time a logging
                 // callsite is hit; and it is (potentially) the only code in the
                 // hottest path for skipping a majority of callsites when level
                 // filtering is in use.
                 //
                 // safety: This branch is only truly unreachable if we guarantee
                 // that no values other than the possible enum discriminants
-                // will *ever* be present. The `AtomicUsize` is initialized to
-                // the `OFF` value. It is only set by the `set_max` function,
-                // which takes a `LevelFilter` as a parameter. This restricts
-                // the inputs to `set_max` to the set of valid discriminants.
-                // Therefore, **as long as `MAX_VALUE` is only ever set by
-                // `set_max`**, this is safe.
+                // will *ever* be present. The log filter is initialized by the
+                // Flipper Zero SDK to `FuriLogLevelDefault`, which is not a
+                // valid `LevelFilter` discriminant but is specifically handled
+                // above. It is set either internally by the Flipper Zero, or
+                // through the Flipper Zero SDK. The latter we expose via the
+                // `set_max` function, which takes a `LevelFilter` parameter;
+                // this restricts the inputs to `set_max` to the set of valid
+                // discriminants. Therefore, **as long as `furi_log_set_level`
+                // is only ever called by `set_max`**, this is safe.
                 core::hint::unreachable_unchecked()
             },
         }
     }
 
     pub(crate) fn set_max(LevelFilter(level): LevelFilter) {
-        let val = level as usize;
+        let val = level as u8;
 
-        // using an AcqRel swap ensures an ordered relationship of writes to the
-        // max level.
-        MAX_LEVEL.swap(val, Ordering::AcqRel);
+        unsafe { sys::furi_log_set_level(val) };
     }
 }
 
