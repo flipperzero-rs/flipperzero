@@ -198,6 +198,10 @@ impl Level {
             Level::ERROR => "ERROR",
         }
     }
+
+    pub(crate) fn to_furi(self) -> sys::FuriLogLevel {
+        self.0 as u8
+    }
 }
 
 impl fmt::Display for Level {
