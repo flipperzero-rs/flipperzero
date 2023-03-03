@@ -48,7 +48,7 @@ The crate major version number will be updated after a bump in [API version](htt
 
 The Flipper Zero supports installing [externally built applications on the SD card](https://github.com/flipperdevices/flipperzero-firmware/blob/dev/documentation/AppsOnSDCard.md).
 
-See [`examples/hello-rust`](examples/hello-rust) for an example application.
+See [`crates/flipperzero/examples/hello-rust.rs`](crates/flipperzero/examples/hello-rust.rs) for an example application.
 
 ## License
 
