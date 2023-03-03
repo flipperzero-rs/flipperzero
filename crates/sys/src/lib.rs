@@ -29,8 +29,7 @@ macro_rules! crash {
             core::arch::asm!("", in("r12") msg, options(nomem, nostack));
 
             $crate::__furi_crash();
-            // `unreachable!` generates exception machinery, `noreturn` does not
-            core::arch::asm!("", options(noreturn));
+            core::hint::unreachable_unchecked();
         }
     };
 }
