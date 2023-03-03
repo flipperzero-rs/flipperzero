@@ -20,6 +20,9 @@ dependencies = [
 [[package]]
 name = "flipperzero-sys"
 version = "0.7.2"
+dependencies = [
+ "ufmt",
+]
 
 [[package]]
 name = "notification"

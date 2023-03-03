@@ -8,7 +8,7 @@ use core::time::Duration;
 /// The Furi API switches between using `enum FuriStatus`, `int32_t` and `uint32_t`.
 /// Since these all use the same bit representation, we can just "cast" the returns to this type.
 #[repr(transparent)]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, ufmt::derive::uDebug, Eq, PartialEq)]
 pub struct Status(pub i32);
 
 impl Status {
@@ -73,6 +73,14 @@ impl Status {
 impl Display for Status {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "{:?}: {}", self, self.description())
+    }
+}
+
+impl ufmt::uDisplay for Status {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: ufmt::uWrite + ?Sized {
+        ufmt::uwrite!(f, "{:?}: {}", self, self.description())
     }
 }
 
