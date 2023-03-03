@@ -11,6 +11,7 @@ FLIPPERZERO_FIRMWARE = Path(os.environ.get('FLIPPERZERO_FIRMWARE', '../../flippe
 PYTHON = 'python'
 STORAGE_SCRIPT = FLIPPERZERO_FIRMWARE / 'scripts' / 'storage.py'
 INSTALL_PATH = PurePosixPath('/ext/apps/Examples')
+EXAMPLES = ["dialog", "gpio", "gui", "hello-rust", "notification"]
 
 
 def parse_args():
@@ -25,18 +26,14 @@ def main():
 
     logging.basicConfig(level=logging.INFO)
 
-    for path in Path.cwd().iterdir():
-        if not path.is_dir() or not path.joinpath('Cargo.toml').exists():
-            continue
-
-        logging.info('Building %s', path.name)
-        run(['cargo', 'build', '--release'], cwd=path, check=True)
+    for example in EXAMPLES:
+        logging.info('Building %s', example)
+        run(['cargo', 'build', '--package', 'flipperzero', '--example', example, '--all-features', '--release'], check=True)
 
         if args.install:
             # Assume that the binary has the name as the 
-            filename = f'{path.name}.fap'
-            binary = path / 'target' / 'thumbv7em-none-eabihf' / 'release' / filename
-            target = INSTALL_PATH / filename
+            binary = Path.cwd() / 'target' / 'thumbv7em-none-eabihf' / 'release' / 'examples' / example
+            target = INSTALL_PATH / f'{example}.fap'
 
             logging.info('Copying %s to %s', binary, target)
             run([PYTHON, STORAGE_SCRIPT, 'send', os.fspath(binary), os.fspath(target)], check=True)

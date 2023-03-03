@@ -1,4 +1,4 @@
-//! Dialog example for Flipper Zero.
+//! Demonstrates use of the Flipper Zero Dialog API.
 
 #![no_main]
 #![no_std]
