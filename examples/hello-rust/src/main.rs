@@ -24,7 +24,7 @@ entry!(main);
 
 // Entry point
 fn main(_args: *mut u8) -> i32 {
-    println!("Hello, Rust!");
+    println!("Hello, {}!", "Rust");
 
     0
 }

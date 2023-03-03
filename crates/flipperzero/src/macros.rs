@@ -2,22 +2,18 @@
 
 #[macro_export]
 macro_rules! print {
-    ($pat:expr, $($args:tt)*) => {{
-        $crate::furi::io::_print(core::format_args!($pat, $($args)*));
-    }};
-
-    ($msg:expr $(,)?) => {{
-        $crate::furi::io::_write_str($msg);
+    ($($args:tt)*) => {{
+        // The `uwrite!` macro expects `ufmt` in scope
+        use $crate::__internal::ufmt;
+        ufmt::uwrite!($crate::furi::io::Stdout, $($args)*).ok();
     }};
 }
 
 #[macro_export]
 macro_rules! println {
-    ($pat:expr, $($args:tt)*) => {{
-        $crate::furi::io::_print(core::format_args!(concat!($pat, "\r\n"), $($args)*));
-    }};
-
-    ($msg:expr $(,)?) => {{
-        $crate::furi::io::_write_str(concat!($msg, "\r\n"));
+    ($($args:tt)*) => {{
+        // The `uwrite!` macro expects `ufmt` in scope
+        use $crate::__internal::ufmt;
+        ufmt::uwriteln!($crate::furi::io::Stdout, $($args)*).ok();
     }};
 }
