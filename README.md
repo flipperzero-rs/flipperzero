@@ -44,11 +44,11 @@ The crate major version number will be updated after a bump in [API version](htt
     rustup target add thumbv7em-none-eabihf
     ```
 
-## Writing an external app
+## Writing an application
 
 The Flipper Zero supports installing [externally built applications on the SD card](https://github.com/flipperdevices/flipperzero-firmware/blob/dev/documentation/AppsOnSDCard.md).
 
-See [`crates/flipperzero/examples/hello-rust.rs`](crates/flipperzero/examples/hello-rust.rs) for an example application.
+See [`flipperzero-template`](https://github.com/flipperzero-rs/flipperzero-template)🚀 to help you get started.
 
 ## License
 
