@@ -10,8 +10,9 @@ use core::{marker::PhantomData, mem};
 /// Make type `Foo` `impl !Sync` and `impl !Send`:
 ///
 /// ```no_run
+/// use std::marker::PhantomData;
 /// struct Foo {
-///     _marker: UnsendUnsync,
+///     _marker: PhantomData<UnsendUnsync>,
 /// }
 /// ```
 pub(crate) struct UnsendUnsync(*const ());
@@ -19,7 +20,7 @@ pub(crate) struct UnsendUnsync(*const ());
 const _: () = {
     assert!(
         mem::size_of::<PhantomData<UnsendUnsync>>() == 0,
-        "`PhantomData<UnsendUnsync>` should be a ZST"
+        "`PhantomData<UnsendUnsync>` should be a ZST",
     );
 };
 
@@ -31,8 +32,9 @@ const _: () = {
 /// Make type `Foo` `impl !Send`:
 ///
 /// ```no_run
+/// use std::marker::PhantomData;
 /// struct Foo {
-///     _marker: Unsend,
+///     _marker: PhantomData<Unsend>,
 /// }
 /// ```
 pub(crate) struct Unsend(*const ());
@@ -61,6 +63,14 @@ pub(crate) mod ops {
         }
         #[cfg(not(feature = "unstable_intrinsics"))]
         {
+            let quotient = divident / divisor;
+            let remainder = divident % divisor;
+            if remainder > 0 && divisor > 0 {
+                quotient + 1
+            } else {
+                quotient
+            }
+
             if divident % divisor == 0 {
                 divident / divisor
             } else {

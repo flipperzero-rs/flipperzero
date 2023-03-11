@@ -9,10 +9,11 @@ const HARDWARE_TARGET: u16 = 7;
 const DEFAULT_STACK_SIZE: u16 = 2048; // 2 KiB
 
 /// Define application manifest.
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```
+/// # use flipperzero_rt::manifest;
 /// manifest!(
 ///     name = "MyApp",
 ///     stack_size = 1024,
@@ -36,11 +37,21 @@ macro_rules! manifest {
 #[macro_export]
 #[doc(hidden)]
 macro_rules! _manifest_field {
-    (stack_size = $value:expr) => { $value };
-    (app_version = $value:expr) => { $value };
-    (name = $value:expr) => { $crate::manifest::_padded($value.as_bytes()) };
-    (has_icon = $value:expr) => { $value as core::ffi::c_char };
-    (icon = $value:expr) => { $crate::manifest::_padded(include_bytes!($value)) };
+    (stack_size = $value:expr) => {
+        $value
+    };
+    (app_version = $value:expr) => {
+        $value
+    };
+    (name = $value:expr) => {
+        $crate::manifest::_padded($value.as_bytes())
+    };
+    (has_icon = $value:expr) => {
+        $value as core::ffi::c_char
+    };
+    (icon = $value:expr) => {
+        $crate::manifest::_padded(include_bytes!($value))
+    };
 }
 
 #[repr(C, packed)]
