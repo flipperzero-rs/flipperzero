@@ -18,6 +18,8 @@ jobs:
     - name: Rustup
       run: rustup +nightly target add thumbv7em-none-eabihf
     - name: Build
-      run: cargo +nightly build --verbose
+      run: cargo +nightly build --release --verbose
+    - name: Build examples
+      run: cargo +nightly build --examples --release --verbose
     - name: Run tests
-      run: cargo +nightly test --verbose
+      run: cargo +nightly test --release --verbose

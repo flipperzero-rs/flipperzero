@@ -9,7 +9,7 @@ use core::time::Duration;
 /// The Furi API switches between using `enum FuriStatus`, `int32_t` and `uint32_t`.
 /// Since these all use the same bit representation, we can just "cast" the returns to this type.
 #[repr(transparent)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Ord, PartialOrd)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Ord, PartialOrd, ufmt::derive::uDebug)]
 pub struct Status(pub i32);
 
 impl Status {
@@ -77,6 +77,15 @@ impl Display for Status {
     }
 }
 
+impl ufmt::uDisplay for Status {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: ufmt::uWrite + ?Sized,
+    {
+        ufmt::uwrite!(f, "{:?}: {}", self, self.description())
+    }
+}
+
 impl From<i32> for Status {
     fn from(code: i32) -> Self {
         Status(code)
@@ -107,6 +116,11 @@ impl<T> UnsafeRecord<T> {
     /// Returns the record data as a raw pointer.
     pub fn as_raw(&self) -> *mut T {
         self.data.as_ptr()
+    }
+
+    #[deprecated = "use `as_raw(&self)` instead"]
+    pub fn as_ptr(&self) -> *mut T {
+        self.as_raw()
     }
 }
 

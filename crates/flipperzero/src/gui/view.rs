@@ -1,4 +1,4 @@
-use crate::{gui::canvas::CanvasView, gui::view_port::ViewPortCallbacks, input::InputEvent};
+use crate::{gui::canvas::CanvasView, input::InputEvent};
 use alloc::boxed::Box;
 use core::ptr::NonNull;
 use flipperzero_sys::{self as sys, View as SysView};

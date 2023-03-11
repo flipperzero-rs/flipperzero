@@ -9,6 +9,7 @@ extern crate alloc;
 
 #[cfg(feature = "service-dialogs")]
 pub mod dialogs;
+pub mod dolphin;
 pub mod furi;
 #[cfg(feature = "service-gui")]
 pub mod gui;
@@ -16,3 +17,9 @@ pub mod input;
 pub(crate) mod internals;
 pub mod kernel;
 pub mod macros;
+
+#[doc(hidden)]
+pub mod __internal {
+    // Re-export for use in macros
+    pub use ufmt;
+}
