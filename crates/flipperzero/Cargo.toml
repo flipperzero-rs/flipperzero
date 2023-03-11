@@ -22,10 +22,16 @@ test = false
 
 [dependencies]
 flipperzero-sys.workspace = true
+ufmt.workspace = true
 
 [dev-dependencies]
+flipperzero-alloc.workspace = true
 flipperzero-rt.workspace = true
 
 [features]
 # enables features requiring an allocator
 alloc = []
+
+[[example]]
+name = "dialog"
+required-features = ["alloc"]

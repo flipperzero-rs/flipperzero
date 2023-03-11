@@ -19,6 +19,8 @@ license = "MIT"
 [workspace.dependencies]
 flipperzero-sys = { path = "sys", version = "0.7.0" }
 flipperzero-rt = { path = "rt", version = "0.7.0" }
+flipperzero-alloc = { path = "alloc", version = "0.7.0" }
+ufmt = "0.2.0"
 
 [profile.dev]
 opt-level = "z"

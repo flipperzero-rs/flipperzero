@@ -1645,15 +1645,15 @@ extern "C" {
     ) -> core::ffi::c_ulonglong;
 }
 extern "C" {
-    #[doc = " Crash system"]
+    #[doc = "Crash system\n\n"]
     pub fn __furi_crash();
 }
 extern "C" {
-    #[doc = " Halt system"]
+    #[doc = "Halt system\n\n"]
     pub fn __furi_halt();
 }
 extern "C" {
-    #[doc = "< System Clock Frequency"]
+    #[doc = "System Clock Frequency\n\n"]
     pub static mut SystemCoreClock: u32;
 }
 extern "C" {
@@ -1668,7 +1668,7 @@ extern "C" {
 extern "C" {
     pub fn vPortExitCritical();
 }
-#[doc = " task. h\n\n Type by which tasks are referenced.  For example, a call to xTaskCreate\n returns (via a pointer parameter) an TaskHandle_t variable that can then\n be used as a parameter to vTaskDelete to delete the task.\n\n \\defgroup TaskHandle_t TaskHandle_t\n \\ingroup Tasks"]
+#[doc = "task. h\nType by which tasks are referenced.  For example, a call to xTaskCreate returns (via a pointer parameter) an TaskHandle_t variable that can then be used as a parameter to vTaskDelete to delete the task.\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct tskTaskControlBlock {
@@ -1676,57 +1676,57 @@ pub struct tskTaskControlBlock {
 }
 pub type TaskHandle_t = *mut tskTaskControlBlock;
 extern "C" {
-    #[doc = " task. h\n @code{c}\n void vTaskPrioritySet( TaskHandle_t xTask, UBaseType_t uxNewPriority );\n @endcode\n\n INCLUDE_vTaskPrioritySet must be defined as 1 for this function to be available.\n See the configuration section for more information.\n\n Set the priority of any task.\n\n A context switch will occur before the function returns if the priority\n being set is higher than the currently executing task.\n\n @param xTask Handle to the task for which the priority is being set.\n Passing a NULL handle results in the priority of the calling task being set.\n\n @param uxNewPriority The priority to which the task will be set.\n\n Example usage:\n @code{c}\n void vAFunction( void )\n {\n TaskHandle_t xHandle;\n\n   // Create a task, storing the handle.\n   xTaskCreate( vTaskCode, \"NAME\", STACK_SIZE, NULL, tskIDLE_PRIORITY, &xHandle );\n\n   // ...\n\n   // Use the handle to raise the priority of the created task.\n   vTaskPrioritySet( xHandle, tskIDLE_PRIORITY + 1 );\n\n   // ...\n\n   // Use a NULL handle to raise our priority to the same value.\n   vTaskPrioritySet( NULL, tskIDLE_PRIORITY + 1 );\n }\n @endcode\n \\defgroup vTaskPrioritySet vTaskPrioritySet\n \\ingroup TaskCtrl"]
+    #[doc = "task. h ```\n void vTaskPrioritySet( TaskHandle_t xTask, UBaseType_t uxNewPriority );\nINCLUDE_vTaskPrioritySet must be defined as 1 for this function to be available. See the configuration section for more information.\nSet the priority of any task.\nA context switch will occur before the function returns if the priority being set is higher than the currently executing task.\nExample usage: ```\n void vAFunction( void ) { TaskHandle_t xHandle;\n// Create a task, storing the handle. xTaskCreate( vTaskCode, \"NAME\", STACK_SIZE, NULL, tskIDLE_PRIORITY, &xHandle );\n// ...\n// Use the handle to raise the priority of the created task. vTaskPrioritySet( xHandle, tskIDLE_PRIORITY + 1 );\n// ...\n// Use a NULL handle to raise our priority to the same value. vTaskPrioritySet( NULL, tskIDLE_PRIORITY + 1 ); }\n\n# Arguments\n\n* `xTask` - Handle to the task for which the priority is being set. Passing a NULL handle results in the priority of the calling task being set.\n* `uxNewPriority` - The priority to which the task will be set.\n\n"]
     pub fn vTaskPrioritySet(xTask: TaskHandle_t, uxNewPriority: UBaseType_t);
 }
 extern "C" {
-    #[doc = " task. h\n @code{c}\n TickType_t xTaskGetTickCount( void );\n @endcode\n\n @return The count of ticks since vTaskStartScheduler was called.\n\n \\defgroup xTaskGetTickCount xTaskGetTickCount\n \\ingroup TaskUtils"]
+    #[doc = "task. h ```\n TickType_t xTaskGetTickCount( void );\n\nReturns:\n\n* The count of ticks since vTaskStartScheduler was called.\n\n"]
     pub fn xTaskGetTickCount() -> TickType_t;
 }
 extern "C" {
-    #[doc = " task. h\n @code{c}\n TaskHandle_t xTaskGetHandle( const char *pcNameToQuery );\n @endcode\n\n NOTE:  This function takes a relatively long time to complete and should be\n used sparingly.\n\n @return The handle of the task that has the human readable name pcNameToQuery.\n NULL is returned if no matching name is found.  INCLUDE_xTaskGetHandle\n must be set to 1 in FreeRTOSConfig.h for pcTaskGetHandle() to be available.\n\n \\defgroup pcTaskGetHandle pcTaskGetHandle\n \\ingroup TaskUtils"]
+    #[doc = "task. h ```\n TaskHandle_t xTaskGetHandle( const char *pcNameToQuery );\nNOTE:  This function takes a relatively long time to complete and should be used sparingly.\n\nReturns:\n\n* The handle of the task that has the human readable name pcNameToQuery. NULL is returned if no matching name is found.  INCLUDE_xTaskGetHandle must be set to 1 in FreeRTOSConfig.h for pcTaskGetHandle() to be available.\n\n"]
     pub fn xTaskGetHandle(pcNameToQuery: *const core::ffi::c_char) -> TaskHandle_t;
 }
 extern "C" {
     pub fn xTaskGetSchedulerState() -> BaseType_t;
 }
-#[doc = "< Operation completed successfully."]
+#[doc = "Operation completed successfully.\n\n"]
 pub const FuriStatus_FuriStatusOk: FuriStatus = 0;
 pub const FuriStatus_FuriStatusError: FuriStatus = -1;
-#[doc = "< Operation not completed within the timeout period."]
+#[doc = "Operation not completed within the timeout period.\n\n"]
 pub const FuriStatus_FuriStatusErrorTimeout: FuriStatus = -2;
-#[doc = "< Resource not available."]
+#[doc = "Resource not available.\n\n"]
 pub const FuriStatus_FuriStatusErrorResource: FuriStatus = -3;
-#[doc = "< Parameter error."]
+#[doc = "Parameter error.\n\n"]
 pub const FuriStatus_FuriStatusErrorParameter: FuriStatus = -4;
 pub const FuriStatus_FuriStatusErrorNoMemory: FuriStatus = -5;
 pub const FuriStatus_FuriStatusErrorISR: FuriStatus = -6;
-#[doc = "< Prevents enum down-size compiler optimization."]
+#[doc = "Prevents enum down-size compiler optimization.\n\n"]
 pub const FuriStatus_FuriStatusReserved: FuriStatus = 2147483647;
 pub type FuriStatus = core::ffi::c_int;
 pub type FuriEventFlag = core::ffi::c_void;
 extern "C" {
-    #[doc = " Allocate FuriEventFlag\n\n @return     pointer to FuriEventFlag"]
+    #[doc = "Allocate FuriEventFlag\n\nReturns:\n\n* pointer to FuriEventFlag\n\n"]
     pub fn furi_event_flag_alloc() -> *mut FuriEventFlag;
 }
 extern "C" {
-    #[doc = " Deallocate FuriEventFlag\n\n @param      instance  pointer to FuriEventFlag"]
+    #[doc = "Deallocate FuriEventFlag\n\n# Arguments\n\n* `instance` - pointer to FuriEventFlag\n\n"]
     pub fn furi_event_flag_free(instance: *mut FuriEventFlag);
 }
 extern "C" {
-    #[doc = " Set flags\n\n @param      instance  pointer to FuriEventFlag\n @param[in]  flags     The flags\n\n @return     Resulting flags or error (FuriStatus)"]
+    #[doc = "Set flags\n\nReturns:\n\n* Resulting flags or error (FuriStatus)\n\n# Arguments\n\n* `instance` - pointer to FuriEventFlag\n* `flags` - [Direction: In] The flags\n\n"]
     pub fn furi_event_flag_set(instance: *mut FuriEventFlag, flags: u32) -> u32;
 }
 extern "C" {
-    #[doc = " Clear flags\n\n @param      instance  pointer to FuriEventFlag\n @param[in]  flags     The flags\n\n @return     Resulting flags or error (FuriStatus)"]
+    #[doc = "Clear flags\n\nReturns:\n\n* Resulting flags or error (FuriStatus)\n\n# Arguments\n\n* `instance` - pointer to FuriEventFlag\n* `flags` - [Direction: In] The flags\n\n"]
     pub fn furi_event_flag_clear(instance: *mut FuriEventFlag, flags: u32) -> u32;
 }
 extern "C" {
-    #[doc = " Get flags\n\n @param      instance  pointer to FuriEventFlag\n\n @return     Resulting flags"]
+    #[doc = "Get flags\n\nReturns:\n\n* Resulting flags\n\n# Arguments\n\n* `instance` - pointer to FuriEventFlag\n\n"]
     pub fn furi_event_flag_get(instance: *mut FuriEventFlag) -> u32;
 }
 extern "C" {
-    #[doc = " Wait flags\n\n @param      instance  pointer to FuriEventFlag\n @param[in]  flags     The flags\n @param[in]  options   The option flags\n @param[in]  timeout   The timeout\n\n @return     Resulting flags or error (FuriStatus)"]
+    #[doc = "Wait flags\n\nReturns:\n\n* Resulting flags or error (FuriStatus)\n\n# Arguments\n\n* `instance` - pointer to FuriEventFlag\n* `flags` - [Direction: In] The flags\n* `options` - [Direction: In] The option flags\n* `timeout` - [Direction: In] The timeout\n\n"]
     pub fn furi_event_flag_wait(
         instance: *mut FuriEventFlag,
         flags: u32,
@@ -1735,47 +1735,47 @@ extern "C" {
     ) -> u32;
 }
 extern "C" {
-    #[doc = " Check if CPU is in IRQ or kernel running and IRQ is masked\n\n Originally this primitive was born as a workaround for FreeRTOS kernel primitives shenanigans with PRIMASK.\n\n Meaningful use cases are:\n\n - When kernel is started and you want to ensure that you are not in IRQ or IRQ is not masked(like in critical section)\n - When kernel is not started and you want to make sure that you are not in IRQ mode, ignoring PRIMASK.\n\n As you can see there will be edge case when kernel is not started and PRIMASK is not 0 that may cause some funky behavior.\n Most likely it will happen after kernel primitives being used, but control not yet passed to kernel.\n It's up to you to figure out if it is safe for your code or not.\n\n @return     true if CPU is in IRQ or kernel running and IRQ is masked"]
+    #[doc = "Check if CPU is in IRQ or kernel running and IRQ is masked\nOriginally this primitive was born as a workaround for FreeRTOS kernel primitives shenanigans with PRIMASK.\nMeaningful use cases are:\nWhen kernel is started and you want to ensure that you are not in IRQ or IRQ is not masked(like in critical section)\n* When kernel is not started and you want to make sure that you are not in IRQ mode, ignoring PRIMASK.\nAs you can see there will be edge case when kernel is not started and PRIMASK is not 0 that may cause some funky behavior. Most likely it will happen after kernel primitives being used, but control not yet passed to kernel. It's up to you to figure out if it is safe for your code or not.\n\nReturns:\n\n* true if CPU is in IRQ or kernel running and IRQ is masked\n\n"]
     pub fn furi_kernel_is_irq_or_masked() -> bool;
 }
 extern "C" {
-    #[doc = " Lock kernel, pause process scheduling\n\n @warning This should never be called in interrupt request context.\n\n @return     previous lock state(0 - unlocked, 1 - locked)"]
+    #[doc = "Lock kernel, pause process scheduling\n\n**Warning!**\n\n* This should never be called in interrupt request context.\n\nReturns:\n\n* previous lock state(0 - unlocked, 1 - locked)\n\n"]
     pub fn furi_kernel_lock() -> i32;
 }
 extern "C" {
-    #[doc = " Unlock kernel, resume process scheduling\n\n @warning This should never be called in interrupt request context.\n\n @return     previous lock state(0 - unlocked, 1 - locked)"]
+    #[doc = "Unlock kernel, resume process scheduling\n\n**Warning!**\n\n* This should never be called in interrupt request context.\n\nReturns:\n\n* previous lock state(0 - unlocked, 1 - locked)\n\n"]
     pub fn furi_kernel_unlock() -> i32;
 }
 extern "C" {
-    #[doc = " Restore kernel lock state\n\n @warning This should never be called in interrupt request context.\n\n @param[in]  lock  The lock state\n\n @return     new lock state or error"]
+    #[doc = "Restore kernel lock state\n\n**Warning!**\n\n* This should never be called in interrupt request context.\n\nReturns:\n\n* new lock state or error\n\n# Arguments\n\n* `lock` - [Direction: In] The lock state\n\n"]
     pub fn furi_kernel_restore_lock(lock: i32) -> i32;
 }
 extern "C" {
-    #[doc = " Get kernel systick frequency\n\n @return     systick counts per second"]
+    #[doc = "Get kernel systick frequency\n\nReturns:\n\n* systick counts per second\n\n"]
     pub fn furi_kernel_get_tick_frequency() -> u32;
 }
 extern "C" {
-    #[doc = " Delay execution\n\n @warning This should never be called in interrupt request context.\n\n Also keep in mind delay is aliased to scheduler timer intervals.\n\n @param[in]  ticks  The ticks count to pause"]
+    #[doc = "Delay execution\nAlso keep in mind delay is aliased to scheduler timer intervals.\n\n**Warning!**\n\n* This should never be called in interrupt request context.\n\n# Arguments\n\n* `ticks` - [Direction: In] The ticks count to pause\n\n"]
     pub fn furi_delay_tick(ticks: u32);
 }
 extern "C" {
-    #[doc = " Delay until tick\n\n @warning This should never be called in interrupt request context.\n\n @param[in]  ticks  The tick until which kerel should delay task execution\n\n @return     The furi status."]
+    #[doc = "Delay until tick\n\n**Warning!**\n\n* This should never be called in interrupt request context.\n\nReturns:\n\n* The furi status.\n\n# Arguments\n\n* `ticks` - [Direction: In] The tick until which kerel should delay task execution\n\n"]
     pub fn furi_delay_until_tick(tick: u32) -> FuriStatus;
 }
 extern "C" {
-    #[doc = " Get current tick counter\n\n System uptime, may overflow.\n\n @return     Current ticks in milliseconds"]
+    #[doc = "Get current tick counter\nSystem uptime, may overflow.\n\nReturns:\n\n* Current ticks in milliseconds\n\n"]
     pub fn furi_get_tick() -> u32;
 }
 extern "C" {
-    #[doc = " Convert milliseconds to ticks\n\n @param[in]   milliseconds    time in milliseconds\n @return      time in ticks"]
+    #[doc = "Convert milliseconds to ticks\n\nReturns:\n\n* time in ticks\n\n# Arguments\n\n* `milliseconds` - [Direction: In] time in milliseconds\n\n"]
     pub fn furi_ms_to_ticks(milliseconds: u32) -> u32;
 }
 extern "C" {
-    #[doc = " Delay in milliseconds\n\n This method uses kernel ticks on the inside, which causes delay to be aliased to scheduler timer intervals.\n Real wait time will be between X+ milliseconds.\n Special value: 0, will cause task yield.\n Also if used when kernel is not running will fall back to `furi_delay_us`.\n\n @warning    Cannot be used from ISR\n\n @param[in]  milliseconds  milliseconds to wait"]
+    #[doc = "Delay in milliseconds\nThis method uses kernel ticks on the inside, which causes delay to be aliased to scheduler timer intervals. Real wait time will be between X+ milliseconds. Special value: 0, will cause task yield. Also if used when kernel is not running will fall back to `furi_delay_us`.\n\n**Warning!**\n\n* Cannot be used from ISR\n\n# Arguments\n\n* `milliseconds` - [Direction: In] milliseconds to wait\n\n"]
     pub fn furi_delay_ms(milliseconds: u32);
 }
 extern "C" {
-    #[doc = " Delay in microseconds\n\n Implemented using Cortex DWT counter. Blocking and non aliased.\n\n @param[in]  microseconds  microseconds to wait"]
+    #[doc = "Delay in microseconds\nImplemented using Cortex DWT counter. Blocking and non aliased.\n\n# Arguments\n\n* `microseconds` - [Direction: In] microseconds to wait\n\n"]
     pub fn furi_delay_us(microseconds: u32);
 }
 pub type va_list = u32;
@@ -1804,7 +1804,7 @@ pub const FuriLogLevel_FuriLogLevelDebug: FuriLogLevel = 5;
 pub const FuriLogLevel_FuriLogLevelTrace: FuriLogLevel = 6;
 pub type FuriLogLevel = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Print log record\n\n @param level\n @param tag\n @param format\n @param ..."]
+    #[doc = "Print log record\n\n# Arguments\n\n* `level` - \n* `tag` - \n* `format` - \n* `...` - \n\n"]
     pub fn furi_log_print_format(
         level: FuriLogLevel,
         tag: *const core::ffi::c_char,
@@ -1813,15 +1813,15 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Print log record\n\n @param level\n @param format\n @param ..."]
+    #[doc = "Print log record\n\n# Arguments\n\n* `level` - \n* `format` - \n* `...` - \n\n"]
     pub fn furi_log_print_raw_format(level: FuriLogLevel, format: *const core::ffi::c_char, ...);
 }
 extern "C" {
-    #[doc = " Set log level\n\n @param[in]  level  The level"]
+    #[doc = "Set log level\n\n# Arguments\n\n* `level` - [Direction: In] The level\n\n"]
     pub fn furi_log_set_level(level: FuriLogLevel);
 }
 extern "C" {
-    #[doc = " Get log level\n\n @return     The furi log level."]
+    #[doc = "Get log level\n\nReturns:\n\n* The furi log level.\n\n"]
     pub fn furi_log_get_level() -> FuriLogLevel;
 }
 extern "C" {
@@ -1940,71 +1940,71 @@ extern "C" {
     ) -> core::ffi::c_uint;
 }
 extern "C" {
-    #[doc = " Get free heap size\n\n @return     free heap size in bytes"]
+    #[doc = "Get free heap size\n\nReturns:\n\n* free heap size in bytes\n\n"]
     pub fn memmgr_get_free_heap() -> usize;
 }
 extern "C" {
-    #[doc = " Get total heap size\n\n @return     total heap size in bytes"]
+    #[doc = "Get total heap size\n\nReturns:\n\n* total heap size in bytes\n\n"]
     pub fn memmgr_get_total_heap() -> usize;
 }
 extern "C" {
-    #[doc = " Get heap watermark\n\n @return     minimum heap in bytes"]
+    #[doc = "Get heap watermark\n\nReturns:\n\n* minimum heap in bytes\n\n"]
     pub fn memmgr_get_minimum_free_heap() -> usize;
 }
 extern "C" {
-    #[doc = " An aligned version of malloc, used when you need to get the aligned space on the heap\n Freeing the received address is performed ONLY through the aligned_free function\n @param size\n @param alignment\n @return void*"]
+    #[doc = "An aligned version of malloc, used when you need to get the aligned space on the heap Freeing the received address is performed ONLY through the aligned_free function\n\nReturns:\n\n* void*\n\n# Arguments\n\n* `size` - \n* `alignment` - \n\n"]
     pub fn aligned_malloc(size: usize, alignment: usize) -> *mut core::ffi::c_void;
 }
 extern "C" {
-    #[doc = " Freed space obtained through the aligned_malloc function\n @param p pointer to result of aligned_malloc"]
+    #[doc = "Freed space obtained through the aligned_malloc function\n\n# Arguments\n\n* `p` - pointer to result of aligned_malloc\n\n"]
     pub fn aligned_free(p: *mut core::ffi::c_void);
 }
 pub const FuriThreadState_FuriThreadStateStopped: FuriThreadState = 0;
 pub const FuriThreadState_FuriThreadStateStarting: FuriThreadState = 1;
 pub const FuriThreadState_FuriThreadStateRunning: FuriThreadState = 2;
-#[doc = " FuriThreadState"]
+#[doc = "FuriThreadState\n\n"]
 pub type FuriThreadState = core::ffi::c_uchar;
-#[doc = "< Uninitialized, choose system default"]
+#[doc = "Uninitialized, choose system default\n\n"]
 pub const FuriThreadPriority_FuriThreadPriorityNone: FuriThreadPriority = 0;
-#[doc = "< Idle priority"]
+#[doc = "Idle priority\n\n"]
 pub const FuriThreadPriority_FuriThreadPriorityIdle: FuriThreadPriority = 1;
-#[doc = "< Lowest"]
+#[doc = "Lowest\n\n"]
 pub const FuriThreadPriority_FuriThreadPriorityLowest: FuriThreadPriority = 14;
-#[doc = "< Low"]
+#[doc = "Low\n\n"]
 pub const FuriThreadPriority_FuriThreadPriorityLow: FuriThreadPriority = 15;
-#[doc = "< Normal"]
+#[doc = "Normal\n\n"]
 pub const FuriThreadPriority_FuriThreadPriorityNormal: FuriThreadPriority = 16;
-#[doc = "< High"]
+#[doc = "High\n\n"]
 pub const FuriThreadPriority_FuriThreadPriorityHigh: FuriThreadPriority = 17;
-#[doc = "< Highest"]
+#[doc = "Highest\n\n"]
 pub const FuriThreadPriority_FuriThreadPriorityHighest: FuriThreadPriority = 18;
-#[doc = "< Deffered Isr (highest possible)"]
+#[doc = "Deffered Isr (highest possible)\n\n"]
 pub const FuriThreadPriority_FuriThreadPriorityIsr: FuriThreadPriority = 32;
-#[doc = " FuriThreadPriority"]
+#[doc = "FuriThreadPriority\n\n"]
 pub type FuriThreadPriority = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FuriThread {
     _unused: [u8; 0],
 }
-#[doc = " FuriThreadId proxy type to OS low level functions"]
+#[doc = "FuriThreadId proxy type to OS low level functions\n\n"]
 pub type FuriThreadId = *mut core::ffi::c_void;
-#[doc = " FuriThreadCallback Your callback to run in new thread\n @warning    never use osThreadExit in FuriThread"]
+#[doc = "FuriThreadCallback Your callback to run in new thread\n\n**Warning!**\n\n* never use osThreadExit in FuriThread\n\n"]
 pub type FuriThreadCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void) -> i32>;
-#[doc = " Write to stdout callback\n @param      data     pointer to data\n @param      size     data size @warning your handler must consume everything"]
+#[doc = "Write to stdout callback\n\n# Arguments\n\n* `data` - pointer to data\n* `size` - data size @warning your handler must consume everything\n\n"]
 pub type FuriThreadStdoutWriteCallback =
     ::core::option::Option<unsafe extern "C" fn(data: *const core::ffi::c_char, size: usize)>;
-#[doc = " FuriThread state change callback called upon thread state change\n @param      state    new thread state\n @param      context  callback context"]
+#[doc = "FuriThread state change callback called upon thread state change\n\n# Arguments\n\n* `state` - new thread state\n* `context` - callback context\n\n"]
 pub type FuriThreadStateCallback = ::core::option::Option<
     unsafe extern "C" fn(state: FuriThreadState, context: *mut core::ffi::c_void),
 >;
 extern "C" {
-    #[doc = " Allocate FuriThread\n\n @return     FuriThread instance"]
+    #[doc = "Allocate FuriThread\n\nReturns:\n\n* FuriThread instance\n\n"]
     pub fn furi_thread_alloc() -> *mut FuriThread;
 }
 extern "C" {
-    #[doc = " Allocate FuriThread, shortcut version\n\n @param name\n @param stack_size\n @param callback\n @param context\n @return FuriThread*"]
+    #[doc = "Allocate FuriThread, shortcut version\n\nReturns:\n\n* FuriThread*\n\n# Arguments\n\n* `name` - \n* `stack_size` - \n* `callback` - \n* `context` - \n\n"]
     pub fn furi_thread_alloc_ex(
         name: *const core::ffi::c_char,
         stack_size: u32,
@@ -2013,90 +2013,90 @@ extern "C" {
     ) -> *mut FuriThread;
 }
 extern "C" {
-    #[doc = " Release FuriThread\n\n @param      thread  FuriThread instance"]
+    #[doc = "Release FuriThread\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
     pub fn furi_thread_free(thread: *mut FuriThread);
 }
 extern "C" {
-    #[doc = " Set FuriThread name\n\n @param      thread  FuriThread instance\n @param      name    string"]
+    #[doc = "Set FuriThread name\n\n# Arguments\n\n* `thread` - FuriThread instance\n* `name` - string\n\n"]
     pub fn furi_thread_set_name(thread: *mut FuriThread, name: *const core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " Mark thread as service\n The service cannot be stopped or removed, and cannot exit from the thread body\n\n @param thread"]
+    #[doc = "Mark thread as service The service cannot be stopped or removed, and cannot exit from the thread body\n\n# Arguments\n\n* `thread` - \n\n"]
     pub fn furi_thread_mark_as_service(thread: *mut FuriThread);
 }
 extern "C" {
-    #[doc = " Set FuriThread stack size\n\n @param      thread      FuriThread instance\n @param      stack_size  stack size in bytes"]
+    #[doc = "Set FuriThread stack size\n\n# Arguments\n\n* `thread` - FuriThread instance\n* `stack_size` - stack size in bytes\n\n"]
     pub fn furi_thread_set_stack_size(thread: *mut FuriThread, stack_size: usize);
 }
 extern "C" {
-    #[doc = " Set FuriThread callback\n\n @param      thread    FuriThread instance\n @param      callback  FuriThreadCallback, called upon thread run"]
+    #[doc = "Set FuriThread callback\n\n# Arguments\n\n* `thread` - FuriThread instance\n* `callback` - FuriThreadCallback, called upon thread run\n\n"]
     pub fn furi_thread_set_callback(thread: *mut FuriThread, callback: FuriThreadCallback);
 }
 extern "C" {
-    #[doc = " Set FuriThread context\n\n @param      thread   FuriThread instance\n @param      context  pointer to context for thread callback"]
+    #[doc = "Set FuriThread context\n\n# Arguments\n\n* `thread` - FuriThread instance\n* `context` - pointer to context for thread callback\n\n"]
     pub fn furi_thread_set_context(thread: *mut FuriThread, context: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Set FuriThread priority\n\n @param      thread   FuriThread instance\n @param      priority FuriThreadPriority value"]
+    #[doc = "Set FuriThread priority\n\n# Arguments\n\n* `thread` - FuriThread instance\n* `priority` - FuriThreadPriority value\n\n"]
     pub fn furi_thread_set_priority(thread: *mut FuriThread, priority: FuriThreadPriority);
 }
 extern "C" {
-    #[doc = " Set current thread priority\n\n @param      priority FuriThreadPriority value"]
+    #[doc = "Set current thread priority\n\n# Arguments\n\n* `priority` - FuriThreadPriority value\n\n"]
     pub fn furi_thread_set_current_priority(priority: FuriThreadPriority);
 }
 extern "C" {
-    #[doc = " Get current thread priority\n\n @return     FuriThreadPriority value"]
+    #[doc = "Get current thread priority\n\nReturns:\n\n* FuriThreadPriority value\n\n"]
     pub fn furi_thread_get_current_priority() -> FuriThreadPriority;
 }
 extern "C" {
-    #[doc = " Set FuriThread state change callback\n\n @param      thread    FuriThread instance\n @param      callback  state change callback"]
+    #[doc = "Set FuriThread state change callback\n\n# Arguments\n\n* `thread` - FuriThread instance\n* `callback` - state change callback\n\n"]
     pub fn furi_thread_set_state_callback(
         thread: *mut FuriThread,
         callback: FuriThreadStateCallback,
     );
 }
 extern "C" {
-    #[doc = " Set FuriThread state change context\n\n @param      thread   FuriThread instance\n @param      context  pointer to context"]
+    #[doc = "Set FuriThread state change context\n\n# Arguments\n\n* `thread` - FuriThread instance\n* `context` - pointer to context\n\n"]
     pub fn furi_thread_set_state_context(thread: *mut FuriThread, context: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Get FuriThread state\n\n @param      thread  FuriThread instance\n\n @return     thread state from FuriThreadState"]
+    #[doc = "Get FuriThread state\n\nReturns:\n\n* thread state from FuriThreadState\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
     pub fn furi_thread_get_state(thread: *mut FuriThread) -> FuriThreadState;
 }
 extern "C" {
-    #[doc = " Start FuriThread\n\n @param      thread  FuriThread instance"]
+    #[doc = "Start FuriThread\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
     pub fn furi_thread_start(thread: *mut FuriThread);
 }
 extern "C" {
-    #[doc = " Join FuriThread\n\n @param      thread  FuriThread instance\n\n @return     bool"]
+    #[doc = "Join FuriThread\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
     pub fn furi_thread_join(thread: *mut FuriThread) -> bool;
 }
 extern "C" {
-    #[doc = " Get FreeRTOS FuriThreadId for FuriThread instance\n\n @param      thread  FuriThread instance\n\n @return     FuriThreadId or NULL"]
+    #[doc = "Get FreeRTOS FuriThreadId for FuriThread instance\n\nReturns:\n\n* FuriThreadId or NULL\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
     pub fn furi_thread_get_id(thread: *mut FuriThread) -> FuriThreadId;
 }
 extern "C" {
-    #[doc = " Enable heap tracing\n\n @param      thread  FuriThread instance"]
+    #[doc = "Enable heap tracing\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
     pub fn furi_thread_enable_heap_trace(thread: *mut FuriThread);
 }
 extern "C" {
-    #[doc = " Get thread heap size\n\n @param      thread  FuriThread instance\n\n @return     size in bytes"]
+    #[doc = "Get thread heap size\n\nReturns:\n\n* size in bytes\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
     pub fn furi_thread_get_heap_size(thread: *mut FuriThread) -> usize;
 }
 extern "C" {
-    #[doc = " Get thread return code\n\n @param      thread  FuriThread instance\n\n @return     return code"]
+    #[doc = "Get thread return code\n\nReturns:\n\n* return code\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
     pub fn furi_thread_get_return_code(thread: *mut FuriThread) -> i32;
 }
 extern "C" {
-    #[doc = " Get FreeRTOS FuriThreadId for current thread\n\n @param      thread  FuriThread instance\n\n @return     FuriThreadId or NULL"]
+    #[doc = "Get FreeRTOS FuriThreadId for current thread\n\nReturns:\n\n* FuriThreadId or NULL\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
     pub fn furi_thread_get_current_id() -> FuriThreadId;
 }
 extern "C" {
-    #[doc = " Get FuriThread instance for current thread\n\n @return FuriThread*"]
+    #[doc = "Get FuriThread instance for current thread\n\nReturns:\n\n* FuriThread*\n\n"]
     pub fn furi_thread_get_current() -> *mut FuriThread;
 }
 extern "C" {
-    #[doc = " Return control to scheduler"]
+    #[doc = "Return control to scheduler\n\n"]
     pub fn furi_thread_yield();
 }
 extern "C" {
@@ -2121,64 +2121,64 @@ extern "C" {
     pub fn furi_thread_get_stack_space(thread_id: FuriThreadId) -> u32;
 }
 extern "C" {
-    #[doc = " Get STDOUT callback for thead\n\n @return STDOUT callback"]
+    #[doc = "Get STDOUT callback for thead\n\nReturns:\n\n* STDOUT callback\n\n"]
     pub fn furi_thread_get_stdout_callback() -> FuriThreadStdoutWriteCallback;
 }
 extern "C" {
-    #[doc = " Set STDOUT callback for thread\n\n @param      callback  callback or NULL to clear\n\n @return     true on success, otherwise fail"]
+    #[doc = "Set STDOUT callback for thread\n\nReturns:\n\n* true on success, otherwise fail\n\n# Arguments\n\n* `callback` - callback or NULL to clear\n\n"]
     pub fn furi_thread_set_stdout_callback(callback: FuriThreadStdoutWriteCallback) -> bool;
 }
 extern "C" {
-    #[doc = " Write data to buffered STDOUT\n\n @param data input data\n @param size input data size\n\n @return size_t written data size"]
+    #[doc = "Write data to buffered STDOUT\n\nReturns:\n\n* size_t written data size\n\n# Arguments\n\n* `data` - input data\n* `size` - input data size\n\n"]
     pub fn furi_thread_stdout_write(data: *const core::ffi::c_char, size: usize) -> usize;
 }
 extern "C" {
-    #[doc = " Flush data to STDOUT\n\n @return int32_t error code"]
+    #[doc = "Flush data to STDOUT\n\nReturns:\n\n* int32_t error code\n\n"]
     pub fn furi_thread_stdout_flush() -> i32;
 }
 extern "C" {
-    #[doc = " Suspend thread\n\n @param thread_id thread id"]
+    #[doc = "Suspend thread\n\n# Arguments\n\n* `thread_id` - thread id\n\n"]
     pub fn furi_thread_suspend(thread_id: FuriThreadId);
 }
 extern "C" {
-    #[doc = " Resume thread\n\n @param thread_id thread id"]
+    #[doc = "Resume thread\n\n# Arguments\n\n* `thread_id` - thread id\n\n"]
     pub fn furi_thread_resume(thread_id: FuriThreadId);
 }
 extern "C" {
-    #[doc = " Get thread suspended state\n\n @param thread_id thread id\n @return true if thread is suspended"]
+    #[doc = "Get thread suspended state\n\nReturns:\n\n* true if thread is suspended\n\n# Arguments\n\n* `thread_id` - thread id\n\n"]
     pub fn furi_thread_is_suspended(thread_id: FuriThreadId) -> bool;
 }
 extern "C" {
-    #[doc = " Memmgr heap enable thread allocation tracking\n\n @param      thread_id  - thread id to track"]
+    #[doc = "Memmgr heap enable thread allocation tracking\n\n# Arguments\n\n* `thread_id` - - thread id to track\n\n"]
     pub fn memmgr_heap_enable_thread_trace(taks_handle: FuriThreadId);
 }
 extern "C" {
-    #[doc = " Memmgr heap disable thread allocation tracking\n\n @param      thread_id  - thread id to track"]
+    #[doc = "Memmgr heap disable thread allocation tracking\n\n# Arguments\n\n* `thread_id` - - thread id to track\n\n"]
     pub fn memmgr_heap_disable_thread_trace(taks_handle: FuriThreadId);
 }
 extern "C" {
-    #[doc = " Memmgr heap get allocatred thread memory\n\n @param      thread_id  - thread id to track\n\n @return     bytes allocated right now"]
+    #[doc = "Memmgr heap get allocatred thread memory\n\nReturns:\n\n* bytes allocated right now\n\n# Arguments\n\n* `thread_id` - - thread id to track\n\n"]
     pub fn memmgr_heap_get_thread_memory(taks_handle: FuriThreadId) -> usize;
 }
 extern "C" {
-    #[doc = " Memmgr heap get the max contiguous block size on the heap\n\n @return     size_t max contiguous block size"]
+    #[doc = "Memmgr heap get the max contiguous block size on the heap\n\nReturns:\n\n* size_t max contiguous block size\n\n"]
     pub fn memmgr_heap_get_max_free_block() -> usize;
 }
 extern "C" {
-    #[doc = " Print the address and size of all free blocks to stdout"]
+    #[doc = "Print the address and size of all free blocks to stdout\n\n"]
     pub fn memmgr_heap_printf_free_blocks();
 }
 pub type FuriMessageQueue = core::ffi::c_void;
 extern "C" {
-    #[doc = " Allocate furi message queue\n\n @param[in]  msg_count  The message count\n @param[in]  msg_size   The message size\n\n @return     pointer to FuriMessageQueue instance"]
+    #[doc = "Allocate furi message queue\n\nReturns:\n\n* pointer to FuriMessageQueue instance\n\n# Arguments\n\n* `msg_count` - [Direction: In] The message count\n* `msg_size` - [Direction: In] The message size\n\n"]
     pub fn furi_message_queue_alloc(msg_count: u32, msg_size: u32) -> *mut FuriMessageQueue;
 }
 extern "C" {
-    #[doc = " Free queue\n\n @param      instance  pointer to FuriMessageQueue instance"]
+    #[doc = "Free queue\n\n# Arguments\n\n* `instance` - pointer to FuriMessageQueue instance\n\n"]
     pub fn furi_message_queue_free(instance: *mut FuriMessageQueue);
 }
 extern "C" {
-    #[doc = " Put message into queue\n\n @param      instance  pointer to FuriMessageQueue instance\n @param[in]  msg_ptr   The message pointer\n @param[in]  timeout   The timeout\n @param[in]  msg_prio  The message prio\n\n @return     The furi status."]
+    #[doc = "Put message into queue\n\nReturns:\n\n* The furi status.\n\n# Arguments\n\n* `instance` - pointer to FuriMessageQueue instance\n* `msg_ptr` - [Direction: In] The message pointer\n* `timeout` - [Direction: In] The timeout\n* `msg_prio` - [Direction: In] The message prio\n\n"]
     pub fn furi_message_queue_put(
         instance: *mut FuriMessageQueue,
         msg_ptr: *const core::ffi::c_void,
@@ -2186,7 +2186,7 @@ extern "C" {
     ) -> FuriStatus;
 }
 extern "C" {
-    #[doc = " Get message from queue\n\n @param      instance  pointer to FuriMessageQueue instance\n @param      msg_ptr   The message pointer\n @param      msg_prio  The message prioority\n @param[in]  timeout   The timeout\n\n @return     The furi status."]
+    #[doc = "Get message from queue\n\nReturns:\n\n* The furi status.\n\n# Arguments\n\n* `instance` - pointer to FuriMessageQueue instance\n* `msg_ptr` - The message pointer\n* `msg_prio` - The message prioority\n* `timeout` - [Direction: In] The timeout\n\n"]
     pub fn furi_message_queue_get(
         instance: *mut FuriMessageQueue,
         msg_ptr: *mut core::ffi::c_void,
@@ -2194,23 +2194,23 @@ extern "C" {
     ) -> FuriStatus;
 }
 extern "C" {
-    #[doc = " Get queue capacity\n\n @param      instance  pointer to FuriMessageQueue instance\n\n @return     capacity in object count"]
+    #[doc = "Get queue capacity\n\nReturns:\n\n* capacity in object count\n\n# Arguments\n\n* `instance` - pointer to FuriMessageQueue instance\n\n"]
     pub fn furi_message_queue_get_capacity(instance: *mut FuriMessageQueue) -> u32;
 }
 extern "C" {
-    #[doc = " Get message size\n\n @param      instance  pointer to FuriMessageQueue instance\n\n @return     Message size in bytes"]
+    #[doc = "Get message size\n\nReturns:\n\n* Message size in bytes\n\n# Arguments\n\n* `instance` - pointer to FuriMessageQueue instance\n\n"]
     pub fn furi_message_queue_get_message_size(instance: *mut FuriMessageQueue) -> u32;
 }
 extern "C" {
-    #[doc = " Get message count in queue\n\n @param      instance  pointer to FuriMessageQueue instance\n\n @return     Message count"]
+    #[doc = "Get message count in queue\n\nReturns:\n\n* Message count\n\n# Arguments\n\n* `instance` - pointer to FuriMessageQueue instance\n\n"]
     pub fn furi_message_queue_get_count(instance: *mut FuriMessageQueue) -> u32;
 }
 extern "C" {
-    #[doc = " Get queue available space\n\n @param      instance  pointer to FuriMessageQueue instance\n\n @return     Message count"]
+    #[doc = "Get queue available space\n\nReturns:\n\n* Message count\n\n# Arguments\n\n* `instance` - pointer to FuriMessageQueue instance\n\n"]
     pub fn furi_message_queue_get_space(instance: *mut FuriMessageQueue) -> u32;
 }
 extern "C" {
-    #[doc = " Reset queue\n\n @param      instance  pointer to FuriMessageQueue instance\n\n @return     The furi status."]
+    #[doc = "Reset queue\n\nReturns:\n\n* The furi status.\n\n# Arguments\n\n* `instance` - pointer to FuriMessageQueue instance\n\n"]
     pub fn furi_message_queue_reset(instance: *mut FuriMessageQueue) -> FuriStatus;
 }
 pub const FuriMutexType_FuriMutexTypeNormal: FuriMutexType = 0;
@@ -2218,26 +2218,26 @@ pub const FuriMutexType_FuriMutexTypeRecursive: FuriMutexType = 1;
 pub type FuriMutexType = core::ffi::c_uchar;
 pub type FuriMutex = core::ffi::c_void;
 extern "C" {
-    #[doc = " Allocate FuriMutex\n\n @param[in]  type  The mutex type\n\n @return     pointer to FuriMutex instance"]
+    #[doc = "Allocate FuriMutex\n\nReturns:\n\n* pointer to FuriMutex instance\n\n# Arguments\n\n* `type` - [Direction: In] The mutex type\n\n"]
     pub fn furi_mutex_alloc(type_: FuriMutexType) -> *mut FuriMutex;
 }
 extern "C" {
-    #[doc = " Free FuriMutex\n\n @param      instance  The pointer to FuriMutex instance"]
+    #[doc = "Free FuriMutex\n\n# Arguments\n\n* `instance` - The pointer to FuriMutex instance\n\n"]
     pub fn furi_mutex_free(instance: *mut FuriMutex);
 }
 extern "C" {
-    #[doc = " Acquire mutex\n\n @param      instance  The pointer to FuriMutex instance\n @param[in]  timeout   The timeout\n\n @return     The furi status."]
+    #[doc = "Acquire mutex\n\nReturns:\n\n* The furi status.\n\n# Arguments\n\n* `instance` - The pointer to FuriMutex instance\n* `timeout` - [Direction: In] The timeout\n\n"]
     pub fn furi_mutex_acquire(instance: *mut FuriMutex, timeout: u32) -> FuriStatus;
 }
 extern "C" {
-    #[doc = " Release mutex\n\n @param      instance  The pointer to FuriMutex instance\n\n @return     The furi status."]
+    #[doc = "Release mutex\n\nReturns:\n\n* The furi status.\n\n# Arguments\n\n* `instance` - The pointer to FuriMutex instance\n\n"]
     pub fn furi_mutex_release(instance: *mut FuriMutex) -> FuriStatus;
 }
 extern "C" {
-    #[doc = " Get mutex owner thread id\n\n @param      instance  The pointer to FuriMutex instance\n\n @return     The furi thread identifier."]
+    #[doc = "Get mutex owner thread id\n\nReturns:\n\n* The furi thread identifier.\n\n# Arguments\n\n* `instance` - The pointer to FuriMutex instance\n\n"]
     pub fn furi_mutex_get_owner(instance: *mut FuriMutex) -> FuriThreadId;
 }
-#[doc = " FuriPubSub Callback type"]
+#[doc = "FuriPubSub Callback type\n\n"]
 pub type FuriPubSubCallback = ::core::option::Option<
     unsafe extern "C" fn(message: *const core::ffi::c_void, context: *mut core::ffi::c_void),
 >;
@@ -2252,11 +2252,11 @@ pub struct FuriPubSubSubscription {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocate FuriPubSub\n\n Reentrable, Not threadsafe, one owner\n\n @return     pointer to FuriPubSub instance"]
+    #[doc = "Allocate FuriPubSub\nReentrable, Not threadsafe, one owner\n\nReturns:\n\n* pointer to FuriPubSub instance\n\n"]
     pub fn furi_pubsub_alloc() -> *mut FuriPubSub;
 }
 extern "C" {
-    #[doc = " Subscribe to FuriPubSub\n\n Threadsafe, Reentrable\n\n @param      pubsub            pointer to FuriPubSub instance\n @param[in]  callback          The callback\n @param      callback_context  The callback context\n\n @return     pointer to FuriPubSubSubscription instance"]
+    #[doc = "Subscribe to FuriPubSub\nThreadsafe, Reentrable\n\nReturns:\n\n* pointer to FuriPubSubSubscription instance\n\n# Arguments\n\n* `pubsub` - pointer to FuriPubSub instance\n* `callback` - [Direction: In] The callback\n* `callback_context` - The callback context\n\n"]
     pub fn furi_pubsub_subscribe(
         pubsub: *mut FuriPubSub,
         callback: FuriPubSubCallback,
@@ -2264,63 +2264,63 @@ extern "C" {
     ) -> *mut FuriPubSubSubscription;
 }
 extern "C" {
-    #[doc = " Unsubscribe from FuriPubSub\n\n No use of `pubsub_subscription` allowed after call of this method\n Threadsafe, Reentrable.\n\n @param      pubsub               pointer to FuriPubSub instance\n @param      pubsub_subscription  pointer to FuriPubSubSubscription instance"]
+    #[doc = "Unsubscribe from FuriPubSub\nNo use of `pubsub_subscription` allowed after call of this method Threadsafe, Reentrable.\n\n# Arguments\n\n* `pubsub` - pointer to FuriPubSub instance\n* `pubsub_subscription` - pointer to FuriPubSubSubscription instance\n\n"]
     pub fn furi_pubsub_unsubscribe(
         pubsub: *mut FuriPubSub,
         pubsub_subscription: *mut FuriPubSubSubscription,
     );
 }
 extern "C" {
-    #[doc = " Publish message to FuriPubSub\n\n Threadsafe, Reentrable.\n\n @param      pubsub   pointer to FuriPubSub instance\n @param      message  message pointer to publish"]
+    #[doc = "Publish message to FuriPubSub\nThreadsafe, Reentrable.\n\n# Arguments\n\n* `pubsub` - pointer to FuriPubSub instance\n* `message` - message pointer to publish\n\n"]
     pub fn furi_pubsub_publish(pubsub: *mut FuriPubSub, message: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Check if record exists\n\n @param      name  record name\n @note       Thread safe. Create and destroy must be executed from the same\n             thread."]
+    #[doc = "Check if record exists\n\n# Arguments\n\n* `name` - record name\n\n# Notes\n\n* Thread safe. Create and destroy must be executed from the same thread.\n\n"]
     pub fn furi_record_exists(name: *const core::ffi::c_char) -> bool;
 }
 extern "C" {
-    #[doc = " Create record\n\n @param      name  record name\n @param      data  data pointer\n @note       Thread safe. Create and destroy must be executed from the same\n             thread."]
+    #[doc = "Create record\n\n# Arguments\n\n* `name` - record name\n* `data` - data pointer\n\n# Notes\n\n* Thread safe. Create and destroy must be executed from the same thread.\n\n"]
     pub fn furi_record_create(name: *const core::ffi::c_char, data: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Open record\n\n @param      name  record name\n\n @return     pointer to the record\n @note       Thread safe. Open and close must be executed from the same\n             thread. Suspends caller thread till record is available"]
+    #[doc = "Open record\n\nReturns:\n\n* pointer to the record\n\n# Arguments\n\n* `name` - record name\n\n# Notes\n\n* Thread safe. Open and close must be executed from the same thread. Suspends caller thread till record is available\n\n"]
     pub fn furi_record_open(name: *const core::ffi::c_char) -> *mut core::ffi::c_void;
 }
 extern "C" {
-    #[doc = " Close record\n\n @param      name  record name\n @note       Thread safe. Open and close must be executed from the same\n             thread."]
+    #[doc = "Close record\n\n# Arguments\n\n* `name` - record name\n\n# Notes\n\n* Thread safe. Open and close must be executed from the same thread.\n\n"]
     pub fn furi_record_close(name: *const core::ffi::c_char);
 }
 pub type FuriSemaphore = core::ffi::c_void;
 extern "C" {
-    #[doc = " Allocate semaphore\n\n @param[in]  max_count      The maximum count\n @param[in]  initial_count  The initial count\n\n @return     pointer to FuriSemaphore instance"]
+    #[doc = "Allocate semaphore\n\nReturns:\n\n* pointer to FuriSemaphore instance\n\n# Arguments\n\n* `max_count` - [Direction: In] The maximum count\n* `initial_count` - [Direction: In] The initial count\n\n"]
     pub fn furi_semaphore_alloc(max_count: u32, initial_count: u32) -> *mut FuriSemaphore;
 }
 extern "C" {
-    #[doc = " Free semaphore\n\n @param      instance  The pointer to FuriSemaphore instance"]
+    #[doc = "Free semaphore\n\n# Arguments\n\n* `instance` - The pointer to FuriSemaphore instance\n\n"]
     pub fn furi_semaphore_free(instance: *mut FuriSemaphore);
 }
 extern "C" {
-    #[doc = " Acquire semaphore\n\n @param      instance  The pointer to FuriSemaphore instance\n @param[in]  timeout   The timeout\n\n @return     The furi status."]
+    #[doc = "Acquire semaphore\n\nReturns:\n\n* The furi status.\n\n# Arguments\n\n* `instance` - The pointer to FuriSemaphore instance\n* `timeout` - [Direction: In] The timeout\n\n"]
     pub fn furi_semaphore_acquire(instance: *mut FuriSemaphore, timeout: u32) -> FuriStatus;
 }
 extern "C" {
-    #[doc = " Release semaphore\n\n @param      instance  The pointer to FuriSemaphore instance\n\n @return     The furi status."]
+    #[doc = "Release semaphore\n\nReturns:\n\n* The furi status.\n\n# Arguments\n\n* `instance` - The pointer to FuriSemaphore instance\n\n"]
     pub fn furi_semaphore_release(instance: *mut FuriSemaphore) -> FuriStatus;
 }
 extern "C" {
-    #[doc = " Get semaphore count\n\n @param      instance  The pointer to FuriSemaphore instance\n\n @return     Semaphore count"]
+    #[doc = "Get semaphore count\n\nReturns:\n\n* Semaphore count\n\n# Arguments\n\n* `instance` - The pointer to FuriSemaphore instance\n\n"]
     pub fn furi_semaphore_get_count(instance: *mut FuriSemaphore) -> u32;
 }
 pub type FuriTimerCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
-#[doc = "< One-shot timer."]
+#[doc = "One-shot timer.\n\n"]
 pub const FuriTimerType_FuriTimerTypeOnce: FuriTimerType = 0;
-#[doc = "< Repeating timer."]
+#[doc = "Repeating timer.\n\n"]
 pub const FuriTimerType_FuriTimerTypePeriodic: FuriTimerType = 1;
 pub type FuriTimerType = core::ffi::c_uchar;
 pub type FuriTimer = core::ffi::c_void;
 extern "C" {
-    #[doc = " Allocate timer\n\n @param[in]  func     The callback function\n @param[in]  type     The timer type\n @param      context  The callback context\n\n @return     The pointer to FuriTimer instance"]
+    #[doc = "Allocate timer\n\nReturns:\n\n* The pointer to FuriTimer instance\n\n# Arguments\n\n* `func` - [Direction: In] The callback function\n* `type` - [Direction: In] The timer type\n* `context` - The callback context\n\n"]
     pub fn furi_timer_alloc(
         func: FuriTimerCallback,
         type_: FuriTimerType,
@@ -2328,22 +2328,22 @@ extern "C" {
     ) -> *mut FuriTimer;
 }
 extern "C" {
-    #[doc = " Free timer\n\n @param      instance  The pointer to FuriTimer instance"]
+    #[doc = "Free timer\n\n# Arguments\n\n* `instance` - The pointer to FuriTimer instance\n\n"]
     pub fn furi_timer_free(instance: *mut FuriTimer);
 }
 extern "C" {
-    #[doc = " Start timer\n\n @param      instance  The pointer to FuriTimer instance\n @param[in]  ticks     The ticks\n\n @return     The furi status."]
+    #[doc = "Start timer\n\nReturns:\n\n* The furi status.\n\n# Arguments\n\n* `instance` - The pointer to FuriTimer instance\n* `ticks` - [Direction: In] The ticks\n\n"]
     pub fn furi_timer_start(instance: *mut FuriTimer, ticks: u32) -> FuriStatus;
 }
 extern "C" {
-    #[doc = " Stop timer\n\n @param      instance  The pointer to FuriTimer instance\n\n @return     The furi status."]
+    #[doc = "Stop timer\n\nReturns:\n\n* The furi status.\n\n# Arguments\n\n* `instance` - The pointer to FuriTimer instance\n\n"]
     pub fn furi_timer_stop(instance: *mut FuriTimer) -> FuriStatus;
 }
 extern "C" {
-    #[doc = " Is timer running\n\n @param      instance  The pointer to FuriTimer instance\n\n @return     0: not running, 1: running"]
+    #[doc = "Is timer running\n\nReturns:\n\n* 0: not running, 1: running\n\n# Arguments\n\n* `instance` - The pointer to FuriTimer instance\n\n"]
     pub fn furi_timer_is_running(instance: *mut FuriTimer) -> u32;
 }
-#[doc = " == ValueMutex ==\n\n The most simple concept is ValueMutex.\n It is wrapper around mutex and value pointer.\n You can take and give mutex to work with value and read and write value."]
+#[doc = "== ValueMutex ==\nThe most simple concept is ValueMutex. It is wrapper around mutex and value pointer. You can take and give mutex to work with value and read and write value.\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct ValueMutex {
@@ -2397,7 +2397,7 @@ fn bindgen_test_layout_ValueMutex() {
     );
 }
 extern "C" {
-    #[doc = " Creates ValueMutex."]
+    #[doc = "Creates ValueMutex.\n\n"]
     pub fn init_mutex(
         valuemutex: *mut ValueMutex,
         value: *mut core::ffi::c_void,
@@ -2405,15 +2405,15 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Free resources allocated by `init_mutex`.\n This function doesn't free the memory occupied by `ValueMutex` itself."]
+    #[doc = "Free resources allocated by `init_mutex`. This function doesn't free the memory occupied by `ValueMutex` itself.\n\n"]
     pub fn delete_mutex(valuemutex: *mut ValueMutex) -> bool;
 }
 extern "C" {
-    #[doc = " Call for work with data stored in mutex.\n @return pointer to data if success, NULL otherwise."]
+    #[doc = "Call for work with data stored in mutex.\n\nReturns:\n\n* pointer to data if success, NULL otherwise.\n\n"]
     pub fn acquire_mutex(valuemutex: *mut ValueMutex, timeout: u32) -> *mut core::ffi::c_void;
 }
 extern "C" {
-    #[doc = " Release mutex after end of work with data.\n Call `release_mutex` and pass ValueData instance and pointer to data."]
+    #[doc = "Release mutex after end of work with data. Call `release_mutex` and pass ValueData instance and pointer to data.\n\n"]
     pub fn release_mutex(valuemutex: *mut ValueMutex, value: *const core::ffi::c_void) -> bool;
 }
 extern "C" {
@@ -2433,82 +2433,82 @@ pub struct FuriString {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " @brief Allocate new FuriString.\n @return FuriString*"]
+    #[doc = "Allocate new FuriString.\n\nReturns:\n\n* FuriString*\n\n"]
     pub fn furi_string_alloc() -> *mut FuriString;
 }
 extern "C" {
-    #[doc = " @brief Allocate new FuriString and set it to string.\n Allocate & Set the string a to the string.\n @param source\n @return FuriString*"]
+    #[doc = "Allocate new FuriString and set it to string. Allocate & Set the string a to the string.\n\nReturns:\n\n* FuriString*\n\n# Arguments\n\n* `source` - \n\n"]
     pub fn furi_string_alloc_set(source: *const FuriString) -> *mut FuriString;
 }
 extern "C" {
-    #[doc = " @brief Allocate new FuriString and set it to C string.\n Allocate & Set the string a to the C string.\n @param cstr_source\n @return FuriString*"]
+    #[doc = "Allocate new FuriString and set it to C string. Allocate & Set the string a to the C string.\n\nReturns:\n\n* FuriString*\n\n# Arguments\n\n* `cstr_source` - \n\n"]
     pub fn furi_string_alloc_set_str(cstr_source: *const core::ffi::c_char) -> *mut FuriString;
 }
 extern "C" {
-    #[doc = " @brief Allocate new FuriString and printf to it.\n Initialize and set a string to the given formatted value.\n @param format\n @param ...\n @return FuriString*"]
+    #[doc = "Allocate new FuriString and printf to it. Initialize and set a string to the given formatted value.\n\nReturns:\n\n* FuriString*\n\n# Arguments\n\n* `format` - \n* `...` - \n\n"]
     pub fn furi_string_alloc_printf(format: *const core::ffi::c_char, ...) -> *mut FuriString;
 }
 extern "C" {
-    #[doc = " @brief Allocate new FuriString and printf to it.\n Initialize and set a string to the given formatted value.\n @param format\n @param args\n @return FuriString*"]
+    #[doc = "Allocate new FuriString and printf to it. Initialize and set a string to the given formatted value.\n\nReturns:\n\n* FuriString*\n\n# Arguments\n\n* `format` - \n* `args` - \n\n"]
     pub fn furi_string_alloc_vprintf(
         format: *const core::ffi::c_char,
         args: va_list,
     ) -> *mut FuriString;
 }
 extern "C" {
-    #[doc = " @brief Allocate new FuriString and move source string content to it.\n Allocate the string, set it to the other one, and destroy the other one.\n @param source\n @return FuriString*"]
+    #[doc = "Allocate new FuriString and move source string content to it. Allocate the string, set it to the other one, and destroy the other one.\n\nReturns:\n\n* FuriString*\n\n# Arguments\n\n* `source` - \n\n"]
     pub fn furi_string_alloc_move(source: *mut FuriString) -> *mut FuriString;
 }
 extern "C" {
-    #[doc = " @brief Free FuriString.\n @param string"]
+    #[doc = "Free FuriString.\n\n# Arguments\n\n* `string` - \n\n"]
     pub fn furi_string_free(string: *mut FuriString);
 }
 extern "C" {
-    #[doc = " @brief Reserve memory for string.\n Modify the string capacity to be able to handle at least 'alloc' characters (including final null char).\n @param string\n @param size"]
+    #[doc = "Reserve memory for string. Modify the string capacity to be able to handle at least 'alloc' characters (including final null char).\n\n# Arguments\n\n* `string` - \n* `size` - \n\n"]
     pub fn furi_string_reserve(string: *mut FuriString, size: usize);
 }
 extern "C" {
-    #[doc = " @brief Reset string.\n Make the string empty.\n @param s"]
+    #[doc = "Reset string. Make the string empty.\n\n# Arguments\n\n* `s` - \n\n"]
     pub fn furi_string_reset(string: *mut FuriString);
 }
 extern "C" {
-    #[doc = " @brief Swap two strings.\n Swap the two strings string_1 and string_2.\n @param string_1\n @param string_2"]
+    #[doc = "Swap two strings. Swap the two strings string_1 and string_2.\n\n# Arguments\n\n* `string_1` - \n* `string_2` - \n\n"]
     pub fn furi_string_swap(string_1: *mut FuriString, string_2: *mut FuriString);
 }
 extern "C" {
-    #[doc = " @brief Move string_2 content to string_1.\n Set the string to the other one, and destroy the other one.\n @param string_1\n @param string_2"]
+    #[doc = "Move string_2 content to string_1. Set the string to the other one, and destroy the other one.\n\n# Arguments\n\n* `string_1` - \n* `string_2` - \n\n"]
     pub fn furi_string_move(string_1: *mut FuriString, string_2: *mut FuriString);
 }
 extern "C" {
-    #[doc = " @brief Compute a hash for the string.\n @param string\n @return size_t"]
+    #[doc = "Compute a hash for the string.\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `string` - \n\n"]
     pub fn furi_string_hash(string: *const FuriString) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Get string size (usually length, but not for UTF-8)\n @param string\n @return size_t"]
+    #[doc = "Get string size (usually length, but not for UTF-8)\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `string` - \n\n"]
     pub fn furi_string_size(string: *const FuriString) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Check that string is empty or not\n @param string\n @return bool"]
+    #[doc = "Check that string is empty or not\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `string` - \n\n"]
     pub fn furi_string_empty(string: *const FuriString) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Get the character at the given index.\n Return the selected character of the string.\n @param string\n @param index\n @return char"]
+    #[doc = "Get the character at the given index. Return the selected character of the string.\n\nReturns:\n\n* char\n\n# Arguments\n\n* `string` - \n* `index` - \n\n"]
     pub fn furi_string_get_char(string: *const FuriString, index: usize) -> core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " @brief Return the string view a classic C string.\n @param string\n @return const char*"]
+    #[doc = "Return the string view a classic C string.\n\nReturns:\n\n* const char*\n\n# Arguments\n\n* `string` - \n\n"]
     pub fn furi_string_get_cstr(string: *const FuriString) -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " @brief Set the string to the other string.\n Set the string to the source string.\n @param string\n @param source"]
+    #[doc = "Set the string to the other string. Set the string to the source string.\n\n# Arguments\n\n* `string` - \n* `source` - \n\n"]
     pub fn furi_string_set(string: *mut FuriString, source: *mut FuriString);
 }
 extern "C" {
-    #[doc = " @brief Set the string to the other C string.\n Set the string to the source C string.\n @param string\n @param source"]
+    #[doc = "Set the string to the other C string. Set the string to the source C string.\n\n# Arguments\n\n* `string` - \n* `source` - \n\n"]
     pub fn furi_string_set_str(string: *mut FuriString, source: *const core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " @brief Set the string to the n first characters of the C string.\n @param string\n @param source\n @param length"]
+    #[doc = "Set the string to the n first characters of the C string.\n\n# Arguments\n\n* `string` - \n* `source` - \n* `length` - \n\n"]
     pub fn furi_string_set_strn(
         string: *mut FuriString,
         source: *const core::ffi::c_char,
@@ -2516,11 +2516,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " @brief Set the character at the given index.\n @param string\n @param index\n @param c"]
+    #[doc = "Set the character at the given index.\n\n# Arguments\n\n* `string` - \n* `index` - \n* `c` - \n\n"]
     pub fn furi_string_set_char(string: *mut FuriString, index: usize, c: core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " @brief Set the string to the n first characters of other one.\n @param string\n @param source\n @param offset\n @param length"]
+    #[doc = "Set the string to the n first characters of other one.\n\n# Arguments\n\n* `string` - \n* `source` - \n* `offset` - \n* `length` - \n\n"]
     pub fn furi_string_set_n(
         string: *mut FuriString,
         source: *const FuriString,
@@ -2529,7 +2529,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " @brief Format in the string the given printf format\n @param string\n @param format\n @param ...\n @return int"]
+    #[doc = "Format in the string the given printf format\n\nReturns:\n\n* int\n\n# Arguments\n\n* `string` - \n* `format` - \n* `...` - \n\n"]
     pub fn furi_string_printf(
         string: *mut FuriString,
         format: *const core::ffi::c_char,
@@ -2537,7 +2537,7 @@ extern "C" {
     ) -> core::ffi::c_int;
 }
 extern "C" {
-    #[doc = " @brief Format in the string the given printf format\n @param string\n @param format\n @param args\n @return int"]
+    #[doc = "Format in the string the given printf format\n\nReturns:\n\n* int\n\n# Arguments\n\n* `string` - \n* `format` - \n* `args` - \n\n"]
     pub fn furi_string_vprintf(
         string: *mut FuriString,
         format: *const core::ffi::c_char,
@@ -2545,19 +2545,19 @@ extern "C" {
     ) -> core::ffi::c_int;
 }
 extern "C" {
-    #[doc = " @brief Append a character to the string.\n @param string\n @param c"]
+    #[doc = "Append a character to the string.\n\n# Arguments\n\n* `string` - \n* `c` - \n\n"]
     pub fn furi_string_push_back(string: *mut FuriString, c: core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " @brief Append a string to the string.\n Concatenate the string with the other string.\n @param string_1\n @param string_2"]
+    #[doc = "Append a string to the string. Concatenate the string with the other string.\n\n# Arguments\n\n* `string_1` - \n* `string_2` - \n\n"]
     pub fn furi_string_cat(string_1: *mut FuriString, string_2: *const FuriString);
 }
 extern "C" {
-    #[doc = " @brief Append a C string to the string.\n Concatenate the string with the C string.\n @param string_1\n @param cstring_2"]
+    #[doc = "Append a C string to the string. Concatenate the string with the C string.\n\n# Arguments\n\n* `string_1` - \n* `cstring_2` - \n\n"]
     pub fn furi_string_cat_str(string_1: *mut FuriString, cstring_2: *const core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " @brief Append to the string the formatted string of the given printf format.\n @param string\n @param format\n @param ...\n @return int"]
+    #[doc = "Append to the string the formatted string of the given printf format.\n\nReturns:\n\n* int\n\n# Arguments\n\n* `string` - \n* `format` - \n* `...` - \n\n"]
     pub fn furi_string_cat_printf(
         string: *mut FuriString,
         format: *const core::ffi::c_char,
@@ -2565,7 +2565,7 @@ extern "C" {
     ) -> core::ffi::c_int;
 }
 extern "C" {
-    #[doc = " @brief Append to the string the formatted string of the given printf format.\n @param string\n @param format\n @param args\n @return int"]
+    #[doc = "Append to the string the formatted string of the given printf format.\n\nReturns:\n\n* int\n\n# Arguments\n\n* `string` - \n* `format` - \n* `args` - \n\n"]
     pub fn furi_string_cat_vprintf(
         string: *mut FuriString,
         format: *const core::ffi::c_char,
@@ -2573,35 +2573,35 @@ extern "C" {
     ) -> core::ffi::c_int;
 }
 extern "C" {
-    #[doc = " @brief Compare two strings and return the sort order.\n @param string_1\n @param string_2\n @return int"]
+    #[doc = "Compare two strings and return the sort order.\n\nReturns:\n\n* int\n\n# Arguments\n\n* `string_1` - \n* `string_2` - \n\n"]
     pub fn furi_string_cmp(
         string_1: *const FuriString,
         string_2: *const FuriString,
     ) -> core::ffi::c_int;
 }
 extern "C" {
-    #[doc = " @brief Compare string with C string and return the sort order.\n @param string_1\n @param cstring_2\n @return int"]
+    #[doc = "Compare string with C string and return the sort order.\n\nReturns:\n\n* int\n\n# Arguments\n\n* `string_1` - \n* `cstring_2` - \n\n"]
     pub fn furi_string_cmp_str(
         string_1: *const FuriString,
         cstring_2: *const core::ffi::c_char,
     ) -> core::ffi::c_int;
 }
 extern "C" {
-    #[doc = " @brief Compare two strings (case insensitive according to the current locale) and return the sort order.\n Note: doesn't work with UTF-8 strings.\n @param string_1\n @param string_2\n @return int"]
+    #[doc = "Compare two strings (case insensitive according to the current locale) and return the sort order. Note: doesn't work with UTF-8 strings.\n\nReturns:\n\n* int\n\n# Arguments\n\n* `string_1` - \n* `string_2` - \n\n"]
     pub fn furi_string_cmpi(
         string_1: *const FuriString,
         string_2: *const FuriString,
     ) -> core::ffi::c_int;
 }
 extern "C" {
-    #[doc = " @brief Compare string with C string (case insensitive according to the current locale) and return the sort order.\n Note: doesn't work with UTF-8 strings.\n @param string_1\n @param cstring_2\n @return int"]
+    #[doc = "Compare string with C string (case insensitive according to the current locale) and return the sort order. Note: doesn't work with UTF-8 strings.\n\nReturns:\n\n* int\n\n# Arguments\n\n* `string_1` - \n* `cstring_2` - \n\n"]
     pub fn furi_string_cmpi_str(
         string_1: *const FuriString,
         cstring_2: *const core::ffi::c_char,
     ) -> core::ffi::c_int;
 }
 extern "C" {
-    #[doc = " @brief Search the first occurrence of the needle in the string from the position start.\n Return STRING_FAILURE if not found.\n By default, start is zero.\n @param string\n @param needle\n @param start\n @return size_t"]
+    #[doc = "Search the first occurrence of the needle in the string from the position start. Return STRING_FAILURE if not found. By default, start is zero.\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `string` - \n* `needle` - \n* `start` - \n\n"]
     pub fn furi_string_search(
         string: *const FuriString,
         needle: *const FuriString,
@@ -2609,7 +2609,7 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Search the first occurrence of the needle in the string from the position start.\n Return STRING_FAILURE if not found.\n @param string\n @param needle\n @param start\n @return size_t"]
+    #[doc = "Search the first occurrence of the needle in the string from the position start. Return STRING_FAILURE if not found.\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `string` - \n* `needle` - \n* `start` - \n\n"]
     pub fn furi_string_search_str(
         string: *const FuriString,
         needle: *const core::ffi::c_char,
@@ -2617,7 +2617,7 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Search for the position of the character c from the position start (include) in the string.\n Return STRING_FAILURE if not found.\n By default, start is zero.\n @param string\n @param c\n @param start\n @return size_t"]
+    #[doc = "Search for the position of the character c from the position start (include) in the string. Return STRING_FAILURE if not found. By default, start is zero.\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `string` - \n* `c` - \n* `start` - \n\n"]
     pub fn furi_string_search_char(
         string: *const FuriString,
         c: core::ffi::c_char,
@@ -2625,7 +2625,7 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Reverse search for the position of the character c from the position start (include) in the string.\n Return STRING_FAILURE if not found.\n By default, start is zero.\n @param string\n @param c\n @param start\n @return size_t"]
+    #[doc = "Reverse search for the position of the character c from the position start (include) in the string. Return STRING_FAILURE if not found. By default, start is zero.\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `string` - \n* `c` - \n* `start` - \n\n"]
     pub fn furi_string_search_rchar(
         string: *const FuriString,
         c: core::ffi::c_char,
@@ -2633,18 +2633,18 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Test if two strings are equal.\n @param string_1\n @param string_2\n @return bool"]
+    #[doc = "Test if two strings are equal.\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `string_1` - \n* `string_2` - \n\n"]
     pub fn furi_string_equal(string_1: *const FuriString, string_2: *const FuriString) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Test if the string is equal to the C string.\n @param string_1\n @param cstring_2\n @return bool"]
+    #[doc = "Test if the string is equal to the C string.\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `string_1` - \n* `cstring_2` - \n\n"]
     pub fn furi_string_equal_str(
         string_1: *const FuriString,
         cstring_2: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Replace in the string the sub-string at position 'pos' for 'len' bytes into the C string 'replace'.\n @param string\n @param pos\n @param len\n @param replace"]
+    #[doc = "Replace in the string the sub-string at position 'pos' for 'len' bytes into the C string 'replace'.\n\n# Arguments\n\n* `string` - \n* `pos` - \n* `len` - \n* `replace` - \n\n"]
     pub fn furi_string_replace_at(
         string: *mut FuriString,
         pos: usize,
@@ -2653,7 +2653,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " @brief Replace a string 'needle' to string 'replace' in a string from 'start' position.\n By default, start is zero.\n Return STRING_FAILURE if 'needle' not found or replace position.\n @param string\n @param needle\n @param replace\n @param start\n @return size_t"]
+    #[doc = "Replace a string 'needle' to string 'replace' in a string from 'start' position. By default, start is zero. Return STRING_FAILURE if 'needle' not found or replace position.\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `string` - \n* `needle` - \n* `replace` - \n* `start` - \n\n"]
     pub fn furi_string_replace(
         string: *mut FuriString,
         needle: *mut FuriString,
@@ -2662,7 +2662,7 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Replace a C string 'needle' to C string 'replace' in a string from 'start' position.\n By default, start is zero.\n Return STRING_FAILURE if 'needle' not found or replace position.\n @param string\n @param needle\n @param replace\n @param start\n @return size_t"]
+    #[doc = "Replace a C string 'needle' to C string 'replace' in a string from 'start' position. By default, start is zero. Return STRING_FAILURE if 'needle' not found or replace position.\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `string` - \n* `needle` - \n* `replace` - \n* `start` - \n\n"]
     pub fn furi_string_replace_str(
         string: *mut FuriString,
         needle: *const core::ffi::c_char,
@@ -2671,7 +2671,7 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Replace all occurrences of 'needle' string into 'replace' string.\n @param string\n @param needle\n @param replace"]
+    #[doc = "Replace all occurrences of 'needle' string into 'replace' string.\n\n# Arguments\n\n* `string` - \n* `needle` - \n* `replace` - \n\n"]
     pub fn furi_string_replace_all(
         string: *mut FuriString,
         needle: *const FuriString,
@@ -2679,7 +2679,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " @brief Replace all occurrences of 'needle' C string into 'replace' C string.\n @param string\n @param needle\n @param replace"]
+    #[doc = "Replace all occurrences of 'needle' C string into 'replace' C string.\n\n# Arguments\n\n* `string` - \n* `needle` - \n* `replace` - \n\n"]
     pub fn furi_string_replace_all_str(
         string: *mut FuriString,
         needle: *const core::ffi::c_char,
@@ -2687,51 +2687,51 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " @brief Test if the string starts with the given string.\n @param string\n @param start\n @return bool"]
+    #[doc = "Test if the string starts with the given string.\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `string` - \n* `start` - \n\n"]
     pub fn furi_string_start_with(string: *const FuriString, start: *const FuriString) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Test if the string starts with the given C string.\n @param string\n @param start\n @return bool"]
+    #[doc = "Test if the string starts with the given C string.\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `string` - \n* `start` - \n\n"]
     pub fn furi_string_start_with_str(
         string: *const FuriString,
         start: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Test if the string ends with the given string.\n @param string\n @param end\n @return bool"]
+    #[doc = "Test if the string ends with the given string.\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `string` - \n* `end` - \n\n"]
     pub fn furi_string_end_with(string: *const FuriString, end: *const FuriString) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Test if the string ends with the given C string.\n @param string\n @param end\n @return bool"]
+    #[doc = "Test if the string ends with the given C string.\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `string` - \n* `end` - \n\n"]
     pub fn furi_string_end_with_str(
         string: *const FuriString,
         end: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Trim the string left to the first 'index' bytes.\n @param string\n @param index"]
+    #[doc = "Trim the string left to the first 'index' bytes.\n\n# Arguments\n\n* `string` - \n* `index` - \n\n"]
     pub fn furi_string_left(string: *mut FuriString, index: usize);
 }
 extern "C" {
-    #[doc = " @brief Trim the string right from the 'index' position to the last position.\n @param string\n @param index"]
+    #[doc = "Trim the string right from the 'index' position to the last position.\n\n# Arguments\n\n* `string` - \n* `index` - \n\n"]
     pub fn furi_string_right(string: *mut FuriString, index: usize);
 }
 extern "C" {
-    #[doc = " @brief Trim the string from position index to size bytes.\n See also furi_string_set_n.\n @param string\n @param index\n @param size"]
+    #[doc = "Trim the string from position index to size bytes. See also furi_string_set_n.\n\n# Arguments\n\n* `string` - \n* `index` - \n* `size` - \n\n"]
     pub fn furi_string_mid(string: *mut FuriString, index: usize, size: usize);
 }
 extern "C" {
-    #[doc = " @brief Trim a string from the given set of characters (default is \" \\n\\r\\t\").\n @param string\n @param chars"]
+    #[doc = "Trim a string from the given set of characters (default is \" \\n\\r\\t\").\n\n# Arguments\n\n* `string` - \n* `chars` - \n\n"]
     pub fn furi_string_trim(string: *mut FuriString, chars: *const core::ffi::c_char);
 }
-#[doc = " @brief An unicode value."]
+#[doc = "An unicode value.\n\n"]
 pub type FuriStringUnicodeValue = core::ffi::c_uint;
 extern "C" {
-    #[doc = " @brief Compute the length in UTF8 characters in the string.\n @param string\n @return size_t"]
+    #[doc = "Compute the length in UTF8 characters in the string.\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `string` - \n\n"]
     pub fn furi_string_utf8_length(string: *mut FuriString) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Push unicode into string, encoding it in UTF8.\n @param string\n @param unicode"]
+    #[doc = "Push unicode into string, encoding it in UTF8.\n\n# Arguments\n\n* `string` - \n* `unicode` - \n\n"]
     pub fn furi_string_utf8_push(string: *mut FuriString, unicode: FuriStringUnicodeValue);
 }
 pub const FuriStringUTF8State_FuriStringUTF8StateStarting: FuriStringUTF8State = 0;
@@ -2739,10 +2739,10 @@ pub const FuriStringUTF8State_FuriStringUTF8StateDecoding1: FuriStringUTF8State 
 pub const FuriStringUTF8State_FuriStringUTF8StateDecoding2: FuriStringUTF8State = 2;
 pub const FuriStringUTF8State_FuriStringUTF8StateDecoding3: FuriStringUTF8State = 3;
 pub const FuriStringUTF8State_FuriStringUTF8StateError: FuriStringUTF8State = 4;
-#[doc = " @brief State of the UTF8 decoding machine state."]
+#[doc = "State of the UTF8 decoding machine state.\n\n"]
 pub type FuriStringUTF8State = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " @brief Main generic UTF8 decoder.\n It takes a character, and the previous state and the previous value of the unicode value.\n It updates the state and the decoded unicode value.\n A decoded unicode encoded value is valid only when the state is FuriStringUTF8StateStarting.\n @param c\n @param state\n @param unicode"]
+    #[doc = "Main generic UTF8 decoder. It takes a character, and the previous state and the previous value of the unicode value. It updates the state and the decoded unicode value. A decoded unicode encoded value is valid only when the state is FuriStringUTF8StateStarting.\n\n# Arguments\n\n* `c` - \n* `state` - \n* `unicode` - \n\n"]
     pub fn furi_string_utf8_decode(
         c: core::ffi::c_char,
         state: *mut FuriStringUTF8State,
@@ -2751,22 +2751,22 @@ extern "C" {
 }
 pub type FuriStreamBuffer = core::ffi::c_void;
 extern "C" {
-    #[doc = " @brief Allocate stream buffer instance.\n Stream buffer implementation assumes there is only one task or\n interrupt that will write to the buffer (the writer), and only one task or\n interrupt that will read from the buffer (the reader).\n\n @param size The total number of bytes the stream buffer will be able to hold at any one time.\n @param trigger_level The number of bytes that must be in the stream buffer\n before a task that is blocked on the stream buffer to wait for data is moved out of the blocked state.\n @return The stream buffer instance."]
+    #[doc = "Allocate stream buffer instance. Stream buffer implementation assumes there is only one task or interrupt that will write to the buffer (the writer), and only one task or interrupt that will read from the buffer (the reader).\n\nReturns:\n\n* The stream buffer instance.\n\n# Arguments\n\n* `size` - The total number of bytes the stream buffer will be able to hold at any one time.\n* `trigger_level` - The number of bytes that must be in the stream buffer before a task that is blocked on the stream buffer to wait for data is moved out of the blocked state.\n\n"]
     pub fn furi_stream_buffer_alloc(size: usize, trigger_level: usize) -> *mut FuriStreamBuffer;
 }
 extern "C" {
-    #[doc = " @brief Free stream buffer instance\n\n @param stream_buffer The stream buffer instance."]
+    #[doc = "Free stream buffer instance\n\n# Arguments\n\n* `stream_buffer` - The stream buffer instance.\n\n"]
     pub fn furi_stream_buffer_free(stream_buffer: *mut FuriStreamBuffer);
 }
 extern "C" {
-    #[doc = " @brief Set trigger level for stream buffer.\n A stream buffer's trigger level is the number of bytes that must be in the\n stream buffer before a task that is blocked on the stream buffer to\n wait for data is moved out of the blocked state.\n\n @param stream_buffer The stream buffer instance\n @param trigger_level The new trigger level for the stream buffer.\n @return true if trigger level can be be updated (new trigger level was less than or equal to the stream buffer's length).\n @return false if trigger level can't be be updated (new trigger level was greater than the stream buffer's length)."]
+    #[doc = "Set trigger level for stream buffer. A stream buffer's trigger level is the number of bytes that must be in the stream buffer before a task that is blocked on the stream buffer to wait for data is moved out of the blocked state.\n\nReturns:\n\n* true if trigger level can be be updated (new trigger level was less than or equal to the stream buffer's length).\n* false if trigger level can't be be updated (new trigger level was greater than the stream buffer's length).\n\n# Arguments\n\n* `stream_buffer` - The stream buffer instance\n* `trigger_level` - The new trigger level for the stream buffer.\n\n"]
     pub fn furi_stream_set_trigger_level(
         stream_buffer: *mut FuriStreamBuffer,
         trigger_level: usize,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Sends bytes to a stream buffer. The bytes are copied into the stream buffer.\n Wakes up task waiting for data to become available if called from ISR.\n\n @param stream_buffer The stream buffer instance.\n @param data A pointer to the data that is to be copied into the stream buffer.\n @param length The maximum number of bytes to copy from data into the stream buffer.\n @param timeout The maximum amount of time the task should remain in the\n Blocked state to wait for space to become available if the stream buffer is full.\n Will return immediately if timeout is zero.\n Setting timeout to FuriWaitForever will cause the task to wait indefinitely.\n Ignored if called from ISR.\n @return The number of bytes actually written to the stream buffer."]
+    #[doc = "Sends bytes to a stream buffer. The bytes are copied into the stream buffer. Wakes up task waiting for data to become available if called from ISR.\n\nReturns:\n\n* The number of bytes actually written to the stream buffer.\n\n# Arguments\n\n* `stream_buffer` - The stream buffer instance.\n* `data` - A pointer to the data that is to be copied into the stream buffer.\n* `length` - The maximum number of bytes to copy from data into the stream buffer.\n* `timeout` - The maximum amount of time the task should remain in the Blocked state to wait for space to become available if the stream buffer is full. Will return immediately if timeout is zero. Setting timeout to FuriWaitForever will cause the task to wait indefinitely. Ignored if called from ISR.\n\n"]
     pub fn furi_stream_buffer_send(
         stream_buffer: *mut FuriStreamBuffer,
         data: *const core::ffi::c_void,
@@ -2775,7 +2775,7 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Receives bytes from a stream buffer.\n Wakes up task waiting for space to become available if called from ISR.\n\n @param stream_buffer The stream buffer instance.\n @param data A pointer to the buffer into which the received bytes will be\n copied.\n @param length The length of the buffer pointed to by the data parameter.\n @param timeout The maximum amount of time the task should remain in the\n Blocked state to wait for data to become available if the stream buffer is empty.\n Will return immediately if timeout is zero.\n Setting timeout to FuriWaitForever will cause the task to wait indefinitely.\n Ignored if called from ISR.\n @return The number of bytes read from the stream buffer, if any."]
+    #[doc = "Receives bytes from a stream buffer. Wakes up task waiting for space to become available if called from ISR.\n\nReturns:\n\n* The number of bytes read from the stream buffer, if any.\n\n# Arguments\n\n* `stream_buffer` - The stream buffer instance.\n* `data` - A pointer to the buffer into which the received bytes will be copied.\n* `length` - The length of the buffer pointed to by the data parameter.\n* `timeout` - The maximum amount of time the task should remain in the Blocked state to wait for data to become available if the stream buffer is empty. Will return immediately if timeout is zero. Setting timeout to FuriWaitForever will cause the task to wait indefinitely. Ignored if called from ISR.\n\n"]
     pub fn furi_stream_buffer_receive(
         stream_buffer: *mut FuriStreamBuffer,
         data: *mut core::ffi::c_void,
@@ -2784,30 +2784,30 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Queries a stream buffer to see how much data it contains, which is equal to\n the number of bytes that can be read from the stream buffer before the stream\n buffer would be empty.\n\n @param stream_buffer The stream buffer instance.\n @return The number of bytes that can be read from the stream buffer before\n the stream buffer would be empty."]
+    #[doc = "Queries a stream buffer to see how much data it contains, which is equal to the number of bytes that can be read from the stream buffer before the stream buffer would be empty.\n\nReturns:\n\n* The number of bytes that can be read from the stream buffer before the stream buffer would be empty.\n\n# Arguments\n\n* `stream_buffer` - The stream buffer instance.\n\n"]
     pub fn furi_stream_buffer_bytes_available(stream_buffer: *mut FuriStreamBuffer) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Queries a stream buffer to see how much free space it contains, which is\n equal to the amount of data that can be sent to the stream buffer before it\n is full.\n\n @param stream_buffer The stream buffer instance.\n @return The number of bytes that can be written to the stream buffer before\n the stream buffer would be full."]
+    #[doc = "Queries a stream buffer to see how much free space it contains, which is equal to the amount of data that can be sent to the stream buffer before it is full.\n\nReturns:\n\n* The number of bytes that can be written to the stream buffer before the stream buffer would be full.\n\n# Arguments\n\n* `stream_buffer` - The stream buffer instance.\n\n"]
     pub fn furi_stream_buffer_spaces_available(stream_buffer: *mut FuriStreamBuffer) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Queries a stream buffer to see if it is full.\n\n @param stream_buffer stream buffer instance.\n @return true if the stream buffer is full.\n @return false if the stream buffer is not full."]
+    #[doc = "Queries a stream buffer to see if it is full.\n\nReturns:\n\n* true if the stream buffer is full.\n* false if the stream buffer is not full.\n\n# Arguments\n\n* `stream_buffer` - stream buffer instance.\n\n"]
     pub fn furi_stream_buffer_is_full(stream_buffer: *mut FuriStreamBuffer) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Queries a stream buffer to see if it is empty.\n\n @param stream_buffer The stream buffer instance.\n @return true if the stream buffer is empty.\n @return false if the stream buffer is not empty."]
+    #[doc = "Queries a stream buffer to see if it is empty.\n\nReturns:\n\n* true if the stream buffer is empty.\n* false if the stream buffer is not empty.\n\n# Arguments\n\n* `stream_buffer` - The stream buffer instance.\n\n"]
     pub fn furi_stream_buffer_is_empty(stream_buffer: *mut FuriStreamBuffer) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Resets a stream buffer to its initial, empty, state. Any data that was\n in the stream buffer is discarded. A stream buffer can only be reset if there\n are no tasks blocked waiting to either send to or receive from the stream buffer.\n\n @param stream_buffer The stream buffer instance.\n @return FuriStatusOk if the stream buffer is reset.\n @return FuriStatusError if there was a task blocked waiting to send to or read\n from the stream buffer then the stream buffer is not reset."]
+    #[doc = "Resets a stream buffer to its initial, empty, state. Any data that was in the stream buffer is discarded. A stream buffer can only be reset if there are no tasks blocked waiting to either send to or receive from the stream buffer.\n\nReturns:\n\n* FuriStatusOk if the stream buffer is reset.\n* FuriStatusError if there was a task blocked waiting to send to or read from the stream buffer then the stream buffer is not reset.\n\n# Arguments\n\n* `stream_buffer` - The stream buffer instance.\n\n"]
     pub fn furi_stream_buffer_reset(stream_buffer: *mut FuriStreamBuffer) -> FuriStatus;
 }
-#[doc = " @brief Comparator"]
+#[doc = "Comparator\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct COMP_TypeDef {
-    #[doc = "< COMP control and status register,               Address offset: 0x00"]
+    #[doc = "COMP control and status register,               Address offset: 0x00\n\n"]
     pub CSR: u32,
 }
 #[test]
@@ -2838,9 +2838,9 @@ fn bindgen_test_layout_COMP_TypeDef() {
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct DMA_TypeDef {
-    #[doc = "< DMA interrupt status register,                 Address offset: 0x00"]
+    #[doc = "DMA interrupt status register,                 Address offset: 0x00\n\n"]
     pub ISR: u32,
-    #[doc = "< DMA interrupt flag clear register,             Address offset: 0x04"]
+    #[doc = "DMA interrupt flag clear register,             Address offset: 0x04\n\n"]
     pub IFCR: u32,
 }
 #[test]
@@ -2878,29 +2878,29 @@ fn bindgen_test_layout_DMA_TypeDef() {
         )
     );
 }
-#[doc = " @brief General Purpose I/O"]
+#[doc = "General Purpose I/O\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct GPIO_TypeDef {
-    #[doc = "< GPIO port mode register,               Address offset: 0x00"]
+    #[doc = "GPIO port mode register,               Address offset: 0x00\n\n"]
     pub MODER: u32,
-    #[doc = "< GPIO port output type register,        Address offset: 0x04"]
+    #[doc = "GPIO port output type register,        Address offset: 0x04\n\n"]
     pub OTYPER: u32,
-    #[doc = "< GPIO port output speed register,       Address offset: 0x08"]
+    #[doc = "GPIO port output speed register,       Address offset: 0x08\n\n"]
     pub OSPEEDR: u32,
-    #[doc = "< GPIO port pull-up/pull-down register,  Address offset: 0x0C"]
+    #[doc = "GPIO port pull-up/pull-down register,  Address offset: 0x0C\n\n"]
     pub PUPDR: u32,
-    #[doc = "< GPIO port input data register,         Address offset: 0x10"]
+    #[doc = "GPIO port input data register,         Address offset: 0x10\n\n"]
     pub IDR: u32,
-    #[doc = "< GPIO port output data register,        Address offset: 0x14"]
+    #[doc = "GPIO port output data register,        Address offset: 0x14\n\n"]
     pub ODR: u32,
-    #[doc = "< GPIO port bit set/reset  register,     Address offset: 0x18"]
+    #[doc = "GPIO port bit set/reset  register,     Address offset: 0x18\n\n"]
     pub BSRR: u32,
-    #[doc = "< GPIO port configuration lock register, Address offset: 0x1C"]
+    #[doc = "GPIO port configuration lock register, Address offset: 0x1C\n\n"]
     pub LCKR: u32,
-    #[doc = "< GPIO alternate function registers,     Address offset: 0x20-0x24"]
+    #[doc = "GPIO alternate function registers,     Address offset: 0x20-0x24\n\n"]
     pub AFR: [u32; 2usize],
-    #[doc = "< GPIO Bit Reset register,               Address offset: 0x28"]
+    #[doc = "GPIO Bit Reset register,               Address offset: 0x28\n\n"]
     pub BRR: u32,
 }
 #[test]
@@ -3018,31 +3018,31 @@ fn bindgen_test_layout_GPIO_TypeDef() {
         )
     );
 }
-#[doc = " @brief Inter-integrated Circuit Interface"]
+#[doc = "Inter-integrated Circuit Interface\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct I2C_TypeDef {
-    #[doc = "< I2C Control register 1,            Address offset: 0x00"]
+    #[doc = "I2C Control register 1,            Address offset: 0x00\n\n"]
     pub CR1: u32,
-    #[doc = "< I2C Control register 2,            Address offset: 0x04"]
+    #[doc = "I2C Control register 2,            Address offset: 0x04\n\n"]
     pub CR2: u32,
-    #[doc = "< I2C Own address 1 register,        Address offset: 0x08"]
+    #[doc = "I2C Own address 1 register,        Address offset: 0x08\n\n"]
     pub OAR1: u32,
-    #[doc = "< I2C Own address 2 register,        Address offset: 0x0C"]
+    #[doc = "I2C Own address 2 register,        Address offset: 0x0C\n\n"]
     pub OAR2: u32,
-    #[doc = "< I2C Timing register,               Address offset: 0x10"]
+    #[doc = "I2C Timing register,               Address offset: 0x10\n\n"]
     pub TIMINGR: u32,
-    #[doc = "< I2C Timeout register,              Address offset: 0x14"]
+    #[doc = "I2C Timeout register,              Address offset: 0x14\n\n"]
     pub TIMEOUTR: u32,
-    #[doc = "< I2C Interrupt and status register, Address offset: 0x18"]
+    #[doc = "I2C Interrupt and status register, Address offset: 0x18\n\n"]
     pub ISR: u32,
-    #[doc = "< I2C Interrupt clear register,      Address offset: 0x1C"]
+    #[doc = "I2C Interrupt clear register,      Address offset: 0x1C\n\n"]
     pub ICR: u32,
-    #[doc = "< I2C PEC register,                  Address offset: 0x20"]
+    #[doc = "I2C PEC register,                  Address offset: 0x20\n\n"]
     pub PECR: u32,
-    #[doc = "< I2C Receive data register,         Address offset: 0x24"]
+    #[doc = "I2C Receive data register,         Address offset: 0x24\n\n"]
     pub RXDR: u32,
-    #[doc = "< I2C Transmit data register,        Address offset: 0x28"]
+    #[doc = "I2C Transmit data register,        Address offset: 0x28\n\n"]
     pub TXDR: u32,
 }
 #[test]
@@ -3170,27 +3170,27 @@ fn bindgen_test_layout_I2C_TypeDef() {
         )
     );
 }
-#[doc = " @brief LPTIMER"]
+#[doc = "LPTIMER\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct LPTIM_TypeDef {
-    #[doc = "< LPTIM Interrupt and Status register,                Address offset: 0x00"]
+    #[doc = "LPTIM Interrupt and Status register,                Address offset: 0x00\n\n"]
     pub ISR: u32,
-    #[doc = "< LPTIM Interrupt Clear register,                     Address offset: 0x04"]
+    #[doc = "LPTIM Interrupt Clear register,                     Address offset: 0x04\n\n"]
     pub ICR: u32,
-    #[doc = "< LPTIM Interrupt Enable register,                    Address offset: 0x08"]
+    #[doc = "LPTIM Interrupt Enable register,                    Address offset: 0x08\n\n"]
     pub IER: u32,
-    #[doc = "< LPTIM Configuration register,                       Address offset: 0x0C"]
+    #[doc = "LPTIM Configuration register,                       Address offset: 0x0C\n\n"]
     pub CFGR: u32,
-    #[doc = "< LPTIM Control register,                             Address offset: 0x10"]
+    #[doc = "LPTIM Control register,                             Address offset: 0x10\n\n"]
     pub CR: u32,
-    #[doc = "< LPTIM Compare register,                             Address offset: 0x14"]
+    #[doc = "LPTIM Compare register,                             Address offset: 0x14\n\n"]
     pub CMP: u32,
-    #[doc = "< LPTIM Autoreload register,                          Address offset: 0x18"]
+    #[doc = "LPTIM Autoreload register,                          Address offset: 0x18\n\n"]
     pub ARR: u32,
-    #[doc = "< LPTIM Counter register,                             Address offset: 0x1C"]
+    #[doc = "LPTIM Counter register,                             Address offset: 0x1C\n\n"]
     pub CNT: u32,
-    #[doc = "< LPTIM Option register,                              Address offset: 0x20"]
+    #[doc = "LPTIM Option register,                              Address offset: 0x20\n\n"]
     pub OR: u32,
 }
 #[test]
@@ -3298,89 +3298,89 @@ fn bindgen_test_layout_LPTIM_TypeDef() {
         )
     );
 }
-#[doc = " @brief Real-Time Clock"]
+#[doc = "Real-Time Clock\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct RTC_TypeDef {
-    #[doc = "< RTC time register,                                         Address offset: 0x00"]
+    #[doc = "RTC time register,                                         Address offset: 0x00\n\n"]
     pub TR: u32,
-    #[doc = "< RTC date register,                                         Address offset: 0x04"]
+    #[doc = "RTC date register,                                         Address offset: 0x04\n\n"]
     pub DR: u32,
-    #[doc = "< RTC control register,                                      Address offset: 0x08"]
+    #[doc = "RTC control register,                                      Address offset: 0x08\n\n"]
     pub CR: u32,
-    #[doc = "< RTC initialization and status register,                    Address offset: 0x0C"]
+    #[doc = "RTC initialization and status register,                    Address offset: 0x0C\n\n"]
     pub ISR: u32,
-    #[doc = "< RTC prescaler register,                                    Address offset: 0x10"]
+    #[doc = "RTC prescaler register,                                    Address offset: 0x10\n\n"]
     pub PRER: u32,
-    #[doc = "< RTC wakeup timer register,                                 Address offset: 0x14"]
+    #[doc = "RTC wakeup timer register,                                 Address offset: 0x14\n\n"]
     pub WUTR: u32,
-    #[doc = "< Reserved,                                                  Address offset: 0x18"]
+    #[doc = "Reserved,                                                  Address offset: 0x18\n\n"]
     pub RESERVED: u32,
-    #[doc = "< RTC alarm A register,                                      Address offset: 0x1C"]
+    #[doc = "RTC alarm A register,                                      Address offset: 0x1C\n\n"]
     pub ALRMAR: u32,
-    #[doc = "< RTC alarm B register,                                      Address offset: 0x20"]
+    #[doc = "RTC alarm B register,                                      Address offset: 0x20\n\n"]
     pub ALRMBR: u32,
-    #[doc = "< RTC write protection register,                             Address offset: 0x24"]
+    #[doc = "RTC write protection register,                             Address offset: 0x24\n\n"]
     pub WPR: u32,
-    #[doc = "< RTC sub second register,                                   Address offset: 0x28"]
+    #[doc = "RTC sub second register,                                   Address offset: 0x28\n\n"]
     pub SSR: u32,
-    #[doc = "< RTC shift control register,                                Address offset: 0x2C"]
+    #[doc = "RTC shift control register,                                Address offset: 0x2C\n\n"]
     pub SHIFTR: u32,
-    #[doc = "< RTC time stamp time register,                              Address offset: 0x30"]
+    #[doc = "RTC time stamp time register,                              Address offset: 0x30\n\n"]
     pub TSTR: u32,
-    #[doc = "< RTC time stamp date register,                              Address offset: 0x34"]
+    #[doc = "RTC time stamp date register,                              Address offset: 0x34\n\n"]
     pub TSDR: u32,
-    #[doc = "< RTC time-stamp sub second register,                        Address offset: 0x38"]
+    #[doc = "RTC time-stamp sub second register,                        Address offset: 0x38\n\n"]
     pub TSSSR: u32,
-    #[doc = "< RTC calibration register,                                  Address offset: 0x3C"]
+    #[doc = "RTC calibration register,                                  Address offset: 0x3C\n\n"]
     pub CALR: u32,
-    #[doc = "< RTC tamper configuration register,                         Address offset: 0x40"]
+    #[doc = "RTC tamper configuration register,                         Address offset: 0x40\n\n"]
     pub TAMPCR: u32,
-    #[doc = "< RTC alarm A sub second register,                           Address offset: 0x44"]
+    #[doc = "RTC alarm A sub second register,                           Address offset: 0x44\n\n"]
     pub ALRMASSR: u32,
-    #[doc = "< RTC alarm B sub second register,                           Address offset: 0x48"]
+    #[doc = "RTC alarm B sub second register,                           Address offset: 0x48\n\n"]
     pub ALRMBSSR: u32,
-    #[doc = "< RTC option register,                                       Address offset  0x4C"]
+    #[doc = "RTC option register,                                       Address offset  0x4C\n\n"]
     pub OR: u32,
-    #[doc = "< RTC backup register 0,                                     Address offset: 0x50"]
+    #[doc = "RTC backup register 0,                                     Address offset: 0x50\n\n"]
     pub BKP0R: u32,
-    #[doc = "< RTC backup register 1,                                     Address offset: 0x54"]
+    #[doc = "RTC backup register 1,                                     Address offset: 0x54\n\n"]
     pub BKP1R: u32,
-    #[doc = "< RTC backup register 2,                                     Address offset: 0x58"]
+    #[doc = "RTC backup register 2,                                     Address offset: 0x58\n\n"]
     pub BKP2R: u32,
-    #[doc = "< RTC backup register 3,                                     Address offset: 0x5C"]
+    #[doc = "RTC backup register 3,                                     Address offset: 0x5C\n\n"]
     pub BKP3R: u32,
-    #[doc = "< RTC backup register 4,                                     Address offset: 0x60"]
+    #[doc = "RTC backup register 4,                                     Address offset: 0x60\n\n"]
     pub BKP4R: u32,
-    #[doc = "< RTC backup register 5,                                     Address offset: 0x64"]
+    #[doc = "RTC backup register 5,                                     Address offset: 0x64\n\n"]
     pub BKP5R: u32,
-    #[doc = "< RTC backup register 6,                                     Address offset: 0x68"]
+    #[doc = "RTC backup register 6,                                     Address offset: 0x68\n\n"]
     pub BKP6R: u32,
-    #[doc = "< RTC backup register 7,                                     Address offset: 0x6C"]
+    #[doc = "RTC backup register 7,                                     Address offset: 0x6C\n\n"]
     pub BKP7R: u32,
-    #[doc = "< RTC backup register 8,                                     Address offset: 0x70"]
+    #[doc = "RTC backup register 8,                                     Address offset: 0x70\n\n"]
     pub BKP8R: u32,
-    #[doc = "< RTC backup register 9,                                     Address offset: 0x74"]
+    #[doc = "RTC backup register 9,                                     Address offset: 0x74\n\n"]
     pub BKP9R: u32,
-    #[doc = "< RTC backup register 10,                                    Address offset: 0x78"]
+    #[doc = "RTC backup register 10,                                    Address offset: 0x78\n\n"]
     pub BKP10R: u32,
-    #[doc = "< RTC backup register 11,                                    Address offset: 0x7C"]
+    #[doc = "RTC backup register 11,                                    Address offset: 0x7C\n\n"]
     pub BKP11R: u32,
-    #[doc = "< RTC backup register 12,                                    Address offset: 0x80"]
+    #[doc = "RTC backup register 12,                                    Address offset: 0x80\n\n"]
     pub BKP12R: u32,
-    #[doc = "< RTC backup register 13,                                    Address offset: 0x84"]
+    #[doc = "RTC backup register 13,                                    Address offset: 0x84\n\n"]
     pub BKP13R: u32,
-    #[doc = "< RTC backup register 14,                                    Address offset: 0x88"]
+    #[doc = "RTC backup register 14,                                    Address offset: 0x88\n\n"]
     pub BKP14R: u32,
-    #[doc = "< RTC backup register 15,                                    Address offset: 0x8C"]
+    #[doc = "RTC backup register 15,                                    Address offset: 0x8C\n\n"]
     pub BKP15R: u32,
-    #[doc = "< RTC backup register 16,                                    Address offset: 0x90"]
+    #[doc = "RTC backup register 16,                                    Address offset: 0x90\n\n"]
     pub BKP16R: u32,
-    #[doc = "< RTC backup register 17,                                    Address offset: 0x94"]
+    #[doc = "RTC backup register 17,                                    Address offset: 0x94\n\n"]
     pub BKP17R: u32,
-    #[doc = "< RTC backup register 18,                                    Address offset: 0x98"]
+    #[doc = "RTC backup register 18,                                    Address offset: 0x98\n\n"]
     pub BKP18R: u32,
-    #[doc = "< RTC backup register 19,                                    Address offset: 0x9C"]
+    #[doc = "RTC backup register 19,                                    Address offset: 0x9C\n\n"]
     pub BKP19R: u32,
 }
 #[test]
@@ -3798,23 +3798,23 @@ fn bindgen_test_layout_RTC_TypeDef() {
         )
     );
 }
-#[doc = " @brief Serial Peripheral Interface"]
+#[doc = "Serial Peripheral Interface\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct SPI_TypeDef {
-    #[doc = "< SPI Control register 1,       Address offset: 0x00"]
+    #[doc = "SPI Control register 1,       Address offset: 0x00\n\n"]
     pub CR1: u32,
-    #[doc = "< SPI Control register 2,       Address offset: 0x04"]
+    #[doc = "SPI Control register 2,       Address offset: 0x04\n\n"]
     pub CR2: u32,
-    #[doc = "< SPI Status register,          Address offset: 0x08"]
+    #[doc = "SPI Status register,          Address offset: 0x08\n\n"]
     pub SR: u32,
-    #[doc = "< SPI data register,            Address offset: 0x0C"]
+    #[doc = "SPI data register,            Address offset: 0x0C\n\n"]
     pub DR: u32,
-    #[doc = "< SPI CRC polynomial register,  Address offset: 0x10"]
+    #[doc = "SPI CRC polynomial register,  Address offset: 0x10\n\n"]
     pub CRCPR: u32,
-    #[doc = "< SPI Rx CRC register,          Address offset: 0x14"]
+    #[doc = "SPI Rx CRC register,          Address offset: 0x14\n\n"]
     pub RXCRCR: u32,
-    #[doc = "< SPI Tx CRC register,          Address offset: 0x18"]
+    #[doc = "SPI Tx CRC register,          Address offset: 0x18\n\n"]
     pub TXCRCR: u32,
 }
 #[test]
@@ -3902,61 +3902,61 @@ fn bindgen_test_layout_SPI_TypeDef() {
         )
     );
 }
-#[doc = " @brief TIM"]
+#[doc = "TIM\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct TIM_TypeDef {
-    #[doc = "< TIM control register 1,                   Address offset: 0x00"]
+    #[doc = "TIM control register 1,                   Address offset: 0x00\n\n"]
     pub CR1: u32,
-    #[doc = "< TIM control register 2,                   Address offset: 0x04"]
+    #[doc = "TIM control register 2,                   Address offset: 0x04\n\n"]
     pub CR2: u32,
-    #[doc = "< TIM slave mode control register,          Address offset: 0x08"]
+    #[doc = "TIM slave mode control register,          Address offset: 0x08\n\n"]
     pub SMCR: u32,
-    #[doc = "< TIM DMA/interrupt enable register,        Address offset: 0x0C"]
+    #[doc = "TIM DMA/interrupt enable register,        Address offset: 0x0C\n\n"]
     pub DIER: u32,
-    #[doc = "< TIM status register,                      Address offset: 0x10"]
+    #[doc = "TIM status register,                      Address offset: 0x10\n\n"]
     pub SR: u32,
-    #[doc = "< TIM event generation register,            Address offset: 0x14"]
+    #[doc = "TIM event generation register,            Address offset: 0x14\n\n"]
     pub EGR: u32,
-    #[doc = "< TIM capture/compare mode register 1,      Address offset: 0x18"]
+    #[doc = "TIM capture/compare mode register 1,      Address offset: 0x18\n\n"]
     pub CCMR1: u32,
-    #[doc = "< TIM capture/compare mode register 2,      Address offset: 0x1C"]
+    #[doc = "TIM capture/compare mode register 2,      Address offset: 0x1C\n\n"]
     pub CCMR2: u32,
-    #[doc = "< TIM capture/compare enable register,      Address offset: 0x20"]
+    #[doc = "TIM capture/compare enable register,      Address offset: 0x20\n\n"]
     pub CCER: u32,
-    #[doc = "< TIM counter register,                     Address offset: 0x24"]
+    #[doc = "TIM counter register,                     Address offset: 0x24\n\n"]
     pub CNT: u32,
-    #[doc = "< TIM prescaler register,                   Address offset: 0x28"]
+    #[doc = "TIM prescaler register,                   Address offset: 0x28\n\n"]
     pub PSC: u32,
-    #[doc = "< TIM auto-reload register,                 Address offset: 0x2C"]
+    #[doc = "TIM auto-reload register,                 Address offset: 0x2C\n\n"]
     pub ARR: u32,
-    #[doc = "< TIM repetition counter register,          Address offset: 0x30"]
+    #[doc = "TIM repetition counter register,          Address offset: 0x30\n\n"]
     pub RCR: u32,
-    #[doc = "< TIM capture/compare register 1,           Address offset: 0x34"]
+    #[doc = "TIM capture/compare register 1,           Address offset: 0x34\n\n"]
     pub CCR1: u32,
-    #[doc = "< TIM capture/compare register 2,           Address offset: 0x38"]
+    #[doc = "TIM capture/compare register 2,           Address offset: 0x38\n\n"]
     pub CCR2: u32,
-    #[doc = "< TIM capture/compare register 3,           Address offset: 0x3C"]
+    #[doc = "TIM capture/compare register 3,           Address offset: 0x3C\n\n"]
     pub CCR3: u32,
-    #[doc = "< TIM capture/compare register 4,           Address offset: 0x40"]
+    #[doc = "TIM capture/compare register 4,           Address offset: 0x40\n\n"]
     pub CCR4: u32,
-    #[doc = "< TIM break and dead-time register,         Address offset: 0x44"]
+    #[doc = "TIM break and dead-time register,         Address offset: 0x44\n\n"]
     pub BDTR: u32,
-    #[doc = "< TIM DMA control register,                 Address offset: 0x48"]
+    #[doc = "TIM DMA control register,                 Address offset: 0x48\n\n"]
     pub DCR: u32,
-    #[doc = "< TIM DMA address for full transfer,        Address offset: 0x4C"]
+    #[doc = "TIM DMA address for full transfer,        Address offset: 0x4C\n\n"]
     pub DMAR: u32,
-    #[doc = "< TIM option register                       Address offset: 0x50"]
+    #[doc = "TIM option register                       Address offset: 0x50\n\n"]
     pub OR: u32,
-    #[doc = "< TIM capture/compare mode register 3,      Address offset: 0x54"]
+    #[doc = "TIM capture/compare mode register 3,      Address offset: 0x54\n\n"]
     pub CCMR3: u32,
-    #[doc = "< TIM capture/compare register5,            Address offset: 0x58"]
+    #[doc = "TIM capture/compare register5,            Address offset: 0x58\n\n"]
     pub CCR5: u32,
-    #[doc = "< TIM capture/compare register6,            Address offset: 0x5C"]
+    #[doc = "TIM capture/compare register6,            Address offset: 0x5C\n\n"]
     pub CCR6: u32,
-    #[doc = "< TIM Alternate function option register 1, Address offset: 0x60"]
+    #[doc = "TIM Alternate function option register 1, Address offset: 0x60\n\n"]
     pub AF1: u32,
-    #[doc = "< TIM Alternate function option register 2, Address offset: 0x64"]
+    #[doc = "TIM Alternate function option register 2, Address offset: 0x64\n\n"]
     pub AF2: u32,
 }
 #[test]
@@ -4234,33 +4234,33 @@ fn bindgen_test_layout_TIM_TypeDef() {
         )
     );
 }
-#[doc = " @brief Universal Synchronous Asynchronous Receiver Transmitter"]
+#[doc = "Universal Synchronous Asynchronous Receiver Transmitter\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct USART_TypeDef {
-    #[doc = "< USART Control register 1,                 Address offset: 0x00"]
+    #[doc = "USART Control register 1,                 Address offset: 0x00\n\n"]
     pub CR1: u32,
-    #[doc = "< USART Control register 2,                 Address offset: 0x04"]
+    #[doc = "USART Control register 2,                 Address offset: 0x04\n\n"]
     pub CR2: u32,
-    #[doc = "< USART Control register 3,                 Address offset: 0x08"]
+    #[doc = "USART Control register 3,                 Address offset: 0x08\n\n"]
     pub CR3: u32,
-    #[doc = "< USART Baud rate register,                 Address offset: 0x0C"]
+    #[doc = "USART Baud rate register,                 Address offset: 0x0C\n\n"]
     pub BRR: u32,
-    #[doc = "< USART Guard time and prescaler register,  Address offset: 0x10"]
+    #[doc = "USART Guard time and prescaler register,  Address offset: 0x10\n\n"]
     pub GTPR: u32,
-    #[doc = "< USART Receiver Time Out register,         Address offset: 0x14"]
+    #[doc = "USART Receiver Time Out register,         Address offset: 0x14\n\n"]
     pub RTOR: u32,
-    #[doc = "< USART Request register,                   Address offset: 0x18"]
+    #[doc = "USART Request register,                   Address offset: 0x18\n\n"]
     pub RQR: u32,
-    #[doc = "< USART Interrupt and status register,      Address offset: 0x1C"]
+    #[doc = "USART Interrupt and status register,      Address offset: 0x1C\n\n"]
     pub ISR: u32,
-    #[doc = "< USART Interrupt flag Clear register,      Address offset: 0x20"]
+    #[doc = "USART Interrupt flag Clear register,      Address offset: 0x20\n\n"]
     pub ICR: u32,
-    #[doc = "< USART Receive Data register,              Address offset: 0x24"]
+    #[doc = "USART Receive Data register,              Address offset: 0x24\n\n"]
     pub RDR: u32,
-    #[doc = "< USART Transmit Data register,             Address offset: 0x28"]
+    #[doc = "USART Transmit Data register,             Address offset: 0x28\n\n"]
     pub TDR: u32,
-    #[doc = "< USART Prescaler register,                 Address offset: 0x2C"]
+    #[doc = "USART Prescaler register,                 Address offset: 0x2C\n\n"]
     pub PRESC: u32,
 }
 #[test]
@@ -4401,21 +4401,21 @@ fn bindgen_test_layout_USART_TypeDef() {
 pub const ErrorStatus_SUCCESS: ErrorStatus = 0;
 pub const ErrorStatus_ERROR: ErrorStatus = 1;
 pub type ErrorStatus = core::ffi::c_uchar;
-#[doc = " @brief LL GPIO Init Structure definition"]
+#[doc = "LL GPIO Init Structure definition\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct LL_GPIO_InitTypeDef {
-    #[doc = "< Specifies the GPIO pins to be configured.\nThis parameter can be any value of @ref GPIO_LL_EC_PIN"]
+    #[doc = "Specifies the GPIO pins to be configured.\nThis parameter can be any value of  [`GPIO_LL_EC_PIN`]\n\n"]
     pub Pin: u32,
-    #[doc = "< Specifies the operating mode for the selected pins.\nThis parameter can be a value of @ref GPIO_LL_EC_MODE.\n\nGPIO HW configuration can be modified afterwards using unitary function @ref LL_GPIO_SetPinMode()."]
+    #[doc = "Specifies the operating mode for the selected pins.\nThis parameter can be a value of  [`GPIO_LL_EC_MODE`]\nGPIO HW configuration can be modified afterwards using unitary function  [`LL_GPIO_SetPinMode()`]\n\n"]
     pub Mode: u32,
-    #[doc = "< Specifies the speed for the selected pins.\nThis parameter can be a value of @ref GPIO_LL_EC_SPEED.\n\nGPIO HW configuration can be modified afterwards using unitary function @ref LL_GPIO_SetPinSpeed()."]
+    #[doc = "Specifies the speed for the selected pins.\nThis parameter can be a value of  [`GPIO_LL_EC_SPEED`]\nGPIO HW configuration can be modified afterwards using unitary function  [`LL_GPIO_SetPinSpeed()`]\n\n"]
     pub Speed: u32,
-    #[doc = "< Specifies the operating output type for the selected pins.\nThis parameter can be a value of @ref GPIO_LL_EC_OUTPUT.\n\nGPIO HW configuration can be modified afterwards using unitary function @ref LL_GPIO_SetPinOutputType()."]
+    #[doc = "Specifies the operating output type for the selected pins.\nThis parameter can be a value of  [`GPIO_LL_EC_OUTPUT`]\nGPIO HW configuration can be modified afterwards using unitary function  [`LL_GPIO_SetPinOutputType()`]\n\n"]
     pub OutputType: u32,
-    #[doc = "< Specifies the operating Pull-up/Pull down for the selected pins.\nThis parameter can be a value of @ref GPIO_LL_EC_PULL.\n\nGPIO HW configuration can be modified afterwards using unitary function @ref LL_GPIO_SetPinPull()."]
+    #[doc = "Specifies the operating Pull-up/Pull down for the selected pins.\nThis parameter can be a value of  [`GPIO_LL_EC_PULL`]\nGPIO HW configuration can be modified afterwards using unitary function  [`LL_GPIO_SetPinPull()`]\n\n"]
     pub Pull: u32,
-    #[doc = "< Specifies the Peripheral to be connected to the selected pins.\nThis parameter can be a value of @ref GPIO_LL_EC_AF.\n\nGPIO HW configuration can be modified afterwards using unitary function @ref LL_GPIO_SetAFPin_0_7() and LL_GPIO_SetAFPin_8_15()."]
+    #[doc = "Specifies the Peripheral to be connected to the selected pins.\nThis parameter can be a value of  [`GPIO_LL_EC_AF`]\nGPIO HW configuration can be modified afterwards using unitary function  [`LL_GPIO_SetAFPin_0_7()`] and LL_GPIO_SetAFPin_8_15().\n\n"]
     pub Alternate: u32,
 }
 #[test]
@@ -4500,7 +4500,7 @@ extern "C" {
         GPIO_InitStruct: *mut LL_GPIO_InitTypeDef,
     ) -> ErrorStatus;
 }
-#[doc = " Interrupt callback prototype"]
+#[doc = "Interrupt callback prototype\n\n"]
 pub type GpioExtiCallback =
     ::core::option::Option<unsafe extern "C" fn(ctx: *mut core::ffi::c_void)>;
 pub const GpioMode_GpioModeInput: GpioMode = 0;
@@ -4515,162 +4515,162 @@ pub const GpioMode_GpioModeInterruptRiseFall: GpioMode = 8;
 pub const GpioMode_GpioModeEventRise: GpioMode = 9;
 pub const GpioMode_GpioModeEventFall: GpioMode = 10;
 pub const GpioMode_GpioModeEventRiseFall: GpioMode = 11;
-#[doc = " Gpio modes"]
+#[doc = "Gpio modes\n\n"]
 pub type GpioMode = core::ffi::c_uchar;
 pub const GpioPull_GpioPullNo: GpioPull = 0;
 pub const GpioPull_GpioPullUp: GpioPull = 1;
 pub const GpioPull_GpioPullDown: GpioPull = 2;
-#[doc = " Gpio pull modes"]
+#[doc = "Gpio pull modes\n\n"]
 pub type GpioPull = core::ffi::c_uchar;
 pub const GpioSpeed_GpioSpeedLow: GpioSpeed = 0;
 pub const GpioSpeed_GpioSpeedMedium: GpioSpeed = 1;
 pub const GpioSpeed_GpioSpeedHigh: GpioSpeed = 2;
 pub const GpioSpeed_GpioSpeedVeryHigh: GpioSpeed = 3;
-#[doc = " Gpio speed modes"]
+#[doc = "Gpio speed modes\n\n"]
 pub type GpioSpeed = core::ffi::c_uchar;
-#[doc = "< MCO Alternate Function mapping"]
+#[doc = "MCO Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0MCO: GpioAltFn = 0;
-#[doc = "< LSCO Alternate Function mapping"]
+#[doc = "LSCO Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0LSCO: GpioAltFn = 0;
-#[doc = "< JTMS-SWDIO Alternate Function mapping"]
+#[doc = "JTMS-SWDIO Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0JTMS_SWDIO: GpioAltFn = 0;
-#[doc = "< JTCK-SWCLK Alternate Function mapping"]
+#[doc = "JTCK-SWCLK Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0JTCK_SWCLK: GpioAltFn = 0;
-#[doc = "< JTDI Alternate Function mapping"]
+#[doc = "JTDI Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0JTDI: GpioAltFn = 0;
-#[doc = "< RCT_OUT Alternate Function mapping"]
+#[doc = "RCT_OUT Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0RTC_OUT: GpioAltFn = 0;
-#[doc = "< JTDO-TRACESWO Alternate Function mapping"]
+#[doc = "JTDO-TRACESWO Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0JTD_TRACE: GpioAltFn = 0;
-#[doc = "< NJTRST Alternate Function mapping"]
+#[doc = "NJTRST Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0NJTRST: GpioAltFn = 0;
-#[doc = "< RTC_REFIN Alternate Function mapping"]
+#[doc = "RTC_REFIN Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0RTC_REFIN: GpioAltFn = 0;
-#[doc = "< TRACED0 Alternate Function mapping"]
+#[doc = "TRACED0 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0TRACED0: GpioAltFn = 0;
-#[doc = "< TRACED1 Alternate Function mapping"]
+#[doc = "TRACED1 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0TRACED1: GpioAltFn = 0;
-#[doc = "< TRACED2 Alternate Function mapping"]
+#[doc = "TRACED2 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0TRACED2: GpioAltFn = 0;
-#[doc = "< TRACED3 Alternate Function mapping"]
+#[doc = "TRACED3 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0TRACED3: GpioAltFn = 0;
-#[doc = "< TRIG_INOUT Alternate Function mapping"]
+#[doc = "TRIG_INOUT Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0TRIG_INOUT: GpioAltFn = 0;
-#[doc = "< TRACECK Alternate Function mapping"]
+#[doc = "TRACECK Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0TRACECK: GpioAltFn = 0;
-#[doc = "< System Function mapping"]
+#[doc = "System Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn0SYS: GpioAltFn = 0;
-#[doc = "< TIM1 Alternate Function mapping"]
+#[doc = "TIM1 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn1TIM1: GpioAltFn = 1;
-#[doc = "< TIM2 Alternate Function mapping"]
+#[doc = "TIM2 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn1TIM2: GpioAltFn = 1;
-#[doc = "< LPTIM1 Alternate Function mapping"]
+#[doc = "LPTIM1 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn1LPTIM1: GpioAltFn = 1;
-#[doc = "< TIM2 Alternate Function mapping"]
+#[doc = "TIM2 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn2TIM2: GpioAltFn = 2;
-#[doc = "< TIM1 Alternate Function mapping"]
+#[doc = "TIM1 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn2TIM1: GpioAltFn = 2;
-#[doc = "< SAI1_CK1 Alternate Function mapping"]
+#[doc = "SAI1_CK1 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn3SAI1: GpioAltFn = 3;
-#[doc = "< SPI2 Alternate Function mapping"]
+#[doc = "SPI2 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn3SPI2: GpioAltFn = 3;
-#[doc = "< TIM1 Alternate Function mapping"]
+#[doc = "TIM1 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn3TIM1: GpioAltFn = 3;
-#[doc = "< I2C1 Alternate Function mapping"]
+#[doc = "I2C1 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn4I2C1: GpioAltFn = 4;
-#[doc = "< I2C3 Alternate Function mapping"]
+#[doc = "I2C3 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn4I2C3: GpioAltFn = 4;
-#[doc = "< SPI1 Alternate Function mapping"]
+#[doc = "SPI1 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn5SPI1: GpioAltFn = 5;
-#[doc = "< SPI2 Alternate Function mapping"]
+#[doc = "SPI2 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn5SPI2: GpioAltFn = 5;
-#[doc = "< MCO Alternate Function mapping"]
+#[doc = "MCO Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6MCO: GpioAltFn = 6;
-#[doc = "< LSCO Alternate Function mapping"]
+#[doc = "LSCO Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6LSCO: GpioAltFn = 6;
-#[doc = "< RF_DTB0 Alternate Function mapping"]
+#[doc = "RF_DTB0 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB0: GpioAltFn = 6;
-#[doc = "< RF_DTB1 Alternate Function mapping"]
+#[doc = "RF_DTB1 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB1: GpioAltFn = 6;
-#[doc = "< RF_DTB2 Alternate Function mapping"]
+#[doc = "RF_DTB2 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB2: GpioAltFn = 6;
-#[doc = "< RF_DTB3 Alternate Function mapping"]
+#[doc = "RF_DTB3 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB3: GpioAltFn = 6;
-#[doc = "< RF_DTB4 Alternate Function mapping"]
+#[doc = "RF_DTB4 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB4: GpioAltFn = 6;
-#[doc = "< RF_DTB5 Alternate Function mapping"]
+#[doc = "RF_DTB5 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB5: GpioAltFn = 6;
-#[doc = "< RF_DTB6 Alternate Function mapping"]
+#[doc = "RF_DTB6 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB6: GpioAltFn = 6;
-#[doc = "< RF_DTB7 Alternate Function mapping"]
+#[doc = "RF_DTB7 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB7: GpioAltFn = 6;
-#[doc = "< RF_DTB8 Alternate Function mapping"]
+#[doc = "RF_DTB8 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB8: GpioAltFn = 6;
-#[doc = "< RF_DTB9 Alternate Function mapping"]
+#[doc = "RF_DTB9 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB9: GpioAltFn = 6;
-#[doc = "< RF_DTB10 Alternate Function mapping"]
+#[doc = "RF_DTB10 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB10: GpioAltFn = 6;
-#[doc = "< RF_DTB11 Alternate Function mapping"]
+#[doc = "RF_DTB11 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB11: GpioAltFn = 6;
-#[doc = "< RF_DTB12 Alternate Function mapping"]
+#[doc = "RF_DTB12 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB12: GpioAltFn = 6;
-#[doc = "< RF_DTB13 Alternate Function mapping"]
+#[doc = "RF_DTB13 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB13: GpioAltFn = 6;
-#[doc = "< RF_DTB14 Alternate Function mapping"]
+#[doc = "RF_DTB14 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB14: GpioAltFn = 6;
-#[doc = "< RF_DTB15 Alternate Function mapping"]
+#[doc = "RF_DTB15 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB15: GpioAltFn = 6;
-#[doc = "< RF_DTB16 Alternate Function mapping"]
+#[doc = "RF_DTB16 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB16: GpioAltFn = 6;
-#[doc = "< RF_DTB17 Alternate Function mapping"]
+#[doc = "RF_DTB17 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB17: GpioAltFn = 6;
-#[doc = "< RF_DTB18 Alternate Function mapping"]
+#[doc = "RF_DTB18 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_DTB18: GpioAltFn = 6;
-#[doc = "< RF_MISO Alternate Function mapping"]
+#[doc = "RF_MISO Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_MISO: GpioAltFn = 6;
-#[doc = "< RF_MOSI Alternate Function mapping"]
+#[doc = "RF_MOSI Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_MOSI: GpioAltFn = 6;
-#[doc = "< RF_SCK Alternate Function mapping"]
+#[doc = "RF_SCK Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_SCK: GpioAltFn = 6;
-#[doc = "< RF_NSS Alternate Function mapping"]
+#[doc = "RF_NSS Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn6RF_NSS: GpioAltFn = 6;
-#[doc = "< USART1 Alternate Function mapping"]
+#[doc = "USART1 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn7USART1: GpioAltFn = 7;
-#[doc = "< LPUART1 Alternate Function mapping"]
+#[doc = "LPUART1 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn8LPUART1: GpioAltFn = 8;
-#[doc = "< IR Alternate Function mapping"]
+#[doc = "IR Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn8IR: GpioAltFn = 8;
-#[doc = "< TSC Alternate Function mapping"]
+#[doc = "TSC Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn9TSC: GpioAltFn = 9;
-#[doc = "< QUADSPI Alternate Function mapping"]
+#[doc = "QUADSPI Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn10QUADSPI: GpioAltFn = 10;
-#[doc = "< USB Alternate Function mapping"]
+#[doc = "USB Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn10USB: GpioAltFn = 10;
-#[doc = "< LCD Alternate Function mapping"]
+#[doc = "LCD Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn11LCD: GpioAltFn = 11;
-#[doc = "< COMP1 Alternate Function mapping"]
+#[doc = "COMP1 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn12COMP1: GpioAltFn = 12;
-#[doc = "< COMP2 Alternate Function mapping"]
+#[doc = "COMP2 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn12COMP2: GpioAltFn = 12;
-#[doc = "< TIM1 Alternate Function mapping"]
+#[doc = "TIM1 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn12TIM1: GpioAltFn = 12;
-#[doc = "< SAI1 Alternate Function mapping"]
+#[doc = "SAI1 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn13SAI1: GpioAltFn = 13;
-#[doc = "< TIM2 Alternate Function mapping"]
+#[doc = "TIM2 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn14TIM2: GpioAltFn = 14;
-#[doc = "< TIM16 Alternate Function mapping"]
+#[doc = "TIM16 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn14TIM16: GpioAltFn = 14;
-#[doc = "< TIM17 Alternate Function mapping"]
+#[doc = "TIM17 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn14TIM17: GpioAltFn = 14;
-#[doc = "< LPTIM2 Alternate Function mapping"]
+#[doc = "LPTIM2 Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn14LPTIM2: GpioAltFn = 14;
-#[doc = "< EVENTOUT Alternate Function mapping"]
+#[doc = "EVENTOUT Alternate Function mapping\n\n"]
 pub const GpioAltFn_GpioAltFn15EVENTOUT: GpioAltFn = 15;
-#[doc = "< just dummy value"]
+#[doc = "just dummy value\n\n"]
 pub const GpioAltFn_GpioAltFnUnused: GpioAltFn = 16;
-#[doc = " Gpio alternate functions"]
+#[doc = "Gpio alternate functions\n\n"]
 pub type GpioAltFn = core::ffi::c_uchar;
-#[doc = " Gpio structure"]
+#[doc = "Gpio structure\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct GpioPin {
@@ -4713,11 +4713,11 @@ fn bindgen_test_layout_GpioPin() {
     );
 }
 extern "C" {
-    #[doc = " GPIO initialization function, simple version\n @param gpio  GpioPin\n @param mode  GpioMode"]
+    #[doc = "GPIO initialization function, simple version\n\n# Arguments\n\n* `gpio` - GpioPin\n* `mode` - GpioMode\n\n"]
     pub fn furi_hal_gpio_init_simple(gpio: *const GpioPin, mode: GpioMode);
 }
 extern "C" {
-    #[doc = " GPIO initialization function, normal version\n @param gpio  GpioPin\n @param mode  GpioMode\n @param pull  GpioPull\n @param speed GpioSpeed"]
+    #[doc = "GPIO initialization function, normal version\n\n# Arguments\n\n* `gpio` - GpioPin\n* `mode` - GpioMode\n* `pull` - GpioPull\n* `speed` - GpioSpeed\n\n"]
     pub fn furi_hal_gpio_init(
         gpio: *const GpioPin,
         mode: GpioMode,
@@ -4726,7 +4726,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " GPIO initialization function, extended version\n @param gpio  GpioPin\n @param mode  GpioMode\n @param pull  GpioPull\n @param speed GpioSpeed\n @param alt_fn GpioAltFn"]
+    #[doc = "GPIO initialization function, extended version\n\n# Arguments\n\n* `gpio` - GpioPin\n* `mode` - GpioMode\n* `pull` - GpioPull\n* `speed` - GpioSpeed\n* `alt_fn` - GpioAltFn\n\n"]
     pub fn furi_hal_gpio_init_ex(
         gpio: *const GpioPin,
         mode: GpioMode,
@@ -4736,7 +4736,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Add and enable interrupt\n @param gpio GpioPin\n @param cb   GpioExtiCallback\n @param ctx  context for callback"]
+    #[doc = "Add and enable interrupt\n\n# Arguments\n\n* `gpio` - GpioPin\n* `cb` - GpioExtiCallback\n* `ctx` - context for callback\n\n"]
     pub fn furi_hal_gpio_add_int_callback(
         gpio: *const GpioPin,
         cb: GpioExtiCallback,
@@ -4744,15 +4744,15 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Enable interrupt\n @param gpio GpioPin"]
+    #[doc = "Enable interrupt\n\n# Arguments\n\n* `gpio` - GpioPin\n\n"]
     pub fn furi_hal_gpio_enable_int_callback(gpio: *const GpioPin);
 }
 extern "C" {
-    #[doc = " Disable interrupt\n @param gpio GpioPin"]
+    #[doc = "Disable interrupt\n\n# Arguments\n\n* `gpio` - GpioPin\n\n"]
     pub fn furi_hal_gpio_disable_int_callback(gpio: *const GpioPin);
 }
 extern "C" {
-    #[doc = " Remove interrupt\n @param gpio GpioPin"]
+    #[doc = "Remove interrupt\n\n# Arguments\n\n* `gpio` - GpioPin\n\n"]
     pub fn furi_hal_gpio_remove_int_callback(gpio: *const GpioPin);
 }
 extern "C" {
@@ -4774,15 +4774,15 @@ pub type BtProfile = core::ffi::c_uchar;
 pub type BtStatusChangedCallback =
     ::core::option::Option<unsafe extern "C" fn(status: BtStatus, context: *mut core::ffi::c_void)>;
 extern "C" {
-    #[doc = " Change BLE Profile\n @note Call of this function leads to 2nd core restart\n\n @param bt        Bt instance\n @param profile   BtProfile\n\n @return          true on success"]
+    #[doc = "Change BLE Profile\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `bt` - Bt instance\n* `profile` - BtProfile\n\n# Notes\n\n* Call of this function leads to 2nd core restart\n\n"]
     pub fn bt_set_profile(bt: *mut Bt, profile: BtProfile) -> bool;
 }
 extern "C" {
-    #[doc = " Disconnect from Central\n\n @param bt        Bt instance"]
+    #[doc = "Disconnect from Central\n\n# Arguments\n\n* `bt` - Bt instance\n\n"]
     pub fn bt_disconnect(bt: *mut Bt);
 }
 extern "C" {
-    #[doc = " Set callback for Bluetooth status change notification\n\n @param bt        Bt instance\n @param callback  BtStatusChangedCallback instance\n @param context   pointer to context"]
+    #[doc = "Set callback for Bluetooth status change notification\n\n# Arguments\n\n* `bt` - Bt instance\n* `callback` - BtStatusChangedCallback instance\n* `context` - pointer to context\n\n"]
     pub fn bt_set_status_changed_callback(
         bt: *mut Bt,
         callback: BtStatusChangedCallback,
@@ -4790,24 +4790,24 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Forget bonded devices\n @note Leads to wipe ble key storage and deleting bt.keys\n\n @param bt        Bt instance"]
+    #[doc = "Forget bonded devices\n\n# Arguments\n\n* `bt` - Bt instance\n\n# Notes\n\n* Leads to wipe ble key storage and deleting bt.keys\n\n"]
     pub fn bt_forget_bonded_devices(bt: *mut Bt);
 }
 extern "C" {
-    #[doc = " Set keys storage file path\n\n @param bt                    Bt instance\n @param keys_storage_path     Path to file with saved keys"]
+    #[doc = "Set keys storage file path\n\n# Arguments\n\n* `bt` - Bt instance\n* `keys_storage_path` - Path to file with saved keys\n\n"]
     pub fn bt_keys_storage_set_storage_path(
         bt: *mut Bt,
         keys_storage_path: *const core::ffi::c_char,
     );
 }
 extern "C" {
-    #[doc = " Set default keys storage file path\n\n @param bt                    Bt instance"]
+    #[doc = "Set default keys storage file path\n\n# Arguments\n\n* `bt` - Bt instance\n\n"]
     pub fn bt_keys_storage_set_default_path(bt: *mut Bt);
 }
-#[doc = "< Default, loader lock is used"]
+#[doc = "Default, loader lock is used\n\n"]
 pub const CliCommandFlag_CliCommandFlagDefault: CliCommandFlag = 0;
 pub const CliCommandFlag_CliCommandFlagParallelSafe: CliCommandFlag = 1;
-#[doc = "< Safe to run with insomnia mode on"]
+#[doc = "Safe to run with insomnia mode on\n\n"]
 pub const CliCommandFlag_CliCommandFlagInsomniaSafe: CliCommandFlag = 2;
 pub type CliCommandFlag = core::ffi::c_uchar;
 #[repr(C)]
@@ -4815,12 +4815,12 @@ pub type CliCommandFlag = core::ffi::c_uchar;
 pub struct Cli {
     _unused: [u8; 0],
 }
-#[doc = " Cli callback function pointer. Implement this interface and use\n add_cli_command\n @param      args     string with what was passed after command\n @param      context  pointer to whatever you gave us on cli_add_command"]
+#[doc = "Cli callback function pointer. Implement this interface and use add_cli_command\n\n# Arguments\n\n* `args` - string with what was passed after command\n* `context` - pointer to whatever you gave us on cli_add_command\n\n"]
 pub type CliCallback = ::core::option::Option<
     unsafe extern "C" fn(cli: *mut Cli, args: *mut FuriString, context: *mut core::ffi::c_void),
 >;
 extern "C" {
-    #[doc = " Add cli command Registers you command callback\n\n @param      cli       pointer to cli instance\n @param      name      command name\n @param      flags     CliCommandFlag\n @param      callback  callback function\n @param      context   pointer to whatever we need to pass to callback"]
+    #[doc = "Add cli command Registers you command callback\n\n# Arguments\n\n* `cli` - pointer to cli instance\n* `name` - command name\n* `flags` - CliCommandFlag\n* `callback` - callback function\n* `context` - pointer to whatever we need to pass to callback\n\n"]
     pub fn cli_add_command(
         cli: *mut Cli,
         name: *const core::ffi::c_char,
@@ -4830,7 +4830,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Print unified cmd usage tip\n\n @param      cmd    cmd name\n @param      usage  usage tip\n @param      arg    arg passed by user"]
+    #[doc = "Print unified cmd usage tip\n\n# Arguments\n\n* `cmd` - cmd name\n* `usage` - usage tip\n* `arg` - arg passed by user\n\n"]
     pub fn cli_print_usage(
         cmd: *const core::ffi::c_char,
         usage: *const core::ffi::c_char,
@@ -4838,31 +4838,31 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Delete cli command\n\n @param      cli   pointer to cli instance\n @param      name  command name"]
+    #[doc = "Delete cli command\n\n# Arguments\n\n* `cli` - pointer to cli instance\n* `name` - command name\n\n"]
     pub fn cli_delete_command(cli: *mut Cli, name: *const core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " Read from terminal\n\n @param      cli     Cli instance\n @param      buffer  pointer to buffer\n @param      size    size of buffer in bytes\n\n @return     bytes read"]
+    #[doc = "Read from terminal\n\nReturns:\n\n* bytes read\n\n# Arguments\n\n* `cli` - Cli instance\n* `buffer` - pointer to buffer\n* `size` - size of buffer in bytes\n\n"]
     pub fn cli_read(cli: *mut Cli, buffer: *mut u8, size: usize) -> usize;
 }
 extern "C" {
-    #[doc = " Non-blocking read from terminal\n\n @param      cli     Cli instance\n @param      buffer  pointer to buffer\n @param      size    size of buffer in bytes\n @param      timeout timeout value in ms\n\n @return     bytes read"]
+    #[doc = "Non-blocking read from terminal\n\nReturns:\n\n* bytes read\n\n# Arguments\n\n* `cli` - Cli instance\n* `buffer` - pointer to buffer\n* `size` - size of buffer in bytes\n* `timeout` - timeout value in ms\n\n"]
     pub fn cli_read_timeout(cli: *mut Cli, buffer: *mut u8, size: usize, timeout: u32) -> usize;
 }
 extern "C" {
-    #[doc = " Non-blocking check for interrupt command received\n\n @param      cli   Cli instance\n\n @return     true if received"]
+    #[doc = "Non-blocking check for interrupt command received\n\nReturns:\n\n* true if received\n\n# Arguments\n\n* `cli` - Cli instance\n\n"]
     pub fn cli_cmd_interrupt_received(cli: *mut Cli) -> bool;
 }
 extern "C" {
-    #[doc = " Write to terminal Do it only from inside of cli call.\n\n @param      cli     Cli instance\n @param      buffer  pointer to buffer\n @param      size    size of buffer in bytes"]
+    #[doc = "Write to terminal Do it only from inside of cli call.\n\n# Arguments\n\n* `cli` - Cli instance\n* `buffer` - pointer to buffer\n* `size` - size of buffer in bytes\n\n"]
     pub fn cli_write(cli: *mut Cli, buffer: *const u8, size: usize);
 }
 extern "C" {
-    #[doc = " Read character\n\n @param      cli   Cli instance\n\n @return     char"]
+    #[doc = "Read character\n\nReturns:\n\n* char\n\n# Arguments\n\n* `cli` - Cli instance\n\n"]
     pub fn cli_getc(cli: *mut Cli) -> core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " New line Send new ine sequence"]
+    #[doc = "New line Send new ine sequence\n\n"]
     pub fn cli_nl();
 }
 extern "C" {
@@ -4883,15 +4883,15 @@ extern "C" {
     pub static mut cli_vcp: CliSession;
 }
 extern "C" {
-    #[doc = " Get icon width\n\n @param[in]  instance  pointer to Icon data\n\n @return     width in pixels"]
+    #[doc = "Get icon width\n\nReturns:\n\n* width in pixels\n\n# Arguments\n\n* `instance` - [Direction: In] pointer to Icon data\n\n"]
     pub fn icon_get_width(instance: *const Icon) -> u8;
 }
 extern "C" {
-    #[doc = " Get icon height\n\n @param[in]  instance  pointer to Icon data\n\n @return     height in pixels"]
+    #[doc = "Get icon height\n\nReturns:\n\n* height in pixels\n\n# Arguments\n\n* `instance` - [Direction: In] pointer to Icon data\n\n"]
     pub fn icon_get_height(instance: *const Icon) -> u8;
 }
 extern "C" {
-    #[doc = " Get Icon XBM bitmap data\n\n @param[in]  instance  pointer to Icon data\n\n @return     pointer to XBM bitmap data"]
+    #[doc = "Get Icon XBM bitmap data\n\nReturns:\n\n* pointer to XBM bitmap data\n\n# Arguments\n\n* `instance` - [Direction: In] pointer to Icon data\n\n"]
     pub fn icon_get_data(instance: *const Icon) -> *const u8;
 }
 #[repr(C)]
@@ -4899,20 +4899,20 @@ extern "C" {
 pub struct IconAnimation {
     _unused: [u8; 0],
 }
-#[doc = " Icon Animation Callback. Used for update notification"]
+#[doc = "Icon Animation Callback. Used for update notification\n\n"]
 pub type IconAnimationCallback = ::core::option::Option<
     unsafe extern "C" fn(instance: *mut IconAnimation, context: *mut core::ffi::c_void),
 >;
 extern "C" {
-    #[doc = " Allocate icon animation instance with const icon data.\n\n always returns Icon or stops system if not enough memory\n\n @param[in]  icon  pointer to Icon data\n\n @return     IconAnimation instance"]
+    #[doc = "Allocate icon animation instance with const icon data.\nalways returns Icon or stops system if not enough memory\n\nReturns:\n\n* IconAnimation instance\n\n# Arguments\n\n* `icon` - [Direction: In] pointer to Icon data\n\n"]
     pub fn icon_animation_alloc(icon: *const Icon) -> *mut IconAnimation;
 }
 extern "C" {
-    #[doc = " Release icon animation instance\n\n @param      instance  IconAnimation instance"]
+    #[doc = "Release icon animation instance\n\n# Arguments\n\n* `instance` - IconAnimation instance\n\n"]
     pub fn icon_animation_free(instance: *mut IconAnimation);
 }
 extern "C" {
-    #[doc = " Set IconAnimation update callback\n\n Normally you do not need to use this function, use view_tie_icon_animation\n instead.\n\n @param      instance  IconAnimation instance\n @param[in]  callback  IconAnimationCallback\n @param      context   callback context"]
+    #[doc = "Set IconAnimation update callback\nNormally you do not need to use this function, use view_tie_icon_animation instead.\n\n# Arguments\n\n* `instance` - IconAnimation instance\n* `callback` - [Direction: In] IconAnimationCallback\n* `context` - callback context\n\n"]
     pub fn icon_animation_set_update_callback(
         instance: *mut IconAnimation,
         callback: IconAnimationCallback,
@@ -4920,51 +4920,51 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Get icon animation width\n\n @param      instance  IconAnimation instance\n\n @return     width in pixels"]
+    #[doc = "Get icon animation width\n\nReturns:\n\n* width in pixels\n\n# Arguments\n\n* `instance` - IconAnimation instance\n\n"]
     pub fn icon_animation_get_width(instance: *const IconAnimation) -> u8;
 }
 extern "C" {
-    #[doc = " Get icon animation height\n\n @param      instance  IconAnimation instance\n\n @return     height in pixels"]
+    #[doc = "Get icon animation height\n\nReturns:\n\n* height in pixels\n\n# Arguments\n\n* `instance` - IconAnimation instance\n\n"]
     pub fn icon_animation_get_height(instance: *const IconAnimation) -> u8;
 }
 extern "C" {
-    #[doc = " Start icon animation\n\n @param      instance  IconAnimation instance"]
+    #[doc = "Start icon animation\n\n# Arguments\n\n* `instance` - IconAnimation instance\n\n"]
     pub fn icon_animation_start(instance: *mut IconAnimation);
 }
 extern "C" {
-    #[doc = " Stop icon animation\n\n @param      instance  IconAnimation instance"]
+    #[doc = "Stop icon animation\n\n# Arguments\n\n* `instance` - IconAnimation instance\n\n"]
     pub fn icon_animation_stop(instance: *mut IconAnimation);
 }
 extern "C" {
-    #[doc = " Returns true if current frame is a last one\n\n @param      instance  IconAnimation instance\n\n @return     true if last frame"]
+    #[doc = "Returns true if current frame is a last one\n\nReturns:\n\n* true if last frame\n\n# Arguments\n\n* `instance` - IconAnimation instance\n\n"]
     pub fn icon_animation_is_last_frame(instance: *const IconAnimation) -> bool;
 }
 pub const Color_ColorWhite: Color = 0;
 pub const Color_ColorBlack: Color = 1;
 pub const Color_ColorXOR: Color = 2;
-#[doc = " Color enumeration"]
+#[doc = "Color enumeration\n\n"]
 pub type Color = core::ffi::c_uchar;
 pub const Font_FontPrimary: Font = 0;
 pub const Font_FontSecondary: Font = 1;
 pub const Font_FontKeyboard: Font = 2;
 pub const Font_FontBigNumbers: Font = 3;
 pub const Font_FontTotalNumber: Font = 4;
-#[doc = " Fonts enumeration"]
+#[doc = "Fonts enumeration\n\n"]
 pub type Font = core::ffi::c_uchar;
 pub const Align_AlignLeft: Align = 0;
 pub const Align_AlignRight: Align = 1;
 pub const Align_AlignTop: Align = 2;
 pub const Align_AlignBottom: Align = 3;
 pub const Align_AlignCenter: Align = 4;
-#[doc = " Alignment enumeration"]
+#[doc = "Alignment enumeration\n\n"]
 pub type Align = core::ffi::c_uchar;
 pub const CanvasDirection_CanvasDirectionLeftToRight: CanvasDirection = 0;
 pub const CanvasDirection_CanvasDirectionTopToBottom: CanvasDirection = 1;
 pub const CanvasDirection_CanvasDirectionRightToLeft: CanvasDirection = 2;
 pub const CanvasDirection_CanvasDirectionBottomToTop: CanvasDirection = 3;
-#[doc = " Font Direction"]
+#[doc = "Font Direction\n\n"]
 pub type CanvasDirection = core::ffi::c_uchar;
-#[doc = " Font parameters"]
+#[doc = "Font parameters\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct CanvasFontParameters {
@@ -5035,60 +5035,60 @@ pub struct Canvas {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Reset canvas drawing tools configuration\n\n @param      canvas  Canvas instance"]
+    #[doc = "Reset canvas drawing tools configuration\n\n# Arguments\n\n* `canvas` - Canvas instance\n\n"]
     pub fn canvas_reset(canvas: *mut Canvas);
 }
 extern "C" {
-    #[doc = " Commit canvas. Send buffer to display\n\n @param      canvas  Canvas instance"]
+    #[doc = "Commit canvas. Send buffer to display\n\n# Arguments\n\n* `canvas` - Canvas instance\n\n"]
     pub fn canvas_commit(canvas: *mut Canvas);
 }
 extern "C" {
-    #[doc = " Get Canvas width\n\n @param      canvas  Canvas instance\n\n @return     width in pixels."]
+    #[doc = "Get Canvas width\n\nReturns:\n\n* width in pixels.\n\n# Arguments\n\n* `canvas` - Canvas instance\n\n"]
     pub fn canvas_width(canvas: *const Canvas) -> u8;
 }
 extern "C" {
-    #[doc = " Get Canvas height\n\n @param      canvas  Canvas instance\n\n @return     height in pixels."]
+    #[doc = "Get Canvas height\n\nReturns:\n\n* height in pixels.\n\n# Arguments\n\n* `canvas` - Canvas instance\n\n"]
     pub fn canvas_height(canvas: *const Canvas) -> u8;
 }
 extern "C" {
-    #[doc = " Get current font height\n\n @param      canvas  Canvas instance\n\n @return     height in pixels."]
+    #[doc = "Get current font height\n\nReturns:\n\n* height in pixels.\n\n# Arguments\n\n* `canvas` - Canvas instance\n\n"]
     pub fn canvas_current_font_height(canvas: *const Canvas) -> u8;
 }
 extern "C" {
-    #[doc = " Get font parameters\n\n @param      canvas  Canvas instance\n @param      font    Font\n\n @return     pointer to CanvasFontParameters structure"]
+    #[doc = "Get font parameters\n\nReturns:\n\n* pointer to CanvasFontParameters structure\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `font` - Font\n\n"]
     pub fn canvas_get_font_params(canvas: *const Canvas, font: Font)
         -> *const CanvasFontParameters;
 }
 extern "C" {
-    #[doc = " Clear canvas\n\n @param      canvas  Canvas instance"]
+    #[doc = "Clear canvas\n\n# Arguments\n\n* `canvas` - Canvas instance\n\n"]
     pub fn canvas_clear(canvas: *mut Canvas);
 }
 extern "C" {
-    #[doc = " Set drawing color\n\n @param      canvas  Canvas instance\n @param      color   Color"]
+    #[doc = "Set drawing color\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `color` - Color\n\n"]
     pub fn canvas_set_color(canvas: *mut Canvas, color: Color);
 }
 extern "C" {
-    #[doc = " Set font swap\n Argument String Rotation Description\n\n @param      canvas  Canvas instance\n @param      dir     Direction font"]
+    #[doc = "Set font swap Argument String Rotation Description\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `dir` - Direction font\n\n"]
     pub fn canvas_set_font_direction(canvas: *mut Canvas, dir: CanvasDirection);
 }
 extern "C" {
-    #[doc = " Invert drawing color\n\n @param      canvas  Canvas instance"]
+    #[doc = "Invert drawing color\n\n# Arguments\n\n* `canvas` - Canvas instance\n\n"]
     pub fn canvas_invert_color(canvas: *mut Canvas);
 }
 extern "C" {
-    #[doc = " Set drawing font\n\n @param      canvas  Canvas instance\n @param      font    Font"]
+    #[doc = "Set drawing font\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `font` - Font\n\n"]
     pub fn canvas_set_font(canvas: *mut Canvas, font: Font);
 }
 extern "C" {
-    #[doc = " Set custom drawing font\n\n @param      canvas  Canvas instance\n @param      font    Pointer to u8g2 const uint8_t* font array"]
+    #[doc = "Set custom drawing font\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `font` - Pointer to u8g2 const uint8_t* font array\n\n"]
     pub fn canvas_set_custom_u8g2_font(canvas: *mut Canvas, font: *const u8);
 }
 extern "C" {
-    #[doc = " Draw string at position of baseline defined by x, y.\n\n @param      canvas  Canvas instance\n @param      x       anchor point x coordinate\n @param      y       anchor point y coordinate\n @param      str     C-string"]
+    #[doc = "Draw string at position of baseline defined by x, y.\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - anchor point x coordinate\n* `y` - anchor point y coordinate\n* `str` - C-string\n\n"]
     pub fn canvas_draw_str(canvas: *mut Canvas, x: u8, y: u8, str_: *const core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " Draw aligned string defined by x, y.\n\n Align calculated from position of baseline, string width and ascent (height\n of the glyphs above the baseline)\n\n @param      canvas      Canvas instance\n @param      x           anchor point x coordinate\n @param      y           anchor point y coordinate\n @param      horizontal  horizontal alignment\n @param      vertical    vertical alignment\n @param      str         C-string"]
+    #[doc = "Draw aligned string defined by x, y.\nAlign calculated from position of baseline, string width and ascent (height of the glyphs above the baseline)\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - anchor point x coordinate\n* `y` - anchor point y coordinate\n* `horizontal` - horizontal alignment\n* `vertical` - vertical alignment\n* `str` - C-string\n\n"]
     pub fn canvas_draw_str_aligned(
         canvas: *mut Canvas,
         x: u8,
@@ -5099,15 +5099,15 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Get string width\n\n @param      canvas  Canvas instance\n @param      str     C-string\n\n @return     width in pixels."]
+    #[doc = "Get string width\n\nReturns:\n\n* width in pixels.\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `str` - C-string\n\n"]
     pub fn canvas_string_width(canvas: *mut Canvas, str_: *const core::ffi::c_char) -> u16;
 }
 extern "C" {
-    #[doc = " Get glyph width\n\n @param      canvas  Canvas instance\n @param[in]  symbol  character\n\n @return     width in pixels"]
+    #[doc = "Get glyph width\n\nReturns:\n\n* width in pixels\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `symbol` - [Direction: In] character\n\n"]
     pub fn canvas_glyph_width(canvas: *mut Canvas, symbol: core::ffi::c_char) -> u8;
 }
 extern "C" {
-    #[doc = " Draw bitmap picture at position defined by x,y.\n\n @param      canvas                   Canvas instance\n @param      x                        x coordinate\n @param      y                        y coordinate\n @param      width                    width of bitmap\n @param      height                   height of bitmap\n @param      compressed_bitmap_data   compressed bitmap data"]
+    #[doc = "Draw bitmap picture at position defined by x,y.\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `width` - width of bitmap\n* `height` - height of bitmap\n* `compressed_bitmap_data` - compressed bitmap data\n\n"]
     pub fn canvas_draw_bitmap(
         canvas: *mut Canvas,
         x: u8,
@@ -5118,7 +5118,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Draw animation at position defined by x,y.\n\n @param      canvas          Canvas instance\n @param      x               x coordinate\n @param      y               y coordinate\n @param      icon_animation  IconAnimation instance"]
+    #[doc = "Draw animation at position defined by x,y.\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `icon_animation` - IconAnimation instance\n\n"]
     pub fn canvas_draw_icon_animation(
         canvas: *mut Canvas,
         x: u8,
@@ -5127,39 +5127,39 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Draw icon at position defined by x,y.\n\n @param      canvas  Canvas instance\n @param      x       x coordinate\n @param      y       y coordinate\n @param      icon    Icon instance"]
+    #[doc = "Draw icon at position defined by x,y.\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `icon` - Icon instance\n\n"]
     pub fn canvas_draw_icon(canvas: *mut Canvas, x: u8, y: u8, icon: *const Icon);
 }
 extern "C" {
-    #[doc = " Draw XBM bitmap\n\n @param      canvas  Canvas instance\n @param      x       x coordinate\n @param      y       y coordinate\n @param      w       bitmap width\n @param      h       bitmap height\n @param      bitmap  pointer to XBM bitmap data"]
+    #[doc = "Draw XBM bitmap\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `w` - bitmap width\n* `h` - bitmap height\n* `bitmap` - pointer to XBM bitmap data\n\n"]
     pub fn canvas_draw_xbm(canvas: *mut Canvas, x: u8, y: u8, w: u8, h: u8, bitmap: *const u8);
 }
 extern "C" {
-    #[doc = " Draw dot at x,y\n\n @param      canvas  Canvas instance\n @param      x       x coordinate\n @param      y       y coordinate"]
+    #[doc = "Draw dot at x,y\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n\n"]
     pub fn canvas_draw_dot(canvas: *mut Canvas, x: u8, y: u8);
 }
 extern "C" {
-    #[doc = " Draw box of width, height at x,y\n\n @param      canvas  Canvas instance\n @param      x       x coordinate\n @param      y       y coordinate\n @param      width   box width\n @param      height  box height"]
+    #[doc = "Draw box of width, height at x,y\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `width` - box width\n* `height` - box height\n\n"]
     pub fn canvas_draw_box(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8);
 }
 extern "C" {
-    #[doc = " Draw frame of width, height at x,y\n\n @param      canvas  Canvas instance\n @param      x       x coordinate\n @param      y       y coordinate\n @param      width   frame width\n @param      height  frame height"]
+    #[doc = "Draw frame of width, height at x,y\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `width` - frame width\n* `height` - frame height\n\n"]
     pub fn canvas_draw_frame(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8);
 }
 extern "C" {
-    #[doc = " Draw line from x1,y1 to x2,y2\n\n @param      canvas  Canvas instance\n @param      x1      x1 coordinate\n @param      y1      y1 coordinate\n @param      x2      x2 coordinate\n @param      y2      y2 coordinate"]
+    #[doc = "Draw line from x1,y1 to x2,y2\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x1` - x1 coordinate\n* `y1` - y1 coordinate\n* `x2` - x2 coordinate\n* `y2` - y2 coordinate\n\n"]
     pub fn canvas_draw_line(canvas: *mut Canvas, x1: u8, y1: u8, x2: u8, y2: u8);
 }
 extern "C" {
-    #[doc = " Draw circle at x,y with radius r\n\n @param      canvas  Canvas instance\n @param      x       x coordinate\n @param      y       y coordinate\n @param      r       radius"]
+    #[doc = "Draw circle at x,y with radius r\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `r` - radius\n\n"]
     pub fn canvas_draw_circle(canvas: *mut Canvas, x: u8, y: u8, r: u8);
 }
 extern "C" {
-    #[doc = " Draw disc at x,y with radius r\n\n @param      canvas  Canvas instance\n @param      x       x coordinate\n @param      y       y coordinate\n @param      r       radius"]
+    #[doc = "Draw disc at x,y with radius r\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `r` - radius\n\n"]
     pub fn canvas_draw_disc(canvas: *mut Canvas, x: u8, y: u8, r: u8);
 }
 extern "C" {
-    #[doc = " Draw triangle with given base and height lengths and their intersection coordinate\n\n @param       canvas  Canvas instance\n @param       x       x coordinate of base and height intersection\n @param       y       y coordinate of base and height intersection\n @param       base    length of triangle side\n @param       height  length of triangle height\n @param       dir     CanvasDirection triangle orientation"]
+    #[doc = "Draw triangle with given base and height lengths and their intersection coordinate\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate of base and height intersection\n* `y` - y coordinate of base and height intersection\n* `base` - length of triangle side\n* `height` - length of triangle height\n* `dir` - CanvasDirection triangle orientation\n\n"]
     pub fn canvas_draw_triangle(
         canvas: *mut Canvas,
         x: u8,
@@ -5170,19 +5170,19 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Draw glyph\n\n @param      canvas  Canvas instance\n @param      x       x coordinate\n @param      y       y coordinate\n @param      ch      character"]
+    #[doc = "Draw glyph\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `ch` - character\n\n"]
     pub fn canvas_draw_glyph(canvas: *mut Canvas, x: u8, y: u8, ch: u16);
 }
 extern "C" {
-    #[doc = " Set transparency mode\n\n @param      canvas  Canvas instance\n @param      alpha   transparency mode"]
+    #[doc = "Set transparency mode\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `alpha` - transparency mode\n\n"]
     pub fn canvas_set_bitmap_mode(canvas: *mut Canvas, alpha: bool);
 }
 extern "C" {
-    #[doc = " Draw rounded-corner frame of width, height at x,y, with round value radius\n\n @param      canvas  Canvas instance\n @param      x       x coordinate\n @param      y       y coordinate\n @param      width   frame width\n @param      height  frame height\n @param      radius  frame corner radius"]
+    #[doc = "Draw rounded-corner frame of width, height at x,y, with round value radius\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `width` - frame width\n* `height` - frame height\n* `radius` - frame corner radius\n\n"]
     pub fn canvas_draw_rframe(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8, radius: u8);
 }
 extern "C" {
-    #[doc = " Draw rounded-corner box of width, height at x,y, with round value raduis\n\n @param      canvas  Canvas instance\n @param      x       x coordinate\n @param      y       y coordinate\n @param      width   box width\n @param      height  box height\n @param      radius  box corner radius"]
+    #[doc = "Draw rounded-corner box of width, height at x,y, with round value raduis\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `width` - box width\n* `height` - box height\n* `radius` - box corner radius\n\n"]
     pub fn canvas_draw_rbox(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8, radius: u8);
 }
 pub const InputKey_InputKeyUp: InputKey = 0;
@@ -5191,7 +5191,7 @@ pub const InputKey_InputKeyRight: InputKey = 2;
 pub const InputKey_InputKeyLeft: InputKey = 3;
 pub const InputKey_InputKeyOk: InputKey = 4;
 pub const InputKey_InputKeyBack: InputKey = 5;
-#[doc = "< Special value"]
+#[doc = "Special value\n\n"]
 pub const InputKey_InputKeyMAX: InputKey = 6;
 pub type InputKey = core::ffi::c_uchar;
 pub const Light_LightRed: Light = 1;
@@ -5462,24 +5462,24 @@ extern "C" {
     pub static gpio_usb_dp: GpioPin;
 }
 extern "C" {
-    #[doc = " Get a corresponding external connector pin number for a gpio\n @param gpio GpioPin\n @return pin number or -1 if gpio is not on the external connector"]
+    #[doc = "Get a corresponding external connector pin number for a gpio\n\nReturns:\n\n* pin number or -1 if gpio is not on the external connector\n\n# Arguments\n\n* `gpio` - GpioPin\n\n"]
     pub fn furi_hal_resources_get_ext_pin_number(gpio: *const GpioPin) -> i32;
 }
-#[doc = "< Press event, emitted after debounce"]
+#[doc = "Press event, emitted after debounce\n\n"]
 pub const InputType_InputTypePress: InputType = 0;
-#[doc = "< Release event, emitted after debounce"]
+#[doc = "Release event, emitted after debounce\n\n"]
 pub const InputType_InputTypeRelease: InputType = 1;
-#[doc = "< Short event, emitted after InputTypeRelease done within INPUT_LONG_PRESS interval"]
+#[doc = "Short event, emitted after InputTypeRelease done within INPUT_LONG_PRESS interval\n\n"]
 pub const InputType_InputTypeShort: InputType = 2;
-#[doc = "< Long event, emitted after INPUT_LONG_PRESS_COUNTS interval, asynchronous to InputTypeRelease"]
+#[doc = "Long event, emitted after INPUT_LONG_PRESS_COUNTS interval, asynchronous to InputTypeRelease\n\n"]
 pub const InputType_InputTypeLong: InputType = 3;
-#[doc = "< Repeat event, emitted with INPUT_LONG_PRESS_COUNTS period after InputTypeLong event"]
+#[doc = "Repeat event, emitted with INPUT_LONG_PRESS_COUNTS period after InputTypeLong event\n\n"]
 pub const InputType_InputTypeRepeat: InputType = 4;
-#[doc = "< Special value for exceptional"]
+#[doc = "Special value for exceptional\n\n"]
 pub const InputType_InputTypeMAX: InputType = 5;
-#[doc = " Input Types\n Some of them are physical events and some logical"]
+#[doc = "Input Types Some of them are physical events and some logical\n\n"]
 pub type InputType = core::ffi::c_uchar;
-#[doc = " Input Event, dispatches with FuriPubSub"]
+#[doc = "Input Event, dispatches with FuriPubSub\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct InputEvent {
@@ -5533,11 +5533,11 @@ fn bindgen_test_layout_InputEvent() {
     );
 }
 extern "C" {
-    #[doc = " Get human readable input key name\n @param key - InputKey\n @return string"]
+    #[doc = "Get human readable input key name\n\nReturns:\n\n* string\n\n# Arguments\n\n* `key` - - InputKey\n\n"]
     pub fn input_get_key_name(key: InputKey) -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get human readable input type name\n @param type - InputType\n @return string"]
+    #[doc = "Get human readable input type name\n\nReturns:\n\n* string\n\n# Arguments\n\n* `type` - - InputType\n\n"]
     pub fn input_get_type_name(type_: InputType) -> *const core::ffi::c_char;
 }
 pub const ViewOrientation_ViewOrientationHorizontal: ViewOrientation = 0;
@@ -5550,101 +5550,101 @@ pub type ViewOrientation = core::ffi::c_uchar;
 pub struct View {
     _unused: [u8; 0],
 }
-#[doc = " View Draw callback\n @param      canvas,      pointer to canvas\n @param      view_model,  pointer to context\n @warning    called from GUI thread"]
+#[doc = "View Draw callback\n\n**Warning!**\n\n* called from GUI thread\n\n# Arguments\n\n* `canvas,` - pointer to canvas\n* `view_model,` - pointer to context\n\n"]
 pub type ViewDrawCallback = ::core::option::Option<
     unsafe extern "C" fn(canvas: *mut Canvas, model: *mut core::ffi::c_void),
 >;
-#[doc = " View Input callback\n @param      event,    pointer to input event data\n @param      context,  pointer to context\n @return     true if event handled, false if event ignored\n @warning    called from GUI thread"]
+#[doc = "View Input callback\n\n**Warning!**\n\n* called from GUI thread\n\nReturns:\n\n* true if event handled, false if event ignored\n\n# Arguments\n\n* `event,` - pointer to input event data\n* `context,` - pointer to context\n\n"]
 pub type ViewInputCallback = ::core::option::Option<
     unsafe extern "C" fn(event: *mut InputEvent, context: *mut core::ffi::c_void) -> bool,
 >;
-#[doc = " View Custom callback\n @param      event,    number of custom event\n @param      context,  pointer to context\n @return     true if event handled, false if event ignored"]
+#[doc = "View Custom callback\n\nReturns:\n\n* true if event handled, false if event ignored\n\n# Arguments\n\n* `event,` - number of custom event\n* `context,` - pointer to context\n\n"]
 pub type ViewCustomCallback = ::core::option::Option<
     unsafe extern "C" fn(event: u32, context: *mut core::ffi::c_void) -> bool,
 >;
-#[doc = " View navigation callback\n @param      context,  pointer to context\n @return     next view id\n @warning    called from GUI thread"]
+#[doc = "View navigation callback\n\n**Warning!**\n\n* called from GUI thread\n\nReturns:\n\n* next view id\n\n# Arguments\n\n* `context,` - pointer to context\n\n"]
 pub type ViewNavigationCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void) -> u32>;
-#[doc = " View callback\n @param      context,  pointer to context\n @warning    called from GUI thread"]
+#[doc = "View callback\n\n**Warning!**\n\n* called from GUI thread\n\n# Arguments\n\n* `context,` - pointer to context\n\n"]
 pub type ViewCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
-#[doc = " View Update Callback Called upon model change, need to be propagated to GUI\n throw ViewPort update\n @param      view,     pointer to view\n @param      context,  pointer to context\n @warning    called from GUI thread"]
+#[doc = "View Update Callback Called upon model change, need to be propagated to GUI throw ViewPort update\n\n**Warning!**\n\n* called from GUI thread\n\n# Arguments\n\n* `view,` - pointer to view\n* `context,` - pointer to context\n\n"]
 pub type ViewUpdateCallback =
     ::core::option::Option<unsafe extern "C" fn(view: *mut View, context: *mut core::ffi::c_void)>;
-#[doc = " Model is not allocated"]
+#[doc = "Model is not allocated\n\n"]
 pub const ViewModelType_ViewModelTypeNone: ViewModelType = 0;
-#[doc = " Model consist of atomic types and/or partial update is not critical for rendering.\n Lock free."]
+#[doc = "Model consist of atomic types and/or partial update is not critical for rendering. Lock free.\n\n"]
 pub const ViewModelType_ViewModelTypeLockFree: ViewModelType = 1;
-#[doc = " Model access is guarded with mutex.\n Locking gui thread."]
+#[doc = "Model access is guarded with mutex. Locking gui thread.\n\n"]
 pub const ViewModelType_ViewModelTypeLocking: ViewModelType = 2;
-#[doc = " View model types"]
+#[doc = "View model types\n\n"]
 pub type ViewModelType = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Allocate and init View\n @return View instance"]
+    #[doc = "Allocate and init View\n\nReturns:\n\n* View instance\n\n"]
     pub fn view_alloc() -> *mut View;
 }
 extern "C" {
-    #[doc = " Free View\n\n @param      view  instance"]
+    #[doc = "Free View\n\n# Arguments\n\n* `view` - instance\n\n"]
     pub fn view_free(view: *mut View);
 }
 extern "C" {
-    #[doc = " Tie IconAnimation with View\n\n @param      view            View instance\n @param      icon_animation  IconAnimation instance"]
+    #[doc = "Tie IconAnimation with View\n\n# Arguments\n\n* `view` - View instance\n* `icon_animation` - IconAnimation instance\n\n"]
     pub fn view_tie_icon_animation(view: *mut View, icon_animation: *mut IconAnimation);
 }
 extern "C" {
-    #[doc = " Set View Draw callback\n\n @param      view      View instance\n @param      callback  draw callback"]
+    #[doc = "Set View Draw callback\n\n# Arguments\n\n* `view` - View instance\n* `callback` - draw callback\n\n"]
     pub fn view_set_draw_callback(view: *mut View, callback: ViewDrawCallback);
 }
 extern "C" {
-    #[doc = " Set View Input callback\n\n @param      view      View instance\n @param      callback  input callback"]
+    #[doc = "Set View Input callback\n\n# Arguments\n\n* `view` - View instance\n* `callback` - input callback\n\n"]
     pub fn view_set_input_callback(view: *mut View, callback: ViewInputCallback);
 }
 extern "C" {
-    #[doc = " Set View Custom callback\n\n @param      view      View instance\n @param      callback  input callback"]
+    #[doc = "Set View Custom callback\n\n# Arguments\n\n* `view` - View instance\n* `callback` - input callback\n\n"]
     pub fn view_set_custom_callback(view: *mut View, callback: ViewCustomCallback);
 }
 extern "C" {
-    #[doc = " Set Navigation Previous callback\n\n @param      view      View instance\n @param      callback  input callback"]
+    #[doc = "Set Navigation Previous callback\n\n# Arguments\n\n* `view` - View instance\n* `callback` - input callback\n\n"]
     pub fn view_set_previous_callback(view: *mut View, callback: ViewNavigationCallback);
 }
 extern "C" {
-    #[doc = " Set Enter callback\n\n @param      view      View instance\n @param      callback  callback"]
+    #[doc = "Set Enter callback\n\n# Arguments\n\n* `view` - View instance\n* `callback` - callback\n\n"]
     pub fn view_set_enter_callback(view: *mut View, callback: ViewCallback);
 }
 extern "C" {
-    #[doc = " Set Exit callback\n\n @param      view      View instance\n @param      callback  callback"]
+    #[doc = "Set Exit callback\n\n# Arguments\n\n* `view` - View instance\n* `callback` - callback\n\n"]
     pub fn view_set_exit_callback(view: *mut View, callback: ViewCallback);
 }
 extern "C" {
-    #[doc = " Set Update callback\n\n @param      view      View instance\n @param      callback  callback"]
+    #[doc = "Set Update callback\n\n# Arguments\n\n* `view` - View instance\n* `callback` - callback\n\n"]
     pub fn view_set_update_callback(view: *mut View, callback: ViewUpdateCallback);
 }
 extern "C" {
-    #[doc = " Set View Draw callback\n\n @param      view     View instance\n @param      context  context for callbacks"]
+    #[doc = "Set View Draw callback\n\n# Arguments\n\n* `view` - View instance\n* `context` - context for callbacks\n\n"]
     pub fn view_set_update_callback_context(view: *mut View, context: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Set View Draw callback\n\n @param      view     View instance\n @param      context  context for callbacks"]
+    #[doc = "Set View Draw callback\n\n# Arguments\n\n* `view` - View instance\n* `context` - context for callbacks\n\n"]
     pub fn view_set_context(view: *mut View, context: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Set View Orientation\n\n @param      view         View instance\n @param      orientation  either vertical or horizontal"]
+    #[doc = "Set View Orientation\n\n# Arguments\n\n* `view` - View instance\n* `orientation` - either vertical or horizontal\n\n"]
     pub fn view_set_orientation(view: *mut View, orientation: ViewOrientation);
 }
 extern "C" {
-    #[doc = " Allocate view model.\n\n @param      view  View instance\n @param      type  View Model Type\n @param      size  size"]
+    #[doc = "Allocate view model.\n\n# Arguments\n\n* `view` - View instance\n* `type` - View Model Type\n* `size` - size\n\n"]
     pub fn view_allocate_model(view: *mut View, type_: ViewModelType, size: usize);
 }
 extern "C" {
-    #[doc = " Free view model data memory.\n\n @param      view  View instance"]
+    #[doc = "Free view model data memory.\n\n# Arguments\n\n* `view` - View instance\n\n"]
     pub fn view_free_model(view: *mut View);
 }
 extern "C" {
-    #[doc = " Get view model data\n\n @param      view  View instance\n\n @return     pointer to model data\n @warning    Don't forget to commit model changes"]
+    #[doc = "Get view model data\n\n**Warning!**\n\n* Don't forget to commit model changes\n\nReturns:\n\n* pointer to model data\n\n# Arguments\n\n* `view` - View instance\n\n"]
     pub fn view_get_model(view: *mut View) -> *mut core::ffi::c_void;
 }
 extern "C" {
-    #[doc = " Commit view model\n\n @param      view    View instance\n @param      update  true if you want to emit view update, false otherwise"]
+    #[doc = "Commit view model\n\n# Arguments\n\n* `view` - View instance\n* `update` - true if you want to emit view update, false otherwise\n\n"]
     pub fn view_commit_model(view: *mut View, update: bool);
 }
 #[repr(C)]
@@ -5707,7 +5707,7 @@ extern "C" {
 pub struct DialogsApp {
     _unused: [u8; 0],
 }
-#[doc = " File browser dialog extra options\n @param extension file extension to be offered for selection\n @param base_path root folder path for navigation with back key\n @param skip_assets true - do not show assets folders\n @param hide_dot_files true - hide dot files\n @param icon file icon pointer, NULL for default icon\n @param hide_ext true - hide extensions for files\n @param item_loader_callback callback function for providing custom icon & entry name\n @param hide_ext callback context"]
+#[doc = "File browser dialog extra options\n\n# Arguments\n\n* `extension` - file extension to be offered for selection\n* `base_path` - root folder path for navigation with back key\n* `skip_assets` - true - do not show assets folders\n* `hide_dot_files` - true - hide dot files\n* `icon` - file icon pointer, NULL for default icon\n* `hide_ext` - true - hide extensions for files\n* `item_loader_callback` - callback function for providing custom icon & entry name\n* `hide_ext` - callback context\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct DialogsFileBrowserOptions {
@@ -5817,7 +5817,7 @@ fn bindgen_test_layout_DialogsFileBrowserOptions() {
     );
 }
 extern "C" {
-    #[doc = " Initialize file browser dialog options\n and set default values\n @param options pointer to options structure\n @param extension file extension to filter\n @param icon file icon pointer, NULL for default icon"]
+    #[doc = "Initialize file browser dialog options and set default values\n\n# Arguments\n\n* `options` - pointer to options structure\n* `extension` - file extension to filter\n* `icon` - file icon pointer, NULL for default icon\n\n"]
     pub fn dialog_file_browser_set_basic_options(
         options: *mut DialogsFileBrowserOptions,
         extension: *const core::ffi::c_char,
@@ -5825,7 +5825,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Shows and processes the file browser dialog\n @param context api pointer\n @param result_path selected file path string pointer\n @param path preselected file path string pointer\n @param options file browser dialog extra options, may be null\n @return bool whether a file was selected"]
+    #[doc = "Shows and processes the file browser dialog\n\nReturns:\n\n* bool whether a file was selected\n\n# Arguments\n\n* `context` - api pointer\n* `result_path` - selected file path string pointer\n* `path` - preselected file path string pointer\n* `options` - file browser dialog extra options, may be null\n\n"]
     pub fn dialog_file_browser_show(
         context: *mut DialogsApp,
         result_path: *mut FuriString,
@@ -5837,7 +5837,7 @@ pub const DialogMessageButton_DialogMessageButtonBack: DialogMessageButton = 0;
 pub const DialogMessageButton_DialogMessageButtonLeft: DialogMessageButton = 1;
 pub const DialogMessageButton_DialogMessageButtonCenter: DialogMessageButton = 2;
 pub const DialogMessageButton_DialogMessageButtonRight: DialogMessageButton = 3;
-#[doc = " Message result type"]
+#[doc = "Message result type\n\n"]
 pub type DialogMessageButton = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -5845,15 +5845,15 @@ pub struct DialogMessage {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocate and fill message\n @return DialogMessage*"]
+    #[doc = "Allocate and fill message\n\nReturns:\n\n* DialogMessage*\n\n"]
     pub fn dialog_message_alloc() -> *mut DialogMessage;
 }
 extern "C" {
-    #[doc = " Free message struct\n @param message message pointer"]
+    #[doc = "Free message struct\n\n# Arguments\n\n* `message` - message pointer\n\n"]
     pub fn dialog_message_free(message: *mut DialogMessage);
 }
 extern "C" {
-    #[doc = " Set message text\n @param message message pointer\n @param text text, can be NULL if you don't want to display the text\n @param x x position\n @param y y position\n @param horizontal horizontal alignment\n @param vertical vertical alignment"]
+    #[doc = "Set message text\n\n# Arguments\n\n* `message` - message pointer\n* `text` - text, can be NULL if you don't want to display the text\n* `x` - x position\n* `y` - y position\n* `horizontal` - horizontal alignment\n* `vertical` - vertical alignment\n\n"]
     pub fn dialog_message_set_text(
         message: *mut DialogMessage,
         text: *const core::ffi::c_char,
@@ -5864,7 +5864,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Set message header\n @param message message pointer\n @param text text, can be NULL if you don't want to display the header\n @param x x position\n @param y y position\n @param horizontal horizontal alignment\n @param vertical vertical alignment"]
+    #[doc = "Set message header\n\n# Arguments\n\n* `message` - message pointer\n* `text` - text, can be NULL if you don't want to display the header\n* `x` - x position\n* `y` - y position\n* `horizontal` - horizontal alignment\n* `vertical` - vertical alignment\n\n"]
     pub fn dialog_message_set_header(
         message: *mut DialogMessage,
         text: *const core::ffi::c_char,
@@ -5875,11 +5875,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Set message icon\n @param message message pointer\n @param icon icon pointer, can be NULL if you don't want to display the icon\n @param x x position\n @param y y position"]
+    #[doc = "Set message icon\n\n# Arguments\n\n* `message` - message pointer\n* `icon` - icon pointer, can be NULL if you don't want to display the icon\n* `x` - x position\n* `y` - y position\n\n"]
     pub fn dialog_message_set_icon(message: *mut DialogMessage, icon: *const Icon, x: u8, y: u8);
 }
 extern "C" {
-    #[doc = " Set message buttons text, button text can be NULL if you don't want to display and process some buttons\n @param message message pointer\n @param left left button text, can be NULL if you don't want to display the left button\n @param center center button text, can be NULL if you don't want to display the center button\n @param right right button text, can be NULL if you don't want to display the right button"]
+    #[doc = "Set message buttons text, button text can be NULL if you don't want to display and process some buttons\n\n# Arguments\n\n* `message` - message pointer\n* `left` - left button text, can be NULL if you don't want to display the left button\n* `center` - center button text, can be NULL if you don't want to display the center button\n* `right` - right button text, can be NULL if you don't want to display the right button\n\n"]
     pub fn dialog_message_set_buttons(
         message: *mut DialogMessage,
         left: *const core::ffi::c_char,
@@ -5888,14 +5888,14 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Show message from filled struct\n @param context api pointer\n @param message message struct pointer to be shown\n @return DialogMessageButton type"]
+    #[doc = "Show message from filled struct\n\nReturns:\n\n* DialogMessageButton type\n\n# Arguments\n\n* `context` - api pointer\n* `message` - message struct pointer to be shown\n\n"]
     pub fn dialog_message_show(
         context: *mut DialogsApp,
         message: *const DialogMessage,
     ) -> DialogMessageButton;
 }
 extern "C" {
-    #[doc = " Show SD error message (with question sign)\n @param context\n @param error_text"]
+    #[doc = "Show SD error message (with question sign)\n\n# Arguments\n\n* `context` - \n* `error_text` - \n\n"]
     pub fn dialog_message_show_storage_error(
         context: *mut DialogsApp,
         error_text: *const core::ffi::c_char,
@@ -6036,15 +6036,15 @@ fn bindgen_test_layout_DolphinStats() {
     );
 }
 extern "C" {
-    #[doc = " Deed complete notification. Call it on deed completion.\n See dolphin_deed.h for available deeds. In futures it will become part of assets.\n Thread safe, async"]
+    #[doc = "Deed complete notification. Call it on deed completion. See dolphin_deed.h for available deeds. In futures it will become part of assets. Thread safe, async\n\n"]
     pub fn dolphin_deed(dolphin: *mut Dolphin, deed: DolphinDeed);
 }
 extern "C" {
-    #[doc = " Retrieve dolphin stats\n Thread safe, blocking"]
+    #[doc = "Retrieve dolphin stats Thread safe, blocking\n\n"]
     pub fn dolphin_stats(dolphin: *mut Dolphin) -> DolphinStats;
 }
 extern "C" {
-    #[doc = " Flush dolphin queue and save state\n Thread safe, blocking"]
+    #[doc = "Flush dolphin queue and save state Thread safe, blocking\n\n"]
     pub fn dolphin_flush(dolphin: *mut Dolphin);
 }
 extern "C" {
@@ -6054,11 +6054,11 @@ extern "C" {
     pub fn dolphin_get_pubsub(dolphin: *mut Dolphin) -> *mut FuriPubSub;
 }
 extern "C" {
-    #[doc = " Draw progress bar.\n\n @param   canvas      Canvas instance\n @param   x           progress bar position on X axis\n @param   y           progress bar position on Y axis\n @param   width       progress bar width\n @param   progress    progress (0.0 - 1.0)"]
+    #[doc = "Draw progress bar.\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - progress bar position on X axis\n* `y` - progress bar position on Y axis\n* `width` - progress bar width\n* `progress` - progress (0.0 - 1.0)\n\n"]
     pub fn elements_progress_bar(canvas: *mut Canvas, x: u8, y: u8, width: u8, progress: f32);
 }
 extern "C" {
-    #[doc = " Draw progress bar with text.\n\n @param   canvas      Canvas instance\n @param   x           progress bar position on X axis\n @param   y           progress bar position on Y axis\n @param   width       progress bar width\n @param   progress    progress (0.0 - 1.0)\n @param   text        text to draw"]
+    #[doc = "Draw progress bar with text.\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - progress bar position on X axis\n* `y` - progress bar position on Y axis\n* `width` - progress bar width\n* `progress` - progress (0.0 - 1.0)\n* `text` - text to draw\n\n"]
     pub fn elements_progress_bar_with_text(
         canvas: *mut Canvas,
         x: u8,
@@ -6069,7 +6069,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Draw scrollbar on canvas at specific position.\n\n @param   canvas  Canvas instance\n @param   x       scrollbar position on X axis\n @param   y       scrollbar position on Y axis\n @param   height  scrollbar height\n @param   pos     current element\n @param   total   total elements"]
+    #[doc = "Draw scrollbar on canvas at specific position.\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - scrollbar position on X axis\n* `y` - scrollbar position on Y axis\n* `height` - scrollbar height\n* `pos` - current element\n* `total` - total elements\n\n"]
     pub fn elements_scrollbar_pos(
         canvas: *mut Canvas,
         x: u8,
@@ -6080,27 +6080,27 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Draw scrollbar on canvas.\n @note    width 3px, height equal to canvas height\n\n @param   canvas  Canvas instance\n @param   pos     current element of total elements\n @param   total   total elements"]
+    #[doc = "Draw scrollbar on canvas.\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `pos` - current element of total elements\n* `total` - total elements\n\n# Notes\n\n* width 3px, height equal to canvas height\n\n"]
     pub fn elements_scrollbar(canvas: *mut Canvas, pos: u16, total: u16);
 }
 extern "C" {
-    #[doc = " Draw rounded frame\n\n @param   canvas          Canvas instance\n @param   x, y            top left corner coordinates\n @param   width, height   frame width and height"]
+    #[doc = "Draw rounded frame\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x,` - y top left corner coordinates\n* `width,` - height frame width and height\n\n"]
     pub fn elements_frame(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8);
 }
 extern "C" {
-    #[doc = " Draw button in left corner\n\n @param   canvas  Canvas instance\n @param   str     button text"]
+    #[doc = "Draw button in left corner\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `str` - button text\n\n"]
     pub fn elements_button_left(canvas: *mut Canvas, str_: *const core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " Draw button in right corner\n\n @param   canvas  Canvas instance\n @param   str     button text"]
+    #[doc = "Draw button in right corner\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `str` - button text\n\n"]
     pub fn elements_button_right(canvas: *mut Canvas, str_: *const core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " Draw button in center\n\n @param   canvas  Canvas instance\n @param   str     button text"]
+    #[doc = "Draw button in center\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `str` - button text\n\n"]
     pub fn elements_button_center(canvas: *mut Canvas, str_: *const core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " Draw aligned multiline text\n\n @param   canvas                  Canvas instance\n @param   x, y                    coordinates based on align param\n @param   horizontal, vertical    alignment of multiline text\n @param   text                    string (possible multiline)"]
+    #[doc = "Draw aligned multiline text\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x,` - y coordinates based on align param\n* `horizontal,` - vertical alignment of multiline text\n* `text` - string (possible multiline)\n\n"]
     pub fn elements_multiline_text_aligned(
         canvas: *mut Canvas,
         x: u8,
@@ -6111,7 +6111,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Draw multiline text\n\n @param   canvas  Canvas instance\n @param   x, y    top left corner coordinates\n @param   text    string (possible multiline)"]
+    #[doc = "Draw multiline text\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x,` - y top left corner coordinates\n* `text` - string (possible multiline)\n\n"]
     pub fn elements_multiline_text(
         canvas: *mut Canvas,
         x: u8,
@@ -6120,7 +6120,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Draw framed multiline text\n\n @param   canvas  Canvas instance\n @param   x, y    top left corner coordinates\n @param   text    string (possible multiline)"]
+    #[doc = "Draw framed multiline text\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x,` - y top left corner coordinates\n* `text` - string (possible multiline)\n\n"]
     pub fn elements_multiline_text_framed(
         canvas: *mut Canvas,
         x: u8,
@@ -6129,7 +6129,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Draw slightly rounded frame\n\n @param   canvas          Canvas instance\n @param   x, y            top left corner coordinates\n @param   width, height   size of frame"]
+    #[doc = "Draw slightly rounded frame\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x,` - y top left corner coordinates\n* `width,` - height size of frame\n\n"]
     pub fn elements_slightly_rounded_frame(
         canvas: *mut Canvas,
         x: u8,
@@ -6139,19 +6139,19 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Draw slightly rounded box\n\n @param   canvas          Canvas instance\n @param   x, y            top left corner coordinates\n @param   width, height   size of box"]
+    #[doc = "Draw slightly rounded box\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x,` - y top left corner coordinates\n* `width,` - height size of box\n\n"]
     pub fn elements_slightly_rounded_box(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8);
 }
 extern "C" {
-    #[doc = " Draw bold rounded frame\n\n @param   canvas          Canvas instance\n @param   x, y            top left corner coordinates\n @param   width, height   size of frame"]
+    #[doc = "Draw bold rounded frame\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x,` - y top left corner coordinates\n* `width,` - height size of frame\n\n"]
     pub fn elements_bold_rounded_frame(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8);
 }
 extern "C" {
-    #[doc = " Draw bubble frame for text\n\n @param   canvas  Canvas instance\n @param   x       left x coordinates\n @param   y       top y coordinate\n @param   width   bubble width\n @param   height  bubble height"]
+    #[doc = "Draw bubble frame for text\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - left x coordinates\n* `y` - top y coordinate\n* `width` - bubble width\n* `height` - bubble height\n\n"]
     pub fn elements_bubble(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8);
 }
 extern "C" {
-    #[doc = " Draw bubble frame for text with corner\n\n @param   canvas      Canvas instance\n @param   x           left x coordinates\n @param   y           top y coordinate\n @param   width       bubble width\n @param   height      bubble height\n @param   horizontal  horizontal aligning\n @param   vertical    aligning"]
+    #[doc = "Draw bubble frame for text with corner\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - left x coordinates\n* `y` - top y coordinate\n* `width` - bubble width\n* `height` - bubble height\n* `horizontal` - horizontal aligning\n* `vertical` - aligning\n\n"]
     pub fn elements_bubble_str(
         canvas: *mut Canvas,
         x: u8,
@@ -6162,11 +6162,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Trim string buffer to fit width in pixels\n\n @param   canvas  Canvas instance\n @param   string  string to trim\n @param   width   max width"]
+    #[doc = "Trim string buffer to fit width in pixels\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `string` - string to trim\n* `width` - max width\n\n"]
     pub fn elements_string_fit_width(canvas: *mut Canvas, string: *mut FuriString, width: u8);
 }
 extern "C" {
-    #[doc = " Draw scrollable text line\n\n @param      canvas    The canvas\n @param[in]  x         X coordinate\n @param[in]  y         Y coordinate\n @param[in]  width     The width\n @param      string    The string\n @param[in]  scroll    The scroll counter: 0 - no scroll, any other number - scroll. Just count up, everything else will be calculated on the inside.\n @param[in]  ellipsis  The ellipsis flag: true to add ellipse"]
+    #[doc = "Draw scrollable text line\n\n# Arguments\n\n* `canvas` - The canvas\n* `x` - [Direction: In] X coordinate\n* `y` - [Direction: In] Y coordinate\n* `width` - [Direction: In] The width\n* `string` - The string\n* `scroll` - [Direction: In] The scroll counter: 0 - no scroll, any other number - scroll. Just count up, everything else will be calculated on the inside.\n* `ellipsis` - [Direction: In] The ellipsis flag: true to add ellipse\n\n"]
     pub fn elements_scrollable_text_line(
         canvas: *mut Canvas,
         x: u8,
@@ -6178,7 +6178,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Draw text box element\n\n @param       canvas          Canvas instance\n @param       x               x coordinate\n @param       y               y coordinate\n @param       width           width to fit text\n @param       height          height to fit text\n @param       horizontal      Align instance\n @param       vertical        Align instance\n @param[in]   text            Formatted text. The following formats are available:\n                              \"\\e#Bold text\\e#\" - bold font is used\n                              \"\\e*Monospaced text\\e*\" - monospaced font is used\n                              \"\\e!Inversed text\\e!\" - white text on black background\n @param      strip_to_dots    Strip text to ... if does not fit to width"]
+    #[doc = "Draw text box element\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `width` - width to fit text\n* `height` - height to fit text\n* `horizontal` - Align instance\n* `vertical` - Align instance\n* `text` - [Direction: In] Formatted text. The following formats are available:\n  * text\\e#\"* - bold font is used\n  * text\\e*\"* - monospaced font is used\n  * text\\e!\"* - white text on black background\n* `strip_to_dots` - Strip text to ... if does not fit to width\n\n"]
     pub fn elements_text_box(
         canvas: *mut Canvas,
         x: u8,
@@ -6200,48 +6200,48 @@ pub const ViewPortOrientation_ViewPortOrientationHorizontal: ViewPortOrientation
 pub const ViewPortOrientation_ViewPortOrientationHorizontalFlip: ViewPortOrientation = 1;
 pub const ViewPortOrientation_ViewPortOrientationVertical: ViewPortOrientation = 2;
 pub const ViewPortOrientation_ViewPortOrientationVerticalFlip: ViewPortOrientation = 3;
-#[doc = "< Special value, don't use it"]
+#[doc = "Special value, don't use it\n\n"]
 pub const ViewPortOrientation_ViewPortOrientationMAX: ViewPortOrientation = 4;
 pub type ViewPortOrientation = core::ffi::c_uchar;
-#[doc = " ViewPort Draw callback\n @warning    called from GUI thread"]
+#[doc = "ViewPort Draw callback\n\n**Warning!**\n\n* called from GUI thread\n\n"]
 pub type ViewPortDrawCallback = ::core::option::Option<
     unsafe extern "C" fn(canvas: *mut Canvas, context: *mut core::ffi::c_void),
 >;
-#[doc = " ViewPort Input callback\n @warning    called from GUI thread"]
+#[doc = "ViewPort Input callback\n\n**Warning!**\n\n* called from GUI thread\n\n"]
 pub type ViewPortInputCallback = ::core::option::Option<
     unsafe extern "C" fn(event: *mut InputEvent, context: *mut core::ffi::c_void),
 >;
 extern "C" {
-    #[doc = " ViewPort allocator\n\n always returns view_port or stops system if not enough memory.\n\n @return     ViewPort instance"]
+    #[doc = "ViewPort allocator\nalways returns view_port or stops system if not enough memory.\n\nReturns:\n\n* ViewPort instance\n\n"]
     pub fn view_port_alloc() -> *mut ViewPort;
 }
 extern "C" {
-    #[doc = " ViewPort deallocator\n\n Ensure that view_port was unregistered in GUI system before use.\n\n @param      view_port  ViewPort instance"]
+    #[doc = "ViewPort deallocator\nEnsure that view_port was unregistered in GUI system before use.\n\n# Arguments\n\n* `view_port` - ViewPort instance\n\n"]
     pub fn view_port_free(view_port: *mut ViewPort);
 }
 extern "C" {
-    #[doc = " Set view_port width.\n\n Will be used to limit canvas drawing area and autolayout feature.\n\n @param      view_port  ViewPort instance\n @param      width      wanted width, 0 - auto."]
+    #[doc = "Set view_port width.\nWill be used to limit canvas drawing area and autolayout feature.\n\n# Arguments\n\n* `view_port` - ViewPort instance\n* `width` - wanted width, 0 - auto.\n\n"]
     pub fn view_port_set_width(view_port: *mut ViewPort, width: u8);
 }
 extern "C" {
     pub fn view_port_get_width(view_port: *const ViewPort) -> u8;
 }
 extern "C" {
-    #[doc = " Set view_port height.\n\n Will be used to limit canvas drawing area and autolayout feature.\n\n @param      view_port  ViewPort instance\n @param      height     wanted height, 0 - auto."]
+    #[doc = "Set view_port height.\nWill be used to limit canvas drawing area and autolayout feature.\n\n# Arguments\n\n* `view_port` - ViewPort instance\n* `height` - wanted height, 0 - auto.\n\n"]
     pub fn view_port_set_height(view_port: *mut ViewPort, height: u8);
 }
 extern "C" {
     pub fn view_port_get_height(view_port: *const ViewPort) -> u8;
 }
 extern "C" {
-    #[doc = " Enable or disable view_port rendering.\n\n @param      view_port  ViewPort instance\n @param      enabled    Indicates if enabled\n @warning    automatically dispatches update event"]
+    #[doc = "Enable or disable view_port rendering.\n\n**Warning!**\n\n* automatically dispatches update event\n\n# Arguments\n\n* `view_port` - ViewPort instance\n* `enabled` - Indicates if enabled\n\n"]
     pub fn view_port_enabled_set(view_port: *mut ViewPort, enabled: bool);
 }
 extern "C" {
     pub fn view_port_is_enabled(view_port: *const ViewPort) -> bool;
 }
 extern "C" {
-    #[doc = " ViewPort event callbacks\n\n @param      view_port  ViewPort instance\n @param      callback   appropriate callback function\n @param      context    context to pass to callback"]
+    #[doc = "ViewPort event callbacks\n\n# Arguments\n\n* `view_port` - ViewPort instance\n* `callback` - appropriate callback function\n* `context` - context to pass to callback\n\n"]
     pub fn view_port_draw_callback_set(
         view_port: *mut ViewPort,
         callback: ViewPortDrawCallback,
@@ -6256,31 +6256,31 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Emit update signal to GUI system.\n\n Rendering will happen later after GUI system process signal.\n\n @param      view_port  ViewPort instance"]
+    #[doc = "Emit update signal to GUI system.\nRendering will happen later after GUI system process signal.\n\n# Arguments\n\n* `view_port` - ViewPort instance\n\n"]
     pub fn view_port_update(view_port: *mut ViewPort);
 }
 extern "C" {
-    #[doc = " Set ViewPort orientation.\n\n @param      view_port    ViewPort instance\n @param      orientation  display orientation, horizontal or vertical."]
+    #[doc = "Set ViewPort orientation.\n\n# Arguments\n\n* `view_port` - ViewPort instance\n* `orientation` - display orientation, horizontal or vertical.\n\n"]
     pub fn view_port_set_orientation(view_port: *mut ViewPort, orientation: ViewPortOrientation);
 }
 extern "C" {
     pub fn view_port_get_orientation(view_port: *const ViewPort) -> ViewPortOrientation;
 }
-#[doc = "< Desktop layer for internal use. Like fullscreen but with status bar"]
+#[doc = "Desktop layer for internal use. Like fullscreen but with status bar\n\n"]
 pub const GuiLayer_GuiLayerDesktop: GuiLayer = 0;
-#[doc = "< Window layer, status bar is shown"]
+#[doc = "Window layer, status bar is shown\n\n"]
 pub const GuiLayer_GuiLayerWindow: GuiLayer = 1;
-#[doc = "< Status bar left-side layer, auto-layout"]
+#[doc = "Status bar left-side layer, auto-layout\n\n"]
 pub const GuiLayer_GuiLayerStatusBarLeft: GuiLayer = 2;
-#[doc = "< Status bar right-side layer, auto-layout"]
+#[doc = "Status bar right-side layer, auto-layout\n\n"]
 pub const GuiLayer_GuiLayerStatusBarRight: GuiLayer = 3;
-#[doc = "< Fullscreen layer, no status bar"]
+#[doc = "Fullscreen layer, no status bar\n\n"]
 pub const GuiLayer_GuiLayerFullscreen: GuiLayer = 4;
-#[doc = "< Don't use or move, special value"]
+#[doc = "Don't use or move, special value\n\n"]
 pub const GuiLayer_GuiLayerMAX: GuiLayer = 5;
-#[doc = " Gui layers"]
+#[doc = "Gui layers\n\n"]
 pub type GuiLayer = core::ffi::c_uchar;
-#[doc = " Gui Canvas Commit Callback"]
+#[doc = "Gui Canvas Commit Callback\n\n"]
 pub type GuiCanvasCommitCallback = ::core::option::Option<
     unsafe extern "C" fn(data: *mut u8, size: usize, context: *mut core::ffi::c_void),
 >;
@@ -6290,19 +6290,19 @@ pub struct Gui {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Add view_port to view_port tree\n\n @remark     thread safe\n\n @param      gui        Gui instance\n @param      view_port  ViewPort instance\n @param[in]  layer      GuiLayer where to place view_port"]
+    #[doc = "Add view_port to view_port tree\n\n# Arguments\n\n* `gui` - Gui instance\n* `view_port` - ViewPort instance\n* `layer` - [Direction: In] GuiLayer where to place view_port\n\n# Notes\n\n* thread safe\n\n"]
     pub fn gui_add_view_port(gui: *mut Gui, view_port: *mut ViewPort, layer: GuiLayer);
 }
 extern "C" {
-    #[doc = " Remove view_port from rendering tree\n\n @remark     thread safe\n\n @param      gui        Gui instance\n @param      view_port  ViewPort instance"]
+    #[doc = "Remove view_port from rendering tree\n\n# Arguments\n\n* `gui` - Gui instance\n* `view_port` - ViewPort instance\n\n# Notes\n\n* thread safe\n\n"]
     pub fn gui_remove_view_port(gui: *mut Gui, view_port: *mut ViewPort);
 }
 extern "C" {
-    #[doc = " Send ViewPort to the front\n\n Places selected ViewPort to the top of the drawing stack\n\n @param      gui        Gui instance\n @param      view_port  ViewPort instance"]
+    #[doc = "Send ViewPort to the front\nPlaces selected ViewPort to the top of the drawing stack\n\n# Arguments\n\n* `gui` - Gui instance\n* `view_port` - ViewPort instance\n\n"]
     pub fn gui_view_port_send_to_front(gui: *mut Gui, view_port: *mut ViewPort);
 }
 extern "C" {
-    #[doc = " Add gui canvas commit callback\n\n This callback will be called upon Canvas commit Callback dispatched from GUI\n thread and is time critical\n\n @param      gui       Gui instance\n @param      callback  GuiCanvasCommitCallback\n @param      context   GuiCanvasCommitCallback context"]
+    #[doc = "Add gui canvas commit callback\nThis callback will be called upon Canvas commit Callback dispatched from GUI thread and is time critical\n\n# Arguments\n\n* `gui` - Gui instance\n* `callback` - GuiCanvasCommitCallback\n* `context` - GuiCanvasCommitCallback context\n\n"]
     pub fn gui_add_framebuffer_callback(
         gui: *mut Gui,
         callback: GuiCanvasCommitCallback,
@@ -6310,7 +6310,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Remove gui canvas commit callback\n\n @param      gui       Gui instance\n @param      callback  GuiCanvasCommitCallback\n @param      context   GuiCanvasCommitCallback context"]
+    #[doc = "Remove gui canvas commit callback\n\n# Arguments\n\n* `gui` - Gui instance\n* `callback` - GuiCanvasCommitCallback\n* `context` - GuiCanvasCommitCallback context\n\n"]
     pub fn gui_remove_framebuffer_callback(
         gui: *mut Gui,
         callback: GuiCanvasCommitCallback,
@@ -6318,19 +6318,19 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Get gui canvas frame buffer size\n *\n @param      gui       Gui instance\n @return     size_t    size of frame buffer in bytes"]
+    #[doc = "Get gui canvas frame buffer size\n\nReturns:\n\n* size_t size of frame buffer in bytes\n\n# Arguments\n\n* `gui` - Gui instance\n\n"]
     pub fn gui_get_framebuffer_size(gui: *const Gui) -> usize;
 }
 extern "C" {
-    #[doc = " Set lockdown mode\n\n When lockdown mode is enabled, only GuiLayerDesktop is shown.\n This feature prevents services from showing sensitive information when flipper is locked.\n\n @param      gui       Gui instance\n @param      lockdown  bool, true if enabled"]
+    #[doc = "Set lockdown mode\nWhen lockdown mode is enabled, only GuiLayerDesktop is shown. This feature prevents services from showing sensitive information when flipper is locked.\n\n# Arguments\n\n* `gui` - Gui instance\n* `lockdown` - bool, true if enabled\n\n"]
     pub fn gui_set_lockdown(gui: *mut Gui, lockdown: bool);
 }
 extern "C" {
-    #[doc = " Acquire Direct Draw lock and get Canvas instance\n\n This method return Canvas instance for use in monopoly mode. Direct draw lock\n disables input and draw call dispatch functions in GUI service. No other\n applications or services will be able to draw until gui_direct_draw_release\n call.\n\n @param      gui   The graphical user interface\n\n @return     Canvas instance"]
+    #[doc = "Acquire Direct Draw lock and get Canvas instance\nThis method return Canvas instance for use in monopoly mode. Direct draw lock disables input and draw call dispatch functions in GUI service. No other applications or services will be able to draw until gui_direct_draw_release call.\n\nReturns:\n\n* Canvas instance\n\n# Arguments\n\n* `gui` - The graphical user interface\n\n"]
     pub fn gui_direct_draw_acquire(gui: *mut Gui) -> *mut Canvas;
 }
 extern "C" {
-    #[doc = " Release Direct Draw Lock\n\n Release Direct Draw Lock, enables Input and Draw call processing. Canvas\n acquired in gui_direct_draw_acquire will become invalid after this call.\n\n @param      gui   Gui instance"]
+    #[doc = "Release Direct Draw Lock\nRelease Direct Draw Lock, enables Input and Draw call processing. Canvas acquired in gui_direct_draw_acquire will become invalid after this call.\n\n# Arguments\n\n* `gui` - Gui instance\n\n"]
     pub fn gui_direct_draw_release(gui: *mut Gui);
 }
 #[repr(C)]
@@ -6417,24 +6417,24 @@ pub struct ButtonMenu {
 pub struct ButtonMenuItem {
     _unused: [u8; 0],
 }
-#[doc = " Callback for any button menu actions"]
+#[doc = "Callback for any button menu actions\n\n"]
 pub type ButtonMenuItemCallback = ::core::option::Option<
     unsafe extern "C" fn(context: *mut core::ffi::c_void, index: i32, type_: InputType),
 >;
 pub const ButtonMenuItemType_ButtonMenuItemTypeCommon: ButtonMenuItemType = 0;
 pub const ButtonMenuItemType_ButtonMenuItemTypeControl: ButtonMenuItemType = 1;
-#[doc = " Type of button. Difference in drawing buttons."]
+#[doc = "Type of button. Difference in drawing buttons.\n\n"]
 pub type ButtonMenuItemType = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Get button menu view\n\n @param      button_menu  ButtonMenu instance\n\n @return     View instance that can be used for embedding"]
+    #[doc = "Get button menu view\n\nReturns:\n\n* View instance that can be used for embedding\n\n# Arguments\n\n* `button_menu` - ButtonMenu instance\n\n"]
     pub fn button_menu_get_view(button_menu: *mut ButtonMenu) -> *mut View;
 }
 extern "C" {
-    #[doc = " Clean button menu\n\n @param      button_menu  ButtonMenu instance"]
+    #[doc = "Clean button menu\n\n# Arguments\n\n* `button_menu` - ButtonMenu instance\n\n"]
     pub fn button_menu_reset(button_menu: *mut ButtonMenu);
 }
 extern "C" {
-    #[doc = " Add item to button menu instance\n\n @param      button_menu       ButtonMenu instance\n @param      label             text inside new button\n @param      index             value to distinct between buttons inside\n                               ButtonMenuItemCallback\n @param      callback          The callback\n @param      type              type of button to create. Differ by button\n                               drawing. Control buttons have no frames, and\n                               have more squared borders.\n @param      callback_context  The callback context\n\n @return     pointer to just-created item"]
+    #[doc = "Add item to button menu instance\n\nReturns:\n\n* pointer to just-created item\n\n# Arguments\n\n* `button_menu` - ButtonMenu instance\n* `label` - text inside new button\n* `index` - value to distinct between buttons inside ButtonMenuItemCallback\n* `callback` - The callback\n* `type` - type of button to create. Differ by button drawing. Control buttons have no frames, and have more squared borders.\n* `callback_context` - The callback context\n\n"]
     pub fn button_menu_add_item(
         button_menu: *mut ButtonMenu,
         label: *const core::ffi::c_char,
@@ -6445,19 +6445,19 @@ extern "C" {
     ) -> *mut ButtonMenuItem;
 }
 extern "C" {
-    #[doc = " Allocate and initialize new instance of ButtonMenu model\n\n @return     just-created ButtonMenu model"]
+    #[doc = "Allocate and initialize new instance of ButtonMenu model\n\nReturns:\n\n* just-created ButtonMenu model\n\n"]
     pub fn button_menu_alloc() -> *mut ButtonMenu;
 }
 extern "C" {
-    #[doc = " Free ButtonMenu element\n\n @param      button_menu  ButtonMenu instance"]
+    #[doc = "Free ButtonMenu element\n\n# Arguments\n\n* `button_menu` - ButtonMenu instance\n\n"]
     pub fn button_menu_free(button_menu: *mut ButtonMenu);
 }
 extern "C" {
-    #[doc = " Set ButtonMenu header on top of canvas\n\n @param      button_menu  ButtonMenu instance\n @param      header       header on the top of button menu"]
+    #[doc = "Set ButtonMenu header on top of canvas\n\n# Arguments\n\n* `button_menu` - ButtonMenu instance\n* `header` - header on the top of button menu\n\n"]
     pub fn button_menu_set_header(button_menu: *mut ButtonMenu, header: *const core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " Set selected item\n\n @param      button_menu  ButtonMenu instance\n @param      index        index of ButtonMenu to be selected"]
+    #[doc = "Set selected item\n\n# Arguments\n\n* `button_menu` - ButtonMenu instance\n* `index` - index of ButtonMenu to be selected\n\n"]
     pub fn button_menu_set_selected_item(button_menu: *mut ButtonMenu, index: u32);
 }
 #[repr(C)]
@@ -6465,27 +6465,27 @@ extern "C" {
 pub struct ButtonPanel {
     _unused: [u8; 0],
 }
-#[doc = " Callback type to call for handling selecting button_panel items"]
+#[doc = "Callback type to call for handling selecting button_panel items\n\n"]
 pub type ButtonItemCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void, index: u32)>;
 extern "C" {
-    #[doc = " Allocate new button_panel module.\n\n @return     ButtonPanel instance"]
+    #[doc = "Allocate new button_panel module.\n\nReturns:\n\n* ButtonPanel instance\n\n"]
     pub fn button_panel_alloc() -> *mut ButtonPanel;
 }
 extern "C" {
-    #[doc = " Free button_panel module.\n\n @param      button_panel  ButtonPanel instance"]
+    #[doc = "Free button_panel module.\n\n# Arguments\n\n* `button_panel` - ButtonPanel instance\n\n"]
     pub fn button_panel_free(button_panel: *mut ButtonPanel);
 }
 extern "C" {
-    #[doc = " Free items from button_panel module. Preallocated matrix stays unchanged.\n\n @param      button_panel  ButtonPanel instance"]
+    #[doc = "Free items from button_panel module. Preallocated matrix stays unchanged.\n\n# Arguments\n\n* `button_panel` - ButtonPanel instance\n\n"]
     pub fn button_panel_reset(button_panel: *mut ButtonPanel);
 }
 extern "C" {
-    #[doc = " Reserve space for adding items.\n\n One does not simply use button_panel_add_item() without this function. It\n should be allocated space for it first.\n\n @param      button_panel  ButtonPanel instance\n @param      reserve_x     number of columns in button_panel\n @param      reserve_y     number of rows in button_panel"]
+    #[doc = "Reserve space for adding items.\nOne does not simply use button_panel_add_item() without this function. It should be allocated space for it first.\n\n# Arguments\n\n* `button_panel` - ButtonPanel instance\n* `reserve_x` - number of columns in button_panel\n* `reserve_y` - number of rows in button_panel\n\n"]
     pub fn button_panel_reserve(button_panel: *mut ButtonPanel, reserve_x: usize, reserve_y: usize);
 }
 extern "C" {
-    #[doc = " Add item to button_panel module.\n\n Have to set element in bounds of allocated size by X and by Y.\n\n @param      button_panel        ButtonPanel instance\n @param      index               value to pass to callback\n @param      matrix_place_x      coordinates by x-axis on virtual grid, it\n                                 is only used for navigation\n @param      matrix_place_y      coordinates by y-axis on virtual grid, it\n                                 is only used for naviagation\n @param      x                   x-coordinate to draw icon on\n @param      y                   y-coordinate to draw icon on\n @param      icon_name           name of the icon to draw\n @param      icon_name_selected  name of the icon to draw when current\n                                 element is selected\n @param      callback            function to call when specific element is\n                                 selected (pressed Ok on selected item)\n @param      callback_context    context to pass to callback"]
+    #[doc = "Add item to button_panel module.\nHave to set element in bounds of allocated size by X and by Y.\n\n# Arguments\n\n* `button_panel` - ButtonPanel instance\n* `index` - value to pass to callback\n* `matrix_place_x` - coordinates by x-axis on virtual grid, it is only used for navigation\n* `matrix_place_y` - coordinates by y-axis on virtual grid, it is only used for naviagation\n* `x` - x-coordinate to draw icon on\n* `y` - y-coordinate to draw icon on\n* `icon_name` - name of the icon to draw\n* `icon_name_selected` - name of the icon to draw when current element is selected\n* `callback` - function to call when specific element is selected (pressed Ok on selected item)\n* `callback_context` - context to pass to callback\n\n"]
     pub fn button_panel_add_item(
         button_panel: *mut ButtonPanel,
         index: u32,
@@ -6500,11 +6500,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Get button_panel view.\n\n @param      button_panel  ButtonPanel instance\n\n @return     acquired view"]
+    #[doc = "Get button_panel view.\n\nReturns:\n\n* acquired view\n\n# Arguments\n\n* `button_panel` - ButtonPanel instance\n\n"]
     pub fn button_panel_get_view(button_panel: *mut ButtonPanel) -> *mut View;
 }
 extern "C" {
-    #[doc = " Add label to button_panel module.\n\n @param      button_panel  ButtonPanel instance\n @param      x             x-coordinate to place label\n @param      y             y-coordinate to place label\n @param      font          font to write label with\n @param      label_str     string label to write"]
+    #[doc = "Add label to button_panel module.\n\n# Arguments\n\n* `button_panel` - ButtonPanel instance\n* `x` - x-coordinate to place label\n* `y` - y-coordinate to place label\n* `font` - font to write label with\n* `label_str` - string label to write\n\n"]
     pub fn button_panel_add_label(
         button_panel: *mut ButtonPanel,
         x: u16,
@@ -6518,26 +6518,26 @@ extern "C" {
 pub struct ByteInput {
     _unused: [u8; 0],
 }
-#[doc = " callback that is executed on save button press"]
+#[doc = "callback that is executed on save button press\n\n"]
 pub type ByteInputCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
-#[doc = " callback that is executed when byte buffer is changed"]
+#[doc = "callback that is executed when byte buffer is changed\n\n"]
 pub type ByteChangedCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
 extern "C" {
-    #[doc = " Allocate and initialize byte input. This byte input is used to enter bytes.\n\n @return     ByteInput instance pointer"]
+    #[doc = "Allocate and initialize byte input. This byte input is used to enter bytes.\n\nReturns:\n\n* ByteInput instance pointer\n\n"]
     pub fn byte_input_alloc() -> *mut ByteInput;
 }
 extern "C" {
-    #[doc = " Deinitialize and free byte input\n\n @param      byte_input  Byte input instance"]
+    #[doc = "Deinitialize and free byte input\n\n# Arguments\n\n* `byte_input` - Byte input instance\n\n"]
     pub fn byte_input_free(byte_input: *mut ByteInput);
 }
 extern "C" {
-    #[doc = " Get byte input view\n\n @param      byte_input  byte input instance\n\n @return     View instance that can be used for embedding"]
+    #[doc = "Get byte input view\n\nReturns:\n\n* View instance that can be used for embedding\n\n# Arguments\n\n* `byte_input` - byte input instance\n\n"]
     pub fn byte_input_get_view(byte_input: *mut ByteInput) -> *mut View;
 }
 extern "C" {
-    #[doc = " Set byte input result callback\n\n @param      byte_input        byte input instance\n @param      input_callback    input callback fn\n @param      changed_callback  changed callback fn\n @param      callback_context  callback context\n @param      bytes             buffer to use\n @param      bytes_count       buffer length"]
+    #[doc = "Set byte input result callback\n\n# Arguments\n\n* `byte_input` - byte input instance\n* `input_callback` - input callback fn\n* `changed_callback` - changed callback fn\n* `callback_context` - callback context\n* `bytes` - buffer to use\n* `bytes_count` - buffer length\n\n"]
     pub fn byte_input_set_result_callback(
         byte_input: *mut ByteInput,
         input_callback: ByteInputCallback,
@@ -6548,7 +6548,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Set byte input header text\n\n @param      byte_input  byte input instance\n @param      text        text to be shown"]
+    #[doc = "Set byte input header text\n\n# Arguments\n\n* `byte_input` - byte input instance\n* `text` - text to be shown\n\n"]
     pub fn byte_input_set_header_text(byte_input: *mut ByteInput, text: *const core::ffi::c_char);
 }
 #[repr(C)]
@@ -6565,37 +6565,37 @@ pub const DialogExResult_DialogExPressRight: DialogExResult = 5;
 pub const DialogExResult_DialogExReleaseLeft: DialogExResult = 6;
 pub const DialogExResult_DialogExReleaseCenter: DialogExResult = 7;
 pub const DialogExResult_DialogExReleaseRight: DialogExResult = 8;
-#[doc = " DialogEx result"]
+#[doc = "DialogEx result\n\n"]
 pub type DialogExResult = core::ffi::c_uchar;
-#[doc = " DialogEx result callback type\n @warning comes from GUI thread"]
+#[doc = "DialogEx result callback type\n\n**Warning!**\n\n* comes from GUI thread\n\n"]
 pub type DialogExResultCallback = ::core::option::Option<
     unsafe extern "C" fn(result: DialogExResult, context: *mut core::ffi::c_void),
 >;
 extern "C" {
-    #[doc = " Allocate and initialize dialog\n\n This dialog used to ask simple questions\n\n @return     DialogEx instance"]
+    #[doc = "Allocate and initialize dialog\nThis dialog used to ask simple questions\n\nReturns:\n\n* DialogEx instance\n\n"]
     pub fn dialog_ex_alloc() -> *mut DialogEx;
 }
 extern "C" {
-    #[doc = " Deinitialize and free dialog\n\n @param      dialog_ex  DialogEx instance"]
+    #[doc = "Deinitialize and free dialog\n\n# Arguments\n\n* `dialog_ex` - DialogEx instance\n\n"]
     pub fn dialog_ex_free(dialog_ex: *mut DialogEx);
 }
 extern "C" {
-    #[doc = " Get dialog view\n\n @param      dialog_ex  DialogEx instance\n\n @return     View instance that can be used for embedding"]
+    #[doc = "Get dialog view\n\nReturns:\n\n* View instance that can be used for embedding\n\n# Arguments\n\n* `dialog_ex` - DialogEx instance\n\n"]
     pub fn dialog_ex_get_view(dialog_ex: *mut DialogEx) -> *mut View;
 }
 extern "C" {
-    #[doc = " Set dialog result callback\n\n @param      dialog_ex  DialogEx instance\n @param      callback   result callback function"]
+    #[doc = "Set dialog result callback\n\n# Arguments\n\n* `dialog_ex` - DialogEx instance\n* `callback` - result callback function\n\n"]
     pub fn dialog_ex_set_result_callback(
         dialog_ex: *mut DialogEx,
         callback: DialogExResultCallback,
     );
 }
 extern "C" {
-    #[doc = " Set dialog context\n\n @param      dialog_ex  DialogEx instance\n @param      context    context pointer, will be passed to result callback"]
+    #[doc = "Set dialog context\n\n# Arguments\n\n* `dialog_ex` - DialogEx instance\n* `context` - context pointer, will be passed to result callback\n\n"]
     pub fn dialog_ex_set_context(dialog_ex: *mut DialogEx, context: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Set dialog header text\n\n If text is null, dialog header will not be rendered\n\n @param      dialog_ex   DialogEx instance\n @param      text        text to be shown, can be multiline\n @param      x           x position\n @param      y           y position\n @param      horizontal  horizontal text alignment\n @param      vertical    vertical text alignment"]
+    #[doc = "Set dialog header text\nIf text is null, dialog header will not be rendered\n\n# Arguments\n\n* `dialog_ex` - DialogEx instance\n* `text` - text to be shown, can be multiline\n* `x` - x position\n* `y` - y position\n* `horizontal` - horizontal text alignment\n* `vertical` - vertical text alignment\n\n"]
     pub fn dialog_ex_set_header(
         dialog_ex: *mut DialogEx,
         text: *const core::ffi::c_char,
@@ -6606,7 +6606,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Set dialog text\n\n If text is null, dialog text will not be rendered\n\n @param      dialog_ex   DialogEx instance\n @param      text        text to be shown, can be multiline\n @param      x           x position\n @param      y           y position\n @param      horizontal  horizontal text alignment\n @param      vertical    vertical text alignment"]
+    #[doc = "Set dialog text\nIf text is null, dialog text will not be rendered\n\n# Arguments\n\n* `dialog_ex` - DialogEx instance\n* `text` - text to be shown, can be multiline\n* `x` - x position\n* `y` - y position\n* `horizontal` - horizontal text alignment\n* `vertical` - vertical text alignment\n\n"]
     pub fn dialog_ex_set_text(
         dialog_ex: *mut DialogEx,
         text: *const core::ffi::c_char,
@@ -6617,37 +6617,37 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Set dialog icon\n\n If x or y is negative, dialog icon will not be rendered\n\n @param      dialog_ex  DialogEx instance\n @param      x          x position\n @param      y          y position\n @param      icon       The icon\n @param      name  icon to be shown"]
+    #[doc = "Set dialog icon\nIf x or y is negative, dialog icon will not be rendered\n\n# Arguments\n\n* `dialog_ex` - DialogEx instance\n* `x` - x position\n* `y` - y position\n* `icon` - The icon\n* `name` - icon to be shown\n\n"]
     pub fn dialog_ex_set_icon(dialog_ex: *mut DialogEx, x: u8, y: u8, icon: *const Icon);
 }
 extern "C" {
-    #[doc = " Set left button text\n\n If text is null, left button will not be rendered and processed\n\n @param      dialog_ex  DialogEx instance\n @param      text       text to be shown"]
+    #[doc = "Set left button text\nIf text is null, left button will not be rendered and processed\n\n# Arguments\n\n* `dialog_ex` - DialogEx instance\n* `text` - text to be shown\n\n"]
     pub fn dialog_ex_set_left_button_text(dialog_ex: *mut DialogEx, text: *const core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " Set center button text\n\n If text is null, center button will not be rendered and processed\n\n @param      dialog_ex  DialogEx instance\n @param      text       text to be shown"]
+    #[doc = "Set center button text\nIf text is null, center button will not be rendered and processed\n\n# Arguments\n\n* `dialog_ex` - DialogEx instance\n* `text` - text to be shown\n\n"]
     pub fn dialog_ex_set_center_button_text(
         dialog_ex: *mut DialogEx,
         text: *const core::ffi::c_char,
     );
 }
 extern "C" {
-    #[doc = " Set right button text\n\n If text is null, right button will not be rendered and processed\n\n @param      dialog_ex  DialogEx instance\n @param      text       text to be shown"]
+    #[doc = "Set right button text\nIf text is null, right button will not be rendered and processed\n\n# Arguments\n\n* `dialog_ex` - DialogEx instance\n* `text` - text to be shown\n\n"]
     pub fn dialog_ex_set_right_button_text(
         dialog_ex: *mut DialogEx,
         text: *const core::ffi::c_char,
     );
 }
 extern "C" {
-    #[doc = " Clean dialog\n\n @param      dialog_ex  DialogEx instance"]
+    #[doc = "Clean dialog\n\n# Arguments\n\n* `dialog_ex` - DialogEx instance\n\n"]
     pub fn dialog_ex_reset(dialog_ex: *mut DialogEx);
 }
 extern "C" {
-    #[doc = " Enable press/release events\n\n @param      dialog_ex  DialogEx instance"]
+    #[doc = "Enable press/release events\n\n# Arguments\n\n* `dialog_ex` - DialogEx instance\n\n"]
     pub fn dialog_ex_enable_extended_events(dialog_ex: *mut DialogEx);
 }
 extern "C" {
-    #[doc = " Disable press/release events\n\n @param      dialog_ex  DialogEx instance"]
+    #[doc = "Disable press/release events\n\n# Arguments\n\n* `dialog_ex` - DialogEx instance\n\n"]
     pub fn dialog_ex_disable_extended_events(dialog_ex: *mut DialogEx);
 }
 #[repr(C)]
@@ -6656,15 +6656,15 @@ pub struct EmptyScreen {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocate and initialize empty screen\n\n This empty screen used to ask simple questions like Yes/\n\n @return     EmptyScreen instance"]
+    #[doc = "Allocate and initialize empty screen\nThis empty screen used to ask simple questions like Yes/\n\nReturns:\n\n* EmptyScreen instance\n\n"]
     pub fn empty_screen_alloc() -> *mut EmptyScreen;
 }
 extern "C" {
-    #[doc = " Deinitialize and free empty screen\n\n @param      empty_screen  Empty screen instance"]
+    #[doc = "Deinitialize and free empty screen\n\n# Arguments\n\n* `empty_screen` - Empty screen instance\n\n"]
     pub fn empty_screen_free(empty_screen: *mut EmptyScreen);
 }
 extern "C" {
-    #[doc = " Get empty screen view\n\n @param      empty_screen  Empty screen instance\n\n @return     View instance that can be used for embedding"]
+    #[doc = "Get empty screen view\n\nReturns:\n\n* View instance that can be used for embedding\n\n# Arguments\n\n* `empty_screen` - Empty screen instance\n\n"]
     pub fn empty_screen_get_view(empty_screen: *mut EmptyScreen) -> *mut View;
 }
 #[repr(C)]
@@ -6769,15 +6769,15 @@ pub struct Loading {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocate and initialize\n\n This View used to show system is doing some processing\n\n @return     Loading View instance"]
+    #[doc = "Allocate and initialize\nThis View used to show system is doing some processing\n\nReturns:\n\n* Loading View instance\n\n"]
     pub fn loading_alloc() -> *mut Loading;
 }
 extern "C" {
-    #[doc = " Deinitialize and free Loading View\n\n @param      instance  Loading instance"]
+    #[doc = "Deinitialize and free Loading View\n\n# Arguments\n\n* `instance` - Loading instance\n\n"]
     pub fn loading_free(instance: *mut Loading);
 }
 extern "C" {
-    #[doc = " Get Loading view\n\n @param      instance  Loading instance\n\n @return     View instance that can be used for embedding"]
+    #[doc = "Get Loading view\n\nReturns:\n\n* View instance that can be used for embedding\n\n# Arguments\n\n* `instance` - Loading instance\n\n"]
     pub fn loading_get_view(instance: *mut Loading) -> *mut View;
 }
 #[repr(C)]
@@ -6785,23 +6785,23 @@ extern "C" {
 pub struct Menu {
     _unused: [u8; 0],
 }
-#[doc = " Menu Item Callback"]
+#[doc = "Menu Item Callback\n\n"]
 pub type MenuItemCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void, index: u32)>;
 extern "C" {
-    #[doc = " Menu allocation and initialization\n\n @return     Menu instance"]
+    #[doc = "Menu allocation and initialization\n\nReturns:\n\n* Menu instance\n\n"]
     pub fn menu_alloc() -> *mut Menu;
 }
 extern "C" {
-    #[doc = " Free menu\n\n @param      menu  Menu instance"]
+    #[doc = "Free menu\n\n# Arguments\n\n* `menu` - Menu instance\n\n"]
     pub fn menu_free(menu: *mut Menu);
 }
 extern "C" {
-    #[doc = " Get Menu view\n\n @param      menu  Menu instance\n\n @return     View instance"]
+    #[doc = "Get Menu view\n\nReturns:\n\n* View instance\n\n# Arguments\n\n* `menu` - Menu instance\n\n"]
     pub fn menu_get_view(menu: *mut Menu) -> *mut View;
 }
 extern "C" {
-    #[doc = " Add item to menu\n\n @param      menu      Menu instance\n @param      label     menu item string label\n @param      icon      IconAnimation instance\n @param      index     menu item index\n @param      callback  MenuItemCallback instance\n @param      context   pointer to context"]
+    #[doc = "Add item to menu\n\n# Arguments\n\n* `menu` - Menu instance\n* `label` - menu item string label\n* `icon` - IconAnimation instance\n* `index` - menu item index\n* `callback` - MenuItemCallback instance\n* `context` - pointer to context\n\n"]
     pub fn menu_add_item(
         menu: *mut Menu,
         label: *const core::ffi::c_char,
@@ -6812,11 +6812,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Clean menu\n @note       this function does not free menu instance\n\n @param      menu  Menu instance"]
+    #[doc = "Clean menu\n\n# Arguments\n\n* `menu` - Menu instance\n\n# Notes\n\n* this function does not free menu instance\n\n"]
     pub fn menu_reset(menu: *mut Menu);
 }
 extern "C" {
-    #[doc = " Set current menu item\n\n @param      menu   Menu instance\n @param      index  The index"]
+    #[doc = "Set current menu item\n\n# Arguments\n\n* `menu` - Menu instance\n* `index` - The index\n\n"]
     pub fn menu_set_selected_item(menu: *mut Menu, index: u32);
 }
 #[repr(C)]
@@ -6824,31 +6824,31 @@ extern "C" {
 pub struct Popup {
     _unused: [u8; 0],
 }
-#[doc = " Popup result callback type\n @warning    comes from GUI thread"]
+#[doc = "Popup result callback type\n\n**Warning!**\n\n* comes from GUI thread\n\n"]
 pub type PopupCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
 extern "C" {
-    #[doc = " Allocate and initialize popup\n\n This popup used to ask simple questions like Yes/\n\n @return     Popup instance"]
+    #[doc = "Allocate and initialize popup\nThis popup used to ask simple questions like Yes/\n\nReturns:\n\n* Popup instance\n\n"]
     pub fn popup_alloc() -> *mut Popup;
 }
 extern "C" {
-    #[doc = " Deinitialize and free popup\n\n @param      popup  Popup instance"]
+    #[doc = "Deinitialize and free popup\n\n# Arguments\n\n* `popup` - Popup instance\n\n"]
     pub fn popup_free(popup: *mut Popup);
 }
 extern "C" {
-    #[doc = " Get popup view\n\n @param      popup  Popup instance\n\n @return     View instance that can be used for embedding"]
+    #[doc = "Get popup view\n\nReturns:\n\n* View instance that can be used for embedding\n\n# Arguments\n\n* `popup` - Popup instance\n\n"]
     pub fn popup_get_view(popup: *mut Popup) -> *mut View;
 }
 extern "C" {
-    #[doc = " Set popup header text\n\n @param      popup     Popup instance\n @param      callback  PopupCallback"]
+    #[doc = "Set popup header text\n\n# Arguments\n\n* `popup` - Popup instance\n* `callback` - PopupCallback\n\n"]
     pub fn popup_set_callback(popup: *mut Popup, callback: PopupCallback);
 }
 extern "C" {
-    #[doc = " Set popup context\n\n @param      popup    Popup instance\n @param      context  context pointer, will be passed to result callback"]
+    #[doc = "Set popup context\n\n# Arguments\n\n* `popup` - Popup instance\n* `context` - context pointer, will be passed to result callback\n\n"]
     pub fn popup_set_context(popup: *mut Popup, context: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Set popup header text\n\n If text is null, popup header will not be rendered\n\n @param      popup       Popup instance\n @param      text        text to be shown, can be multiline\n @param      x           x position\n @param      y           y position\n @param      horizontal  horizontal alignment\n @param      vertical    vertical alignment"]
+    #[doc = "Set popup header text\nIf text is null, popup header will not be rendered\n\n# Arguments\n\n* `popup` - Popup instance\n* `text` - text to be shown, can be multiline\n* `x` - x position\n* `y` - y position\n* `horizontal` - horizontal alignment\n* `vertical` - vertical alignment\n\n"]
     pub fn popup_set_header(
         popup: *mut Popup,
         text: *const core::ffi::c_char,
@@ -6859,7 +6859,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Set popup text\n\n If text is null, popup text will not be rendered\n\n @param      popup       Popup instance\n @param      text        text to be shown, can be multiline\n @param      x           x position\n @param      y           y position\n @param      horizontal  horizontal alignment\n @param      vertical    vertical alignment"]
+    #[doc = "Set popup text\nIf text is null, popup text will not be rendered\n\n# Arguments\n\n* `popup` - Popup instance\n* `text` - text to be shown, can be multiline\n* `x` - x position\n* `y` - y position\n* `horizontal` - horizontal alignment\n* `vertical` - vertical alignment\n\n"]
     pub fn popup_set_text(
         popup: *mut Popup,
         text: *const core::ffi::c_char,
@@ -6870,23 +6870,23 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Set popup icon\n\n If icon position is negative, popup icon will not be rendered\n\n @param      popup  Popup instance\n @param      x      x position\n @param      y      y position\n @param      icon   pointer to Icon data"]
+    #[doc = "Set popup icon\nIf icon position is negative, popup icon will not be rendered\n\n# Arguments\n\n* `popup` - Popup instance\n* `x` - x position\n* `y` - y position\n* `icon` - pointer to Icon data\n\n"]
     pub fn popup_set_icon(popup: *mut Popup, x: u8, y: u8, icon: *const Icon);
 }
 extern "C" {
-    #[doc = " Set popup timeout\n\n @param      popup          Popup instance\n @param      timeout_in_ms  popup timeout value in milliseconds"]
+    #[doc = "Set popup timeout\n\n# Arguments\n\n* `popup` - Popup instance\n* `timeout_in_ms` - popup timeout value in milliseconds\n\n"]
     pub fn popup_set_timeout(popup: *mut Popup, timeout_in_ms: u32);
 }
 extern "C" {
-    #[doc = " Enable popup timeout\n\n @param      popup  Popup instance"]
+    #[doc = "Enable popup timeout\n\n# Arguments\n\n* `popup` - Popup instance\n\n"]
     pub fn popup_enable_timeout(popup: *mut Popup);
 }
 extern "C" {
-    #[doc = " Disable popup timeout\n\n @param      popup  Popup instance"]
+    #[doc = "Disable popup timeout\n\n# Arguments\n\n* `popup` - Popup instance\n\n"]
     pub fn popup_disable_timeout(popup: *mut Popup);
 }
 extern "C" {
-    #[doc = " Reset popup instance state\n\n @param       popup Popup instance"]
+    #[doc = "Reset popup instance state\n\n# Arguments\n\n* `popup` - Popup instance\n\n"]
     pub fn popup_reset(popup: *mut Popup);
 }
 #[repr(C)]
@@ -6897,19 +6897,19 @@ pub struct Submenu {
 pub type SubmenuItemCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void, index: u32)>;
 extern "C" {
-    #[doc = " Allocate and initialize submenu\n\n This submenu is used to select one option\n\n @return     Submenu instance"]
+    #[doc = "Allocate and initialize submenu\nThis submenu is used to select one option\n\nReturns:\n\n* Submenu instance\n\n"]
     pub fn submenu_alloc() -> *mut Submenu;
 }
 extern "C" {
-    #[doc = " Deinitialize and free submenu\n\n @param      submenu  Submenu instance"]
+    #[doc = "Deinitialize and free submenu\n\n# Arguments\n\n* `submenu` - Submenu instance\n\n"]
     pub fn submenu_free(submenu: *mut Submenu);
 }
 extern "C" {
-    #[doc = " Get submenu view\n\n @param      submenu  Submenu instance\n\n @return     View instance that can be used for embedding"]
+    #[doc = "Get submenu view\n\nReturns:\n\n* View instance that can be used for embedding\n\n# Arguments\n\n* `submenu` - Submenu instance\n\n"]
     pub fn submenu_get_view(submenu: *mut Submenu) -> *mut View;
 }
 extern "C" {
-    #[doc = " Add item to submenu\n\n @param      submenu           Submenu instance\n @param      label             menu item label\n @param      index             menu item index, used for callback, may be\n                               the same with other items\n @param      callback          menu item callback\n @param      callback_context  menu item callback context"]
+    #[doc = "Add item to submenu\n\n# Arguments\n\n* `submenu` - Submenu instance\n* `label` - menu item label\n* `index` - menu item index, used for callback, may be the same with other items\n* `callback` - menu item callback\n* `callback_context` - menu item callback context\n\n"]
     pub fn submenu_add_item(
         submenu: *mut Submenu,
         label: *const core::ffi::c_char,
@@ -6919,15 +6919,15 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Remove all items from submenu\n\n @param      submenu  Submenu instance"]
+    #[doc = "Remove all items from submenu\n\n# Arguments\n\n* `submenu` - Submenu instance\n\n"]
     pub fn submenu_reset(submenu: *mut Submenu);
 }
 extern "C" {
-    #[doc = " Set submenu item selector\n\n @param      submenu  Submenu instance\n @param      index    The index"]
+    #[doc = "Set submenu item selector\n\n# Arguments\n\n* `submenu` - Submenu instance\n* `index` - The index\n\n"]
     pub fn submenu_set_selected_item(submenu: *mut Submenu, index: u32);
 }
 extern "C" {
-    #[doc = " Set optional header for submenu\n\n @param      submenu  Submenu instance\n @param      header   header to set"]
+    #[doc = "Set optional header for submenu\n\n# Arguments\n\n* `submenu` - Submenu instance\n* `header` - header to set\n\n"]
     pub fn submenu_set_header(submenu: *mut Submenu, header: *const core::ffi::c_char);
 }
 #[repr(C)]
@@ -6942,31 +6942,31 @@ pub const TextBoxFocus_TextBoxFocusStart: TextBoxFocus = 0;
 pub const TextBoxFocus_TextBoxFocusEnd: TextBoxFocus = 1;
 pub type TextBoxFocus = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Allocate and initialize text_box\n\n @return     TextBox instance"]
+    #[doc = "Allocate and initialize text_box\n\nReturns:\n\n* TextBox instance\n\n"]
     pub fn text_box_alloc() -> *mut TextBox;
 }
 extern "C" {
-    #[doc = " Deinitialize and free text_box\n\n @param      text_box  text_box instance"]
+    #[doc = "Deinitialize and free text_box\n\n# Arguments\n\n* `text_box` - text_box instance\n\n"]
     pub fn text_box_free(text_box: *mut TextBox);
 }
 extern "C" {
-    #[doc = " Get text_box view\n\n @param      text_box  TextBox instance\n\n @return     View instance that can be used for embedding"]
+    #[doc = "Get text_box view\n\nReturns:\n\n* View instance that can be used for embedding\n\n# Arguments\n\n* `text_box` - TextBox instance\n\n"]
     pub fn text_box_get_view(text_box: *mut TextBox) -> *mut View;
 }
 extern "C" {
-    #[doc = " Clean text_box\n\n @param      text_box  TextBox instance"]
+    #[doc = "Clean text_box\n\n# Arguments\n\n* `text_box` - TextBox instance\n\n"]
     pub fn text_box_reset(text_box: *mut TextBox);
 }
 extern "C" {
-    #[doc = " Set text for text_box\n\n @param      text_box  TextBox instance\n @param      text      text to set"]
+    #[doc = "Set text for text_box\n\n# Arguments\n\n* `text_box` - TextBox instance\n* `text` - text to set\n\n"]
     pub fn text_box_set_text(text_box: *mut TextBox, text: *const core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " Set TextBox font\n\n @param      text_box  TextBox instance\n @param      font      TextBoxFont instance"]
+    #[doc = "Set TextBox font\n\n# Arguments\n\n* `text_box` - TextBox instance\n* `font` - TextBoxFont instance\n\n"]
     pub fn text_box_set_font(text_box: *mut TextBox, font: TextBoxFont);
 }
 extern "C" {
-    #[doc = " Set TextBox focus\n @note Use to display from start or from end\n\n @param      text_box  TextBox instance\n @param      focus     TextBoxFocus instance"]
+    #[doc = "Set TextBox focus\n\n# Arguments\n\n* `text_box` - TextBox instance\n* `focus` - TextBoxFocus instance\n\n# Notes\n\n* Use to display from start or from end\n\n"]
     pub fn text_box_set_focus(text_box: *mut TextBox, focus: TextBoxFocus);
 }
 #[repr(C)]
@@ -7006,23 +7006,23 @@ pub type TextInputValidatorCallback = ::core::option::Option<
     ) -> bool,
 >;
 extern "C" {
-    #[doc = " Allocate and initialize text input\n\n This text input is used to enter string\n\n @return     TextInput instance"]
+    #[doc = "Allocate and initialize text input\nThis text input is used to enter string\n\nReturns:\n\n* TextInput instance\n\n"]
     pub fn text_input_alloc() -> *mut TextInput;
 }
 extern "C" {
-    #[doc = " Deinitialize and free text input\n\n @param      text_input  TextInput instance"]
+    #[doc = "Deinitialize and free text input\n\n# Arguments\n\n* `text_input` - TextInput instance\n\n"]
     pub fn text_input_free(text_input: *mut TextInput);
 }
 extern "C" {
-    #[doc = " Clean text input view Note: this function does not free memory\n\n @param      text_input  Text input instance"]
+    #[doc = "Clean text input view Note: this function does not free memory\n\n# Arguments\n\n* `text_input` - Text input instance\n\n"]
     pub fn text_input_reset(text_input: *mut TextInput);
 }
 extern "C" {
-    #[doc = " Get text input view\n\n @param      text_input  TextInput instance\n\n @return     View instance that can be used for embedding"]
+    #[doc = "Get text input view\n\nReturns:\n\n* View instance that can be used for embedding\n\n# Arguments\n\n* `text_input` - TextInput instance\n\n"]
     pub fn text_input_get_view(text_input: *mut TextInput) -> *mut View;
 }
 extern "C" {
-    #[doc = " Set text input result callback\n\n @param      text_input          TextInput instance\n @param      callback            callback fn\n @param      callback_context    callback context\n @param      text_buffer         pointer to YOUR text buffer, that we going\n                                 to modify\n @param      text_buffer_size    YOUR text buffer size in bytes. Max string\n                                 length will be text_buffer_size-1.\n @param      clear_default_text  clear text from text_buffer on first OK\n                                 event"]
+    #[doc = "Set text input result callback\n\n# Arguments\n\n* `text_input` - TextInput instance\n* `callback` - callback fn\n* `callback_context` - callback context\n* `text_buffer` - pointer to YOUR text buffer, that we going to modify\n* `text_buffer_size` - YOUR text buffer size in bytes. Max string length will be text_buffer_size-1.\n* `clear_default_text` - clear text from text_buffer on first OK event\n\n"]
     pub fn text_input_set_result_callback(
         text_input: *mut TextInput,
         callback: TextInputCallback,
@@ -7050,7 +7050,7 @@ extern "C" {
     ) -> *mut core::ffi::c_void;
 }
 extern "C" {
-    #[doc = " Set text input header text\n\n @param      text_input  TextInput instance\n @param      text        text to be shown"]
+    #[doc = "Set text input header text\n\n# Arguments\n\n* `text_input` - TextInput instance\n* `text` - text to be shown\n\n"]
     pub fn text_input_set_header_text(text_input: *mut TextInput, text: *const core::ffi::c_char);
 }
 #[repr(C)]
@@ -7068,23 +7068,23 @@ pub type VariableItemChangeCallback =
 pub type VariableItemListEnterCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void, index: u32)>;
 extern "C" {
-    #[doc = " Allocate and initialize VariableItemList\n\n @return     VariableItemList*"]
+    #[doc = "Allocate and initialize VariableItemList\n\nReturns:\n\n* VariableItemList*\n\n"]
     pub fn variable_item_list_alloc() -> *mut VariableItemList;
 }
 extern "C" {
-    #[doc = " Deinitialize and free VariableItemList\n\n @param      variable_item_list  VariableItemList instance"]
+    #[doc = "Deinitialize and free VariableItemList\n\n# Arguments\n\n* `variable_item_list` - VariableItemList instance\n\n"]
     pub fn variable_item_list_free(variable_item_list: *mut VariableItemList);
 }
 extern "C" {
-    #[doc = " Clear all elements from list\n\n @param      variable_item_list  VariableItemList instance"]
+    #[doc = "Clear all elements from list\n\n# Arguments\n\n* `variable_item_list` - VariableItemList instance\n\n"]
     pub fn variable_item_list_reset(variable_item_list: *mut VariableItemList);
 }
 extern "C" {
-    #[doc = " Get VariableItemList View instance\n\n @param      variable_item_list  VariableItemList instance\n\n @return     View instance"]
+    #[doc = "Get VariableItemList View instance\n\nReturns:\n\n* View instance\n\n# Arguments\n\n* `variable_item_list` - VariableItemList instance\n\n"]
     pub fn variable_item_list_get_view(variable_item_list: *mut VariableItemList) -> *mut View;
 }
 extern "C" {
-    #[doc = " Add item to VariableItemList\n\n @param      variable_item_list  VariableItemList instance\n @param      label               item name\n @param      values_count        item values count\n @param      change_callback     called on value change in gui\n @param      context             item context\n\n @return     VariableItem* item instance"]
+    #[doc = "Add item to VariableItemList\n\nReturns:\n\n* VariableItem* item instance\n\n# Arguments\n\n* `variable_item_list` - VariableItemList instance\n* `label` - item name\n* `values_count` - item values count\n* `change_callback` - called on value change in gui\n* `context` - item context\n\n"]
     pub fn variable_item_list_add(
         variable_item_list: *mut VariableItemList,
         label: *const core::ffi::c_char,
@@ -7094,7 +7094,7 @@ extern "C" {
     ) -> *mut VariableItem;
 }
 extern "C" {
-    #[doc = " Set enter callback\n\n @param      variable_item_list  VariableItemList instance\n @param      callback            VariableItemListEnterCallback instance\n @param      context             pointer to context"]
+    #[doc = "Set enter callback\n\n# Arguments\n\n* `variable_item_list` - VariableItemList instance\n* `callback` - VariableItemListEnterCallback instance\n* `context` - pointer to context\n\n"]
     pub fn variable_item_list_set_enter_callback(
         variable_item_list: *mut VariableItemList,
         callback: VariableItemListEnterCallback,
@@ -7113,26 +7113,26 @@ extern "C" {
     ) -> u8;
 }
 extern "C" {
-    #[doc = " Set item current selected index\n\n @param      item                 VariableItem* instance\n @param      current_value_index  The current value index"]
+    #[doc = "Set item current selected index\n\n# Arguments\n\n* `item` - VariableItem* instance\n* `current_value_index` - The current value index\n\n"]
     pub fn variable_item_set_current_value_index(item: *mut VariableItem, current_value_index: u8);
 }
 extern "C" {
-    #[doc = " Set number of values for item\n\n @param      item                 VariableItem* instance\n @param      values_count         The new values count"]
+    #[doc = "Set number of values for item\n\n# Arguments\n\n* `item` - VariableItem* instance\n* `values_count` - The new values count\n\n"]
     pub fn variable_item_set_values_count(item: *mut VariableItem, values_count: u8);
 }
 extern "C" {
-    #[doc = " Set item current selected text\n\n @param      item                VariableItem* instance\n @param      current_value_text  The current value text"]
+    #[doc = "Set item current selected text\n\n# Arguments\n\n* `item` - VariableItem* instance\n* `current_value_text` - The current value text\n\n"]
     pub fn variable_item_set_current_value_text(
         item: *mut VariableItem,
         current_value_text: *const core::ffi::c_char,
     );
 }
 extern "C" {
-    #[doc = " Get item current selected index\n\n @param      item  VariableItem* instance\n\n @return     uint8_t current selected index"]
+    #[doc = "Get item current selected index\n\nReturns:\n\n* uint8_t current selected index\n\n# Arguments\n\n* `item` - VariableItem* instance\n\n"]
     pub fn variable_item_get_current_value_index(item: *mut VariableItem) -> u8;
 }
 extern "C" {
-    #[doc = " Get item context\n\n @param      item  VariableItem* instance\n\n @return     void* item context"]
+    #[doc = "Get item context\n\nReturns:\n\n* void* item context\n\n# Arguments\n\n* `item` - VariableItem* instance\n\n"]
     pub fn variable_item_get_context(item: *mut VariableItem) -> *mut core::ffi::c_void;
 }
 pub const GuiButtonType_GuiButtonTypeLeft: GuiButtonType = 0;
@@ -7148,23 +7148,23 @@ pub struct Widget {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocate Widget that holds Widget Elements\n\n @return     Widget instance"]
+    #[doc = "Allocate Widget that holds Widget Elements\n\nReturns:\n\n* Widget instance\n\n"]
     pub fn widget_alloc() -> *mut Widget;
 }
 extern "C" {
-    #[doc = " Free Widget\n @note       this function free allocated Widget Elements\n\n @param      widget  Widget instance"]
+    #[doc = "Free Widget\n\n# Arguments\n\n* `widget` - Widget instance\n\n# Notes\n\n* this function free allocated Widget Elements\n\n"]
     pub fn widget_free(widget: *mut Widget);
 }
 extern "C" {
-    #[doc = " Reset Widget\n\n @param      widget  Widget instance"]
+    #[doc = "Reset Widget\n\n# Arguments\n\n* `widget` - Widget instance\n\n"]
     pub fn widget_reset(widget: *mut Widget);
 }
 extern "C" {
-    #[doc = " Get Widget view\n\n @param      widget  Widget instance\n\n @return     View instance"]
+    #[doc = "Get Widget view\n\nReturns:\n\n* View instance\n\n# Arguments\n\n* `widget` - Widget instance\n\n"]
     pub fn widget_get_view(widget: *mut Widget) -> *mut View;
 }
 extern "C" {
-    #[doc = " Add Multi String Element\n\n @param      widget      Widget instance\n @param      x           x coordinate\n @param      y           y coordinate\n @param      horizontal  Align instance\n @param      vertical    Align instance\n @param      font        Font instance\n @param[in]  text        The text"]
+    #[doc = "Add Multi String Element\n\n# Arguments\n\n* `widget` - Widget instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `horizontal` - Align instance\n* `vertical` - Align instance\n* `font` - Font instance\n* `text` - [Direction: In] The text\n\n"]
     pub fn widget_add_string_multiline_element(
         widget: *mut Widget,
         x: u8,
@@ -7176,7 +7176,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Add String Element\n\n @param      widget      Widget instance\n @param      x           x coordinate\n @param      y           y coordinate\n @param      horizontal  Align instance\n @param      vertical    Align instance\n @param      font        Font instance\n @param[in]  text        The text"]
+    #[doc = "Add String Element\n\n# Arguments\n\n* `widget` - Widget instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `horizontal` - Align instance\n* `vertical` - Align instance\n* `font` - Font instance\n* `text` - [Direction: In] The text\n\n"]
     pub fn widget_add_string_element(
         widget: *mut Widget,
         x: u8,
@@ -7188,7 +7188,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Add Text Box Element\n\n @param      widget           Widget instance\n @param      x                x coordinate\n @param      y                y coordinate\n @param      width            width to fit text\n @param      height           height to fit text\n @param      horizontal       Align instance\n @param      vertical         Align instance\n @param[in]  text             Formatted text. The following formats are available:\n                               \"\\e#Bold text\\e#\" - bold font is used\n                               \"\\e*Monospaced text\\e*\" - monospaced font is used\n                               \"\\e!Inversed text\\e!\" - white text on black background\n @param      strip_to_dots    Strip text to ... if does not fit to width"]
+    #[doc = "Add Text Box Element\n\n# Arguments\n\n* `widget` - Widget instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `width` - width to fit text\n* `height` - height to fit text\n* `horizontal` - Align instance\n* `vertical` - Align instance\n* `text` - [Direction: In] Formatted text. The following formats are available:\n  * text\\e#\"* - bold font is used\n  * text\\e*\"* - monospaced font is used\n  * text\\e!\"* - white text on black background\n* `strip_to_dots` - Strip text to ... if does not fit to width\n\n"]
     pub fn widget_add_text_box_element(
         widget: *mut Widget,
         x: u8,
@@ -7202,7 +7202,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Add Text Scroll Element\n\n @param      widget           Widget instance\n @param      x                x coordinate\n @param      y                y coordinate\n @param      width            width to fit text\n @param      height           height to fit text\n @param[in]  text             Formatted text. Default format: align left, Secondary font.\n                              The following formats are available:\n                               \"\\e#Bold text\" - sets bold font before until next '\\n' symbol\n                               \"\\ecCenter-aligned text\" - sets center horizontal align until the next '\\n' symbol\n                               \"\\erRight-aligned text\" - sets right horizontal align until the next '\\n' symbol"]
+    #[doc = "Add Text Scroll Element\n\n# Arguments\n\n* `widget` - Widget instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `width` - width to fit text\n* `height` - height to fit text\n* `text` - [Direction: In] Formatted text. Default format: align left, Secondary font. The following formats are available:\n  * \n    * text\"* - sets bold font before until next '\\n' symbol\n    * text\"* - sets center horizontal align until the next '\\n' symbol\n    * text\"* - sets right horizontal align until the next '\\n' symbol\n\n"]
     pub fn widget_add_text_scroll_element(
         widget: *mut Widget,
         x: u8,
@@ -7213,7 +7213,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Add Button Element\n\n @param      widget       Widget instance\n @param      button_type  GuiButtonType instance\n @param      text         text on allocated button\n @param      callback     ButtonCallback instance\n @param      context      pointer to context"]
+    #[doc = "Add Button Element\n\n# Arguments\n\n* `widget` - Widget instance\n* `button_type` - GuiButtonType instance\n* `text` - text on allocated button\n* `callback` - ButtonCallback instance\n* `context` - pointer to context\n\n"]
     pub fn widget_add_button_element(
         widget: *mut Widget,
         button_type: GuiButtonType,
@@ -7223,11 +7223,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Add Icon Element\n\n @param      widget  Widget instance\n @param      x       top left x coordinate\n @param      y       top left y coordinate\n @param      icon    Icon instance"]
+    #[doc = "Add Icon Element\n\n# Arguments\n\n* `widget` - Widget instance\n* `x` - top left x coordinate\n* `y` - top left y coordinate\n* `icon` - Icon instance\n\n"]
     pub fn widget_add_icon_element(widget: *mut Widget, x: u8, y: u8, icon: *const Icon);
 }
 extern "C" {
-    #[doc = " Add Frame Element\n\n @param      widget  Widget instance\n @param      x       top left x coordinate\n @param      y       top left y coordinate\n @param      width   frame width\n @param      height  frame height\n @param      radius  frame radius"]
+    #[doc = "Add Frame Element\n\n# Arguments\n\n* `widget` - Widget instance\n* `x` - top left x coordinate\n* `y` - top left y coordinate\n* `width` - frame width\n* `height` - frame height\n* `radius` - frame radius\n\n"]
     pub fn widget_add_frame_element(
         widget: *mut Widget,
         x: u8,
@@ -7240,9 +7240,9 @@ extern "C" {
 pub const SceneManagerEventType_SceneManagerEventTypeCustom: SceneManagerEventType = 0;
 pub const SceneManagerEventType_SceneManagerEventTypeBack: SceneManagerEventType = 1;
 pub const SceneManagerEventType_SceneManagerEventTypeTick: SceneManagerEventType = 2;
-#[doc = " Scene Manager events type"]
+#[doc = "Scene Manager events type\n\n"]
 pub type SceneManagerEventType = core::ffi::c_uchar;
-#[doc = " Scene Manager event"]
+#[doc = "Scene Manager event\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct SceneManagerEvent {
@@ -7284,17 +7284,17 @@ fn bindgen_test_layout_SceneManagerEvent() {
         )
     );
 }
-#[doc = " Prototype for Scene on_enter handler"]
+#[doc = "Prototype for Scene on_enter handler\n\n"]
 pub type AppSceneOnEnterCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
-#[doc = " Prototype for Scene on_event handler"]
+#[doc = "Prototype for Scene on_event handler\n\n"]
 pub type AppSceneOnEventCallback = ::core::option::Option<
     unsafe extern "C" fn(context: *mut core::ffi::c_void, event: SceneManagerEvent) -> bool,
 >;
-#[doc = " Prototype for Scene on_exit handler"]
+#[doc = "Prototype for Scene on_exit handler\n\n"]
 pub type AppSceneOnExitCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
-#[doc = " Scene Manager configuration structure\n Contains array of Scene handlers"]
+#[doc = "Scene Manager configuration structure Contains array of Scene handlers\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct SceneManagerHandlers {
@@ -7365,7 +7365,7 @@ pub struct SceneManager {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Set Scene state\n\n @param      scene_manager  SceneManager instance\n @param      scene_id       Scene ID\n @param      state          Scene new state"]
+    #[doc = "Set Scene state\n\n# Arguments\n\n* `scene_manager` - SceneManager instance\n* `scene_id` - Scene ID\n* `state` - Scene new state\n\n"]
     pub fn scene_manager_set_scene_state(
         scene_manager: *mut SceneManager,
         scene_id: u32,
@@ -7373,59 +7373,59 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Get Scene state\n\n @param      scene_manager  SceneManager instance\n @param      scene_id       Scene ID\n\n @return     Scene state"]
+    #[doc = "Get Scene state\n\nReturns:\n\n* Scene state\n\n# Arguments\n\n* `scene_manager` - SceneManager instance\n* `scene_id` - Scene ID\n\n"]
     pub fn scene_manager_get_scene_state(scene_manager: *const SceneManager, scene_id: u32) -> u32;
 }
 extern "C" {
-    #[doc = " Scene Manager allocation and configuration\n\n Scene Manager allocates all scenes internally\n\n @param      app_scene_handlers  SceneManagerHandlers instance\n @param      context             context to be set on Scene handlers calls\n\n @return     SceneManager instance"]
+    #[doc = "Scene Manager allocation and configuration\nScene Manager allocates all scenes internally\n\nReturns:\n\n* SceneManager instance\n\n# Arguments\n\n* `app_scene_handlers` - SceneManagerHandlers instance\n* `context` - context to be set on Scene handlers calls\n\n"]
     pub fn scene_manager_alloc(
         app_scene_handlers: *const SceneManagerHandlers,
         context: *mut core::ffi::c_void,
     ) -> *mut SceneManager;
 }
 extern "C" {
-    #[doc = " Free Scene Manager with allocated Scenes\n\n @param      scene_manager  SceneManager instance"]
+    #[doc = "Free Scene Manager with allocated Scenes\n\n# Arguments\n\n* `scene_manager` - SceneManager instance\n\n"]
     pub fn scene_manager_free(scene_manager: *mut SceneManager);
 }
 extern "C" {
-    #[doc = " Custom event handler\n\n Calls Scene event handler with Custom event parameter\n\n @param      scene_manager  SceneManager instance\n @param      custom_event   Custom event code\n\n @return     true if event was consumed, false otherwise"]
+    #[doc = "Custom event handler\nCalls Scene event handler with Custom event parameter\n\nReturns:\n\n* true if event was consumed, false otherwise\n\n# Arguments\n\n* `scene_manager` - SceneManager instance\n* `custom_event` - Custom event code\n\n"]
     pub fn scene_manager_handle_custom_event(
         scene_manager: *mut SceneManager,
         custom_event: u32,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Back event handler\n\n Calls Scene event handler with Back event parameter\n\n @param      scene_manager  SceneManager instance\n\n @return     true if event was consumed, false otherwise"]
+    #[doc = "Back event handler\nCalls Scene event handler with Back event parameter\n\nReturns:\n\n* true if event was consumed, false otherwise\n\n# Arguments\n\n* `scene_manager` - SceneManager instance\n\n"]
     pub fn scene_manager_handle_back_event(scene_manager: *mut SceneManager) -> bool;
 }
 extern "C" {
-    #[doc = " Tick event handler\n\n Calls Scene event handler with Tick event parameter\n\n @param      scene_manager  SceneManager instance\n @return     true if event was consumed, false otherwise"]
+    #[doc = "Tick event handler\nCalls Scene event handler with Tick event parameter\n\nReturns:\n\n* true if event was consumed, false otherwise\n\n# Arguments\n\n* `scene_manager` - SceneManager instance\n\n"]
     pub fn scene_manager_handle_tick_event(scene_manager: *mut SceneManager);
 }
 extern "C" {
-    #[doc = " Add and run next Scene\n\n @param      scene_manager  SceneManager instance\n @param      next_scene_id  next Scene ID"]
+    #[doc = "Add and run next Scene\n\n# Arguments\n\n* `scene_manager` - SceneManager instance\n* `next_scene_id` - next Scene ID\n\n"]
     pub fn scene_manager_next_scene(scene_manager: *mut SceneManager, next_scene_id: u32);
 }
 extern "C" {
-    #[doc = " Run previous Scene\n\n @param      scene_manager  SceneManager instance\n\n @return     true if previous scene was found, false otherwise"]
+    #[doc = "Run previous Scene\n\nReturns:\n\n* true if previous scene was found, false otherwise\n\n# Arguments\n\n* `scene_manager` - SceneManager instance\n\n"]
     pub fn scene_manager_previous_scene(scene_manager: *mut SceneManager) -> bool;
 }
 extern "C" {
-    #[doc = " Search previous Scene\n\n @param      scene_manager  SceneManager instance\n @param      scene_id       Scene ID\n\n @return     true if previous scene was found, false otherwise"]
+    #[doc = "Search previous Scene\n\nReturns:\n\n* true if previous scene was found, false otherwise\n\n# Arguments\n\n* `scene_manager` - SceneManager instance\n* `scene_id` - Scene ID\n\n"]
     pub fn scene_manager_has_previous_scene(
         scene_manager: *const SceneManager,
         scene_id: u32,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Search and switch to previous Scene\n\n @param      scene_manager  SceneManager instance\n @param      scene_id       Scene ID\n\n @return     true if previous scene was found, false otherwise"]
+    #[doc = "Search and switch to previous Scene\n\nReturns:\n\n* true if previous scene was found, false otherwise\n\n# Arguments\n\n* `scene_manager` - SceneManager instance\n* `scene_id` - Scene ID\n\n"]
     pub fn scene_manager_search_and_switch_to_previous_scene(
         scene_manager: *mut SceneManager,
         scene_id: u32,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Search and switch to previous Scene, multiple choice\n\n @param      scene_manager    SceneManager instance\n @param      scene_ids        Array of scene IDs\n @param      scene_ids_size   Array of scene IDs size\n\n @return     true if one of previous scenes was found, false otherwise"]
+    #[doc = "Search and switch to previous Scene, multiple choice\n\nReturns:\n\n* true if one of previous scenes was found, false otherwise\n\n# Arguments\n\n* `scene_manager` - SceneManager instance\n* `scene_ids` - Array of scene IDs\n* `scene_ids_size` - Array of scene IDs size\n\n"]
     pub fn scene_manager_search_and_switch_to_previous_scene_one_of(
         scene_manager: *mut SceneManager,
         scene_ids: *const u32,
@@ -7433,71 +7433,71 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Clear Scene stack and switch to another Scene\n\n @param      scene_manager  SceneManager instance\n @param      scene_id       Scene ID\n\n @return     true if previous scene was found, false otherwise"]
+    #[doc = "Clear Scene stack and switch to another Scene\n\nReturns:\n\n* true if previous scene was found, false otherwise\n\n# Arguments\n\n* `scene_manager` - SceneManager instance\n* `scene_id` - Scene ID\n\n"]
     pub fn scene_manager_search_and_switch_to_another_scene(
         scene_manager: *mut SceneManager,
         scene_id: u32,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Exit from current scene\n\n @param      scene_manager  SceneManager instance"]
+    #[doc = "Exit from current scene\n\n# Arguments\n\n* `scene_manager` - SceneManager instance\n\n"]
     pub fn scene_manager_stop(scene_manager: *mut SceneManager);
 }
-#[doc = "< Desktop layer: fullscreen with status bar on top of it. For internal usage."]
+#[doc = "Desktop layer: fullscreen with status bar on top of it. For internal usage.\n\n"]
 pub const ViewDispatcherType_ViewDispatcherTypeDesktop: ViewDispatcherType = 0;
-#[doc = "< Window layer: with status bar"]
+#[doc = "Window layer: with status bar\n\n"]
 pub const ViewDispatcherType_ViewDispatcherTypeWindow: ViewDispatcherType = 1;
-#[doc = "< Fullscreen layer: without status bar"]
+#[doc = "Fullscreen layer: without status bar\n\n"]
 pub const ViewDispatcherType_ViewDispatcherTypeFullscreen: ViewDispatcherType = 2;
-#[doc = " ViewDispatcher view_port placement"]
+#[doc = "ViewDispatcher view_port placement\n\n"]
 pub type ViewDispatcherType = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct ViewDispatcher {
     _unused: [u8; 0],
 }
-#[doc = " Prototype for custom event callback"]
+#[doc = "Prototype for custom event callback\n\n"]
 pub type ViewDispatcherCustomEventCallback = ::core::option::Option<
     unsafe extern "C" fn(context: *mut core::ffi::c_void, event: u32) -> bool,
 >;
-#[doc = " Prototype for navigation event callback"]
+#[doc = "Prototype for navigation event callback\n\n"]
 pub type ViewDispatcherNavigationEventCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void) -> bool>;
-#[doc = " Prototype for tick event callback"]
+#[doc = "Prototype for tick event callback\n\n"]
 pub type ViewDispatcherTickEventCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
 extern "C" {
-    #[doc = " Allocate ViewDispatcher instance\n\n @return     pointer to ViewDispatcher instance"]
+    #[doc = "Allocate ViewDispatcher instance\n\nReturns:\n\n* pointer to ViewDispatcher instance\n\n"]
     pub fn view_dispatcher_alloc() -> *mut ViewDispatcher;
 }
 extern "C" {
-    #[doc = " Free ViewDispatcher instance\n\n @param      view_dispatcher  pointer to ViewDispatcher"]
+    #[doc = "Free ViewDispatcher instance\n\n# Arguments\n\n* `view_dispatcher` - pointer to ViewDispatcher\n\n"]
     pub fn view_dispatcher_free(view_dispatcher: *mut ViewDispatcher);
 }
 extern "C" {
-    #[doc = " Enable queue support\n\n If queue enabled all input and custom events will be dispatched throw\n internal queue\n\n @param      view_dispatcher  ViewDispatcher instance"]
+    #[doc = "Enable queue support\nIf queue enabled all input and custom events will be dispatched throw internal queue\n\n# Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n\n"]
     pub fn view_dispatcher_enable_queue(view_dispatcher: *mut ViewDispatcher);
 }
 extern "C" {
-    #[doc = " Send custom event\n\n @param      view_dispatcher  ViewDispatcher instance\n @param[in]  event            The event"]
+    #[doc = "Send custom event\n\n# Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n* `event` - [Direction: In] The event\n\n"]
     pub fn view_dispatcher_send_custom_event(view_dispatcher: *mut ViewDispatcher, event: u32);
 }
 extern "C" {
-    #[doc = " Set custom event handler\n\n Called on Custom Event, if it is not consumed by view\n\n @param      view_dispatcher  ViewDispatcher instance\n @param      callback         ViewDispatcherCustomEventCallback instance"]
+    #[doc = "Set custom event handler\nCalled on Custom Event, if it is not consumed by view\n\n# Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n* `callback` - ViewDispatcherCustomEventCallback instance\n\n"]
     pub fn view_dispatcher_set_custom_event_callback(
         view_dispatcher: *mut ViewDispatcher,
         callback: ViewDispatcherCustomEventCallback,
     );
 }
 extern "C" {
-    #[doc = " Set navigation event handler\n\n Called on Input Short Back Event, if it is not consumed by view\n\n @param      view_dispatcher  ViewDispatcher instance\n @param      callback         ViewDispatcherNavigationEventCallback instance"]
+    #[doc = "Set navigation event handler\nCalled on Input Short Back Event, if it is not consumed by view\n\n# Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n* `callback` - ViewDispatcherNavigationEventCallback instance\n\n"]
     pub fn view_dispatcher_set_navigation_event_callback(
         view_dispatcher: *mut ViewDispatcher,
         callback: ViewDispatcherNavigationEventCallback,
     );
 }
 extern "C" {
-    #[doc = " Set tick event handler\n\n @param      view_dispatcher  ViewDispatcher instance\n @param      callback         ViewDispatcherTickEventCallback\n @param      tick_period      callback call period"]
+    #[doc = "Set tick event handler\n\n# Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n* `callback` - ViewDispatcherTickEventCallback\n* `tick_period` - callback call period\n\n"]
     pub fn view_dispatcher_set_tick_event_callback(
         view_dispatcher: *mut ViewDispatcher,
         callback: ViewDispatcherTickEventCallback,
@@ -7505,22 +7505,22 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Set event callback context\n\n @param      view_dispatcher  ViewDispatcher instance\n @param      context          pointer to context"]
+    #[doc = "Set event callback context\n\n# Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n* `context` - pointer to context\n\n"]
     pub fn view_dispatcher_set_event_callback_context(
         view_dispatcher: *mut ViewDispatcher,
         context: *mut core::ffi::c_void,
     );
 }
 extern "C" {
-    #[doc = " Run ViewDispatcher\n\n Use only after queue enabled\n\n @param      view_dispatcher  ViewDispatcher instance"]
+    #[doc = "Run ViewDispatcher\nUse only after queue enabled\n\n# Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n\n"]
     pub fn view_dispatcher_run(view_dispatcher: *mut ViewDispatcher);
 }
 extern "C" {
-    #[doc = " Stop ViewDispatcher\n\n Use only after queue enabled\n\n @param      view_dispatcher  ViewDispatcher instance"]
+    #[doc = "Stop ViewDispatcher\nUse only after queue enabled\n\n# Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n\n"]
     pub fn view_dispatcher_stop(view_dispatcher: *mut ViewDispatcher);
 }
 extern "C" {
-    #[doc = " Add view to ViewDispatcher\n\n @param      view_dispatcher  ViewDispatcher instance\n @param      view_id          View id to register\n @param      view             View instance"]
+    #[doc = "Add view to ViewDispatcher\n\n# Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n* `view_id` - View id to register\n* `view` - View instance\n\n"]
     pub fn view_dispatcher_add_view(
         view_dispatcher: *mut ViewDispatcher,
         view_id: u32,
@@ -7528,23 +7528,23 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Remove view from ViewDispatcher\n\n @param      view_dispatcher  ViewDispatcher instance\n @param      view_id          View id to remove"]
+    #[doc = "Remove view from ViewDispatcher\n\n# Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n* `view_id` - View id to remove\n\n"]
     pub fn view_dispatcher_remove_view(view_dispatcher: *mut ViewDispatcher, view_id: u32);
 }
 extern "C" {
-    #[doc = " Switch to View\n\n @param      view_dispatcher  ViewDispatcher instance\n @param      view_id          View id to register\n @warning    switching may be delayed till input events complementarity\n             reached"]
+    #[doc = "Switch to View\n\n**Warning!**\n\n* switching may be delayed till input events complementarity reached\n\n# Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n* `view_id` - View id to register\n\n"]
     pub fn view_dispatcher_switch_to_view(view_dispatcher: *mut ViewDispatcher, view_id: u32);
 }
 extern "C" {
-    #[doc = " Send ViewPort of this ViewDispatcher instance to front\n\n @param      view_dispatcher  ViewDispatcher instance"]
+    #[doc = "Send ViewPort of this ViewDispatcher instance to front\n\n# Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n\n"]
     pub fn view_dispatcher_send_to_front(view_dispatcher: *mut ViewDispatcher);
 }
 extern "C" {
-    #[doc = " Send ViewPort of this ViewDispatcher instance to back\n\n @param      view_dispatcher  ViewDispatcher instance"]
+    #[doc = "Send ViewPort of this ViewDispatcher instance to back\n\n# Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n\n"]
     pub fn view_dispatcher_send_to_back(view_dispatcher: *mut ViewDispatcher);
 }
 extern "C" {
-    #[doc = " Attach ViewDispatcher to GUI\n\n @param      view_dispatcher  ViewDispatcher instance\n @param      gui              GUI instance to attach to\n @param[in]  type             The type"]
+    #[doc = "Attach ViewDispatcher to GUI\n\n# Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n* `gui` - GUI instance to attach to\n* `type` - [Direction: In] The type\n\n"]
     pub fn view_dispatcher_attach_to_gui(
         view_dispatcher: *mut ViewDispatcher,
         gui: *mut Gui,
@@ -7557,23 +7557,23 @@ pub struct ViewStack {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocate and init ViewStack\n\n @return      ViewStack instance"]
+    #[doc = "Allocate and init ViewStack\n\nReturns:\n\n* ViewStack instance\n\n"]
     pub fn view_stack_alloc() -> *mut ViewStack;
 }
 extern "C" {
-    #[doc = " Free ViewStack instance\n\n @param       view_stack  instance"]
+    #[doc = "Free ViewStack instance\n\n# Arguments\n\n* `view_stack` - instance\n\n"]
     pub fn view_stack_free(view_stack: *mut ViewStack);
 }
 extern "C" {
-    #[doc = " Get View of ViewStack.\n Should this View to any view manager such as\n ViewDispatcher or ViewHolder.\n\n @param       view_stack  instance"]
+    #[doc = "Get View of ViewStack. Should this View to any view manager such as ViewDispatcher or ViewHolder.\n\n# Arguments\n\n* `view_stack` - instance\n\n"]
     pub fn view_stack_get_view(view_stack: *mut ViewStack) -> *mut View;
 }
 extern "C" {
-    #[doc = " Add View to ViewStack.\n Adds View on top of ViewStack.\n\n @param       view_stack  instance\n @view        view        view to add"]
+    #[doc = "Add View to ViewStack. Adds View on top of ViewStack.\n\n# Arguments\n\n* `view_stack` - instance\n\n"]
     pub fn view_stack_add_view(view_stack: *mut ViewStack, view: *mut View);
 }
 extern "C" {
-    #[doc = " Remove any View in ViewStack.\n If no View to remove found - ignore.\n\n @param       view_stack  instance\n @view        view        view to remove"]
+    #[doc = "Remove any View in ViewStack. If no View to remove found - ignore.\n\n# Arguments\n\n* `view_stack` - instance\n\n"]
     pub fn view_stack_remove_view(view_stack: *mut ViewStack, view: *mut View);
 }
 #[repr(C)]
@@ -7587,7 +7587,7 @@ pub const LoaderStatus_LoaderStatusErrorUnknownApp: LoaderStatus = 2;
 pub const LoaderStatus_LoaderStatusErrorInternal: LoaderStatus = 3;
 pub type LoaderStatus = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Start application\n @param name - application name\n @param args - application arguments\n @retval true on success"]
+    #[doc = "Start application\n\n# Arguments\n\n* `name` - - application name\n* `args` - - application arguments\n\n# Return values\n* true on success\n\n"]
     pub fn loader_start(
         instance: *mut Loader,
         name: *const core::ffi::c_char,
@@ -7595,30 +7595,30 @@ extern "C" {
     ) -> LoaderStatus;
 }
 extern "C" {
-    #[doc = " Lock application start\n @retval true on success"]
+    #[doc = "Lock application start\n\n# Return values\n* true on success\n\n"]
     pub fn loader_lock(instance: *mut Loader) -> bool;
 }
 extern "C" {
-    #[doc = " Unlock application start"]
+    #[doc = "Unlock application start\n\n"]
     pub fn loader_unlock(instance: *mut Loader);
 }
 extern "C" {
-    #[doc = " Get loader lock status"]
+    #[doc = "Get loader lock status\n\n"]
     pub fn loader_is_locked(instance: *const Loader) -> bool;
 }
 extern "C" {
-    #[doc = " Show primary loader"]
+    #[doc = "Show primary loader\n\n"]
     pub fn loader_show_menu();
 }
 extern "C" {
-    #[doc = " Show primary loader"]
+    #[doc = "Show primary loader\n\n"]
     pub fn loader_update_menu();
 }
 extern "C" {
-    #[doc = " Show primary loader"]
+    #[doc = "Show primary loader\n\n"]
     pub fn loader_get_pubsub(instance: *mut Loader) -> *mut FuriPubSub;
 }
-#[doc = " Cortex timer provides high precision low level expiring timer"]
+#[doc = "Cortex timer provides high precision low level expiring timer\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FuriHalCortexTimer {
@@ -7661,23 +7661,23 @@ fn bindgen_test_layout_FuriHalCortexTimer() {
     );
 }
 extern "C" {
-    #[doc = " Microseconds delay\n\n @param[in]  microseconds  The microseconds to wait"]
+    #[doc = "Microseconds delay\n\n# Arguments\n\n* `microseconds` - [Direction: In] The microseconds to wait\n\n"]
     pub fn furi_hal_cortex_delay_us(microseconds: u32);
 }
 extern "C" {
-    #[doc = " Get instructions per microsecond count\n\n @return     instructions per microsecond count"]
+    #[doc = "Get instructions per microsecond count\n\nReturns:\n\n* instructions per microsecond count\n\n"]
     pub fn furi_hal_cortex_instructions_per_microsecond() -> u32;
 }
 extern "C" {
-    #[doc = " Get Timer\n\n @param[in]  timeout_us  The expire timeout in us\n\n @return     The FuriHalCortexTimer"]
+    #[doc = "Get Timer\n\nReturns:\n\n* The FuriHalCortexTimer\n\n# Arguments\n\n* `timeout_us` - [Direction: In] The expire timeout in us\n\n"]
     pub fn furi_hal_cortex_timer_get(timeout_us: u32) -> FuriHalCortexTimer;
 }
 extern "C" {
-    #[doc = " Check if timer expired\n\n @param[in]  cortex_timer  The FuriHalCortexTimer\n\n @return     true if expired"]
+    #[doc = "Check if timer expired\n\nReturns:\n\n* true if expired\n\n# Arguments\n\n* `cortex_timer` - [Direction: In] The FuriHalCortexTimer\n\n"]
     pub fn furi_hal_cortex_timer_is_expired(cortex_timer: FuriHalCortexTimer) -> bool;
 }
 extern "C" {
-    #[doc = " Wait for timer expire\n\n @param[in]  cortex_timer  The FuriHalCortexTimer"]
+    #[doc = "Wait for timer expire\n\n# Arguments\n\n* `cortex_timer` - [Direction: In] The FuriHalCortexTimer\n\n"]
     pub fn furi_hal_cortex_timer_wait(cortex_timer: FuriHalCortexTimer);
 }
 extern "C" {
@@ -7708,29 +7708,29 @@ pub const FuriHalClockMcoDivisorId_FuriHalClockMcoDiv8: FuriHalClockMcoDivisorId
 pub const FuriHalClockMcoDivisorId_FuriHalClockMcoDiv16: FuriHalClockMcoDivisorId = 1073741824;
 pub type FuriHalClockMcoDivisorId = core::ffi::c_uint;
 extern "C" {
-    #[doc = " Enable clock output on MCO pin\n\n @param      source  MCO clock source\n @param      div     MCO clock division"]
+    #[doc = "Enable clock output on MCO pin\n\n# Arguments\n\n* `source` - MCO clock source\n* `div` - MCO clock division\n\n"]
     pub fn furi_hal_clock_mco_enable(
         source: FuriHalClockMcoSourceId,
         div: FuriHalClockMcoDivisorId,
     );
 }
 extern "C" {
-    #[doc = " Disable clock output on MCO pin"]
+    #[doc = "Disable clock output on MCO pin\n\n"]
     pub fn furi_hal_clock_mco_disable();
 }
-#[doc = "< Master key"]
+#[doc = "Master key\n\n"]
 pub const FuriHalCryptoKeyType_FuriHalCryptoKeyTypeMaster: FuriHalCryptoKeyType = 0;
-#[doc = "< Simple enencrypted key"]
+#[doc = "Simple enencrypted key\n\n"]
 pub const FuriHalCryptoKeyType_FuriHalCryptoKeyTypeSimple: FuriHalCryptoKeyType = 1;
-#[doc = "< Encrypted with Master key"]
+#[doc = "Encrypted with Master key\n\n"]
 pub const FuriHalCryptoKeyType_FuriHalCryptoKeyTypeEncrypted: FuriHalCryptoKeyType = 2;
-#[doc = " FuriHalCryptoKey Type"]
+#[doc = "FuriHalCryptoKey Type\n\n"]
 pub type FuriHalCryptoKeyType = core::ffi::c_uchar;
 pub const FuriHalCryptoKeySize_FuriHalCryptoKeySize128: FuriHalCryptoKeySize = 0;
 pub const FuriHalCryptoKeySize_FuriHalCryptoKeySize256: FuriHalCryptoKeySize = 1;
-#[doc = " FuriHalCryptoKey Size in bits"]
+#[doc = "FuriHalCryptoKey Size in bits\n\n"]
 pub type FuriHalCryptoKeySize = core::ffi::c_uchar;
-#[doc = " FuriHalCryptoKey"]
+#[doc = "FuriHalCryptoKey\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FuriHalCryptoKey {
@@ -7790,23 +7790,23 @@ extern "C" {
     pub fn furi_hal_crypto_verify_key(key_slot: u8) -> bool;
 }
 extern "C" {
-    #[doc = " Store key in crypto storage\n\n @param      key   FuriHalCryptoKey to store. Only Master, Simple or\n                   Encrypted\n @param      slot  pinter to int where store slot number will be saved\n\n @return     true on success"]
+    #[doc = "Store key in crypto storage\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `key` - FuriHalCryptoKey to store. Only Master, Simple or Encrypted\n* `slot` - pinter to int where store slot number will be saved\n\n"]
     pub fn furi_hal_crypto_store_add_key(key: *mut FuriHalCryptoKey, slot: *mut u8) -> bool;
 }
 extern "C" {
-    #[doc = " Init AES engine and load key from crypto store\n\n @param      slot  store slot number\n @param[in]  iv    pointer to 16 bytes Initialization Vector data\n\n @return     true on success"]
+    #[doc = "Init AES engine and load key from crypto store\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `slot` - store slot number\n* `iv` - [Direction: In] pointer to 16 bytes Initialization Vector data\n\n"]
     pub fn furi_hal_crypto_store_load_key(slot: u8, iv: *const u8) -> bool;
 }
 extern "C" {
-    #[doc = " Unload key engine and deinit AES engine\n\n @param      slot  store slot number\n\n @return     true on success"]
+    #[doc = "Unload key engine and deinit AES engine\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `slot` - store slot number\n\n"]
     pub fn furi_hal_crypto_store_unload_key(slot: u8) -> bool;
 }
 extern "C" {
-    #[doc = " Encrypt data\n\n @param      input   pointer to input data\n @param      output  pointer to output data\n @param      size    input/output buffer size in bytes\n\n @return     true on success"]
+    #[doc = "Encrypt data\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `input` - pointer to input data\n* `output` - pointer to output data\n* `size` - input/output buffer size in bytes\n\n"]
     pub fn furi_hal_crypto_encrypt(input: *const u8, output: *mut u8, size: usize) -> bool;
 }
 extern "C" {
-    #[doc = " Decrypt data\n\n @param      input   pointer to input data\n @param      output  pointer to output data\n @param      size    input/output buffer size in bytes\n\n @return     true on success"]
+    #[doc = "Decrypt data\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `input` - pointer to input data\n* `output` - pointer to output data\n* `size` - input/output buffer size in bytes\n\n"]
     pub fn furi_hal_crypto_decrypt(input: *const u8, output: *mut u8, size: usize) -> bool;
 }
 pub type FuriHalConsoleTxCallback = ::core::option::Option<
@@ -7834,46 +7834,46 @@ extern "C" {
     pub fn furi_hal_console_tx_with_new_line(buffer: *const u8, buffer_size: usize);
 }
 extern "C" {
-    #[doc = " Printf-like plain uart interface\n @warning Will not work in ISR context\n @param format\n @param ..."]
+    #[doc = "Printf-like plain uart interface\n\n**Warning!**\n\n* Will not work in ISR context\n\n# Arguments\n\n* `format` - \n* `...` - \n\n"]
     pub fn furi_hal_console_printf(format: *const core::ffi::c_char, ...);
 }
 extern "C" {
     pub fn furi_hal_console_puts(data: *const core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " Enable MCU debug"]
+    #[doc = "Enable MCU debug\n\n"]
     pub fn furi_hal_debug_enable();
 }
 extern "C" {
-    #[doc = " Disable MCU debug"]
+    #[doc = "Disable MCU debug\n\n"]
     pub fn furi_hal_debug_disable();
 }
 extern "C" {
     pub fn furi_hal_os_tick();
 }
-#[doc = " @brief  SPI Init structures definition"]
+#[doc = "SPI Init structures definition\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct LL_SPI_InitTypeDef {
-    #[doc = "< Specifies the SPI unidirectional or bidirectional data mode.\nThis parameter can be a value of @ref SPI_LL_EC_TRANSFER_MODE.\n\nThis feature can be modified afterwards using unitary function @ref LL_SPI_SetTransferDirection()."]
+    #[doc = "Specifies the SPI unidirectional or bidirectional data mode.\nThis parameter can be a value of  [`SPI_LL_EC_TRANSFER_MODE`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetTransferDirection()`]\n\n"]
     pub TransferDirection: u32,
-    #[doc = "< Specifies the SPI mode (Master/Slave).\nThis parameter can be a value of @ref SPI_LL_EC_MODE.\n\nThis feature can be modified afterwards using unitary function @ref LL_SPI_SetMode()."]
+    #[doc = "Specifies the SPI mode (Master/Slave).\nThis parameter can be a value of  [`SPI_LL_EC_MODE`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetMode()`]\n\n"]
     pub Mode: u32,
-    #[doc = "< Specifies the SPI data width.\nThis parameter can be a value of @ref SPI_LL_EC_DATAWIDTH.\n\nThis feature can be modified afterwards using unitary function @ref LL_SPI_SetDataWidth()."]
+    #[doc = "Specifies the SPI data width.\nThis parameter can be a value of  [`SPI_LL_EC_DATAWIDTH`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetDataWidth()`]\n\n"]
     pub DataWidth: u32,
-    #[doc = "< Specifies the serial clock steady state.\nThis parameter can be a value of @ref SPI_LL_EC_POLARITY.\n\nThis feature can be modified afterwards using unitary function @ref LL_SPI_SetClockPolarity()."]
+    #[doc = "Specifies the serial clock steady state.\nThis parameter can be a value of  [`SPI_LL_EC_POLARITY`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetClockPolarity()`]\n\n"]
     pub ClockPolarity: u32,
-    #[doc = "< Specifies the clock active edge for the bit capture.\nThis parameter can be a value of @ref SPI_LL_EC_PHASE.\n\nThis feature can be modified afterwards using unitary function @ref LL_SPI_SetClockPhase()."]
+    #[doc = "Specifies the clock active edge for the bit capture.\nThis parameter can be a value of  [`SPI_LL_EC_PHASE`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetClockPhase()`]\n\n"]
     pub ClockPhase: u32,
-    #[doc = "< Specifies whether the NSS signal is managed by hardware (NSS pin) or by software using the SSI bit.\nThis parameter can be a value of @ref SPI_LL_EC_NSS_MODE.\n\nThis feature can be modified afterwards using unitary function @ref LL_SPI_SetNSSMode()."]
+    #[doc = "Specifies whether the NSS signal is managed by hardware (NSS pin) or by software using the SSI bit.\nThis parameter can be a value of  [`SPI_LL_EC_NSS_MODE`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetNSSMode()`]\n\n"]
     pub NSS: u32,
-    #[doc = "< Specifies the BaudRate prescaler value which will be used to configure the transmit and receive SCK clock.\nThis parameter can be a value of @ref SPI_LL_EC_BAUDRATEPRESCALER.\n@note The communication clock is derived from the master clock. The slave clock does not need to be set.\n\nThis feature can be modified afterwards using unitary function @ref LL_SPI_SetBaudRatePrescaler()."]
+    #[doc = "Specifies the BaudRate prescaler value which will be used to configure the transmit and receive SCK clock.\nThis parameter can be a value of  [`SPI_LL_EC_BAUDRATEPRESCALER`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetBaudRatePrescaler()`]\n\n# Notes\n\n* The communication clock is derived from the master clock. The slave clock does not need to be set.\n\n"]
     pub BaudRate: u32,
-    #[doc = "< Specifies whether data transfers start from MSB or LSB bit.\nThis parameter can be a value of @ref SPI_LL_EC_BIT_ORDER.\n\nThis feature can be modified afterwards using unitary function @ref LL_SPI_SetTransferBitOrder()."]
+    #[doc = "Specifies whether data transfers start from MSB or LSB bit.\nThis parameter can be a value of  [`SPI_LL_EC_BIT_ORDER`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetTransferBitOrder()`]\n\n"]
     pub BitOrder: u32,
-    #[doc = "< Specifies if the CRC calculation is enabled or not.\nThis parameter can be a value of @ref SPI_LL_EC_CRC_CALCULATION.\n\nThis feature can be modified afterwards using unitary functions @ref LL_SPI_EnableCRC() and @ref LL_SPI_DisableCRC()."]
+    #[doc = "Specifies if the CRC calculation is enabled or not.\nThis parameter can be a value of  [`SPI_LL_EC_CRC_CALCULATION`]\nThis feature can be modified afterwards using unitary functions  [`LL_SPI_EnableCRC()`] and  [`LL_SPI_DisableCRC()`]\n\n"]
     pub CRCCalculation: u32,
-    #[doc = "< Specifies the polynomial used for the CRC calculation.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0xFFFF.\n\nThis feature can be modified afterwards using unitary function @ref LL_SPI_SetCRCPolynomial()."]
+    #[doc = "Specifies the polynomial used for the CRC calculation.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0xFFFF.\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetCRCPolynomial()`]\n\n"]
     pub CRCPoly: u32,
 }
 #[test]
@@ -7997,25 +7997,25 @@ extern "C" {
         SPI_InitStruct: *mut LL_SPI_InitTypeDef,
     ) -> ErrorStatus;
 }
-#[doc = "< Bus initialization event, called on system start"]
+#[doc = "Bus initialization event, called on system start\n\n"]
 pub const FuriHalSpiBusEvent_FuriHalSpiBusEventInit: FuriHalSpiBusEvent = 0;
-#[doc = "< Bus deinitialization event, called on system stop"]
+#[doc = "Bus deinitialization event, called on system stop\n\n"]
 pub const FuriHalSpiBusEvent_FuriHalSpiBusEventDeinit: FuriHalSpiBusEvent = 1;
-#[doc = "< Bus lock event, called before activation"]
+#[doc = "Bus lock event, called before activation\n\n"]
 pub const FuriHalSpiBusEvent_FuriHalSpiBusEventLock: FuriHalSpiBusEvent = 2;
-#[doc = "< Bus unlock event, called after deactivation"]
+#[doc = "Bus unlock event, called after deactivation\n\n"]
 pub const FuriHalSpiBusEvent_FuriHalSpiBusEventUnlock: FuriHalSpiBusEvent = 3;
-#[doc = "< Bus activation event, called before handle activation"]
+#[doc = "Bus activation event, called before handle activation\n\n"]
 pub const FuriHalSpiBusEvent_FuriHalSpiBusEventActivate: FuriHalSpiBusEvent = 4;
-#[doc = "< Bus deactivation event, called after handle deactivation"]
+#[doc = "Bus deactivation event, called after handle deactivation\n\n"]
 pub const FuriHalSpiBusEvent_FuriHalSpiBusEventDeactivate: FuriHalSpiBusEvent = 5;
-#[doc = " FuriHal spi bus states"]
+#[doc = "FuriHal spi bus states\n\n"]
 pub type FuriHalSpiBusEvent = core::ffi::c_uchar;
-#[doc = " FuriHal spi bus event callback"]
+#[doc = "FuriHal spi bus event callback\n\n"]
 pub type FuriHalSpiBusEventCallback = ::core::option::Option<
     unsafe extern "C" fn(bus: *mut FuriHalSpiBus, event: FuriHalSpiBusEvent),
 >;
-#[doc = " FuriHal spi bus"]
+#[doc = "FuriHal spi bus\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FuriHalSpiBus {
@@ -8068,21 +8068,21 @@ fn bindgen_test_layout_FuriHalSpiBus() {
         )
     );
 }
-#[doc = "< Handle init, called on system start, initialize gpio for idle state"]
+#[doc = "Handle init, called on system start, initialize gpio for idle state\n\n"]
 pub const FuriHalSpiBusHandleEvent_FuriHalSpiBusHandleEventInit: FuriHalSpiBusHandleEvent = 0;
-#[doc = "< Handle deinit, called on system stop, deinitialize gpio for default state"]
+#[doc = "Handle deinit, called on system stop, deinitialize gpio for default state\n\n"]
 pub const FuriHalSpiBusHandleEvent_FuriHalSpiBusHandleEventDeinit: FuriHalSpiBusHandleEvent = 1;
-#[doc = "< Handle activate: connect gpio and apply bus config"]
+#[doc = "Handle activate: connect gpio and apply bus config\n\n"]
 pub const FuriHalSpiBusHandleEvent_FuriHalSpiBusHandleEventActivate: FuriHalSpiBusHandleEvent = 2;
-#[doc = "< Handle deactivate: disconnect gpio and reset bus config"]
+#[doc = "Handle deactivate: disconnect gpio and reset bus config\n\n"]
 pub const FuriHalSpiBusHandleEvent_FuriHalSpiBusHandleEventDeactivate: FuriHalSpiBusHandleEvent = 3;
-#[doc = " FuriHal spi handle states"]
+#[doc = "FuriHal spi handle states\n\n"]
 pub type FuriHalSpiBusHandleEvent = core::ffi::c_uchar;
-#[doc = " FuriHal spi handle event callback"]
+#[doc = "FuriHal spi handle event callback\n\n"]
 pub type FuriHalSpiBusHandleEventCallback = ::core::option::Option<
     unsafe extern "C" fn(handle: *mut FuriHalSpiBusHandle, event: FuriHalSpiBusHandleEvent),
 >;
-#[doc = " FuriHal spi handle"]
+#[doc = "FuriHal spi handle\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FuriHalSpiBusHandle {
@@ -8170,38 +8170,37 @@ fn bindgen_test_layout_FuriHalSpiBusHandle() {
     );
 }
 extern "C" {
-    #[doc = " Init SD card detect"]
+    #[doc = "Init SD card detect\n\n"]
     pub fn hal_sd_detect_init();
 }
 extern "C" {
-    #[doc = " Set SD card detect pin to low"]
+    #[doc = "Set SD card detect pin to low\n\n"]
     pub fn hal_sd_detect_set_low();
 }
 extern "C" {
-    #[doc = " Get SD card status\n\n @return     true if SD card present, false if SD card not present"]
+    #[doc = "Get SD card status\n\nReturns:\n\n* true if SD card present, false if SD card not present\n\n"]
     pub fn hal_sd_detect() -> bool;
 }
 extern "C" {
-    #[doc = " Pointer to currently used SPI Handle"]
+    #[doc = "Pointer to currently used SPI Handle\n\n"]
     pub static mut furi_hal_sd_spi_handle: *mut FuriHalSpiBusHandle;
 }
-#[doc = " @defgroup I2C_LL_ES_INIT I2C Exported Init structure\n @{"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct LL_I2C_InitTypeDef {
-    #[doc = "< Specifies the peripheral mode.\nThis parameter can be a value of @ref I2C_LL_EC_PERIPHERAL_MODE.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_I2C_SetMode()."]
+    #[doc = "Specifies the peripheral mode.\nThis parameter can be a value of  [`I2C_LL_EC_PERIPHERAL_MODE`]\nThis feature can be modified afterwards using unitary function [`LL_I2C_SetMode()`]\n\n"]
     pub PeripheralMode: u32,
-    #[doc = "< Specifies the SDA setup, hold time and the SCL high, low period values.\nThis parameter must be set by referring to the STM32CubeMX Tool and\nthe helper macro @ref __LL_I2C_CONVERT_TIMINGS().\n\nThis feature can be modified afterwards using unitary function\n@ref LL_I2C_SetTiming()."]
+    #[doc = "Specifies the SDA setup, hold time and the SCL high, low period values.\nThis parameter must be set by referring to the STM32CubeMX Tool and\nthe helper macro  [`__LL_I2C_CONVERT_TIMINGS()`]\nThis feature can be modified afterwards using unitary function [`LL_I2C_SetTiming()`]\n\n"]
     pub Timing: u32,
-    #[doc = "< Enables or disables analog noise filter.\nThis parameter can be a value of @ref I2C_LL_EC_ANALOGFILTER_SELECTION.\n\nThis feature can be modified afterwards using unitary functions\n@ref LL_I2C_EnableAnalogFilter() or LL_I2C_DisableAnalogFilter()."]
+    #[doc = "Enables or disables analog noise filter.\nThis parameter can be a value of  [`I2C_LL_EC_ANALOGFILTER_SELECTION`]\nThis feature can be modified afterwards using unitary functions [`LL_I2C_EnableAnalogFilter()`] or LL_I2C_DisableAnalogFilter().\n\n"]
     pub AnalogFilter: u32,
-    #[doc = "< Configures the digital noise filter.\nThis parameter can be a number between Min_Data = 0x00 and Max_Data = 0x0F.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_I2C_SetDigitalFilter()."]
+    #[doc = "Configures the digital noise filter.\nThis parameter can be a number between Min_Data = 0x00 and Max_Data = 0x0F.\nThis feature can be modified afterwards using unitary function [`LL_I2C_SetDigitalFilter()`]\n\n"]
     pub DigitalFilter: u32,
-    #[doc = "< Specifies the device own address 1.\nThis parameter must be a value between Min_Data = 0x00 and Max_Data = 0x3FF.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_I2C_SetOwnAddress1()."]
+    #[doc = "Specifies the device own address 1.\nThis parameter must be a value between Min_Data = 0x00 and Max_Data = 0x3FF.\nThis feature can be modified afterwards using unitary function [`LL_I2C_SetOwnAddress1()`]\n\n"]
     pub OwnAddress1: u32,
-    #[doc = "< Specifies the ACKnowledge or Non ACKnowledge condition after the address receive\nmatch code or next received byte.\nThis parameter can be a value of @ref I2C_LL_EC_I2C_ACKNOWLEDGE.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_I2C_AcknowledgeNextData()."]
+    #[doc = "Specifies the ACKnowledge or Non ACKnowledge condition after the address receive\nmatch code or next received byte.\nThis parameter can be a value of  [`I2C_LL_EC_I2C_ACKNOWLEDGE`]\nThis feature can be modified afterwards using unitary function [`LL_I2C_AcknowledgeNextData()`]\n\n"]
     pub TypeAcknowledge: u32,
-    #[doc = "< Specifies the device own address 1 size (7-bit or 10-bit).\nThis parameter can be a value of @ref I2C_LL_EC_OWNADDRESS1.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_I2C_SetOwnAddress1()."]
+    #[doc = "Specifies the device own address 1 size (7-bit or 10-bit).\nThis parameter can be a value of  [`I2C_LL_EC_OWNADDRESS1`]\nThis feature can be modified afterwards using unitary function [`LL_I2C_SetOwnAddress1()`]\n\n"]
     pub OwnAddrSize: u32,
 }
 #[test]
@@ -8290,31 +8289,30 @@ fn bindgen_test_layout_LL_I2C_InitTypeDef() {
     );
 }
 extern "C" {
-    #[doc = " @defgroup I2C_LL_EF_Init Initialization and de-initialization functions\n @{"]
     pub fn LL_I2C_Init(
         I2Cx: *mut I2C_TypeDef,
         I2C_InitStruct: *mut LL_I2C_InitTypeDef,
     ) -> ErrorStatus;
 }
-#[doc = "< Bus initialization event, called on system start"]
+#[doc = "Bus initialization event, called on system start\n\n"]
 pub const FuriHalI2cBusEvent_FuriHalI2cBusEventInit: FuriHalI2cBusEvent = 0;
-#[doc = "< Bus deinitialization event, called on system stop"]
+#[doc = "Bus deinitialization event, called on system stop\n\n"]
 pub const FuriHalI2cBusEvent_FuriHalI2cBusEventDeinit: FuriHalI2cBusEvent = 1;
-#[doc = "< Bus lock event, called before activation"]
+#[doc = "Bus lock event, called before activation\n\n"]
 pub const FuriHalI2cBusEvent_FuriHalI2cBusEventLock: FuriHalI2cBusEvent = 2;
-#[doc = "< Bus unlock event, called after deactivation"]
+#[doc = "Bus unlock event, called after deactivation\n\n"]
 pub const FuriHalI2cBusEvent_FuriHalI2cBusEventUnlock: FuriHalI2cBusEvent = 3;
-#[doc = "< Bus activation event, called before handle activation"]
+#[doc = "Bus activation event, called before handle activation\n\n"]
 pub const FuriHalI2cBusEvent_FuriHalI2cBusEventActivate: FuriHalI2cBusEvent = 4;
-#[doc = "< Bus deactivation event, called after handle deactivation"]
+#[doc = "Bus deactivation event, called after handle deactivation\n\n"]
 pub const FuriHalI2cBusEvent_FuriHalI2cBusEventDeactivate: FuriHalI2cBusEvent = 5;
-#[doc = " FuriHal i2c bus states"]
+#[doc = "FuriHal i2c bus states\n\n"]
 pub type FuriHalI2cBusEvent = core::ffi::c_uchar;
-#[doc = " FuriHal i2c bus event callback"]
+#[doc = "FuriHal i2c bus event callback\n\n"]
 pub type FuriHalI2cBusEventCallback = ::core::option::Option<
     unsafe extern "C" fn(bus: *mut FuriHalI2cBus, event: FuriHalI2cBusEvent),
 >;
-#[doc = " FuriHal i2c bus"]
+#[doc = "FuriHal i2c bus\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FuriHalI2cBus {
@@ -8367,17 +8365,17 @@ fn bindgen_test_layout_FuriHalI2cBus() {
         )
     );
 }
-#[doc = "< Handle activate: connect gpio and apply bus config"]
+#[doc = "Handle activate: connect gpio and apply bus config\n\n"]
 pub const FuriHalI2cBusHandleEvent_FuriHalI2cBusHandleEventActivate: FuriHalI2cBusHandleEvent = 0;
-#[doc = "< Handle deactivate: disconnect gpio and reset bus config"]
+#[doc = "Handle deactivate: disconnect gpio and reset bus config\n\n"]
 pub const FuriHalI2cBusHandleEvent_FuriHalI2cBusHandleEventDeactivate: FuriHalI2cBusHandleEvent = 1;
-#[doc = " FuriHal i2c handle states"]
+#[doc = "FuriHal i2c handle states\n\n"]
 pub type FuriHalI2cBusHandleEvent = core::ffi::c_uchar;
-#[doc = " FuriHal i2c handle event callback"]
+#[doc = "FuriHal i2c handle event callback\n\n"]
 pub type FuriHalI2cBusHandleEventCallback = ::core::option::Option<
     unsafe extern "C" fn(handle: *mut FuriHalI2cBusHandle, event: FuriHalI2cBusHandleEvent),
 >;
-#[doc = " FuriHal i2c handle"]
+#[doc = "FuriHal i2c handle\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FuriHalI2cBusHandle {
@@ -8421,31 +8419,31 @@ fn bindgen_test_layout_FuriHalI2cBusHandle() {
     );
 }
 extern "C" {
-    #[doc = " Internal(power) i2c bus, I2C1, under reset when not used"]
+    #[doc = "Internal(power) i2c bus, I2C1, under reset when not used\n\n"]
     pub static mut furi_hal_i2c_bus_power: FuriHalI2cBus;
 }
 extern "C" {
-    #[doc = " External i2c bus, I2C3, under reset when not used"]
+    #[doc = "External i2c bus, I2C3, under reset when not used\n\n"]
     pub static mut furi_hal_i2c_bus_external: FuriHalI2cBus;
 }
 extern "C" {
-    #[doc = " Handle for internal(power) i2c bus\n Bus: furi_hal_i2c_bus_external\n Pins: PA9(SCL) / PA10(SDA), float on release\n Params: 400khz"]
+    #[doc = "Handle for internal(power) i2c bus Bus: furi_hal_i2c_bus_external Pins: PA9(SCL) / PA10(SDA), float on release Params: 400khz\n\n"]
     pub static mut furi_hal_i2c_handle_power: FuriHalI2cBusHandle;
 }
 extern "C" {
-    #[doc = " Handle for external i2c bus\n Bus: furi_hal_i2c_bus_external\n Pins: PC0(SCL) / PC1(SDA), float on release\n Params: 100khz"]
+    #[doc = "Handle for external i2c bus Bus: furi_hal_i2c_bus_external Pins: PC0(SCL) / PC1(SDA), float on release Params: 100khz\n\n"]
     pub static mut furi_hal_i2c_handle_external: FuriHalI2cBusHandle;
 }
 extern "C" {
-    #[doc = " Acquire i2c bus handle\n\n @return     Instance of FuriHalI2cBus"]
+    #[doc = "Acquire i2c bus handle\n\nReturns:\n\n* Instance of FuriHalI2cBus\n\n"]
     pub fn furi_hal_i2c_acquire(handle: *mut FuriHalI2cBusHandle);
 }
 extern "C" {
-    #[doc = " Release i2c bus handle\n\n @param      bus   instance of FuriHalI2cBus aquired in `furi_hal_i2c_acquire`"]
+    #[doc = "Release i2c bus handle\n\n# Arguments\n\n* `bus` - instance of FuriHalI2cBus aquired in `furi_hal_i2c_acquire`\n\n"]
     pub fn furi_hal_i2c_release(handle: *mut FuriHalI2cBusHandle);
 }
 extern "C" {
-    #[doc = " Perform I2C tx transfer\n\n @param      handle   pointer to FuriHalI2cBusHandle instance\n @param      address  I2C slave address\n @param      data     pointer to data buffer\n @param      size     size of data buffer\n @param      timeout  timeout in ticks\n\n @return     true on successful transfer, false otherwise"]
+    #[doc = "Perform I2C tx transfer\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `data` - pointer to data buffer\n* `size` - size of data buffer\n* `timeout` - timeout in ticks\n\n"]
     pub fn furi_hal_i2c_tx(
         handle: *mut FuriHalI2cBusHandle,
         address: u8,
@@ -8455,7 +8453,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Perform I2C rx transfer\n\n @param      handle   pointer to FuriHalI2cBusHandle instance\n @param      address  I2C slave address\n @param      data     pointer to data buffer\n @param      size     size of data buffer\n @param      timeout  timeout in ticks\n\n @return     true on successful transfer, false otherwise"]
+    #[doc = "Perform I2C rx transfer\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `data` - pointer to data buffer\n* `size` - size of data buffer\n* `timeout` - timeout in ticks\n\n"]
     pub fn furi_hal_i2c_rx(
         handle: *mut FuriHalI2cBusHandle,
         address: u8,
@@ -8465,7 +8463,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Perform I2C tx and rx transfers\n\n @param      handle   pointer to FuriHalI2cBusHandle instance\n @param      address  I2C slave address\n @param      tx_data  pointer to tx data buffer\n @param      tx_size  size of tx data buffer\n @param      rx_data  pointer to rx data buffer\n @param      rx_size  size of rx data buffer\n @param      timeout  timeout in ticks\n\n @return     true on successful transfer, false otherwise"]
+    #[doc = "Perform I2C tx and rx transfers\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `tx_data` - pointer to tx data buffer\n* `tx_size` - size of tx data buffer\n* `rx_data` - pointer to rx data buffer\n* `rx_size` - size of rx data buffer\n* `timeout` - timeout in ticks\n\n"]
     pub fn furi_hal_i2c_trx(
         handle: *mut FuriHalI2cBusHandle,
         address: u8,
@@ -8477,7 +8475,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Check if I2C device presents on bus\n\n @param      handle   pointer to FuriHalI2cBusHandle instance\n @param      i2c_addr I2C slave address\n @param      timeout  timeout in ticks\n\n @return     true if device present and is ready, false otherwise"]
+    #[doc = "Check if I2C device presents on bus\n\nReturns:\n\n* true if device present and is ready, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `timeout` - timeout in ticks\n\n"]
     pub fn furi_hal_i2c_is_device_ready(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -8485,7 +8483,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Perform I2C device register read (8-bit)\n\n @param      handle   pointer to FuriHalI2cBusHandle instance\n @param      i2c_addr I2C slave address\n @param      reg_addr register address\n @param      data     pointer to register value\n @param      timeout  timeout in ticks\n\n @return     true on successful transfer, false otherwise"]
+    #[doc = "Perform I2C device register read (8-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - register address\n* `data` - pointer to register value\n* `timeout` - timeout in ticks\n\n"]
     pub fn furi_hal_i2c_read_reg_8(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -8495,7 +8493,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Perform I2C device register read (16-bit)\n\n @param      handle   pointer to FuriHalI2cBusHandle instance\n @param      i2c_addr I2C slave address\n @param      reg_addr register address\n @param      data     pointer to register value\n @param      timeout  timeout in ticks\n\n @return     true on successful transfer, false otherwise"]
+    #[doc = "Perform I2C device register read (16-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - register address\n* `data` - pointer to register value\n* `timeout` - timeout in ticks\n\n"]
     pub fn furi_hal_i2c_read_reg_16(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -8505,7 +8503,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Perform I2C device memory read\n\n @param      handle   pointer to FuriHalI2cBusHandle instance\n @param      i2c_addr I2C slave address\n @param      mem_addr memory start address\n @param      data     pointer to data buffer\n @param      len      size of data buffer\n @param      timeout  timeout in ticks\n\n @return     true on successful transfer, false otherwise"]
+    #[doc = "Perform I2C device memory read\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `mem_addr` - memory start address\n* `data` - pointer to data buffer\n* `len` - size of data buffer\n* `timeout` - timeout in ticks\n\n"]
     pub fn furi_hal_i2c_read_mem(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -8516,7 +8514,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Perform I2C device register write (8-bit)\n\n @param      handle   pointer to FuriHalI2cBusHandle instance\n @param      i2c_addr I2C slave address\n @param      reg_addr register address\n @param      data     register value\n @param      timeout  timeout in ticks\n\n @return     true on successful transfer, false otherwise"]
+    #[doc = "Perform I2C device register write (8-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - register address\n* `data` - register value\n* `timeout` - timeout in ticks\n\n"]
     pub fn furi_hal_i2c_write_reg_8(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -8526,7 +8524,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Perform I2C device register write (16-bit)\n\n @param      handle   pointer to FuriHalI2cBusHandle instance\n @param      i2c_addr I2C slave address\n @param      reg_addr register address\n @param      data     register value\n @param      timeout  timeout in ticks\n\n @return     true on successful transfer, false otherwise"]
+    #[doc = "Perform I2C device register write (16-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - register address\n* `data` - register value\n* `timeout` - timeout in ticks\n\n"]
     pub fn furi_hal_i2c_write_reg_16(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -8536,7 +8534,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Perform I2C device memory\n\n @param      handle   pointer to FuriHalI2cBusHandle instance\n @param      i2c_addr I2C slave address\n @param      mem_addr memory start address\n @param      data     pointer to data buffer\n @param      len      size of data buffer\n @param      timeout  timeout in ticks\n\n @return     true on successful transfer, false otherwise"]
+    #[doc = "Perform I2C device memory\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `mem_addr` - memory start address\n* `data` - pointer to data buffer\n* `len` - size of data buffer\n* `timeout` - timeout in ticks\n\n"]
     pub fn furi_hal_i2c_write_mem(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -8662,45 +8660,45 @@ fn bindgen_test_layout_FuriHalRegion() {
     );
 }
 extern "C" {
-    #[doc = " Get Region Data.\n\n Region data may be allocated in Flash or in RAM.\n Keep in mind that we don't do memory management on our side.\n\n @return     pointer to FuriHalRegion instance (in RAM or Flash, check before freeing on region update)"]
+    #[doc = "Get Region Data.\nRegion data may be allocated in Flash or in RAM. Keep in mind that we don't do memory management on our side.\n\nReturns:\n\n* pointer to FuriHalRegion instance (in RAM or Flash, check before freeing on region update)\n\n"]
     pub fn furi_hal_region_get() -> *const FuriHalRegion;
 }
 extern "C" {
-    #[doc = " Set device region data\n\n @param      region  pointer to the FuriHalRegion"]
+    #[doc = "Set device region data\n\n# Arguments\n\n* `region` - pointer to the FuriHalRegion\n\n"]
     pub fn furi_hal_region_set(region: *mut FuriHalRegion);
 }
 extern "C" {
-    #[doc = " Check if region data provisioned\n\n @return     true if provisioned, false otherwise"]
+    #[doc = "Check if region data provisioned\n\nReturns:\n\n* true if provisioned, false otherwise\n\n"]
     pub fn furi_hal_region_is_provisioned() -> bool;
 }
 extern "C" {
-    #[doc = " Get region name\n\n 2 letter Region code according to iso 3166 standard\n There are 2 extra values that we use in special cases:\n - \"00\" - developer edition, unlocked\n - \"WW\" - world wide, region provisioned by default\n - \"--\" - no provisioned region\n\n @return     Pointer to string"]
+    #[doc = "Get region name\n2 letter Region code according to iso 3166 standard There are 2 extra values that we use in special cases:\n* \"00\" - developer edition, unlocked\n* \"WW\" - world wide, region provisioned by default\n* \"--\" - no provisioned region\n\nReturns:\n\n* Pointer to string\n\n"]
     pub fn furi_hal_region_get_name() -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Сheck if transmission is allowed on this frequency for your flipper region\n\n @param[in]  frequency  The frequency\n @param      value  frequency in Hz\n\n @return     true if allowed"]
+    #[doc = "Сheck if transmission is allowed on this frequency for your flipper region\n\nReturns:\n\n* true if allowed\n\n# Arguments\n\n* `frequency` - [Direction: In] The frequency\n* `value` - frequency in Hz\n\n"]
     pub fn furi_hal_region_is_frequency_allowed(frequency: u32) -> bool;
 }
 extern "C" {
-    #[doc = " Get band data for frequency\n\n\n\n @param[in]  frequency  The frequency\n\n @return     { description_of_the_return_value }"]
+    #[doc = "Get band data for frequency\n\nReturns:\n\n* { description_of_the_return_value }\n\n# Arguments\n\n* `frequency` - [Direction: In] The frequency\n\n"]
     pub fn furi_hal_region_get_band(frequency: u32) -> *const FuriHalRegionBand;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FuriHalRtcDateTime {
-    #[doc = "< Hour in 24H format: 0-23"]
+    #[doc = "Hour in 24H format: 0-23\n\n"]
     pub hour: u8,
-    #[doc = "< Minute: 0-59"]
+    #[doc = "Minute: 0-59\n\n"]
     pub minute: u8,
-    #[doc = "< Second: 0-59"]
+    #[doc = "Second: 0-59\n\n"]
     pub second: u8,
-    #[doc = "< Current day: 1-31"]
+    #[doc = "Current day: 1-31\n\n"]
     pub day: u8,
-    #[doc = "< Current month: 1-12"]
+    #[doc = "Current month: 1-12\n\n"]
     pub month: u8,
-    #[doc = "< Current year: 2000-2099"]
+    #[doc = "Current year: 2000-2099\n\n"]
     pub year: u16,
-    #[doc = "< Current weekday: 1-7"]
+    #[doc = "Current weekday: 1-7\n\n"]
     pub weekday: u8,
 }
 #[test]
@@ -8793,208 +8791,208 @@ pub const FuriHalRtcFlag_FuriHalRtcFlagFactoryReset: FuriHalRtcFlag = 2;
 pub const FuriHalRtcFlag_FuriHalRtcFlagLock: FuriHalRtcFlag = 4;
 pub const FuriHalRtcFlag_FuriHalRtcFlagC2Update: FuriHalRtcFlag = 8;
 pub type FuriHalRtcFlag = core::ffi::c_uchar;
-#[doc = "< Normal boot mode, default value"]
+#[doc = "Normal boot mode, default value\n\n"]
 pub const FuriHalRtcBootMode_FuriHalRtcBootModeNormal: FuriHalRtcBootMode = 0;
-#[doc = "< Boot to DFU (MCU bootloader by ST)"]
+#[doc = "Boot to DFU (MCU bootloader by ST)\n\n"]
 pub const FuriHalRtcBootMode_FuriHalRtcBootModeDfu: FuriHalRtcBootMode = 1;
-#[doc = "< Boot to Update, pre update"]
+#[doc = "Boot to Update, pre update\n\n"]
 pub const FuriHalRtcBootMode_FuriHalRtcBootModePreUpdate: FuriHalRtcBootMode = 2;
-#[doc = "< Boot to Update, main"]
+#[doc = "Boot to Update, main\n\n"]
 pub const FuriHalRtcBootMode_FuriHalRtcBootModeUpdate: FuriHalRtcBootMode = 3;
-#[doc = "< Boot to Update, post update"]
+#[doc = "Boot to Update, post update\n\n"]
 pub const FuriHalRtcBootMode_FuriHalRtcBootModePostUpdate: FuriHalRtcBootMode = 4;
 pub type FuriHalRtcBootMode = core::ffi::c_uchar;
-#[doc = "< Disable allocation tracking"]
+#[doc = "Disable allocation tracking\n\n"]
 pub const FuriHalRtcHeapTrackMode_FuriHalRtcHeapTrackModeNone: FuriHalRtcHeapTrackMode = 0;
-#[doc = "< Enable allocation tracking for main application thread"]
+#[doc = "Enable allocation tracking for main application thread\n\n"]
 pub const FuriHalRtcHeapTrackMode_FuriHalRtcHeapTrackModeMain: FuriHalRtcHeapTrackMode = 1;
-#[doc = "< Enable allocation tracking for main and children application threads"]
+#[doc = "Enable allocation tracking for main and children application threads\n\n"]
 pub const FuriHalRtcHeapTrackMode_FuriHalRtcHeapTrackModeTree: FuriHalRtcHeapTrackMode = 2;
-#[doc = "< Enable allocation tracking for all threads"]
+#[doc = "Enable allocation tracking for all threads\n\n"]
 pub const FuriHalRtcHeapTrackMode_FuriHalRtcHeapTrackModeAll: FuriHalRtcHeapTrackMode = 3;
 pub type FuriHalRtcHeapTrackMode = core::ffi::c_uchar;
-#[doc = "< RTC structure header"]
+#[doc = "RTC structure header\n\n"]
 pub const FuriHalRtcRegister_FuriHalRtcRegisterHeader: FuriHalRtcRegister = 0;
-#[doc = "< Various system bits"]
+#[doc = "Various system bits\n\n"]
 pub const FuriHalRtcRegister_FuriHalRtcRegisterSystem: FuriHalRtcRegister = 1;
-#[doc = "< Pointer to Version"]
+#[doc = "Pointer to Version\n\n"]
 pub const FuriHalRtcRegister_FuriHalRtcRegisterVersion: FuriHalRtcRegister = 2;
-#[doc = "< LFS geometry fingerprint"]
+#[doc = "LFS geometry fingerprint\n\n"]
 pub const FuriHalRtcRegister_FuriHalRtcRegisterLfsFingerprint: FuriHalRtcRegister = 3;
-#[doc = "< Pointer to last fault message"]
+#[doc = "Pointer to last fault message\n\n"]
 pub const FuriHalRtcRegister_FuriHalRtcRegisterFaultData: FuriHalRtcRegister = 4;
-#[doc = "< Failed pins count"]
+#[doc = "Failed pins count\n\n"]
 pub const FuriHalRtcRegister_FuriHalRtcRegisterPinFails: FuriHalRtcRegister = 5;
 pub const FuriHalRtcRegister_FuriHalRtcRegisterUpdateFolderFSIndex: FuriHalRtcRegister = 6;
-#[doc = "< Service value, do not use"]
+#[doc = "Service value, do not use\n\n"]
 pub const FuriHalRtcRegister_FuriHalRtcRegisterMAX: FuriHalRtcRegister = 7;
 pub type FuriHalRtcRegister = core::ffi::c_uchar;
-#[doc = "< Metric measurement units"]
+#[doc = "Metric measurement units\n\n"]
 pub const FuriHalRtcLocaleUnits_FuriHalRtcLocaleUnitsMetric: FuriHalRtcLocaleUnits = 0;
-#[doc = "< Imperial measurement units"]
+#[doc = "Imperial measurement units\n\n"]
 pub const FuriHalRtcLocaleUnits_FuriHalRtcLocaleUnitsImperial: FuriHalRtcLocaleUnits = 1;
 pub type FuriHalRtcLocaleUnits = core::ffi::c_uchar;
-#[doc = "< 24-hour format"]
+#[doc = "24-hour format\n\n"]
 pub const FuriHalRtcLocaleTimeFormat_FuriHalRtcLocaleTimeFormat24h: FuriHalRtcLocaleTimeFormat = 0;
-#[doc = "< 12-hour format"]
+#[doc = "12-hour format\n\n"]
 pub const FuriHalRtcLocaleTimeFormat_FuriHalRtcLocaleTimeFormat12h: FuriHalRtcLocaleTimeFormat = 1;
 pub type FuriHalRtcLocaleTimeFormat = core::ffi::c_uchar;
-#[doc = "< Day/Month/Year"]
+#[doc = "Day/Month/Year\n\n"]
 pub const FuriHalRtcLocaleDateFormat_FuriHalRtcLocaleDateFormatDMY: FuriHalRtcLocaleDateFormat = 0;
-#[doc = "< Month/Day/Year"]
+#[doc = "Month/Day/Year\n\n"]
 pub const FuriHalRtcLocaleDateFormat_FuriHalRtcLocaleDateFormatMDY: FuriHalRtcLocaleDateFormat = 1;
-#[doc = "< Year/Month/Day"]
+#[doc = "Year/Month/Day\n\n"]
 pub const FuriHalRtcLocaleDateFormat_FuriHalRtcLocaleDateFormatYMD: FuriHalRtcLocaleDateFormat = 2;
 pub type FuriHalRtcLocaleDateFormat = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Get RTC register content\n\n @param[in]  reg   The register identifier\n\n @return     content of the register"]
+    #[doc = "Get RTC register content\n\nReturns:\n\n* content of the register\n\n# Arguments\n\n* `reg` - [Direction: In] The register identifier\n\n"]
     pub fn furi_hal_rtc_get_register(reg: FuriHalRtcRegister) -> u32;
 }
 extern "C" {
-    #[doc = " Set register content\n\n @param[in]  reg    The register identifier\n @param[in]  value  The value to store into register"]
+    #[doc = "Set register content\n\n# Arguments\n\n* `reg` - [Direction: In] The register identifier\n* `value` - [Direction: In] The value to store into register\n\n"]
     pub fn furi_hal_rtc_set_register(reg: FuriHalRtcRegister, value: u32);
 }
 extern "C" {
-    #[doc = " Set Log Level value\n\n @param[in]  level  The level to store"]
+    #[doc = "Set Log Level value\n\n# Arguments\n\n* `level` - [Direction: In] The level to store\n\n"]
     pub fn furi_hal_rtc_set_log_level(level: u8);
 }
 extern "C" {
-    #[doc = " Get Log Level value\n\n @return     The Log Level value"]
+    #[doc = "Get Log Level value\n\nReturns:\n\n* The Log Level value\n\n"]
     pub fn furi_hal_rtc_get_log_level() -> u8;
 }
 extern "C" {
-    #[doc = " Set RTC Flag\n\n @param[in]  flag  The flag to set"]
+    #[doc = "Set RTC Flag\n\n# Arguments\n\n* `flag` - [Direction: In] The flag to set\n\n"]
     pub fn furi_hal_rtc_set_flag(flag: FuriHalRtcFlag);
 }
 extern "C" {
-    #[doc = " Reset RTC Flag\n\n @param[in]  flag  The flag to reset"]
+    #[doc = "Reset RTC Flag\n\n# Arguments\n\n* `flag` - [Direction: In] The flag to reset\n\n"]
     pub fn furi_hal_rtc_reset_flag(flag: FuriHalRtcFlag);
 }
 extern "C" {
-    #[doc = " Check if RTC Flag is set\n\n @param[in]  flag  The flag to check\n\n @return     true if set"]
+    #[doc = "Check if RTC Flag is set\n\nReturns:\n\n* true if set\n\n# Arguments\n\n* `flag` - [Direction: In] The flag to check\n\n"]
     pub fn furi_hal_rtc_is_flag_set(flag: FuriHalRtcFlag) -> bool;
 }
 extern "C" {
-    #[doc = " Set RTC boot mode\n\n @param[in]  mode  The mode to set"]
+    #[doc = "Set RTC boot mode\n\n# Arguments\n\n* `mode` - [Direction: In] The mode to set\n\n"]
     pub fn furi_hal_rtc_set_boot_mode(mode: FuriHalRtcBootMode);
 }
 extern "C" {
-    #[doc = " Get RTC boot mode\n\n @return     The RTC boot mode."]
+    #[doc = "Get RTC boot mode\n\nReturns:\n\n* The RTC boot mode.\n\n"]
     pub fn furi_hal_rtc_get_boot_mode() -> FuriHalRtcBootMode;
 }
 extern "C" {
-    #[doc = " Set Heap Track mode\n\n @param[in]  mode  The mode to set"]
+    #[doc = "Set Heap Track mode\n\n# Arguments\n\n* `mode` - [Direction: In] The mode to set\n\n"]
     pub fn furi_hal_rtc_set_heap_track_mode(mode: FuriHalRtcHeapTrackMode);
 }
 extern "C" {
-    #[doc = " Get RTC Heap Track mode\n\n @return     The RTC heap track mode."]
+    #[doc = "Get RTC Heap Track mode\n\nReturns:\n\n* The RTC heap track mode.\n\n"]
     pub fn furi_hal_rtc_get_heap_track_mode() -> FuriHalRtcHeapTrackMode;
 }
 extern "C" {
-    #[doc = " Set locale units\n\n @param[in]  mode  The RTC Locale Units"]
+    #[doc = "Set locale units\n\n# Arguments\n\n* `mode` - [Direction: In] The RTC Locale Units\n\n"]
     pub fn furi_hal_rtc_set_locale_units(value: FuriHalRtcLocaleUnits);
 }
 extern "C" {
-    #[doc = " Get RTC Locale Units\n\n @return     The RTC Locale Units."]
+    #[doc = "Get RTC Locale Units\n\nReturns:\n\n* The RTC Locale Units.\n\n"]
     pub fn furi_hal_rtc_get_locale_units() -> FuriHalRtcLocaleUnits;
 }
 extern "C" {
-    #[doc = " Set RTC Locale Time Format\n\n @param[in]  value  The RTC Locale Time Format"]
+    #[doc = "Set RTC Locale Time Format\n\n# Arguments\n\n* `value` - [Direction: In] The RTC Locale Time Format\n\n"]
     pub fn furi_hal_rtc_set_locale_timeformat(value: FuriHalRtcLocaleTimeFormat);
 }
 extern "C" {
-    #[doc = " Get RTC Locale Time Format\n\n @return     The RTC Locale Time Format."]
+    #[doc = "Get RTC Locale Time Format\n\nReturns:\n\n* The RTC Locale Time Format.\n\n"]
     pub fn furi_hal_rtc_get_locale_timeformat() -> FuriHalRtcLocaleTimeFormat;
 }
 extern "C" {
-    #[doc = " Set RTC Locale Date Format\n\n @param[in]  value  The RTC Locale Date Format"]
+    #[doc = "Set RTC Locale Date Format\n\n# Arguments\n\n* `value` - [Direction: In] The RTC Locale Date Format\n\n"]
     pub fn furi_hal_rtc_set_locale_dateformat(value: FuriHalRtcLocaleDateFormat);
 }
 extern "C" {
-    #[doc = " Get RTC Locale Date Format\n\n @return     The RTC Locale Date Format"]
+    #[doc = "Get RTC Locale Date Format\n\nReturns:\n\n* The RTC Locale Date Format\n\n"]
     pub fn furi_hal_rtc_get_locale_dateformat() -> FuriHalRtcLocaleDateFormat;
 }
 extern "C" {
-    #[doc = " Set RTC Date Time\n\n @param      datetime  The date time to set"]
+    #[doc = "Set RTC Date Time\n\n# Arguments\n\n* `datetime` - The date time to set\n\n"]
     pub fn furi_hal_rtc_set_datetime(datetime: *mut FuriHalRtcDateTime);
 }
 extern "C" {
-    #[doc = " Get RTC Date Time\n\n @param      datetime  The datetime"]
+    #[doc = "Get RTC Date Time\n\n# Arguments\n\n* `datetime` - The datetime\n\n"]
     pub fn furi_hal_rtc_get_datetime(datetime: *mut FuriHalRtcDateTime);
 }
 extern "C" {
-    #[doc = " Validate Date Time\n\n @param      datetime  The datetime to validate\n\n @return     { description_of_the_return_value }"]
+    #[doc = "Validate Date Time\n\nReturns:\n\n* { description_of_the_return_value }\n\n# Arguments\n\n* `datetime` - The datetime to validate\n\n"]
     pub fn furi_hal_rtc_validate_datetime(datetime: *mut FuriHalRtcDateTime) -> bool;
 }
 extern "C" {
-    #[doc = " Set RTC Fault Data\n\n @param[in]  value  The value"]
+    #[doc = "Set RTC Fault Data\n\n# Arguments\n\n* `value` - [Direction: In] The value\n\n"]
     pub fn furi_hal_rtc_set_fault_data(value: u32);
 }
 extern "C" {
-    #[doc = " Get RTC Fault Data\n\n @return     RTC Fault Data value"]
+    #[doc = "Get RTC Fault Data\n\nReturns:\n\n* RTC Fault Data value\n\n"]
     pub fn furi_hal_rtc_get_fault_data() -> u32;
 }
 extern "C" {
-    #[doc = " Set Pin Fails count\n\n @param[in]  value  The Pin Fails count"]
+    #[doc = "Set Pin Fails count\n\n# Arguments\n\n* `value` - [Direction: In] The Pin Fails count\n\n"]
     pub fn furi_hal_rtc_set_pin_fails(value: u32);
 }
 extern "C" {
-    #[doc = " Get Pin Fails count\n\n @return     Pin Fails Count"]
+    #[doc = "Get Pin Fails count\n\nReturns:\n\n* Pin Fails Count\n\n"]
     pub fn furi_hal_rtc_get_pin_fails() -> u32;
 }
 extern "C" {
-    #[doc = " Get UNIX Timestamp\n\n @return     Unix Timestamp in seconds from UNIX epoch start"]
+    #[doc = "Get UNIX Timestamp\n\nReturns:\n\n* Unix Timestamp in seconds from UNIX epoch start\n\n"]
     pub fn furi_hal_rtc_get_timestamp() -> u32;
 }
 extern "C" {
-    #[doc = " Convert DateTime to UNIX timestamp\n\n @param      datetime  The datetime\n\n @return     UNIX Timestamp in seconds from UNIX epoch start"]
+    #[doc = "Convert DateTime to UNIX timestamp\n\nReturns:\n\n* UNIX Timestamp in seconds from UNIX epoch start\n\n# Arguments\n\n* `datetime` - The datetime\n\n"]
     pub fn furi_hal_rtc_datetime_to_timestamp(datetime: *mut FuriHalRtcDateTime) -> u32;
 }
 extern "C" {
-    #[doc = " Acquire speaker ownership\n\n @warning    You must acquire speaker ownership before use\n\n @param      timeout  Timeout during which speaker ownership must be acquired\n\n @return     bool  returns true on success"]
+    #[doc = "Acquire speaker ownership\n\n**Warning!**\n\n* You must acquire speaker ownership before use\n\nReturns:\n\n* bool returns true on success\n\n# Arguments\n\n* `timeout` - Timeout during which speaker ownership must be acquired\n\n"]
     pub fn furi_hal_speaker_acquire(timeout: u32) -> bool;
 }
 extern "C" {
-    #[doc = " Release speaker ownership\n\n @warning    You must release speaker ownership after use"]
+    #[doc = "Release speaker ownership\n\n**Warning!**\n\n* You must release speaker ownership after use\n\n"]
     pub fn furi_hal_speaker_release();
 }
 extern "C" {
-    #[doc = " Check current process speaker ownership\n\n @warning    always returns true if called from ISR\n\n @return     bool returns true if process owns speaker"]
+    #[doc = "Check current process speaker ownership\n\n**Warning!**\n\n* always returns true if called from ISR\n\nReturns:\n\n* bool returns true if process owns speaker\n\n"]
     pub fn furi_hal_speaker_is_mine() -> bool;
 }
 extern "C" {
-    #[doc = " Play a note\n\n @warning    no ownership check if called from ISR\n\n @param      frequency  The frequency\n @param      volume     The volume"]
+    #[doc = "Play a note\n\n**Warning!**\n\n* no ownership check if called from ISR\n\n# Arguments\n\n* `frequency` - The frequency\n* `volume` - The volume\n\n"]
     pub fn furi_hal_speaker_start(frequency: f32, volume: f32);
 }
 extern "C" {
-    #[doc = " Set volume\n\n @warning    no ownership check if called from ISR\n\n @param      volume  The volume"]
+    #[doc = "Set volume\n\n**Warning!**\n\n* no ownership check if called from ISR\n\n# Arguments\n\n* `volume` - The volume\n\n"]
     pub fn furi_hal_speaker_set_volume(volume: f32);
 }
 extern "C" {
-    #[doc = " Stop playback\n\n @warning    no ownership check if called from ISR"]
+    #[doc = "Stop playback\n\n**Warning!**\n\n* no ownership check if called from ISR\n\n"]
     pub fn furi_hal_speaker_stop();
 }
 extern "C" {
-    #[doc = " Set light value\n\n @param      light  Light\n @param      value  light brightness [0-255]"]
+    #[doc = "Set light value\n\n# Arguments\n\n* `light` - Light\n* `value` - light brightness [0-255]\n\n"]
     pub fn furi_hal_light_set(light: Light, value: u8);
 }
 extern "C" {
-    #[doc = " Start hardware LED blinking mode\n\n @param      light  Light\n @param      brightness  light brightness [0-255]\n @param      on_time  LED on time in ms\n @param      period  LED blink period in ms"]
+    #[doc = "Start hardware LED blinking mode\n\n# Arguments\n\n* `light` - Light\n* `brightness` - light brightness [0-255]\n* `on_time` - LED on time in ms\n* `period` - LED blink period in ms\n\n"]
     pub fn furi_hal_light_blink_start(light: Light, brightness: u8, on_time: u16, period: u16);
 }
 extern "C" {
-    #[doc = " Stop hardware LED blinking mode"]
+    #[doc = "Stop hardware LED blinking mode\n\n"]
     pub fn furi_hal_light_blink_stop();
 }
 extern "C" {
-    #[doc = " Set color in hardware LED blinking mode\n\n @param      light  Light"]
+    #[doc = "Set color in hardware LED blinking mode\n\n# Arguments\n\n* `light` - Light\n\n"]
     pub fn furi_hal_light_blink_set_color(light: Light);
 }
 extern "C" {
-    #[doc = " Execute sequence\n\n @param      sequence  Sequence to execute"]
+    #[doc = "Execute sequence\n\n# Arguments\n\n* `sequence` - Sequence to execute\n\n"]
     pub fn furi_hal_light_sequence(sequence: *const core::ffi::c_char);
 }
-#[doc = " Callback type called every time another key-value pair of device information is ready\n\n @param      key[in]      device information type identifier\n @param      value[in]    device information value\n @param      last[in]     whether the passed key-value pair is the last one\n @param      context[in]  to pass to callback"]
+#[doc = "Callback type called every time another key-value pair of device information is ready\n\n# Arguments\n\n* `key[in]` - device information type identifier\n* `value[in]` - device information value\n* `last[in]` - whether the passed key-value pair is the last one\n* `context[in]` - to pass to callback\n\n"]
 pub type PropertyValueCallback = ::core::option::Option<
     unsafe extern "C" fn(
         key: *const core::ffi::c_char,
@@ -9006,17 +9004,17 @@ pub type PropertyValueCallback = ::core::option::Option<
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct PropertyValueContext {
-    #[doc = "< key string buffer, must be initialised before use"]
+    #[doc = "key string buffer, must be initialised before use\n\n"]
     pub key: *mut FuriString,
-    #[doc = "< value string buffer, must be initialised before use"]
+    #[doc = "value string buffer, must be initialised before use\n\n"]
     pub value: *mut FuriString,
-    #[doc = "< output callback function"]
+    #[doc = "output callback function\n\n"]
     pub out: PropertyValueCallback,
-    #[doc = "< separator character between key parts"]
+    #[doc = "separator character between key parts\n\n"]
     pub sep: core::ffi::c_char,
-    #[doc = "< flag to indicate last element"]
+    #[doc = "flag to indicate last element\n\n"]
     pub last: bool,
-    #[doc = "< user-defined context, passed through to out callback"]
+    #[doc = "user-defined context, passed through to out callback\n\n"]
     pub context: *mut core::ffi::c_void,
 }
 #[test]
@@ -9096,7 +9094,7 @@ fn bindgen_test_layout_PropertyValueContext() {
     );
 }
 extern "C" {
-    #[doc = " Builds key and value strings and outputs them via a callback function\n\n @param       ctx[in]     local property context\n @param       fmt[in]     value format, set to NULL to bypass formatting\n @param       nparts[in]  number of key parts (separated by character)\n @param       ...[in]     list of key parts followed by value"]
+    #[doc = "Builds key and value strings and outputs them via a callback function\n\n# Arguments\n\n* `ctx[in]` - local property context\n* `fmt[in]` - value format, set to NULL to bypass formatting\n* `nparts[in]` - number of key parts (separated by character)\n* `...[in]` - list of key parts followed by value\n\n"]
     pub fn property_value_out(
         ctx: *mut PropertyValueContext,
         fmt: *const core::ffi::c_char,
@@ -9106,130 +9104,130 @@ extern "C" {
 }
 pub const FuriHalPowerIC_FuriHalPowerICCharger: FuriHalPowerIC = 0;
 pub const FuriHalPowerIC_FuriHalPowerICFuelGauge: FuriHalPowerIC = 1;
-#[doc = " Power IC type"]
+#[doc = "Power IC type\n\n"]
 pub type FuriHalPowerIC = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Check if gauge is ok\n\n Verifies that:\n - gauge is alive\n - correct profile loaded\n - self diagnostic status is good\n\n @return true if gauge is ok"]
+    #[doc = "Check if gauge is ok\nVerifies that:\n* gauge is alive\n* correct profile loaded\n* self diagnostic status is good\n\nReturns:\n\n* true if gauge is ok\n\n"]
     pub fn furi_hal_power_gauge_is_ok() -> bool;
 }
 extern "C" {
-    #[doc = " Enter insomnia mode Prevents device from going to sleep\n @warning    Internally increases insomnia level Must be paired with\n             furi_hal_power_insomnia_exit"]
+    #[doc = "Enter insomnia mode Prevents device from going to sleep\n\n**Warning!**\n\n* Internally increases insomnia level Must be paired with furi_hal_power_insomnia_exit\n\n"]
     pub fn furi_hal_power_insomnia_enter();
 }
 extern "C" {
-    #[doc = " Exit insomnia mode Allow device to go to sleep\n @warning    Internally decreases insomnia level. Must be paired with\n             furi_hal_power_insomnia_enter"]
+    #[doc = "Exit insomnia mode Allow device to go to sleep\n\n**Warning!**\n\n* Internally decreases insomnia level. Must be paired with furi_hal_power_insomnia_enter\n\n"]
     pub fn furi_hal_power_insomnia_exit();
 }
 extern "C" {
-    #[doc = " Check if sleep availble\n\n @return     true if available"]
+    #[doc = "Check if sleep availble\n\nReturns:\n\n* true if available\n\n"]
     pub fn furi_hal_power_sleep_available() -> bool;
 }
 extern "C" {
-    #[doc = " Check if deep sleep availble\n\n @return     true if available"]
+    #[doc = "Check if deep sleep availble\n\nReturns:\n\n* true if available\n\n"]
     pub fn furi_hal_power_deep_sleep_available() -> bool;
 }
 extern "C" {
-    #[doc = " Go to sleep"]
+    #[doc = "Go to sleep\n\n"]
     pub fn furi_hal_power_sleep();
 }
 extern "C" {
-    #[doc = " Get predicted remaining battery capacity in percents\n\n @return     remaining battery capacity in percents"]
+    #[doc = "Get predicted remaining battery capacity in percents\n\nReturns:\n\n* remaining battery capacity in percents\n\n"]
     pub fn furi_hal_power_get_pct() -> u8;
 }
 extern "C" {
-    #[doc = " Get battery health state in percents\n\n @return     health in percents"]
+    #[doc = "Get battery health state in percents\n\nReturns:\n\n* health in percents\n\n"]
     pub fn furi_hal_power_get_bat_health_pct() -> u8;
 }
 extern "C" {
-    #[doc = " Get charging status\n\n @return     true if charging"]
+    #[doc = "Get charging status\n\nReturns:\n\n* true if charging\n\n"]
     pub fn furi_hal_power_is_charging() -> bool;
 }
 extern "C" {
-    #[doc = " Get charge complete status\n\n @return     true if done charging and connected to charger"]
+    #[doc = "Get charge complete status\n\nReturns:\n\n* true if done charging and connected to charger\n\n"]
     pub fn furi_hal_power_is_charging_done() -> bool;
 }
 extern "C" {
-    #[doc = " Switch MCU to SHUTDOWN"]
+    #[doc = "Switch MCU to SHUTDOWN\n\n"]
     pub fn furi_hal_power_shutdown();
 }
 extern "C" {
-    #[doc = " Poweroff device"]
+    #[doc = "Poweroff device\n\n"]
     pub fn furi_hal_power_off();
 }
 extern "C" {
-    #[doc = " Reset device"]
+    #[doc = "Reset device\n\n"]
     pub fn furi_hal_power_reset();
 }
 extern "C" {
-    #[doc = " OTG enable"]
+    #[doc = "OTG enable\n\n"]
     pub fn furi_hal_power_enable_otg();
 }
 extern "C" {
-    #[doc = " OTG disable"]
+    #[doc = "OTG disable\n\n"]
     pub fn furi_hal_power_disable_otg();
 }
 extern "C" {
-    #[doc = " Check OTG status and disable it if falt happened"]
+    #[doc = "Check OTG status and disable it if falt happened\n\n"]
     pub fn furi_hal_power_check_otg_status();
 }
 extern "C" {
-    #[doc = " Get OTG status\n\n @return     true if enabled"]
+    #[doc = "Get OTG status\n\nReturns:\n\n* true if enabled\n\n"]
     pub fn furi_hal_power_is_otg_enabled() -> bool;
 }
 extern "C" {
-    #[doc = " Get battery charging voltage in V\n\n @return     voltage in V"]
+    #[doc = "Get battery charging voltage in V\n\nReturns:\n\n* voltage in V\n\n"]
     pub fn furi_hal_power_get_battery_charging_voltage() -> f32;
 }
 extern "C" {
-    #[doc = " Set battery charging voltage in V\n\n Invalid values will be clamped to the nearest valid value.\n\n @param      voltage[in]  voltage in V\n\n @return     voltage in V"]
+    #[doc = "Set battery charging voltage in V\nInvalid values will be clamped to the nearest valid value.\n\nReturns:\n\n* voltage in V\n\n# Arguments\n\n* `voltage[in]` - voltage in V\n\n"]
     pub fn furi_hal_power_set_battery_charging_voltage(voltage: f32);
 }
 extern "C" {
-    #[doc = " Get remaining battery battery capacity in mAh\n\n @return     capacity in mAh"]
+    #[doc = "Get remaining battery battery capacity in mAh\n\nReturns:\n\n* capacity in mAh\n\n"]
     pub fn furi_hal_power_get_battery_remaining_capacity() -> u32;
 }
 extern "C" {
-    #[doc = " Get full charge battery capacity in mAh\n\n @return     capacity in mAh"]
+    #[doc = "Get full charge battery capacity in mAh\n\nReturns:\n\n* capacity in mAh\n\n"]
     pub fn furi_hal_power_get_battery_full_capacity() -> u32;
 }
 extern "C" {
-    #[doc = " Get battery capacity in mAh from battery profile\n\n @return     capacity in mAh"]
+    #[doc = "Get battery capacity in mAh from battery profile\n\nReturns:\n\n* capacity in mAh\n\n"]
     pub fn furi_hal_power_get_battery_design_capacity() -> u32;
 }
 extern "C" {
-    #[doc = " Get battery voltage in V\n\n @param      ic    FuriHalPowerIc to get measurment\n\n @return     voltage in V"]
+    #[doc = "Get battery voltage in V\n\nReturns:\n\n* voltage in V\n\n# Arguments\n\n* `ic` - FuriHalPowerIc to get measurment\n\n"]
     pub fn furi_hal_power_get_battery_voltage(ic: FuriHalPowerIC) -> f32;
 }
 extern "C" {
-    #[doc = " Get battery current in A\n\n @param      ic    FuriHalPowerIc to get measurment\n\n @return     current in A"]
+    #[doc = "Get battery current in A\n\nReturns:\n\n* current in A\n\n# Arguments\n\n* `ic` - FuriHalPowerIc to get measurment\n\n"]
     pub fn furi_hal_power_get_battery_current(ic: FuriHalPowerIC) -> f32;
 }
 extern "C" {
-    #[doc = " Get temperature in C\n\n @param      ic    FuriHalPowerIc to get measurment\n\n @return     temperature in C"]
+    #[doc = "Get temperature in C\n\nReturns:\n\n* temperature in C\n\n# Arguments\n\n* `ic` - FuriHalPowerIc to get measurment\n\n"]
     pub fn furi_hal_power_get_battery_temperature(ic: FuriHalPowerIC) -> f32;
 }
 extern "C" {
-    #[doc = " Get USB voltage in V\n\n @return     voltage in V"]
+    #[doc = "Get USB voltage in V\n\nReturns:\n\n* voltage in V\n\n"]
     pub fn furi_hal_power_get_usb_voltage() -> f32;
 }
 extern "C" {
-    #[doc = " Enable 3.3v on external gpio and sd card"]
+    #[doc = "Enable 3.3v on external gpio and sd card\n\n"]
     pub fn furi_hal_power_enable_external_3_3v();
 }
 extern "C" {
-    #[doc = " Disable 3.3v on external gpio and sd card"]
+    #[doc = "Disable 3.3v on external gpio and sd card\n\n"]
     pub fn furi_hal_power_disable_external_3_3v();
 }
 extern "C" {
-    #[doc = " Enter supress charge mode.\n\n Use this function when your application need clean power supply."]
+    #[doc = "Enter supress charge mode.\nUse this function when your application need clean power supply.\n\n"]
     pub fn furi_hal_power_suppress_charge_enter();
 }
 extern "C" {
-    #[doc = " Exit supress charge mode"]
+    #[doc = "Exit supress charge mode\n\n"]
     pub fn furi_hal_power_suppress_charge_exit();
 }
 extern "C" {
-    #[doc = " Get power information\n\n @param[in]  callback     callback to provide with new data\n @param[in]  sep          category separator character\n @param[in]  context      context to pass to callback"]
+    #[doc = "Get power information\n\n# Arguments\n\n* `callback` - [Direction: In] callback to provide with new data\n* `sep` - [Direction: In] category separator character\n* `context` - [Direction: In] context to pass to callback\n\n"]
     pub fn furi_hal_power_info_get(
         callback: PropertyValueCallback,
         sep: core::ffi::c_char,
@@ -9237,25 +9235,25 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Get power debug information\n\n @param[in]  callback     callback to provide with new data\n @param[in]  context      context to pass to callback"]
+    #[doc = "Get power debug information\n\n# Arguments\n\n* `callback` - [Direction: In] callback to provide with new data\n* `context` - [Direction: In] context to pass to callback\n\n"]
     pub fn furi_hal_power_debug_get(
         callback: PropertyValueCallback,
         context: *mut core::ffi::c_void,
     );
 }
-#[doc = " @brief  TIM Time Base configuration structure definition."]
+#[doc = "TIM Time Base configuration structure definition.\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct LL_TIM_InitTypeDef {
-    #[doc = "< Specifies the prescaler value used to divide the TIM clock.\nThis parameter can be a number between Min_Data=0x0000 and Max_Data=0xFFFF.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_TIM_SetPrescaler()."]
+    #[doc = "Specifies the prescaler value used to divide the TIM clock.\nThis parameter can be a number between Min_Data=0x0000 and Max_Data=0xFFFF.\nThis feature can be modified afterwards using unitary function [`LL_TIM_SetPrescaler()`]\n\n"]
     pub Prescaler: u16,
-    #[doc = "< Specifies the counter mode.\nThis parameter can be a value of @ref TIM_LL_EC_COUNTERMODE.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_TIM_SetCounterMode()."]
+    #[doc = "Specifies the counter mode.\nThis parameter can be a value of  [`TIM_LL_EC_COUNTERMODE`]\nThis feature can be modified afterwards using unitary function [`LL_TIM_SetCounterMode()`]\n\n"]
     pub CounterMode: u32,
-    #[doc = "< Specifies the auto reload value to be loaded into the active\nAuto-Reload Register at the next update event.\nThis parameter must be a number between Min_Data=0x0000 and Max_Data=0xFFFF.\nSome timer instances may support 32 bits counters. In that case this parameter must\nbe a number between 0x0000 and 0xFFFFFFFF.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_TIM_SetAutoReload()."]
+    #[doc = "Specifies the auto reload value to be loaded into the active\nAuto-Reload Register at the next update event.\nThis parameter must be a number between Min_Data=0x0000 and Max_Data=0xFFFF.\nSome timer instances may support 32 bits counters. In that case this parameter must\nbe a number between 0x0000 and 0xFFFFFFFF.\nThis feature can be modified afterwards using unitary function [`LL_TIM_SetAutoReload()`]\n\n"]
     pub Autoreload: u32,
-    #[doc = "< Specifies the clock division.\nThis parameter can be a value of @ref TIM_LL_EC_CLOCKDIVISION.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_TIM_SetClockDivision()."]
+    #[doc = "Specifies the clock division.\nThis parameter can be a value of  [`TIM_LL_EC_CLOCKDIVISION`]\nThis feature can be modified afterwards using unitary function [`LL_TIM_SetClockDivision()`]\n\n"]
     pub ClockDivision: u32,
-    #[doc = "< Specifies the repetition counter value. Each time the RCR downcounter\nreaches zero, an update event is generated and counting restarts\nfrom the RCR value (N).\nThis means in PWM mode that (N+1) corresponds to:\n- the number of PWM periods in edge-aligned mode\n- the number of half PWM period in center-aligned mode\nGP timers: this parameter must be a number between Min_Data = 0x00 and\nMax_Data = 0xFF.\nAdvanced timers: this parameter must be a number between Min_Data = 0x0000 and\nMax_Data = 0xFFFF.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_TIM_SetRepetitionCounter()."]
+    #[doc = "Specifies the repetition counter value. Each time the RCR downcounter\nreaches zero, an update event is generated and counting restarts\nfrom the RCR value (N).\nThis means in PWM mode that (N+1) corresponds to:\nthe number of PWM periods in edge-aligned mode\nthe number of half PWM period in center-aligned mode\nGP timers: this parameter must be a number between Min_Data = 0x00 and\nMax_Data = 0xFF.\nAdvanced timers: this parameter must be a number between Min_Data = 0x0000 and\nMax_Data = 0xFFFF.\nThis feature can be modified afterwards using unitary function [`LL_TIM_SetRepetitionCounter()`]\n\n"]
     pub RepetitionCounter: u32,
 }
 #[test]
@@ -9323,25 +9321,25 @@ fn bindgen_test_layout_LL_TIM_InitTypeDef() {
         )
     );
 }
-#[doc = " @brief  TIM Output Compare configuration structure definition."]
+#[doc = "TIM Output Compare configuration structure definition.\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct LL_TIM_OC_InitTypeDef {
-    #[doc = "< Specifies the output mode.\nThis parameter can be a value of @ref TIM_LL_EC_OCMODE.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_TIM_OC_SetMode()."]
+    #[doc = "Specifies the output mode.\nThis parameter can be a value of  [`TIM_LL_EC_OCMODE`]\nThis feature can be modified afterwards using unitary function [`LL_TIM_OC_SetMode()`]\n\n"]
     pub OCMode: u32,
-    #[doc = "< Specifies the TIM Output Compare state.\nThis parameter can be a value of @ref TIM_LL_EC_OCSTATE.\n\nThis feature can be modified afterwards using unitary functions\n@ref LL_TIM_CC_EnableChannel() or @ref LL_TIM_CC_DisableChannel()."]
+    #[doc = "Specifies the TIM Output Compare state.\nThis parameter can be a value of  [`TIM_LL_EC_OCSTATE`]\nThis feature can be modified afterwards using unitary functions [`LL_TIM_CC_EnableChannel()`] or  [`LL_TIM_CC_DisableChannel()`]\n\n"]
     pub OCState: u32,
-    #[doc = "< Specifies the TIM complementary Output Compare state.\nThis parameter can be a value of @ref TIM_LL_EC_OCSTATE.\n\nThis feature can be modified afterwards using unitary functions\n@ref LL_TIM_CC_EnableChannel() or @ref LL_TIM_CC_DisableChannel()."]
+    #[doc = "Specifies the TIM complementary Output Compare state.\nThis parameter can be a value of  [`TIM_LL_EC_OCSTATE`]\nThis feature can be modified afterwards using unitary functions [`LL_TIM_CC_EnableChannel()`] or  [`LL_TIM_CC_DisableChannel()`]\n\n"]
     pub OCNState: u32,
-    #[doc = "< Specifies the Compare value to be loaded into the Capture Compare Register.\nThis parameter can be a number between Min_Data=0x0000 and Max_Data=0xFFFF.\n\nThis feature can be modified afterwards using unitary function\nLL_TIM_OC_SetCompareCHx (x=1..6)."]
+    #[doc = "Specifies the Compare value to be loaded into the Capture Compare Register.\nThis parameter can be a number between Min_Data=0x0000 and Max_Data=0xFFFF.\nThis feature can be modified afterwards using unitary function\nLL_TIM_OC_SetCompareCHx (x=1..6).\n\n"]
     pub CompareValue: u32,
-    #[doc = "< Specifies the output polarity.\nThis parameter can be a value of @ref TIM_LL_EC_OCPOLARITY.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_TIM_OC_SetPolarity()."]
+    #[doc = "Specifies the output polarity.\nThis parameter can be a value of  [`TIM_LL_EC_OCPOLARITY`]\nThis feature can be modified afterwards using unitary function [`LL_TIM_OC_SetPolarity()`]\n\n"]
     pub OCPolarity: u32,
-    #[doc = "< Specifies the complementary output polarity.\nThis parameter can be a value of @ref TIM_LL_EC_OCPOLARITY.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_TIM_OC_SetPolarity()."]
+    #[doc = "Specifies the complementary output polarity.\nThis parameter can be a value of  [`TIM_LL_EC_OCPOLARITY`]\nThis feature can be modified afterwards using unitary function [`LL_TIM_OC_SetPolarity()`]\n\n"]
     pub OCNPolarity: u32,
-    #[doc = "< Specifies the TIM Output Compare pin state during Idle state.\nThis parameter can be a value of @ref TIM_LL_EC_OCIDLESTATE.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_TIM_OC_SetIdleState()."]
+    #[doc = "Specifies the TIM Output Compare pin state during Idle state.\nThis parameter can be a value of  [`TIM_LL_EC_OCIDLESTATE`]\nThis feature can be modified afterwards using unitary function [`LL_TIM_OC_SetIdleState()`]\n\n"]
     pub OCIdleState: u32,
-    #[doc = "< Specifies the TIM Output Compare pin state during Idle state.\nThis parameter can be a value of @ref TIM_LL_EC_OCIDLESTATE.\n\nThis feature can be modified afterwards using unitary function\n@ref LL_TIM_OC_SetIdleState()."]
+    #[doc = "Specifies the TIM Output Compare pin state during Idle state.\nThis parameter can be a value of  [`TIM_LL_EC_OCIDLESTATE`]\nThis feature can be modified afterwards using unitary function [`LL_TIM_OC_SetIdleState()`]\n\n"]
     pub OCNIdleState: u32,
 }
 #[test]
@@ -9441,7 +9439,6 @@ fn bindgen_test_layout_LL_TIM_OC_InitTypeDef() {
     );
 }
 extern "C" {
-    #[doc = " @defgroup TIM_LL_EF_Init Initialisation and deinitialisation functions\n @{"]
     pub fn LL_TIM_DeInit(TIMx: *mut TIM_TypeDef) -> ErrorStatus;
 }
 extern "C" {
@@ -9457,7 +9454,7 @@ extern "C" {
         TIM_OC_InitStruct: *mut LL_TIM_OC_InitTypeDef,
     ) -> ErrorStatus;
 }
-#[doc = " Timer ISR"]
+#[doc = "Timer ISR\n\n"]
 pub type FuriHalInterruptISR =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
 pub const FuriHalInterruptId_FuriHalInterruptIdTim1TrgComTim17: FuriHalInterruptId = 0;
@@ -9486,7 +9483,7 @@ pub const FuriHalInterruptId_FuriHalInterruptIdLpTim2: FuriHalInterruptId = 22;
 pub const FuriHalInterruptId_FuriHalInterruptIdMax: FuriHalInterruptId = 23;
 pub type FuriHalInterruptId = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Set ISR and enable interrupt with default priority\n We don't clear interrupt flags for you, do it by your self.\n @param index - interrupt ID\n @param isr - your interrupt service routine or use NULL to clear\n @param context - isr context"]
+    #[doc = "Set ISR and enable interrupt with default priority We don't clear interrupt flags for you, do it by your self.\n\n# Arguments\n\n* `index` - - interrupt ID\n* `isr` - - your interrupt service routine or use NULL to clear\n* `context` - - isr context\n\n"]
     pub fn furi_hal_interrupt_set_isr(
         index: FuriHalInterruptId,
         isr: FuriHalInterruptISR,
@@ -9494,7 +9491,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Set ISR and enable interrupt with custom priority\n We don't clear interrupt flags for you, do it by your self.\n @param index - interrupt ID\n @param priority - 0 to 15, 0 highest\n @param isr - your interrupt service routine or use NULL to clear\n @param context - isr context"]
+    #[doc = "Set ISR and enable interrupt with custom priority We don't clear interrupt flags for you, do it by your self.\n\n# Arguments\n\n* `index` - - interrupt ID\n* `priority` - - 0 to 15, 0 highest\n* `isr` - - your interrupt service routine or use NULL to clear\n* `context` - - isr context\n\n"]
     pub fn furi_hal_interrupt_set_isr_ex(
         index: FuriHalInterruptId,
         priority: u16,
@@ -9508,35 +9505,35 @@ pub struct Version {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Get current running firmware version handle.\n\n You can store it somewhere. But if you want to retrieve data, you have to use\n 'version_*_get()' set of functions. Also, 'version_*_get()' imply to use this\n handle if no handle (NULL_PTR) provided.\n\n @return     pointer to Version data."]
+    #[doc = "Get current running firmware version handle.\nYou can store it somewhere. But if you want to retrieve data, you have to use 'version_*_get()' set of functions. Also, 'version_*_get()' imply to use this handle if no handle (NULL_PTR) provided.\n\nReturns:\n\n* pointer to Version data.\n\n"]
     pub fn version_get() -> *const Version;
 }
 extern "C" {
-    #[doc = " Get git commit hash.\n\n @param      v     pointer to Version data. NULL for currently running\n                   software.\n\n @return     git hash"]
+    #[doc = "Get git commit hash.\n\nReturns:\n\n* git hash\n\n# Arguments\n\n* `v` - pointer to Version data. NULL for currently running software.\n\n"]
     pub fn version_get_githash(v: *const Version) -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get git branch.\n\n @param      v     pointer to Version data. NULL for currently running\n                   software.\n\n @return     git branch"]
+    #[doc = "Get git branch.\n\nReturns:\n\n* git branch\n\n# Arguments\n\n* `v` - pointer to Version data. NULL for currently running software.\n\n"]
     pub fn version_get_gitbranch(v: *const Version) -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get number of commit in git branch.\n\n @param      v     pointer to Version data. NULL for currently running\n                   software.\n\n @return     number of commit"]
+    #[doc = "Get number of commit in git branch.\n\nReturns:\n\n* number of commit\n\n# Arguments\n\n* `v` - pointer to Version data. NULL for currently running software.\n\n"]
     pub fn version_get_gitbranchnum(v: *const Version) -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get build date.\n\n @param      v     pointer to Version data. NULL for currently running\n                   software.\n\n @return     build date"]
+    #[doc = "Get build date.\n\nReturns:\n\n* build date\n\n# Arguments\n\n* `v` - pointer to Version data. NULL for currently running software.\n\n"]
     pub fn version_get_builddate(v: *const Version) -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get build version. Build version is last tag in git history.\n\n @param      v     pointer to Version data. NULL for currently running\n                   software.\n\n @return     build date"]
+    #[doc = "Get build version. Build version is last tag in git history.\n\nReturns:\n\n* build date\n\n# Arguments\n\n* `v` - pointer to Version data. NULL for currently running software.\n\n"]
     pub fn version_get_version(v: *const Version) -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get hardware target this firmware was built for\n\n @param      v     pointer to Version data. NULL for currently running\n                   software.\n\n @return     build date"]
+    #[doc = "Get hardware target this firmware was built for\n\nReturns:\n\n* build date\n\n# Arguments\n\n* `v` - pointer to Version data. NULL for currently running software.\n\n"]
     pub fn version_get_target(v: *const Version) -> u8;
 }
 extern "C" {
-    #[doc = " Get flag indicating if this build is \"dirty\" (source code had uncommited changes)\n\n @param      v     pointer to Version data. NULL for currently running\n                   software.\n\n @return     build date"]
+    #[doc = "Get flag indicating if this build is \"dirty\" (source code had uncommited changes)\n\nReturns:\n\n* build date\n\n# Arguments\n\n* `v` - pointer to Version data. NULL for currently running software.\n\n"]
     pub fn version_get_dirty_flag(v: *const Version) -> bool;
 }
 pub const FuriHalVersionOtpVersion_FuriHalVersionOtpVersion0: FuriHalVersionOtpVersion = 0;
@@ -9546,111 +9543,111 @@ pub const FuriHalVersionOtpVersion_FuriHalVersionOtpVersionEmpty: FuriHalVersion
     4294967294;
 pub const FuriHalVersionOtpVersion_FuriHalVersionOtpVersionUnknown: FuriHalVersionOtpVersion =
     4294967295;
-#[doc = " OTP Versions enum"]
+#[doc = "OTP Versions enum\n\n"]
 pub type FuriHalVersionOtpVersion = core::ffi::c_uint;
 pub const FuriHalVersionColor_FuriHalVersionColorUnknown: FuriHalVersionColor = 0;
 pub const FuriHalVersionColor_FuriHalVersionColorBlack: FuriHalVersionColor = 1;
 pub const FuriHalVersionColor_FuriHalVersionColorWhite: FuriHalVersionColor = 2;
-#[doc = " Device Colors"]
+#[doc = "Device Colors\n\n"]
 pub type FuriHalVersionColor = core::ffi::c_uchar;
 pub const FuriHalVersionRegion_FuriHalVersionRegionUnknown: FuriHalVersionRegion = 0;
 pub const FuriHalVersionRegion_FuriHalVersionRegionEuRu: FuriHalVersionRegion = 1;
 pub const FuriHalVersionRegion_FuriHalVersionRegionUsCaAu: FuriHalVersionRegion = 2;
 pub const FuriHalVersionRegion_FuriHalVersionRegionJp: FuriHalVersionRegion = 3;
 pub const FuriHalVersionRegion_FuriHalVersionRegionWorld: FuriHalVersionRegion = 4;
-#[doc = " Device Regions"]
+#[doc = "Device Regions\n\n"]
 pub type FuriHalVersionRegion = core::ffi::c_uchar;
 pub const FuriHalVersionDisplay_FuriHalVersionDisplayUnknown: FuriHalVersionDisplay = 0;
 pub const FuriHalVersionDisplay_FuriHalVersionDisplayErc: FuriHalVersionDisplay = 1;
 pub const FuriHalVersionDisplay_FuriHalVersionDisplayMgg: FuriHalVersionDisplay = 2;
-#[doc = " Device Display"]
+#[doc = "Device Display\n\n"]
 pub type FuriHalVersionDisplay = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Check target firmware version\n\n @return     true if target and real matches"]
+    #[doc = "Check target firmware version\n\nReturns:\n\n* true if target and real matches\n\n"]
     pub fn furi_hal_version_do_i_belong_here() -> bool;
 }
 extern "C" {
-    #[doc = " Get model name\n\n @return     model name C-string"]
+    #[doc = "Get model name\n\nReturns:\n\n* model name C-string\n\n"]
     pub fn furi_hal_version_get_model_name() -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get model name\n\n @return     model code C-string"]
+    #[doc = "Get model name\n\nReturns:\n\n* model code C-string\n\n"]
     pub fn furi_hal_version_get_model_code() -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get FCC ID\n\n @return     FCC id as C-string"]
+    #[doc = "Get FCC ID\n\nReturns:\n\n* FCC id as C-string\n\n"]
     pub fn furi_hal_version_get_fcc_id() -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get IC id\n\n @return     IC id as C-string"]
+    #[doc = "Get IC id\n\nReturns:\n\n* IC id as C-string\n\n"]
     pub fn furi_hal_version_get_ic_id() -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get OTP version\n\n @return     OTP Version"]
+    #[doc = "Get OTP version\n\nReturns:\n\n* OTP Version\n\n"]
     pub fn furi_hal_version_get_otp_version() -> FuriHalVersionOtpVersion;
 }
 extern "C" {
-    #[doc = " Get hardware version\n\n @return     Hardware Version"]
+    #[doc = "Get hardware version\n\nReturns:\n\n* Hardware Version\n\n"]
     pub fn furi_hal_version_get_hw_version() -> u8;
 }
 extern "C" {
-    #[doc = " Get hardware target\n\n @return     Hardware Target"]
+    #[doc = "Get hardware target\n\nReturns:\n\n* Hardware Target\n\n"]
     pub fn furi_hal_version_get_hw_target() -> u8;
 }
 extern "C" {
-    #[doc = " Get hardware body\n\n @return     Hardware Body"]
+    #[doc = "Get hardware body\n\nReturns:\n\n* Hardware Body\n\n"]
     pub fn furi_hal_version_get_hw_body() -> u8;
 }
 extern "C" {
-    #[doc = " Get hardware body color\n\n @return     Hardware Color"]
+    #[doc = "Get hardware body color\n\nReturns:\n\n* Hardware Color\n\n"]
     pub fn furi_hal_version_get_hw_color() -> FuriHalVersionColor;
 }
 extern "C" {
-    #[doc = " Get hardware connect\n\n @return     Hardware Interconnect"]
+    #[doc = "Get hardware connect\n\nReturns:\n\n* Hardware Interconnect\n\n"]
     pub fn furi_hal_version_get_hw_connect() -> u8;
 }
 extern "C" {
-    #[doc = " Get hardware region\n\n @return     Hardware Region"]
+    #[doc = "Get hardware region\n\nReturns:\n\n* Hardware Region\n\n"]
     pub fn furi_hal_version_get_hw_region() -> FuriHalVersionRegion;
 }
 extern "C" {
-    #[doc = " Get hardware region name\n\n @return     Hardware Region name"]
+    #[doc = "Get hardware region name\n\nReturns:\n\n* Hardware Region name\n\n"]
     pub fn furi_hal_version_get_hw_region_name() -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get hardware display id\n\n @return     Display id"]
+    #[doc = "Get hardware display id\n\nReturns:\n\n* Display id\n\n"]
     pub fn furi_hal_version_get_hw_display() -> FuriHalVersionDisplay;
 }
 extern "C" {
-    #[doc = " Get hardware timestamp\n\n @return     Hardware Manufacture timestamp"]
+    #[doc = "Get hardware timestamp\n\nReturns:\n\n* Hardware Manufacture timestamp\n\n"]
     pub fn furi_hal_version_get_hw_timestamp() -> u32;
 }
 extern "C" {
-    #[doc = " Get pointer to target name\n\n @return     Hardware Name C-string"]
+    #[doc = "Get pointer to target name\n\nReturns:\n\n* Hardware Name C-string\n\n"]
     pub fn furi_hal_version_get_name_ptr() -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get pointer to target device name\n\n @return     Hardware Device Name C-string"]
+    #[doc = "Get pointer to target device name\n\nReturns:\n\n* Hardware Device Name C-string\n\n"]
     pub fn furi_hal_version_get_device_name_ptr() -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get pointer to target ble local device name\n\n @return     Ble Device Name C-string"]
+    #[doc = "Get pointer to target ble local device name\n\nReturns:\n\n* Ble Device Name C-string\n\n"]
     pub fn furi_hal_version_get_ble_local_device_name_ptr() -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get BLE MAC address\n\n @return     pointer to BLE MAC address"]
+    #[doc = "Get BLE MAC address\n\nReturns:\n\n* pointer to BLE MAC address\n\n"]
     pub fn furi_hal_version_get_ble_mac() -> *const u8;
 }
 extern "C" {
-    #[doc = " Get address of version structure of firmware.\n\n @return     Address of firmware version structure."]
+    #[doc = "Get address of version structure of firmware.\n\nReturns:\n\n* Address of firmware version structure.\n\n"]
     pub fn furi_hal_version_get_firmware_version() -> *const Version;
 }
 extern "C" {
-    #[doc = " Get platform UID size in bytes\n\n @return     UID size in bytes"]
+    #[doc = "Get platform UID size in bytes\n\nReturns:\n\n* UID size in bytes\n\n"]
     pub fn furi_hal_version_uid_size() -> usize;
 }
 extern "C" {
-    #[doc = " Get const pointer to UID\n\n @return     pointer to UID"]
+    #[doc = "Get const pointer to UID\n\nReturns:\n\n* pointer to UID\n\n"]
     pub fn furi_hal_version_uid() -> *const u8;
 }
 pub const GapEventType_GapEventTypeConnected: GapEventType = 0;
@@ -9843,7 +9840,7 @@ pub type BleGlueC2Mode = core::ffi::c_uchar;
 #[derive(Debug, Copy, Clone)]
 pub struct BleGlueC2Info {
     pub mode: BleGlueC2Mode,
-    #[doc = " Wireless Info"]
+    #[doc = "Wireless Info\n\n"]
     pub VersionMajor: u8,
     pub VersionMinor: u8,
     pub VersionSub: u8,
@@ -9855,7 +9852,7 @@ pub struct BleGlueC2Info {
     pub MemorySizeFlash: u8,
     pub StackType: u8,
     pub StackTypeString: [core::ffi::c_char; 20usize],
-    #[doc = " Fus Info"]
+    #[doc = "Fus Info\n\n"]
     pub FusVersionMajor: u8,
     pub FusVersionMinor: u8,
     pub FusVersionSub: u8,
@@ -10062,37 +10059,37 @@ pub type BleGlueKeyStorageChangedCallback = ::core::option::Option<
     unsafe extern "C" fn(change_addr_start: *mut u8, size: u16, context: *mut core::ffi::c_void),
 >;
 extern "C" {
-    #[doc = " Initialize start core2 and initialize transport"]
+    #[doc = "Initialize start core2 and initialize transport\n\n"]
     pub fn ble_glue_init();
 }
 extern "C" {
-    #[doc = " Start Core2 Radio stack\n\n @return     true on success"]
+    #[doc = "Start Core2 Radio stack\n\nReturns:\n\n* true on success\n\n"]
     pub fn ble_glue_start() -> bool;
 }
 extern "C" {
-    #[doc = " Is core2 alive and at least FUS is running\n\n @return     true if core2 is alive"]
+    #[doc = "Is core2 alive and at least FUS is running\n\nReturns:\n\n* true if core2 is alive\n\n"]
     pub fn ble_glue_is_alive() -> bool;
 }
 extern "C" {
-    #[doc = " Waits for C2 to reports its mode to callback\n\n @return     true if it reported before reaching timeout"]
+    #[doc = "Waits for C2 to reports its mode to callback\n\nReturns:\n\n* true if it reported before reaching timeout\n\n"]
     pub fn ble_glue_wait_for_c2_start(timeout: i32) -> bool;
 }
 extern "C" {
     pub fn ble_glue_get_c2_info() -> *const BleGlueC2Info;
 }
 extern "C" {
-    #[doc = " Is core2 radio stack present and ready\n\n @return     true if present and ready"]
+    #[doc = "Is core2 radio stack present and ready\n\nReturns:\n\n* true if present and ready\n\n"]
     pub fn ble_glue_is_radio_stack_ready() -> bool;
 }
 extern "C" {
-    #[doc = " Set callback for NVM in RAM changes\n\n @param[in]  callback  The callback to call on NVM change\n @param      context   The context for callback"]
+    #[doc = "Set callback for NVM in RAM changes\n\n# Arguments\n\n* `callback` - [Direction: In] The callback to call on NVM change\n* `context` - The context for callback\n\n"]
     pub fn ble_glue_set_key_storage_changed_callback(
         callback: BleGlueKeyStorageChangedCallback,
         context: *mut core::ffi::c_void,
     );
 }
 extern "C" {
-    #[doc = " Stop SHCI thread"]
+    #[doc = "Stop SHCI thread\n\n"]
     pub fn ble_glue_thread_stop();
 }
 extern "C" {
@@ -10105,7 +10102,7 @@ pub const BleGlueCommandResult_BleGlueCommandResultRestartPending: BleGlueComman
 pub const BleGlueCommandResult_BleGlueCommandResultOperationOngoing: BleGlueCommandResult = 4;
 pub type BleGlueCommandResult = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Restart MCU to launch radio stack firmware if necessary\n\n @return      true on radio stack start command"]
+    #[doc = "Restart MCU to launch radio stack firmware if necessary\n\nReturns:\n\n* true on radio stack start command\n\n"]
     pub fn ble_glue_force_c2_mode(mode: BleGlueC2Mode) -> BleGlueCommandResult;
 }
 extern "C" {
@@ -10120,18 +10117,18 @@ extern "C" {
 pub const FuriHalBtSerialRpcStatus_FuriHalBtSerialRpcStatusNotActive: FuriHalBtSerialRpcStatus = 0;
 pub const FuriHalBtSerialRpcStatus_FuriHalBtSerialRpcStatusActive: FuriHalBtSerialRpcStatus = 1;
 pub type FuriHalBtSerialRpcStatus = core::ffi::c_uchar;
-#[doc = " Serial service callback type"]
+#[doc = "Serial service callback type\n\n"]
 pub type FuriHalBtSerialCallback = SerialServiceEventCallback;
 extern "C" {
-    #[doc = " Start Serial Profile"]
+    #[doc = "Start Serial Profile\n\n"]
     pub fn furi_hal_bt_serial_start();
 }
 extern "C" {
-    #[doc = " Stop Serial Profile"]
+    #[doc = "Stop Serial Profile\n\n"]
     pub fn furi_hal_bt_serial_stop();
 }
 extern "C" {
-    #[doc = " Set Serial service events callback\n\n @param buffer_size   Applicaition buffer size\n @param calback       FuriHalBtSerialCallback instance\n @param context       pointer to context"]
+    #[doc = "Set Serial service events callback\n\n# Arguments\n\n* `buffer_size` - Applicaition buffer size\n* `calback` - FuriHalBtSerialCallback instance\n* `context` - pointer to context\n\n"]
     pub fn furi_hal_bt_serial_set_event_callback(
         buff_size: u16,
         callback: FuriHalBtSerialCallback,
@@ -10139,15 +10136,15 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Set BLE RPC status\n\n @param status        FuriHalBtSerialRpcStatus instance"]
+    #[doc = "Set BLE RPC status\n\n# Arguments\n\n* `status` - FuriHalBtSerialRpcStatus instance\n\n"]
     pub fn furi_hal_bt_serial_set_rpc_status(status: FuriHalBtSerialRpcStatus);
 }
 extern "C" {
-    #[doc = " Notify that application buffer is empty"]
+    #[doc = "Notify that application buffer is empty\n\n"]
     pub fn furi_hal_bt_serial_notify_buffer_is_empty();
 }
 extern "C" {
-    #[doc = " Send data through BLE\n\n @param data  data buffer\n @param size  data buffer size\n\n @return      true on success"]
+    #[doc = "Send data through BLE\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `data` - data buffer\n* `size` - data buffer size\n\n"]
     pub fn furi_hal_bt_serial_tx(data: *mut u8, size: u16) -> bool;
 }
 pub const FuriHalBtStack_FuriHalBtStackUnknown: FuriHalBtStack = 0;
@@ -10159,31 +10156,31 @@ pub const FuriHalBtProfile_FuriHalBtProfileHidKeyboard: FuriHalBtProfile = 1;
 pub const FuriHalBtProfile_FuriHalBtProfileNumber: FuriHalBtProfile = 2;
 pub type FuriHalBtProfile = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Lock core2 state transition"]
+    #[doc = "Lock core2 state transition\n\n"]
     pub fn furi_hal_bt_lock_core2();
 }
 extern "C" {
-    #[doc = " Lock core2 state transition"]
+    #[doc = "Lock core2 state transition\n\n"]
     pub fn furi_hal_bt_unlock_core2();
 }
 extern "C" {
-    #[doc = " Start radio stack\n\n @return  true on successfull radio stack start"]
+    #[doc = "Start radio stack\n\nReturns:\n\n* true on successfull radio stack start\n\n"]
     pub fn furi_hal_bt_start_radio_stack() -> bool;
 }
 extern "C" {
-    #[doc = " Get radio stack type\n\n @return  FuriHalBtStack instance"]
+    #[doc = "Get radio stack type\n\nReturns:\n\n* FuriHalBtStack instance\n\n"]
     pub fn furi_hal_bt_get_radio_stack() -> FuriHalBtStack;
 }
 extern "C" {
-    #[doc = " Check if radio stack supports BLE GAT/GAP\n\n @return  true if supported"]
+    #[doc = "Check if radio stack supports BLE GAT/GAP\n\nReturns:\n\n* true if supported\n\n"]
     pub fn furi_hal_bt_is_ble_gatt_gap_supported() -> bool;
 }
 extern "C" {
-    #[doc = " Check if radio stack supports testing\n\n @return  true if supported"]
+    #[doc = "Check if radio stack supports testing\n\nReturns:\n\n* true if supported\n\n"]
     pub fn furi_hal_bt_is_testing_supported() -> bool;
 }
 extern "C" {
-    #[doc = " Start BLE app\n\n @param profile   FuriHalBtProfile instance\n @param event_cb  GapEventCallback instance\n @param context   pointer to context\n\n @return          true on success"]
+    #[doc = "Start BLE app\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `profile` - FuriHalBtProfile instance\n* `event_cb` - GapEventCallback instance\n* `context` - pointer to context\n\n"]
     pub fn furi_hal_bt_start_app(
         profile: FuriHalBtProfile,
         event_cb: GapEventCallback,
@@ -10191,11 +10188,11 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Reinitialize core2\n\n Also can be used to prepare core2 for stop modes"]
+    #[doc = "Reinitialize core2\nAlso can be used to prepare core2 for stop modes\n\n"]
     pub fn furi_hal_bt_reinit();
 }
 extern "C" {
-    #[doc = " Change BLE app\n Restarts 2nd core\n\n @param profile   FuriHalBtProfile instance\n @param event_cb  GapEventCallback instance\n @param context   pointer to context\n\n @return          true on success"]
+    #[doc = "Change BLE app Restarts 2nd core\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `profile` - FuriHalBtProfile instance\n* `event_cb` - GapEventCallback instance\n* `context` - pointer to context\n\n"]
     pub fn furi_hal_bt_change_app(
         profile: FuriHalBtProfile,
         event_cb: GapEventCallback,
@@ -10203,174 +10200,174 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Update battery level\n\n @param battery_level battery level"]
+    #[doc = "Update battery level\n\n# Arguments\n\n* `battery_level` - battery level\n\n"]
     pub fn furi_hal_bt_update_battery_level(battery_level: u8);
 }
 extern "C" {
-    #[doc = " Update battery power state"]
+    #[doc = "Update battery power state\n\n"]
     pub fn furi_hal_bt_update_power_state();
 }
 extern "C" {
-    #[doc = " Checks if BLE state is active\n\n @return          true if device is connected or advertising, false otherwise"]
+    #[doc = "Checks if BLE state is active\n\nReturns:\n\n* true if device is connected or advertising, false otherwise\n\n"]
     pub fn furi_hal_bt_is_active() -> bool;
 }
 extern "C" {
-    #[doc = " Start advertising"]
+    #[doc = "Start advertising\n\n"]
     pub fn furi_hal_bt_start_advertising();
 }
 extern "C" {
-    #[doc = " Stop advertising"]
+    #[doc = "Stop advertising\n\n"]
     pub fn furi_hal_bt_stop_advertising();
 }
 extern "C" {
-    #[doc = " Get BT/BLE system component state\n\n @param[in]  buffer  FuriString* buffer to write to"]
+    #[doc = "Get BT/BLE system component state\n\n# Arguments\n\n* `buffer` - [Direction: In] FuriString* buffer to write to\n\n"]
     pub fn furi_hal_bt_dump_state(buffer: *mut FuriString);
 }
 extern "C" {
-    #[doc = " Get BT/BLE system component state\n\n @return     true if core2 is alive"]
+    #[doc = "Get BT/BLE system component state\n\nReturns:\n\n* true if core2 is alive\n\n"]
     pub fn furi_hal_bt_is_alive() -> bool;
 }
 extern "C" {
-    #[doc = " Get key storage buffer address and size\n\n @param      key_buff_addr  pointer to store buffer address\n @param      key_buff_size  pointer to store buffer size"]
+    #[doc = "Get key storage buffer address and size\n\n# Arguments\n\n* `key_buff_addr` - pointer to store buffer address\n* `key_buff_size` - pointer to store buffer size\n\n"]
     pub fn furi_hal_bt_get_key_storage_buff(key_buff_addr: *mut *mut u8, key_buff_size: *mut u16);
 }
 extern "C" {
-    #[doc = " Get SRAM2 hardware semaphore\n @note Must be called before SRAM2 read/write operations"]
+    #[doc = "Get SRAM2 hardware semaphore\n\n# Notes\n\n* Must be called before SRAM2 read/write operations\n\n"]
     pub fn furi_hal_bt_nvm_sram_sem_acquire();
 }
 extern "C" {
-    #[doc = " Release SRAM2 hardware semaphore\n @note Must be called after SRAM2 read/write operations"]
+    #[doc = "Release SRAM2 hardware semaphore\n\n# Notes\n\n* Must be called after SRAM2 read/write operations\n\n"]
     pub fn furi_hal_bt_nvm_sram_sem_release();
 }
 extern "C" {
-    #[doc = " Clear key storage\n\n @return      true on success"]
+    #[doc = "Clear key storage\n\nReturns:\n\n* true on success\n\n"]
     pub fn furi_hal_bt_clear_white_list() -> bool;
 }
 extern "C" {
-    #[doc = " Set key storage change callback\n\n @param       callback    BleGlueKeyStorageChangedCallback instance\n @param       context     pointer to context"]
+    #[doc = "Set key storage change callback\n\n# Arguments\n\n* `callback` - BleGlueKeyStorageChangedCallback instance\n* `context` - pointer to context\n\n"]
     pub fn furi_hal_bt_set_key_storage_change_callback(
         callback: BleGlueKeyStorageChangedCallback,
         context: *mut core::ffi::c_void,
     );
 }
 extern "C" {
-    #[doc = " Start ble tone tx at given channel and power\n\n @param[in]  channel  The channel\n @param[in]  power    The power"]
+    #[doc = "Start ble tone tx at given channel and power\n\n# Arguments\n\n* `channel` - [Direction: In] The channel\n* `power` - [Direction: In] The power\n\n"]
     pub fn furi_hal_bt_start_tone_tx(channel: u8, power: u8);
 }
 extern "C" {
-    #[doc = " Stop ble tone tx"]
+    #[doc = "Stop ble tone tx\n\n"]
     pub fn furi_hal_bt_stop_tone_tx();
 }
 extern "C" {
-    #[doc = " Start sending ble packets at a given frequency and datarate\n\n @param[in]  channel   The channel\n @param[in]  pattern   The pattern\n @param[in]  datarate  The datarate"]
+    #[doc = "Start sending ble packets at a given frequency and datarate\n\n# Arguments\n\n* `channel` - [Direction: In] The channel\n* `pattern` - [Direction: In] The pattern\n* `datarate` - [Direction: In] The datarate\n\n"]
     pub fn furi_hal_bt_start_packet_tx(channel: u8, pattern: u8, datarate: u8);
 }
 extern "C" {
-    #[doc = " Stop sending ble packets\n\n @return     sent packet count"]
+    #[doc = "Stop sending ble packets\n\nReturns:\n\n* sent packet count\n\n"]
     pub fn furi_hal_bt_stop_packet_test() -> u16;
 }
 extern "C" {
-    #[doc = " Start receiving packets\n\n @param[in]  channel   RX channel\n @param[in]  datarate  Datarate"]
+    #[doc = "Start receiving packets\n\n# Arguments\n\n* `channel` - [Direction: In] RX channel\n* `datarate` - [Direction: In] Datarate\n\n"]
     pub fn furi_hal_bt_start_packet_rx(channel: u8, datarate: u8);
 }
 extern "C" {
-    #[doc = " Set up the RF to listen to a given RF channel\n\n @param[in]  channel  RX channel"]
+    #[doc = "Set up the RF to listen to a given RF channel\n\n# Arguments\n\n* `channel` - [Direction: In] RX channel\n\n"]
     pub fn furi_hal_bt_start_rx(channel: u8);
 }
 extern "C" {
-    #[doc = " Stop RF listenning"]
+    #[doc = "Stop RF listenning\n\n"]
     pub fn furi_hal_bt_stop_rx();
 }
 extern "C" {
-    #[doc = " Get RSSI\n\n @return     RSSI in dBm"]
+    #[doc = "Get RSSI\n\nReturns:\n\n* RSSI in dBm\n\n"]
     pub fn furi_hal_bt_get_rssi() -> f32;
 }
 extern "C" {
-    #[doc = " Get number of transmitted packets\n\n @return     packet count"]
+    #[doc = "Get number of transmitted packets\n\nReturns:\n\n* packet count\n\n"]
     pub fn furi_hal_bt_get_transmitted_packets() -> u32;
 }
 extern "C" {
-    #[doc = " Check & switch C2 to given mode\n\n @param[in]  mode  mode to switch into"]
+    #[doc = "Check & switch C2 to given mode\n\n# Arguments\n\n* `mode` - [Direction: In] mode to switch into\n\n"]
     pub fn furi_hal_bt_ensure_c2_mode(mode: BleGlueC2Mode) -> bool;
 }
 extern "C" {
-    #[doc = " Preset for ST25R916"]
+    #[doc = "Preset for ST25R916\n\n"]
     pub static furi_hal_spi_preset_2edge_low_8m: LL_SPI_InitTypeDef;
 }
 extern "C" {
-    #[doc = " Preset for CC1101"]
+    #[doc = "Preset for CC1101\n\n"]
     pub static furi_hal_spi_preset_1edge_low_8m: LL_SPI_InitTypeDef;
 }
 extern "C" {
-    #[doc = " Preset for ST7567 (Display)"]
+    #[doc = "Preset for ST7567 (Display)\n\n"]
     pub static furi_hal_spi_preset_1edge_low_4m: LL_SPI_InitTypeDef;
 }
 extern "C" {
-    #[doc = " Preset for SdCard in fast mode"]
+    #[doc = "Preset for SdCard in fast mode\n\n"]
     pub static furi_hal_spi_preset_1edge_low_16m: LL_SPI_InitTypeDef;
 }
 extern "C" {
-    #[doc = " Preset for SdCard in slow mode"]
+    #[doc = "Preset for SdCard in slow mode\n\n"]
     pub static furi_hal_spi_preset_1edge_low_2m: LL_SPI_InitTypeDef;
 }
 extern "C" {
-    #[doc = " Furi Hal Spi Bus R (Radio: CC1101, Nfc, External)"]
+    #[doc = "Furi Hal Spi Bus R (Radio: CC1101, Nfc, External)\n\n"]
     pub static mut furi_hal_spi_bus_r: FuriHalSpiBus;
 }
 extern "C" {
-    #[doc = " Furi Hal Spi Bus D (Display, SdCard)"]
+    #[doc = "Furi Hal Spi Bus D (Display, SdCard)\n\n"]
     pub static mut furi_hal_spi_bus_d: FuriHalSpiBus;
 }
 extern "C" {
-    #[doc = " CC1101 on `furi_hal_spi_bus_r`"]
+    #[doc = "CC1101 on `furi_hal_spi_bus_r`\n\n"]
     pub static mut furi_hal_spi_bus_handle_subghz: FuriHalSpiBusHandle;
 }
 extern "C" {
-    #[doc = " ST25R3916 on `furi_hal_spi_bus_r`"]
+    #[doc = "ST25R3916 on `furi_hal_spi_bus_r`\n\n"]
     pub static mut furi_hal_spi_bus_handle_nfc: FuriHalSpiBusHandle;
 }
 extern "C" {
-    #[doc = " External on `furi_hal_spi_bus_r`\n Preset: `furi_hal_spi_preset_1edge_low_2m`\n\n miso: pa6\n mosi: pa7\n sck: pb3\n cs:  pa4 (software controlled)\n\n @warning not initialized by default, call `furi_hal_spi_bus_handle_init` to initialize\n Bus pins are floating on inactive state, CS high after initialization\n"]
+    #[doc = "External on `furi_hal_spi_bus_r` Preset: `furi_hal_spi_preset_1edge_low_2m`\nmiso: pa6 mosi: pa7 sck: pb3 cs:  pa4 (software controlled)\n\n**Warning!**\n\n* not initialized by default, call `furi_hal_spi_bus_handle_init` to initialize Bus pins are floating on inactive state, CS high after initialization\n\n"]
     pub static mut furi_hal_spi_bus_handle_external: FuriHalSpiBusHandle;
 }
 extern "C" {
-    #[doc = " ST7567(Display) on `furi_hal_spi_bus_d`"]
+    #[doc = "ST7567(Display) on `furi_hal_spi_bus_d`\n\n"]
     pub static mut furi_hal_spi_bus_handle_display: FuriHalSpiBusHandle;
 }
 extern "C" {
-    #[doc = " SdCard in fast mode on `furi_hal_spi_bus_d`"]
+    #[doc = "SdCard in fast mode on `furi_hal_spi_bus_d`\n\n"]
     pub static mut furi_hal_spi_bus_handle_sd_fast: FuriHalSpiBusHandle;
 }
 extern "C" {
-    #[doc = " SdCard in slow mode on `furi_hal_spi_bus_d`"]
+    #[doc = "SdCard in slow mode on `furi_hal_spi_bus_d`\n\n"]
     pub static mut furi_hal_spi_bus_handle_sd_slow: FuriHalSpiBusHandle;
 }
 extern "C" {
-    #[doc = " Initialize SPI Bus\n\n @param      handle  pointer to FuriHalSpiBus instance"]
+    #[doc = "Initialize SPI Bus\n\n# Arguments\n\n* `handle` - pointer to FuriHalSpiBus instance\n\n"]
     pub fn furi_hal_spi_bus_init(bus: *mut FuriHalSpiBus);
 }
 extern "C" {
-    #[doc = " Deinitialize SPI Bus\n\n @param      handle  pointer to FuriHalSpiBus instance"]
+    #[doc = "Deinitialize SPI Bus\n\n# Arguments\n\n* `handle` - pointer to FuriHalSpiBus instance\n\n"]
     pub fn furi_hal_spi_bus_deinit(bus: *mut FuriHalSpiBus);
 }
 extern "C" {
-    #[doc = " Initialize SPI Bus Handle\n\n @param      handle  pointer to FuriHalSpiBusHandle instance"]
+    #[doc = "Initialize SPI Bus Handle\n\n# Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance\n\n"]
     pub fn furi_hal_spi_bus_handle_init(handle: *mut FuriHalSpiBusHandle);
 }
 extern "C" {
-    #[doc = " Deinitialize SPI Bus Handle\n\n @param      handle  pointer to FuriHalSpiBusHandle instance"]
+    #[doc = "Deinitialize SPI Bus Handle\n\n# Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance\n\n"]
     pub fn furi_hal_spi_bus_handle_deinit(handle: *mut FuriHalSpiBusHandle);
 }
 extern "C" {
-    #[doc = " Acquire SPI bus\n\n @warning blocking, calls `furi_crash` on programming error, CS transition is up to handler event routine\n\n @param      handle  pointer to FuriHalSpiBusHandle instance"]
+    #[doc = "Acquire SPI bus\n\n**Warning!**\n\n* blocking, calls `furi_crash` on programming error, CS transition is up to handler event routine\n\n# Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance\n\n"]
     pub fn furi_hal_spi_acquire(handle: *mut FuriHalSpiBusHandle);
 }
 extern "C" {
-    #[doc = " Release SPI bus\n\n @warning calls `furi_crash` on programming error, CS transition is up to handler event routine\n\n @param      handle  pointer to FuriHalSpiBusHandle instance"]
+    #[doc = "Release SPI bus\n\n**Warning!**\n\n* calls `furi_crash` on programming error, CS transition is up to handler event routine\n\n# Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance\n\n"]
     pub fn furi_hal_spi_release(handle: *mut FuriHalSpiBusHandle);
 }
 extern "C" {
-    #[doc = " SPI Receive\n\n @param      handle   pointer to FuriHalSpiBusHandle instance\n @param      buffer   receive buffer\n @param      size     transaction size (buffer size)\n @param      timeout  operation timeout in ms\n\n @return     true on sucess"]
+    #[doc = "SPI Receive\n\nReturns:\n\n* true on sucess\n\n# Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance\n* `buffer` - receive buffer\n* `size` - transaction size (buffer size)\n* `timeout` - operation timeout in ms\n\n"]
     pub fn furi_hal_spi_bus_rx(
         handle: *mut FuriHalSpiBusHandle,
         buffer: *mut u8,
@@ -10379,7 +10376,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " SPI Transmit\n\n @param      handle   pointer to FuriHalSpiBusHandle instance\n @param      buffer   transmit buffer\n @param      size     transaction size (buffer size)\n @param      timeout  operation timeout in ms\n\n @return     true on success"]
+    #[doc = "SPI Transmit\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance\n* `buffer` - transmit buffer\n* `size` - transaction size (buffer size)\n* `timeout` - operation timeout in ms\n\n"]
     pub fn furi_hal_spi_bus_tx(
         handle: *mut FuriHalSpiBusHandle,
         buffer: *const u8,
@@ -10388,7 +10385,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " SPI Transmit and Receive\n\n @param      handle     pointer to FuriHalSpiBusHandle instance\n @param      tx_buffer  pointer to tx buffer\n @param      rx_buffer  pointer to rx buffer\n @param      size       transaction size (buffer size)\n @param      timeout    operation timeout in ms\n\n @return     true on success"]
+    #[doc = "SPI Transmit and Receive\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance\n* `tx_buffer` - pointer to tx buffer\n* `rx_buffer` - pointer to rx buffer\n* `size` - transaction size (buffer size)\n* `timeout` - operation timeout in ms\n\n"]
     pub fn furi_hal_spi_bus_trx(
         handle: *mut FuriHalSpiBusHandle,
         tx_buffer: *const u8,
@@ -10398,7 +10395,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " SPI Transmit and Receive with DMA\n\n @param      handle     pointer to FuriHalSpiBusHandle instance\n @param      tx_buffer  pointer to tx buffer\n @param      rx_buffer  pointer to rx buffer\n @param      size       transaction size (buffer size)\n @param      timeout_ms operation timeout in ms\n\n @return     true on success"]
+    #[doc = "SPI Transmit and Receive with DMA\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance\n* `tx_buffer` - pointer to tx buffer\n* `rx_buffer` - pointer to rx buffer\n* `size` - transaction size (buffer size)\n* `timeout_ms` - operation timeout in ms\n\n"]
     pub fn furi_hal_spi_bus_trx_dma(
         handle: *mut FuriHalSpiBusHandle,
         tx_buffer: *mut u8,
@@ -10408,36 +10405,36 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Turn on/off vibro\n\n @param[in]  value  new state"]
+    #[doc = "Turn on/off vibro\n\n# Arguments\n\n* `value` - [Direction: In] new state\n\n"]
     pub fn furi_hal_vibro_on(value: bool);
 }
-#[doc = "<\\brief Function has an error, STALLPID will be issued."]
+#[doc = "<\\brief Function has an error, STALLPID will be issued.\n\n"]
 pub const _usbd_respond_usbd_fail: _usbd_respond = 0;
-#[doc = "<\\brief Function completes request accepted ZLP or data will be send."]
+#[doc = "<\\brief Function completes request accepted ZLP or data will be send.\n\n"]
 pub const _usbd_respond_usbd_ack: _usbd_respond = 1;
-#[doc = "<\\brief Function is busy. NAK handshake."]
+#[doc = "<\\brief Function is busy. NAK handshake.\n\n"]
 pub const _usbd_respond_usbd_nak: _usbd_respond = 2;
-#[doc = "\\brief Reporting status results."]
+#[doc = "Reporting status results.\n\n"]
 pub type _usbd_respond = core::ffi::c_uchar;
-#[doc = "\\brief Reporting status results."]
+#[doc = "Reporting status results.\n\n"]
 pub use self::_usbd_respond as usbd_respond;
-#[doc = "\\brief Represents a USB device data."]
+#[doc = "Represents a USB device data.\n\n"]
 pub type usbd_device = _usbd_device;
-#[doc = "\\brief Represents generic USB control request."]
+#[doc = "Represents generic USB control request.\n\n"]
 #[repr(C)]
 #[derive(Debug)]
 pub struct usbd_ctlreq {
-    #[doc = "<\\brief This bitmapped field identifies the characteristics of\n the specific request."]
+    #[doc = "<\\brief This bitmapped field identifies the characteristics of the specific request.\n\n"]
     pub bmRequestType: u8,
-    #[doc = "<\\brief This field specifies the particular request."]
+    #[doc = "<\\brief This field specifies the particular request.\n\n"]
     pub bRequest: u8,
-    #[doc = "<\\brief It is used to pass a parameter to the device, specific to\n the request."]
+    #[doc = "<\\brief It is used to pass a parameter to the device, specific to the request.\n\n"]
     pub wValue: u16,
-    #[doc = "<\\brief It is used to pass a parameter to the device, specific to\n the request."]
+    #[doc = "<\\brief It is used to pass a parameter to the device, specific to the request.\n\n"]
     pub wIndex: u16,
-    #[doc = "<\\brief This field specifies the length of the data transferred\n during the second phase of the control transfer."]
+    #[doc = "<\\brief This field specifies the length of the data transferred during the second phase of the control transfer.\n\n"]
     pub wLength: u16,
-    #[doc = "<\\brief Data payload."]
+    #[doc = "<\\brief Data payload.\n\n"]
     pub data: __IncompleteArrayField<u8>,
 }
 #[test]
@@ -10515,25 +10512,25 @@ fn bindgen_test_layout_usbd_ctlreq() {
         )
     );
 }
-#[doc = " USB device status data."]
+#[doc = "USB device status data.\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct usbd_status {
-    #[doc = "<\\brief Pointer to data buffer used for control requests."]
+    #[doc = "<\\brief Pointer to data buffer used for control requests.\n\n"]
     pub data_buf: *mut core::ffi::c_void,
-    #[doc = "<\\brief Pointer to current data for control request."]
+    #[doc = "<\\brief Pointer to current data for control request.\n\n"]
     pub data_ptr: *mut core::ffi::c_void,
-    #[doc = "<\\brief Count remained data for control request."]
+    #[doc = "<\\brief Count remained data for control request.\n\n"]
     pub data_count: u16,
-    #[doc = "<\\brief Size of the data buffer for control requests."]
+    #[doc = "<\\brief Size of the data buffer for control requests.\n\n"]
     pub data_maxsize: u16,
-    #[doc = "<\\brief Size of the control endpoint."]
+    #[doc = "<\\brief Size of the control endpoint.\n\n"]
     pub ep0size: u8,
-    #[doc = "<\\brief Current device configuration number."]
+    #[doc = "<\\brief Current device configuration number.\n\n"]
     pub device_cfg: u8,
-    #[doc = "<\\brief Current \\ref usbd_machine_state."]
+    #[doc = "<\\brief Current  [`usbd_machine_state`]\n\n"]
     pub device_state: u8,
-    #[doc = "<\\brief Current \\ref usbd_ctl_state."]
+    #[doc = "<\\brief Current  [`usbd_ctl_state`]\n\n"]
     pub control_state: u8,
 }
 #[test]
@@ -10631,13 +10628,13 @@ fn bindgen_test_layout_usbd_status() {
         )
     );
 }
-#[doc = "\\brief Generic USB device event callback for events and endpoints processing\n \\param[in] dev pointer to USB device\n \\param event \\ref USB_EVENTS \"USB event\"\n \\param ep active endpoint number\n \\note endpoints with same indexes i.e. 0x01 and 0x81 shares same callback."]
+#[doc = "Generic USB device event callback for events and endpoints processing\n\n# Arguments\n\n* `dev` - [Direction: In] pointer to USB device\n* `event` - [`USB_EVENTS`] \"USB event\"\n* `ep` - active endpoint number\n\n# Notes\n\n* endpoints with same indexes i.e. 0x01 and 0x81 shares same callback.\n\n"]
 pub type usbd_evt_callback =
     ::core::option::Option<unsafe extern "C" fn(dev: *mut usbd_device, event: u8, ep: u8)>;
-#[doc = "\\brief USB control transfer completed callback function.\n \\param[in] dev pointer to USB device\n \\param[in] req pointer to usb request structure\n \\note usbd_device->complete_callback will be set to NULL after this callback completion."]
+#[doc = "USB control transfer completed callback function.\n\n# Arguments\n\n* `dev` - [Direction: In] pointer to USB device\n* `req` - [Direction: In] pointer to usb request structure\n\n# Notes\n\n* usbd_device->complete_callback will be set to NULL after this callback completion.\n\n"]
 pub type usbd_rqc_callback =
     ::core::option::Option<unsafe extern "C" fn(dev: *mut usbd_device, req: *mut usbd_ctlreq)>;
-#[doc = "\\brief USB control callback function.\n \\details Uses for the control request processing.\n          Some requests will be handled by core if callback don't process it (returns FALSE).\n            If request was not processed STALL PID will be issued.\n          - GET_CONFIGURATION\n          - SET_CONFIGURATION (passes to \\ref usbd_cfg_callback)\n          - GET_DESCRIPTOR (passes to \\ref usbd_dsc_callback)\n          - GET_STATUS\n          - SET_FEATURE, CLEAR_FEATURE (endpoints only)\n          - SET_ADDRESS\n \\param[in] dev points to USB device\n \\param[in] req points to usb control request\n \\param[out] *callback USB control transfer completion callback, default is NULL (no callback)\n \\return usbd_respond status."]
+#[doc = "USB control callback function.\n\nUses for the control request processing. Some requests will be handled by core if callback don't process it (returns FALSE).\n*  If request was not processed STALL PID will be issued.\n* GET_CONFIGURATION\n* SET_CONFIGURATION (passes to  [`usbd_cfg_callback)`]\n* GET_DESCRIPTOR (passes to  [`usbd_dsc_callback)`]\n* GET_STATUS\n* SET_FEATURE, CLEAR_FEATURE (endpoints only)\n* SET_ADDRESS\n\nReturns:\n\n* usbd_respond status.\n\n# Arguments\n\n* `dev` - [Direction: In] points to USB device\n* `req` - [Direction: In] points to usb control request\n* `*callback` - [Direction: In, Out] USB control transfer completion callback, default is NULL (no callback)\n\n"]
 pub type usbd_ctl_callback = ::core::option::Option<
     unsafe extern "C" fn(
         dev: *mut usbd_device,
@@ -10645,7 +10642,7 @@ pub type usbd_ctl_callback = ::core::option::Option<
         callback: *mut usbd_rqc_callback,
     ) -> usbd_respond,
 >;
-#[doc = "\\brief USB get descriptor callback function\n \\details Called when GET_DESCRIPTOR request issued\n \\param[in] req pointer to usb control request structure\n \\param[in,out] address pointer to the descriptor in memory. Points to req->data by default. You\n can use this buffer.\n \\param[in,out] dsize descriptor size. maximum buffer size by default.\n \\return usbd_ack if you passed the correct descriptor, usbd_fail otherwise."]
+#[doc = "USB get descriptor callback function\n\nCalled when GET_DESCRIPTOR request issued\n\nReturns:\n\n* usbd_ack if you passed the correct descriptor, usbd_fail otherwise.\n\n# Arguments\n\n* `req` - [Direction: In] pointer to usb control request structure\n* `address` - [Direction: Out] pointer to the descriptor in memory. Points to req->data by default. You can use this buffer.\n* `dsize` - [Direction: Out] descriptor size. maximum buffer size by default.\n\n"]
 pub type usbd_dsc_callback = ::core::option::Option<
     unsafe extern "C" fn(
         req: *mut usbd_ctlreq,
@@ -10653,72 +10650,72 @@ pub type usbd_dsc_callback = ::core::option::Option<
         dsize: *mut u16,
     ) -> usbd_respond,
 >;
-#[doc = "\\brief USB set configuration callback function\n \\details called when SET_CONFIGURATION request issued\n \\param[in] dev pointer to USB device\n \\param[in] cfg configuration number.\n \\note if config is 0 device endpoints should be de-configured\n \\return TRUE if success"]
+#[doc = "USB set configuration callback function\n\ncalled when SET_CONFIGURATION request issued\n\nReturns:\n\n* TRUE if success\n\n# Arguments\n\n* `dev` - [Direction: In] pointer to USB device\n* `cfg` - [Direction: In] configuration number.\n\n# Notes\n\n* if config is 0 device endpoints should be de-configured\n\n"]
 pub type usbd_cfg_callback =
     ::core::option::Option<unsafe extern "C" fn(dev: *mut usbd_device, cfg: u8) -> usbd_respond>;
-#[doc = "\\addtogroup USBD_HW\n @{ */\n/**\\brief Get USB device status and capabilities.\n \\return Hardware status and capabilities \\ref USBD_HW_CAPS"]
+#[doc = "USBD_HW*\n/**\\brief Get USB device status and capabilities.\n\nReturns:\n\n* Hardware status and capabilities [`USBD_HW_CAPS`]\n\n"]
 pub type usbd_hw_getinfo = ::core::option::Option<unsafe extern "C" fn() -> u32>;
-#[doc = "\\brief Enables or disables USB hardware\n \\param enable Enables USB when TRUE disables otherwise."]
+#[doc = "Enables or disables USB hardware\n\n# Arguments\n\n* `enable` - Enables USB when TRUE disables otherwise.\n\n"]
 pub type usbd_hw_enable = ::core::option::Option<unsafe extern "C" fn(enable: bool)>;
-#[doc = " Connects or disconnects USB hardware to/from usb host\n \\param connect Connects USB to host if TRUE, disconnects otherwise\n \\return lanes connection status."]
+#[doc = "Connects or disconnects USB hardware to/from usb host\n\nReturns:\n\n* lanes connection status.\n\n# Arguments\n\n* `connect` - Connects USB to host if TRUE, disconnects otherwise\n\n"]
 pub type usbd_hw_connect = ::core::option::Option<unsafe extern "C" fn(connect: bool) -> u8>;
-#[doc = "\\brief Sets USB hardware address\n \\param address USB address"]
+#[doc = "Sets USB hardware address\n\n# Arguments\n\n* `address` - USB address\n\n"]
 pub type usbd_hw_setaddr = ::core::option::Option<unsafe extern "C" fn(address: u8)>;
-#[doc = "\\brief Configures endpoint\n \\param ep endpoint address. Use USB_EPDIR_ macros to set endpoint direction\n \\param eptype endpoint type. Use USB_EPTYPE_* macros.\n \\param epsize endpoint size in bytes\n \\return TRUE if success"]
+#[doc = "Configures endpoint\n\nReturns:\n\n* TRUE if success\n\n# Arguments\n\n* `ep` - endpoint address. Use USB_EPDIR_ macros to set endpoint direction\n* `eptype` - endpoint type. Use USB_EPTYPE_* macros.\n* `epsize` - endpoint size in bytes\n\n"]
 pub type usbd_hw_ep_config =
     ::core::option::Option<unsafe extern "C" fn(ep: u8, eptype: u8, epsize: u16) -> bool>;
-#[doc = "\\brief De-configures, cleans and disables endpoint\n \\param ep endpoint index\n \\note if you have two one-direction single-buffered endpoints with same index (i.e. 0x02 and 0x82)\n both will be deconfigured."]
+#[doc = "De-configures, cleans and disables endpoint\n\n# Arguments\n\n* `ep` - endpoint index\n\n# Notes\n\n* if you have two one-direction single-buffered endpoints with same index (i.e. 0x02 and 0x82) both will be deconfigured.\n\n"]
 pub type usbd_hw_ep_deconfig = ::core::option::Option<unsafe extern "C" fn(ep: u8)>;
-#[doc = "\\brief Reads data from OUT or control endpoint\n \\param ep endpoint index, should belong to OUT or CONTROL endpoint.\n \\param buf pointer to read buffer\n \\param blen size of the read buffer in bytes\n \\return size of the actually received data, -1 on error.\n \\note if data does not fit buffer it will be truncated"]
+#[doc = "Reads data from OUT or control endpoint\n\nReturns:\n\n* size of the actually received data, -1 on error.\n\n# Arguments\n\n* `ep` - endpoint index, should belong to OUT or CONTROL endpoint.\n* `buf` - pointer to read buffer\n* `blen` - size of the read buffer in bytes\n\n# Notes\n\n* if data does not fit buffer it will be truncated\n\n"]
 pub type usbd_hw_ep_read = ::core::option::Option<
     unsafe extern "C" fn(ep: u8, buf: *mut core::ffi::c_void, blen: u16) -> i32,
 >;
-#[doc = "\\brief Writes data to IN or control endpoint\n \\param ep endpoint index, hould belong to IN or CONTROL endpoint\n \\param buf pointer to data buffer\n \\param blen size of data will be written\n \\return number of written bytes"]
+#[doc = "Writes data to IN or control endpoint\n\nReturns:\n\n* number of written bytes\n\n# Arguments\n\n* `ep` - endpoint index, hould belong to IN or CONTROL endpoint\n* `buf` - pointer to data buffer\n* `blen` - size of data will be written\n\n"]
 pub type usbd_hw_ep_write = ::core::option::Option<
     unsafe extern "C" fn(ep: u8, buf: *const core::ffi::c_void, blen: u16) -> i32,
 >;
-#[doc = " Stalls and unstalls endpoint\n \\param ep endpoint address\n \\param stall endpoint will be stalled if TRUE and unstalled otherwise.\n \\note Has no effect on inactive endpoints."]
+#[doc = "Stalls and unstalls endpoint\n\n# Arguments\n\n* `ep` - endpoint address\n* `stall` - endpoint will be stalled if TRUE and unstalled otherwise.\n\n# Notes\n\n* Has no effect on inactive endpoints.\n\n"]
 pub type usbd_hw_ep_setstall = ::core::option::Option<unsafe extern "C" fn(ep: u8, stall: bool)>;
-#[doc = "\\brief Checks endpoint for stalled state\n \\param ep endpoint address\n \\return TRUE if endpoint is stalled"]
+#[doc = "Checks endpoint for stalled state\n\nReturns:\n\n* TRUE if endpoint is stalled\n\n# Arguments\n\n* `ep` - endpoint address\n\n"]
 pub type usbd_hw_ep_isstalled = ::core::option::Option<unsafe extern "C" fn(ep: u8) -> bool>;
-#[doc = "\\brief Polls USB hardware for the events\n \\param[in] dev pointer to usb device structure\n \\param callback callback to event processing subroutine"]
+#[doc = "Polls USB hardware for the events\n\n# Arguments\n\n* `dev` - [Direction: In] pointer to usb device structure\n* `callback` - callback to event processing subroutine\n\n"]
 pub type usbd_hw_poll = ::core::option::Option<
     unsafe extern "C" fn(dev: *mut usbd_device, callback: usbd_evt_callback),
 >;
-#[doc = "\\brief Gets frame number from usb hardware."]
+#[doc = "Gets frame number from usb hardware.\n\n"]
 pub type usbd_hw_get_frameno = ::core::option::Option<unsafe extern "C" fn() -> u16>;
-#[doc = "\\brief Makes a string descriptor contains unique serial number from hardware ID's\n \\param[in] buffer pointer to buffer for the descriptor\n \\return of the descriptor in bytes"]
+#[doc = "Makes a string descriptor contains unique serial number from hardware ID's\n\nReturns:\n\n* of the descriptor in bytes\n\n# Arguments\n\n* `buffer` - [Direction: In] pointer to buffer for the descriptor\n\n"]
 pub type usbd_hw_get_serialno =
     ::core::option::Option<unsafe extern "C" fn(buffer: *mut core::ffi::c_void) -> u16>;
-#[doc = "\\brief Represents a hardware USB driver call table."]
+#[doc = "Represents a hardware USB driver call table.\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct usbd_driver {
-    #[doc = "<\\copybrief usbd_hw_getinfo"]
+    #[doc = "<\\copybrief usbd_hw_getinfo\n\n"]
     pub getinfo: usbd_hw_getinfo,
-    #[doc = "<\\copybrief usbd_hw_enable"]
+    #[doc = "<\\copybrief usbd_hw_enable\n\n"]
     pub enable: usbd_hw_enable,
-    #[doc = "<\\copybrief usbd_hw_connect"]
+    #[doc = "<\\copybrief usbd_hw_connect\n\n"]
     pub connect: usbd_hw_connect,
-    #[doc = "<\\copybrief usbd_hw_setaddr"]
+    #[doc = "<\\copybrief usbd_hw_setaddr\n\n"]
     pub setaddr: usbd_hw_setaddr,
-    #[doc = "<\\copybrief usbd_hw_ep_config"]
+    #[doc = "<\\copybrief usbd_hw_ep_config\n\n"]
     pub ep_config: usbd_hw_ep_config,
-    #[doc = "<\\copybrief usbd_hw_ep_deconfig"]
+    #[doc = "<\\copybrief usbd_hw_ep_deconfig\n\n"]
     pub ep_deconfig: usbd_hw_ep_deconfig,
-    #[doc = "<\\copybrief usbd_hw_ep_read"]
+    #[doc = "<\\copybrief usbd_hw_ep_read\n\n"]
     pub ep_read: usbd_hw_ep_read,
-    #[doc = "<\\copybrief usbd_hw_ep_write"]
+    #[doc = "<\\copybrief usbd_hw_ep_write\n\n"]
     pub ep_write: usbd_hw_ep_write,
-    #[doc = "<\\copybrief usbd_hw_ep_setstall"]
+    #[doc = "<\\copybrief usbd_hw_ep_setstall\n\n"]
     pub ep_setstall: usbd_hw_ep_setstall,
-    #[doc = "<\\copybrief usbd_hw_ep_isstalled"]
+    #[doc = "<\\copybrief usbd_hw_ep_isstalled\n\n"]
     pub ep_isstalled: usbd_hw_ep_isstalled,
-    #[doc = "<\\copybrief usbd_hw_poll"]
+    #[doc = "<\\copybrief usbd_hw_poll\n\n"]
     pub poll: usbd_hw_poll,
-    #[doc = "<\\copybrief usbd_hw_get_frameno"]
+    #[doc = "<\\copybrief usbd_hw_get_frameno\n\n"]
     pub frame_no: usbd_hw_get_frameno,
-    #[doc = "<\\copybrief usbd_hw_get_serialno"]
+    #[doc = "<\\copybrief usbd_hw_get_serialno\n\n"]
     pub get_serialno_desc: usbd_hw_get_serialno,
 }
 #[test]
@@ -10866,25 +10863,25 @@ fn bindgen_test_layout_usbd_driver() {
         )
     );
 }
-#[doc = "\\brief Represents a USB device data."]
+#[doc = "Represents a USB device data.\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _usbd_device {
-    #[doc = "<\\copybrief usbd_driver"]
+    #[doc = "<\\copybrief usbd_driver\n\n"]
     pub driver: *const usbd_driver,
-    #[doc = "<\\copybrief usbd_ctl_callback"]
+    #[doc = "<\\copybrief usbd_ctl_callback\n\n"]
     pub control_callback: usbd_ctl_callback,
-    #[doc = "<\\copybrief usbd_rqc_callback"]
+    #[doc = "<\\copybrief usbd_rqc_callback\n\n"]
     pub complete_callback: usbd_rqc_callback,
-    #[doc = "<\\copybrief usbd_cfg_callback"]
+    #[doc = "<\\copybrief usbd_cfg_callback\n\n"]
     pub config_callback: usbd_cfg_callback,
-    #[doc = "<\\copybrief usbd_dsc_callback"]
+    #[doc = "<\\copybrief usbd_dsc_callback\n\n"]
     pub descriptor_callback: usbd_dsc_callback,
-    #[doc = "<\\brief array of the event callbacks."]
+    #[doc = "<\\brief array of the event callbacks.\n\n"]
     pub events: [usbd_evt_callback; 8usize],
-    #[doc = "<\\brief array of the endpoint callbacks."]
+    #[doc = "<\\brief array of the endpoint callbacks.\n\n"]
     pub endpoint: [usbd_evt_callback; 8usize],
-    #[doc = "<\\copybrief usbd_status"]
+    #[doc = "<\\copybrief usbd_status\n\n"]
     pub status: usbd_status,
 }
 #[test]
@@ -10982,37 +10979,37 @@ fn bindgen_test_layout__usbd_device() {
         )
     );
 }
-#[doc = "\\brief Represents a USB device descriptor\n \\details A device descriptor describes general information about a USB device. It includes\n information that applies globally to the device and all of the device’s configurations. A USB\n device has only one device descriptor. A high-speed capable device that has different device\n information for full-speed and high-speed must also  have a \\ref usb_qualifier_descriptor."]
+#[doc = "Represents a USB device descriptor\n\nA device descriptor describes general information about a USB device. It includes information that applies globally to the device and all of the device’s configurations. A USB device has only one device descriptor. A high-speed capable device that has different device information for full-speed and high-speed must also  have a  [`usb_qualifier_descriptor`]\n\n"]
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct usb_device_descriptor {
-    #[doc = "<\\brief Size of the descriptor, in bytes."]
+    #[doc = "<\\brief Size of the descriptor, in bytes.\n\n"]
     pub bLength: u8,
-    #[doc = "<\\brief \\ref USB_DTYPE_DEVICE Device descriptor."]
+    #[doc = "<\\brief  [`USB_DTYPE_DEVICE`] Device descriptor.\n\n"]
     pub bDescriptorType: u8,
-    #[doc = "<\\brief BCD of the supported USB specification."]
+    #[doc = "<\\brief BCD of the supported USB specification.\n\n"]
     pub bcdUSB: u16,
-    #[doc = "<\\brief USB device class."]
+    #[doc = "<\\brief USB device class.\n\n"]
     pub bDeviceClass: u8,
-    #[doc = "<\\brief USB device subclass."]
+    #[doc = "<\\brief USB device subclass.\n\n"]
     pub bDeviceSubClass: u8,
-    #[doc = "<\\brief USB device protocol."]
+    #[doc = "<\\brief USB device protocol.\n\n"]
     pub bDeviceProtocol: u8,
-    #[doc = "<\\brief Size of the control endpoint's bank in bytes."]
+    #[doc = "<\\brief Size of the control endpoint's bank in bytes.\n\n"]
     pub bMaxPacketSize0: u8,
-    #[doc = "<\\brief Vendor ID for the USB product."]
+    #[doc = "<\\brief Vendor ID for the USB product.\n\n"]
     pub idVendor: u16,
-    #[doc = "<\\brief Unique product ID for the USB product."]
+    #[doc = "<\\brief Unique product ID for the USB product.\n\n"]
     pub idProduct: u16,
-    #[doc = "<\\brief Product release (version) number."]
+    #[doc = "<\\brief Product release (version) number.\n\n"]
     pub bcdDevice: u16,
-    #[doc = "<\\brief String index for the manufacturer's name."]
+    #[doc = "<\\brief String index for the manufacturer's name.\n\n"]
     pub iManufacturer: u8,
-    #[doc = "<\\brief String index for the product name/details."]
+    #[doc = "<\\brief String index for the product name/details.\n\n"]
     pub iProduct: u8,
-    #[doc = "<\\brief String index for the product serial number."]
+    #[doc = "<\\brief String index for the product serial number.\n\n"]
     pub iSerialNumber: u8,
-    #[doc = "<\\brief Total number of configurations supported by the device."]
+    #[doc = "<\\brief Total number of configurations supported by the device.\n\n"]
     pub bNumConfigurations: u8,
 }
 #[test]
@@ -11300,7 +11297,7 @@ fn bindgen_test_layout_FuriHalUsbInterface() {
     );
 }
 extern "C" {
-    #[doc = " USB device interface modes"]
+    #[doc = "USB device interface modes\n\n"]
     pub static mut usb_cdc_single: FuriHalUsbInterface;
 }
 extern "C" {
@@ -11313,123 +11310,123 @@ extern "C" {
     pub static mut usb_hid_u2f: FuriHalUsbInterface;
 }
 extern "C" {
-    #[doc = " Set USB device configuration\n\n @param      mode new USB device mode\n @param      ctx context passed to device mode init function\n @return     true - mode switch started, false - mode switch is locked"]
+    #[doc = "Set USB device configuration\n\nReturns:\n\n* true - mode switch started, false - mode switch is locked\n\n# Arguments\n\n* `mode` - new USB device mode\n* `ctx` - context passed to device mode init function\n\n"]
     pub fn furi_hal_usb_set_config(
         new_if: *mut FuriHalUsbInterface,
         ctx: *mut core::ffi::c_void,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Get USB device configuration\n\n @return    current USB device mode"]
+    #[doc = "Get USB device configuration\n\nReturns:\n\n* current USB device mode\n\n"]
     pub fn furi_hal_usb_get_config() -> *mut FuriHalUsbInterface;
 }
 extern "C" {
-    #[doc = " Lock USB device mode switch"]
+    #[doc = "Lock USB device mode switch\n\n"]
     pub fn furi_hal_usb_lock();
 }
 extern "C" {
-    #[doc = " Unlock USB device mode switch"]
+    #[doc = "Unlock USB device mode switch\n\n"]
     pub fn furi_hal_usb_unlock();
 }
 extern "C" {
-    #[doc = " Check if USB device mode switch locked\n\n @return    lock state"]
+    #[doc = "Check if USB device mode switch locked\n\nReturns:\n\n* lock state\n\n"]
     pub fn furi_hal_usb_is_locked() -> bool;
 }
 extern "C" {
-    #[doc = " Disable USB device"]
+    #[doc = "Disable USB device\n\n"]
     pub fn furi_hal_usb_disable();
 }
 extern "C" {
-    #[doc = " Enable USB device"]
+    #[doc = "Enable USB device\n\n"]
     pub fn furi_hal_usb_enable();
 }
 extern "C" {
-    #[doc = " Restart USB device"]
+    #[doc = "Restart USB device\n\n"]
     pub fn furi_hal_usb_reinit();
 }
 pub type HidStateCallback =
     ::core::option::Option<unsafe extern "C" fn(state: bool, context: *mut core::ffi::c_void)>;
 extern "C" {
-    #[doc = " Get USB HID connection state\n\n @return      true / false"]
+    #[doc = "Get USB HID connection state\n\nReturns:\n\n* true / false\n\n"]
     pub fn furi_hal_hid_is_connected() -> bool;
 }
 extern "C" {
-    #[doc = " Get USB HID keyboard leds state\n\n @return      leds state"]
+    #[doc = "Get USB HID keyboard leds state\n\nReturns:\n\n* leds state\n\n"]
     pub fn furi_hal_hid_get_led_state() -> u8;
 }
 extern "C" {
-    #[doc = " Set USB HID connect/disconnect callback\n\n @param      cb  callback\n @param      ctx  callback context"]
+    #[doc = "Set USB HID connect/disconnect callback\n\n# Arguments\n\n* `cb` - callback\n* `ctx` - callback context\n\n"]
     pub fn furi_hal_hid_set_state_callback(cb: HidStateCallback, ctx: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Set the following key to pressed state and send HID report\n\n @param      button  key code"]
+    #[doc = "Set the following key to pressed state and send HID report\n\n# Arguments\n\n* `button` - key code\n\n"]
     pub fn furi_hal_hid_kb_press(button: u16) -> bool;
 }
 extern "C" {
-    #[doc = " Set the following key to released state and send HID report\n\n @param      button  key code"]
+    #[doc = "Set the following key to released state and send HID report\n\n# Arguments\n\n* `button` - key code\n\n"]
     pub fn furi_hal_hid_kb_release(button: u16) -> bool;
 }
 extern "C" {
-    #[doc = " Clear all pressed keys and send HID report\n"]
+    #[doc = "Clear all pressed keys and send HID report\n\n"]
     pub fn furi_hal_hid_kb_release_all() -> bool;
 }
 extern "C" {
-    #[doc = " Set mouse movement and send HID report\n\n @param      dx  x coordinate delta\n @param      dy  y coordinate delta"]
+    #[doc = "Set mouse movement and send HID report\n\n# Arguments\n\n* `dx` - x coordinate delta\n* `dy` - y coordinate delta\n\n"]
     pub fn furi_hal_hid_mouse_move(dx: i8, dy: i8) -> bool;
 }
 extern "C" {
-    #[doc = " Set mouse button to pressed state and send HID report\n\n @param      button  key code"]
+    #[doc = "Set mouse button to pressed state and send HID report\n\n# Arguments\n\n* `button` - key code\n\n"]
     pub fn furi_hal_hid_mouse_press(button: u8) -> bool;
 }
 extern "C" {
-    #[doc = " Set mouse button to released state and send HID report\n\n @param      button  key code"]
+    #[doc = "Set mouse button to released state and send HID report\n\n# Arguments\n\n* `button` - key code\n\n"]
     pub fn furi_hal_hid_mouse_release(button: u8) -> bool;
 }
 extern "C" {
-    #[doc = " Set mouse wheel position and send HID report\n\n @param      delta  number of scroll steps"]
+    #[doc = "Set mouse wheel position and send HID report\n\n# Arguments\n\n* `delta` - number of scroll steps\n\n"]
     pub fn furi_hal_hid_mouse_scroll(delta: i8) -> bool;
 }
 extern "C" {
-    #[doc = " Set the following consumer key to pressed state and send HID report\n\n @param      button  key code"]
+    #[doc = "Set the following consumer key to pressed state and send HID report\n\n# Arguments\n\n* `button` - key code\n\n"]
     pub fn furi_hal_hid_consumer_key_press(button: u16) -> bool;
 }
 extern "C" {
-    #[doc = " Set the following consumer key to released state and send HID report\n\n @param      button  key code"]
+    #[doc = "Set the following consumer key to released state and send HID report\n\n# Arguments\n\n* `button` - key code\n\n"]
     pub fn furi_hal_hid_consumer_key_release(button: u16) -> bool;
 }
 pub const FuriHalUartId_FuriHalUartIdUSART1: FuriHalUartId = 0;
 pub const FuriHalUartId_FuriHalUartIdLPUART1: FuriHalUartId = 1;
-#[doc = " UART channels"]
+#[doc = "UART channels\n\n"]
 pub type FuriHalUartId = core::ffi::c_uchar;
 pub const UartIrqEvent_UartIrqEventRXNE: UartIrqEvent = 0;
-#[doc = " UART events"]
+#[doc = "UART events\n\n"]
 pub type UartIrqEvent = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Init UART\n Configures GPIO to UART function, сonfigures UART hardware, enables UART hardware\n @param channel UART channel\n @param baud baudrate"]
+    #[doc = "Init UART Configures GPIO to UART function, сonfigures UART hardware, enables UART hardware\n\n# Arguments\n\n* `channel` - UART channel\n* `baud` - baudrate\n\n"]
     pub fn furi_hal_uart_init(channel: FuriHalUartId, baud: u32);
 }
 extern "C" {
-    #[doc = " Deinit UART\n Configures GPIO to analog, clears callback and callback context, disables UART hardware\n @param channel UART channel"]
+    #[doc = "Deinit UART Configures GPIO to analog, clears callback and callback context, disables UART hardware\n\n# Arguments\n\n* `channel` - UART channel\n\n"]
     pub fn furi_hal_uart_deinit(channel: FuriHalUartId);
 }
 extern "C" {
-    #[doc = " Suspend UART operation\n Disables UART hardware, settings and callbacks are preserved\n @param channel UART channel"]
+    #[doc = "Suspend UART operation Disables UART hardware, settings and callbacks are preserved\n\n# Arguments\n\n* `channel` - UART channel\n\n"]
     pub fn furi_hal_uart_suspend(channel: FuriHalUartId);
 }
 extern "C" {
-    #[doc = " Resume UART operation\n Resumes UART hardware from suspended state\n @param channel UART channel"]
+    #[doc = "Resume UART operation Resumes UART hardware from suspended state\n\n# Arguments\n\n* `channel` - UART channel\n\n"]
     pub fn furi_hal_uart_resume(channel: FuriHalUartId);
 }
 extern "C" {
-    #[doc = " Changes UART baudrate\n @param channel UART channel\n @param baud baudrate"]
+    #[doc = "Changes UART baudrate\n\n# Arguments\n\n* `channel` - UART channel\n* `baud` - baudrate\n\n"]
     pub fn furi_hal_uart_set_br(channel: FuriHalUartId, baud: u32);
 }
 extern "C" {
-    #[doc = " Transmits data\n @param channel UART channel\n @param buffer data\n @param buffer_size data size (in bytes)"]
+    #[doc = "Transmits data\n\n# Arguments\n\n* `channel` - UART channel\n* `buffer` - data\n* `buffer_size` - data size (in bytes)\n\n"]
     pub fn furi_hal_uart_tx(channel: FuriHalUartId, buffer: *mut u8, buffer_size: usize);
 }
 extern "C" {
-    #[doc = " Sets UART event callback\n @param channel UART channel\n @param callback callback pointer\n @param context callback context"]
+    #[doc = "Sets UART event callback\n\n# Arguments\n\n* `channel` - UART channel\n* `callback` - callback pointer\n* `context` - callback context\n\n"]
     pub fn furi_hal_uart_set_irq_cb(
         channel: FuriHalUartId,
         callback: ::core::option::Option<
@@ -11439,7 +11436,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Get device information\n\n @param[in]  callback     callback to provide with new data\n @param[in]  sep          category separator character\n @param[in]  context      context to pass to callback"]
+    #[doc = "Get device information\n\n# Arguments\n\n* `callback` - [Direction: In] callback to provide with new data\n* `sep` - [Direction: In] category separator character\n* `context` - [Direction: In] context to pass to callback\n\n"]
     pub fn furi_hal_info_get(
         callback: PropertyValueCallback,
         sep: core::ffi::c_char,
@@ -11447,11 +11444,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Get random value\n\n @return     random value"]
+    #[doc = "Get random value\n\nReturns:\n\n* random value\n\n"]
     pub fn furi_hal_random_get() -> u32;
 }
 extern "C" {
-    #[doc = " Fill buffer with random data\n\n @param      buf  buffer pointer\n @param      data buffer len"]
+    #[doc = "Fill buffer with random data\n\n# Arguments\n\n* `buf` - buffer pointer\n* `data` - buffer len\n\n"]
     pub fn furi_hal_random_fill_buf(buf: *mut u8, len: u32);
 }
 #[repr(C)]
@@ -11511,157 +11508,157 @@ impl LevelDuration {
         __bindgen_bitfield_unit
     }
 }
-#[doc = "< default configuration"]
+#[doc = "default configuration\n\n"]
 pub const FuriHalSubGhzPreset_FuriHalSubGhzPresetIDLE: FuriHalSubGhzPreset = 0;
-#[doc = "< OOK, bandwidth 270kHz, asynchronous"]
+#[doc = "OOK, bandwidth 270kHz, asynchronous\n\n"]
 pub const FuriHalSubGhzPreset_FuriHalSubGhzPresetOok270Async: FuriHalSubGhzPreset = 1;
-#[doc = "< OOK, bandwidth 650kHz, asynchronous"]
+#[doc = "OOK, bandwidth 650kHz, asynchronous\n\n"]
 pub const FuriHalSubGhzPreset_FuriHalSubGhzPresetOok650Async: FuriHalSubGhzPreset = 2;
-#[doc = "< FM, deviation 2.380371 kHz, asynchronous"]
+#[doc = "FM, deviation 2.380371 kHz, asynchronous\n\n"]
 pub const FuriHalSubGhzPreset_FuriHalSubGhzPreset2FSKDev238Async: FuriHalSubGhzPreset = 3;
-#[doc = "< FM, deviation 47.60742 kHz, asynchronous"]
+#[doc = "FM, deviation 47.60742 kHz, asynchronous\n\n"]
 pub const FuriHalSubGhzPreset_FuriHalSubGhzPreset2FSKDev476Async: FuriHalSubGhzPreset = 4;
-#[doc = "< MSK, deviation 47.60742 kHz, 99.97Kb/s, asynchronous"]
+#[doc = "MSK, deviation 47.60742 kHz, 99.97Kb/s, asynchronous\n\n"]
 pub const FuriHalSubGhzPreset_FuriHalSubGhzPresetMSK99_97KbAsync: FuriHalSubGhzPreset = 5;
-#[doc = "< GFSK, deviation 19.042969 kHz, 9.996Kb/s, asynchronous"]
+#[doc = "GFSK, deviation 19.042969 kHz, 9.996Kb/s, asynchronous\n\n"]
 pub const FuriHalSubGhzPreset_FuriHalSubGhzPresetGFSK9_99KbAsync: FuriHalSubGhzPreset = 6;
 pub const FuriHalSubGhzPreset_FuriHalSubGhzPresetCustom: FuriHalSubGhzPreset = 7;
-#[doc = " Radio Presets"]
+#[doc = "Radio Presets\n\n"]
 pub type FuriHalSubGhzPreset = core::ffi::c_uchar;
-#[doc = "< Isolate Radio from antenna"]
+#[doc = "Isolate Radio from antenna\n\n"]
 pub const FuriHalSubGhzPath_FuriHalSubGhzPathIsolate: FuriHalSubGhzPath = 0;
-#[doc = "< Center Frequency: 433MHz. Path 1: SW1RF1-SW2RF2, LCLCL"]
+#[doc = "Center Frequency: 433MHz. Path 1: SW1RF1-SW2RF2, LCLCL\n\n"]
 pub const FuriHalSubGhzPath_FuriHalSubGhzPath433: FuriHalSubGhzPath = 1;
-#[doc = "< Center Frequency: 315MHz. Path 2: SW1RF2-SW2RF1, LCLCLCL"]
+#[doc = "Center Frequency: 315MHz. Path 2: SW1RF2-SW2RF1, LCLCLCL\n\n"]
 pub const FuriHalSubGhzPath_FuriHalSubGhzPath315: FuriHalSubGhzPath = 2;
-#[doc = "< Center Frequency: 868MHz. Path 3: SW1RF3-SW2RF3, LCLC"]
+#[doc = "Center Frequency: 868MHz. Path 3: SW1RF3-SW2RF3, LCLC\n\n"]
 pub const FuriHalSubGhzPath_FuriHalSubGhzPath868: FuriHalSubGhzPath = 3;
-#[doc = " Switchable Radio Paths"]
+#[doc = "Switchable Radio Paths\n\n"]
 pub type FuriHalSubGhzPath = core::ffi::c_uchar;
 extern "C" {
     pub fn furi_hal_subghz_set_async_mirror_pin(pin: *const GpioPin);
 }
 extern "C" {
-    #[doc = " Send device to sleep mode"]
+    #[doc = "Send device to sleep mode\n\n"]
     pub fn furi_hal_subghz_sleep();
 }
 extern "C" {
-    #[doc = " Load registers from preset by preset name\n\n @param      preset  to load"]
+    #[doc = "Load registers from preset by preset name\n\n# Arguments\n\n* `preset` - to load\n\n"]
     pub fn furi_hal_subghz_load_preset(preset: FuriHalSubGhzPreset);
 }
 extern "C" {
-    #[doc = " Load custom registers from preset\n\n @param      preset_data   registers to load"]
+    #[doc = "Load custom registers from preset\n\n# Arguments\n\n* `preset_data` - registers to load\n\n"]
     pub fn furi_hal_subghz_load_custom_preset(preset_data: *mut u8);
 }
 extern "C" {
-    #[doc = " Load registers\n\n @param      data  Registers data"]
+    #[doc = "Load registers\n\n# Arguments\n\n* `data` - Registers data\n\n"]
     pub fn furi_hal_subghz_load_registers(data: *mut u8);
 }
 extern "C" {
-    #[doc = " Load PATABLE\n\n @param      data  8 uint8_t values"]
+    #[doc = "Load PATABLE\n\n# Arguments\n\n* `data` - 8 uint8_t values\n\n"]
     pub fn furi_hal_subghz_load_patable(data: *const u8);
 }
 extern "C" {
-    #[doc = " Write packet to FIFO\n\n @param      data  bytes array\n @param      size  size"]
+    #[doc = "Write packet to FIFO\n\n# Arguments\n\n* `data` - bytes array\n* `size` - size\n\n"]
     pub fn furi_hal_subghz_write_packet(data: *const u8, size: u8);
 }
 extern "C" {
-    #[doc = " Check if receive pipe is not empty\n\n @return     true if not empty"]
+    #[doc = "Check if receive pipe is not empty\n\nReturns:\n\n* true if not empty\n\n"]
     pub fn furi_hal_subghz_rx_pipe_not_empty() -> bool;
 }
 extern "C" {
-    #[doc = " Check if received data crc is valid\n\n @return     true if valid"]
+    #[doc = "Check if received data crc is valid\n\nReturns:\n\n* true if valid\n\n"]
     pub fn furi_hal_subghz_is_rx_data_crc_valid() -> bool;
 }
 extern "C" {
-    #[doc = " Read packet from FIFO\n\n @param      data  pointer\n @param      size  size"]
+    #[doc = "Read packet from FIFO\n\n# Arguments\n\n* `data` - pointer\n* `size` - size\n\n"]
     pub fn furi_hal_subghz_read_packet(data: *mut u8, size: *mut u8);
 }
 extern "C" {
-    #[doc = " Flush rx FIFO buffer"]
+    #[doc = "Flush rx FIFO buffer\n\n"]
     pub fn furi_hal_subghz_flush_rx();
 }
 extern "C" {
-    #[doc = " Flush tx FIFO buffer"]
+    #[doc = "Flush tx FIFO buffer\n\n"]
     pub fn furi_hal_subghz_flush_tx();
 }
 extern "C" {
-    #[doc = " Reset Issue reset command\n @warning    registers content will be lost"]
+    #[doc = "Reset Issue reset command\n\n**Warning!**\n\n* registers content will be lost\n\n"]
     pub fn furi_hal_subghz_reset();
 }
 extern "C" {
-    #[doc = " Switch to Idle"]
+    #[doc = "Switch to Idle\n\n"]
     pub fn furi_hal_subghz_idle();
 }
 extern "C" {
-    #[doc = " Switch to Receive"]
+    #[doc = "Switch to Receive\n\n"]
     pub fn furi_hal_subghz_rx();
 }
 extern "C" {
-    #[doc = " Switch to Transmit\n\n @return     true if the transfer is allowed by belonging to the region"]
+    #[doc = "Switch to Transmit\n\nReturns:\n\n* true if the transfer is allowed by belonging to the region\n\n"]
     pub fn furi_hal_subghz_tx() -> bool;
 }
 extern "C" {
-    #[doc = " Get RSSI value in dBm\n\n @return     RSSI value"]
+    #[doc = "Get RSSI value in dBm\n\nReturns:\n\n* RSSI value\n\n"]
     pub fn furi_hal_subghz_get_rssi() -> f32;
 }
 extern "C" {
-    #[doc = " Get LQI\n\n @return     LQI value"]
+    #[doc = "Get LQI\n\nReturns:\n\n* LQI value\n\n"]
     pub fn furi_hal_subghz_get_lqi() -> u8;
 }
 extern "C" {
-    #[doc = " Check if frequency is in valid range\n\n @param      value  frequency in Hz\n\n @return     true if frequency is valid, otherwise false"]
+    #[doc = "Check if frequency is in valid range\n\nReturns:\n\n* true if frequency is valid, otherwise false\n\n# Arguments\n\n* `value` - frequency in Hz\n\n"]
     pub fn furi_hal_subghz_is_frequency_valid(value: u32) -> bool;
 }
 extern "C" {
-    #[doc = " Set frequency and path This function automatically selects antenna matching\n network\n\n @param      value  frequency in Hz\n\n @return     real frequency in Hz"]
+    #[doc = "Set frequency and path This function automatically selects antenna matching network\n\nReturns:\n\n* real frequency in Hz\n\n# Arguments\n\n* `value` - frequency in Hz\n\n"]
     pub fn furi_hal_subghz_set_frequency_and_path(value: u32) -> u32;
 }
 extern "C" {
-    #[doc = " Set frequency\n\n @param      value  frequency in Hz\n\n @return     real frequency in Hz"]
+    #[doc = "Set frequency\n\nReturns:\n\n* real frequency in Hz\n\n# Arguments\n\n* `value` - frequency in Hz\n\n"]
     pub fn furi_hal_subghz_set_frequency(value: u32) -> u32;
 }
 extern "C" {
-    #[doc = " Set path\n\n @param      path  path to use"]
+    #[doc = "Set path\n\n# Arguments\n\n* `path` - path to use\n\n"]
     pub fn furi_hal_subghz_set_path(path: FuriHalSubGhzPath);
 }
-#[doc = " Signal Timings Capture callback"]
+#[doc = "Signal Timings Capture callback\n\n"]
 pub type FuriHalSubGhzCaptureCallback = ::core::option::Option<
     unsafe extern "C" fn(level: bool, duration: u32, context: *mut core::ffi::c_void),
 >;
 extern "C" {
-    #[doc = " Enable signal timings capture Initializes GPIO and TIM2 for timings capture\n\n @param      callback  FuriHalSubGhzCaptureCallback\n @param      context   callback context"]
+    #[doc = "Enable signal timings capture Initializes GPIO and TIM2 for timings capture\n\n# Arguments\n\n* `callback` - FuriHalSubGhzCaptureCallback\n* `context` - callback context\n\n"]
     pub fn furi_hal_subghz_start_async_rx(
         callback: FuriHalSubGhzCaptureCallback,
         context: *mut core::ffi::c_void,
     );
 }
 extern "C" {
-    #[doc = " Disable signal timings capture Resets GPIO and TIM2"]
+    #[doc = "Disable signal timings capture Resets GPIO and TIM2\n\n"]
     pub fn furi_hal_subghz_stop_async_rx();
 }
-#[doc = " Async TX callback type\n @param      context  callback context\n @return     LevelDuration"]
+#[doc = "Async TX callback type\n\nReturns:\n\n* LevelDuration\n\n# Arguments\n\n* `context` - callback context\n\n"]
 pub type FuriHalSubGhzAsyncTxCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void) -> LevelDuration>;
 extern "C" {
-    #[doc = " Start async TX Initializes GPIO, TIM2 and DMA1 for signal output\n\n @param      callback  FuriHalSubGhzAsyncTxCallback\n @param      context   callback context\n\n @return     true if the transfer is allowed by belonging to the region"]
+    #[doc = "Start async TX Initializes GPIO, TIM2 and DMA1 for signal output\n\nReturns:\n\n* true if the transfer is allowed by belonging to the region\n\n# Arguments\n\n* `callback` - FuriHalSubGhzAsyncTxCallback\n* `context` - callback context\n\n"]
     pub fn furi_hal_subghz_start_async_tx(
         callback: FuriHalSubGhzAsyncTxCallback,
         context: *mut core::ffi::c_void,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Wait for async transmission to complete\n\n @return     true if TX complete"]
+    #[doc = "Wait for async transmission to complete\n\nReturns:\n\n* true if TX complete\n\n"]
     pub fn furi_hal_subghz_is_async_tx_complete() -> bool;
 }
 extern "C" {
-    #[doc = " Stop async transmission and cleanup resources Resets GPIO, TIM2, and DMA1"]
+    #[doc = "Stop async transmission and cleanup resources Resets GPIO, TIM2, and DMA1\n\n"]
     pub fn furi_hal_subghz_stop_async_tx();
 }
 pub type FuriHalIbuttonEmulateCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
 extern "C" {
-    #[doc = " Start emulation timer\n @param period timer period\n @param callback timer callback\n @param context callback context"]
+    #[doc = "Start emulation timer\n\n# Arguments\n\n* `period` - timer period\n* `callback` - timer callback\n* `context` - callback context\n\n"]
     pub fn furi_hal_ibutton_emulate_start(
         period: u32,
         callback: FuriHalIbuttonEmulateCallback,
@@ -11669,65 +11666,65 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Update emulation timer period\n @param period new timer period"]
+    #[doc = "Update emulation timer period\n\n# Arguments\n\n* `period` - new timer period\n\n"]
     pub fn furi_hal_ibutton_emulate_set_next(period: u32);
 }
 extern "C" {
-    #[doc = " Stop emulation timer"]
+    #[doc = "Stop emulation timer\n\n"]
     pub fn furi_hal_ibutton_emulate_stop();
 }
 extern "C" {
-    #[doc = " Set the pin to normal mode (open collector), and sets it to float"]
+    #[doc = "Set the pin to normal mode (open collector), and sets it to float\n\n"]
     pub fn furi_hal_ibutton_pin_configure();
 }
 extern "C" {
-    #[doc = " Sets the pin to analog mode, and sets it to float"]
+    #[doc = "Sets the pin to analog mode, and sets it to float\n\n"]
     pub fn furi_hal_ibutton_pin_reset();
 }
 extern "C" {
-    #[doc = " iButton write pin\n @param state true / false"]
+    #[doc = "iButton write pin\n\n# Arguments\n\n* `state` - true / false\n\n"]
     pub fn furi_hal_ibutton_pin_write(state: bool);
 }
 extern "C" {
-    #[doc = " Config rfid pins to reset state"]
+    #[doc = "Config rfid pins to reset state\n\n"]
     pub fn furi_hal_rfid_pins_reset();
 }
 extern "C" {
-    #[doc = " Config rfid pins to emulate state"]
+    #[doc = "Config rfid pins to emulate state\n\n"]
     pub fn furi_hal_rfid_pins_emulate();
 }
 extern "C" {
-    #[doc = " Config rfid pins to read state"]
+    #[doc = "Config rfid pins to read state\n\n"]
     pub fn furi_hal_rfid_pins_read();
 }
 extern "C" {
-    #[doc = " Release rfid pull pin"]
+    #[doc = "Release rfid pull pin\n\n"]
     pub fn furi_hal_rfid_pin_pull_release();
 }
 extern "C" {
-    #[doc = " Pulldown rfid pull pin"]
+    #[doc = "Pulldown rfid pull pin\n\n"]
     pub fn furi_hal_rfid_pin_pull_pulldown();
 }
 extern "C" {
-    #[doc = " Config rfid timer to read state\n\n @param      freq        timer frequency\n @param      duty_cycle  timer duty cycle, 0.0-1.0"]
+    #[doc = "Config rfid timer to read state\n\n# Arguments\n\n* `freq` - timer frequency\n* `duty_cycle` - timer duty cycle, 0.0-1.0\n\n"]
     pub fn furi_hal_rfid_tim_read(freq: f32, duty_cycle: f32);
 }
 extern "C" {
-    #[doc = " Start read timer"]
+    #[doc = "Start read timer\n\n"]
     pub fn furi_hal_rfid_tim_read_start();
 }
 extern "C" {
-    #[doc = " Stop read timer"]
+    #[doc = "Stop read timer\n\n"]
     pub fn furi_hal_rfid_tim_read_stop();
 }
 extern "C" {
-    #[doc = " Config rfid timer to emulate state\n\n @param      freq  timer frequency"]
+    #[doc = "Config rfid timer to emulate state\n\n# Arguments\n\n* `freq` - timer frequency\n\n"]
     pub fn furi_hal_rfid_tim_emulate(freq: f32);
 }
 pub type FuriHalRfidEmulateCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
 extern "C" {
-    #[doc = " Start emulation timer"]
+    #[doc = "Start emulation timer\n\n"]
     pub fn furi_hal_rfid_tim_emulate_start(
         callback: FuriHalRfidEmulateCallback,
         context: *mut core::ffi::c_void,
@@ -11760,45 +11757,45 @@ extern "C" {
     pub fn furi_hal_rfid_tim_emulate_dma_stop();
 }
 extern "C" {
-    #[doc = " Stop emulation timer"]
+    #[doc = "Stop emulation timer\n\n"]
     pub fn furi_hal_rfid_tim_emulate_stop();
 }
 extern "C" {
-    #[doc = " Config rfid timers to reset state"]
+    #[doc = "Config rfid timers to reset state\n\n"]
     pub fn furi_hal_rfid_tim_reset();
 }
 extern "C" {
-    #[doc = " Set emulation timer period\n\n @param      period  overall duration"]
+    #[doc = "Set emulation timer period\n\n# Arguments\n\n* `period` - overall duration\n\n"]
     pub fn furi_hal_rfid_set_emulate_period(period: u32);
 }
 extern "C" {
-    #[doc = " Set emulation timer pulse\n\n @param      pulse  duration of high level"]
+    #[doc = "Set emulation timer pulse\n\n# Arguments\n\n* `pulse` - duration of high level\n\n"]
     pub fn furi_hal_rfid_set_emulate_pulse(pulse: u32);
 }
 extern "C" {
-    #[doc = " Set read timer period\n\n @param      period  overall duration"]
+    #[doc = "Set read timer period\n\n# Arguments\n\n* `period` - overall duration\n\n"]
     pub fn furi_hal_rfid_set_read_period(period: u32);
 }
 extern "C" {
-    #[doc = " Set read timer pulse\n\n @param      pulse  duration of high level"]
+    #[doc = "Set read timer pulse\n\n# Arguments\n\n* `pulse` - duration of high level\n\n"]
     pub fn furi_hal_rfid_set_read_pulse(pulse: u32);
 }
 extern "C" {
-    #[doc = " Сhanges the configuration of the RFID timer \"on a fly\"\n\n @param      freq        new frequency\n @param      duty_cycle  new duty cycle"]
+    #[doc = "Сhanges the configuration of the RFID timer \"on a fly\"\n\n# Arguments\n\n* `freq` - new frequency\n* `duty_cycle` - new duty cycle\n\n"]
     pub fn furi_hal_rfid_change_read_config(freq: f32, duty_cycle: f32);
 }
 extern "C" {
-    #[doc = " Start/Enable comparator"]
+    #[doc = "Start/Enable comparator\n\n"]
     pub fn furi_hal_rfid_comp_start();
 }
 extern "C" {
-    #[doc = " Stop/Disable comparator"]
+    #[doc = "Stop/Disable comparator\n\n"]
     pub fn furi_hal_rfid_comp_stop();
 }
 pub type FuriHalRfidCompCallback =
     ::core::option::Option<unsafe extern "C" fn(level: bool, context: *mut core::ffi::c_void)>;
 extern "C" {
-    #[doc = " Set comparator callback"]
+    #[doc = "Set comparator callback\n\n"]
     pub fn furi_hal_rfid_comp_set_callback(
         callback: FuriHalRfidCompCallback,
         context: *mut core::ffi::c_void,
@@ -11806,11 +11803,11 @@ extern "C" {
 }
 pub type ReturnCode = u16;
 extern "C" {
-    #[doc = " \\brief  Calculate Timer\n\n This method calculates when the timer will be expired given the amount\n time in milliseconds /a tOut.\n Once the timer has been calculated it will then be used to check when\n it expires.\n\n \\see timersIsExpired\n\n \\param[in]  time : time/duration in Milliseconds for the timer\n\n \\return u32 : The new timer calculated based on the given time\n"]
+    #[doc = "Calculate Timer\n\nThis method calculates when the timer will be expired given the amount time in milliseconds /a tOut. Once the timer has been calculated it will then be used to check when it expires.\n[`timersIsExpired`]\n\nReturns:\n\n* u32 : The new timer calculated based on the given time\n\n# Arguments\n\n* `time` - [Direction: In] : time/duration in Milliseconds for the timer\n\n"]
     pub fn timerCalculateTimer(time: u16) -> u32;
 }
 extern "C" {
-    #[doc = " \\brief  Checks if a Timer is Expired\n\n This method checks if a timer has already expired.\n Based on the given timer previously calculated it checks if this timer\n has already elapsed\n\n \\see timersCalculateTimer\n\n \\param[in]  timer : the timer to check\n\n \\return true  : timer has already expired\n \\return false : timer is still running\n"]
+    #[doc = "Checks if a Timer is Expired\n\nThis method checks if a timer has already expired. Based on the given timer previously calculated it checks if this timer has already elapsed\n[`timersCalculateTimer`]\n\nReturns:\n\n* true : timer has already expired\n* false : timer is still running\n\n# Arguments\n\n* `timer` - [Direction: In] : the timer to check\n\n"]
     pub fn timerIsExpired(timer: u32) -> bool;
 }
 extern "C" {
@@ -11823,19 +11820,19 @@ extern "C" {
     pub fn scalbnf(arg1: f32, arg2: core::ffi::c_int) -> f32;
 }
 extern "C" {
-    #[doc = " \\brief  RFAL Turn Field On and Start GT\n\n Turns the Field On, performing Initial Collision Avoidance\n\n After Field On, if GT was set before, it starts the GT timer to be\n used on the following communications.\n\n \\return ERR_RF_COLLISION : External field detected\n \\return ERR_NONE         : Field turned On\n\n"]
+    #[doc = "RFAL Turn Field On and Start GT\n\nTurns the Field On, performing Initial Collision Avoidance\nAfter Field On, if GT was set before, it starts the GT timer to be used on the following communications.\n\nReturns:\n\n* ERR_RF_COLLISION : External field detected\n* ERR_NONE : Field turned On\n\n"]
     pub fn rfalFieldOnAndStartGT() -> ReturnCode;
 }
 extern "C" {
-    #[doc = "  \\brief RFAL Worker\n\n  This runs RFAL layer, which drives the actual Transceive procedure\n  It MUST be executed frequently in order to execute the RFAL internal\n  states and perform the requested operations\n\n"]
+    #[doc = "RFAL Worker\n\nThis runs RFAL layer, which drives the actual Transceive procedure It MUST be executed frequently in order to execute the RFAL internal states and perform the requested operations\n\n"]
     pub fn rfalWorker();
 }
 extern "C" {
-    #[doc = " \\brief Low Power Mode Start\n\n Sets the RF Chip in Low Power Mode.\n In this mode the RF Chip is placed in Low Power Mode, similar to Wake-up\n mode but no operation nor period measurement is performed.\n Mode must be terminated by rfalLowPowerModeStop()\n\n \\return ERR_WRONG_STATE : Not initialized properly\n \\return ERR_PARAM       : Invalid parameter\n \\return ERR_NONE        : Done with no error\n\n"]
+    #[doc = "Low Power Mode Start\n\nSets the RF Chip in Low Power Mode. In this mode the RF Chip is placed in Low Power Mode, similar to Wake-up mode but no operation nor period measurement is performed. Mode must be terminated by rfalLowPowerModeStop()\n\nReturns:\n\n* ERR_WRONG_STATE : Not initialized properly\n* ERR_PARAM : Invalid parameter\n* ERR_NONE : Done with no error\n\n"]
     pub fn rfalLowPowerModeStart() -> ReturnCode;
 }
 extern "C" {
-    #[doc = " \\brief Low Power Mode Stop\n\n Stops the Low Power Mode re-enabling the device\n\n \\return ERR_WRONG_STATE : Not initialized properly\n \\return ERR_PARAM       : Invalid parameter\n \\return ERR_NONE        : Done with no error\n\n"]
+    #[doc = "Low Power Mode Stop\n\nStops the Low Power Mode re-enabling the device\n\nReturns:\n\n* ERR_WRONG_STATE : Not initialized properly\n* ERR_PARAM : Invalid parameter\n* ERR_NONE : Done with no error\n\n"]
     pub fn rfalLowPowerModeStop() -> ReturnCode;
 }
 #[repr(C)]
@@ -12236,42 +12233,42 @@ fn bindgen_test_layout_FuriHalNfcTxRxContext() {
     );
 }
 extern "C" {
-    #[doc = " Check if nfc worker is busy\n\n @return     true if busy"]
+    #[doc = "Check if nfc worker is busy\n\nReturns:\n\n* true if busy\n\n"]
     pub fn furi_hal_nfc_is_busy() -> bool;
 }
 extern "C" {
-    #[doc = " Check if nfc is initialized\n\n @return     true if initialized"]
+    #[doc = "Check if nfc is initialized\n\nReturns:\n\n* true if initialized\n\n"]
     pub fn furi_hal_nfc_is_init() -> bool;
 }
 extern "C" {
-    #[doc = " NFC field on"]
+    #[doc = "NFC field on\n\n"]
     pub fn furi_hal_nfc_field_on();
 }
 extern "C" {
-    #[doc = " NFC field off"]
+    #[doc = "NFC field off\n\n"]
     pub fn furi_hal_nfc_field_off();
 }
 extern "C" {
-    #[doc = " NFC start sleep"]
+    #[doc = "NFC start sleep\n\n"]
     pub fn furi_hal_nfc_start_sleep();
 }
 extern "C" {
     pub fn furi_hal_nfc_stop_cmd();
 }
 extern "C" {
-    #[doc = " NFC stop sleep"]
+    #[doc = "NFC stop sleep\n\n"]
     pub fn furi_hal_nfc_exit_sleep();
 }
 extern "C" {
-    #[doc = " NFC poll\n\n @param      dev_list    pointer to rfalNfcDevice buffer\n @param      dev_cnt     pointer device count\n @param      timeout     timeout in ms\n @param      deactivate  deactivate flag\n\n @return     true on success"]
+    #[doc = "NFC poll\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `dev_list` - pointer to rfalNfcDevice buffer\n* `dev_cnt` - pointer device count\n* `timeout` - timeout in ms\n* `deactivate` - deactivate flag\n\n"]
     pub fn furi_hal_nfc_detect(nfc_data: *mut FuriHalNfcDevData, timeout: u32) -> bool;
 }
 extern "C" {
-    #[doc = " Activate NFC-A tag\n\n @param      timeout      timeout in ms\n @param      cuid         pointer to 32bit uid\n\n @return     true on succeess"]
+    #[doc = "Activate NFC-A tag\n\nReturns:\n\n* true on succeess\n\n# Arguments\n\n* `timeout` - timeout in ms\n* `cuid` - pointer to 32bit uid\n\n"]
     pub fn furi_hal_nfc_activate_nfca(timeout: u32, cuid: *mut u32) -> bool;
 }
 extern "C" {
-    #[doc = " NFC listen\n\n @param      uid                 pointer to uid buffer\n @param      uid_len             uid length\n @param      atqa                pointer to atqa\n @param      sak                 sak\n @param      activate_after_sak  activate after sak flag\n @param      timeout             timeout in ms\n\n @return     true on success"]
+    #[doc = "NFC listen\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `uid` - pointer to uid buffer\n* `uid_len` - uid length\n* `atqa` - pointer to atqa\n* `sak` - sak\n* `activate_after_sak` - activate after sak flag\n* `timeout` - timeout in ms\n\n"]
     pub fn furi_hal_nfc_listen(
         uid: *mut u8,
         uid_len: u8,
@@ -12282,19 +12279,19 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Start Target Listen mode\n @note RFAL free implementation\n\n @param       nfc_data            FuriHalNfcDevData instance"]
+    #[doc = "Start Target Listen mode\n\n# Arguments\n\n* `nfc_data` - FuriHalNfcDevData instance\n\n# Notes\n\n* RFAL free implementation\n\n"]
     pub fn furi_hal_nfc_listen_start(nfc_data: *mut FuriHalNfcDevData);
 }
 extern "C" {
-    #[doc = " Read data in Target Listen mode\n @note Must be called only after furi_hal_nfc_listen_start()\n\n @param       tx_rx               FuriHalNfcTxRxContext instance\n @param       timeout_ms          timeout im ms\n\n @return      true on not empty receive"]
+    #[doc = "Read data in Target Listen mode\n\nReturns:\n\n* true on not empty receive\n\n# Arguments\n\n* `tx_rx` - FuriHalNfcTxRxContext instance\n* `timeout_ms` - timeout im ms\n\n# Notes\n\n* Must be called only after furi_hal_nfc_listen_start()\n\n"]
     pub fn furi_hal_nfc_listen_rx(tx_rx: *mut FuriHalNfcTxRxContext, timeout_ms: u32) -> bool;
 }
 extern "C" {
-    #[doc = " Set Target in Sleep state"]
+    #[doc = "Set Target in Sleep state\n\n"]
     pub fn furi_hal_nfc_listen_sleep();
 }
 extern "C" {
-    #[doc = " Emulate NFC-A Target\n @note RFAL based implementation\n\n @param       uid                 NFC-A UID\n @param       uid_len             NFC-A UID length\n @param       atqa                NFC-A ATQA\n @param       sak                 NFC-A SAK\n @param       callback            FuriHalNfcEmulateCallback instance\n @param       context             pointer to context for callback\n @param       timeout             timeout in ms\n\n @return      true on success"]
+    #[doc = "Emulate NFC-A Target\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `uid` - NFC-A UID\n* `uid_len` - NFC-A UID length\n* `atqa` - NFC-A ATQA\n* `sak` - NFC-A SAK\n* `callback` - FuriHalNfcEmulateCallback instance\n* `context` - pointer to context for callback\n* `timeout` - timeout in ms\n\n# Notes\n\n* RFAL based implementation\n\n"]
     pub fn furi_hal_nfc_emulate_nfca(
         uid: *mut u8,
         uid_len: u8,
@@ -12306,161 +12303,161 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " NFC data exchange\n\n @param       tx_rx_ctx   FuriHalNfcTxRxContext instance\n\n @return      true on success"]
+    #[doc = "NFC data exchange\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `tx_rx_ctx` - FuriHalNfcTxRxContext instance\n\n"]
     pub fn furi_hal_nfc_tx_rx(tx_rx: *mut FuriHalNfcTxRxContext, timeout_ms: u16) -> bool;
 }
 extern "C" {
-    #[doc = " NFC data full exhange\n\n @param       tx_rx_ctx   FuriHalNfcTxRxContext instance\n\n @return      true on success"]
+    #[doc = "NFC data full exhange\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `tx_rx_ctx` - FuriHalNfcTxRxContext instance\n\n"]
     pub fn furi_hal_nfc_tx_rx_full(tx_rx: *mut FuriHalNfcTxRxContext) -> bool;
 }
 extern "C" {
-    #[doc = " NFC deactivate and start sleep"]
+    #[doc = "NFC deactivate and start sleep\n\n"]
     pub fn furi_hal_nfc_sleep();
 }
 extern "C" {
     pub fn furi_hal_nfc_stop();
 }
-#[doc = "< no error occurred"]
+#[doc = "no error occurred\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnOk: FuriHalNfcReturn = 0;
-#[doc = "< not enough memory to perform the requested operation"]
+#[doc = "not enough memory to perform the requested operation\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnNomem: FuriHalNfcReturn = 1;
-#[doc = "< device or resource busy"]
+#[doc = "device or resource busy\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnBusy: FuriHalNfcReturn = 2;
-#[doc = "< generic IO error"]
+#[doc = "generic IO error\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnIo: FuriHalNfcReturn = 3;
-#[doc = "< error due to timeout"]
+#[doc = "error due to timeout\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnTimeout: FuriHalNfcReturn = 4;
 pub const FuriHalNfcReturn_FuriHalNfcReturnRequest: FuriHalNfcReturn = 5;
-#[doc = "< No message of desired type"]
+#[doc = "No message of desired type\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnNomsg: FuriHalNfcReturn = 6;
-#[doc = "< Parameter error"]
+#[doc = "Parameter error\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnParam: FuriHalNfcReturn = 7;
-#[doc = "< System error"]
+#[doc = "System error\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnSystem: FuriHalNfcReturn = 8;
-#[doc = "< Framing error"]
+#[doc = "Framing error\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnFraming: FuriHalNfcReturn = 9;
-#[doc = "< lost one or more received bytes"]
+#[doc = "lost one or more received bytes\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnOverrun: FuriHalNfcReturn = 10;
-#[doc = "< protocol error"]
+#[doc = "protocol error\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnProto: FuriHalNfcReturn = 11;
-#[doc = "< Internal Error"]
+#[doc = "Internal Error\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnInternal: FuriHalNfcReturn = 12;
-#[doc = "< Call again"]
+#[doc = "Call again\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnAgain: FuriHalNfcReturn = 13;
-#[doc = "< memory corruption"]
+#[doc = "memory corruption\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnMemCorrupt: FuriHalNfcReturn = 14;
-#[doc = "< not implemented"]
+#[doc = "not implemented\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnNotImplemented: FuriHalNfcReturn = 15;
 pub const FuriHalNfcReturn_FuriHalNfcReturnPcCorrupt: FuriHalNfcReturn = 16;
-#[doc = "< error sending"]
+#[doc = "error sending\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnSend: FuriHalNfcReturn = 17;
-#[doc = "< indicates error detected but to be ignored"]
+#[doc = "indicates error detected but to be ignored\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnIgnore: FuriHalNfcReturn = 18;
-#[doc = "< indicates error in state machine (unexpected cmd)"]
+#[doc = "indicates error in state machine (unexpected cmd)\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnSemantic: FuriHalNfcReturn = 19;
-#[doc = "< indicates error in state machine (unknown cmd)"]
+#[doc = "indicates error in state machine (unknown cmd)\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnSyntax: FuriHalNfcReturn = 20;
-#[doc = "< crc error"]
+#[doc = "crc error\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnCrc: FuriHalNfcReturn = 21;
-#[doc = "< transponder not found"]
+#[doc = "transponder not found\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnNotfound: FuriHalNfcReturn = 22;
 pub const FuriHalNfcReturn_FuriHalNfcReturnNotunique: FuriHalNfcReturn = 23;
-#[doc = "< requested operation not supported"]
+#[doc = "requested operation not supported\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnNotsupp: FuriHalNfcReturn = 24;
-#[doc = "< write error"]
+#[doc = "write error\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnWrite: FuriHalNfcReturn = 25;
-#[doc = "< fifo over or underflow error"]
+#[doc = "fifo over or underflow error\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnFifo: FuriHalNfcReturn = 26;
-#[doc = "< parity error"]
+#[doc = "parity error\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnPar: FuriHalNfcReturn = 27;
-#[doc = "< transfer has already finished"]
+#[doc = "transfer has already finished\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnDone: FuriHalNfcReturn = 28;
 pub const FuriHalNfcReturn_FuriHalNfcReturnRfCollision: FuriHalNfcReturn = 29;
-#[doc = "< lost one or more received bytes"]
+#[doc = "lost one or more received bytes\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnHwOverrun: FuriHalNfcReturn = 30;
-#[doc = "< device requested release"]
+#[doc = "device requested release\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnReleaseReq: FuriHalNfcReturn = 31;
-#[doc = "< device requested sleep"]
+#[doc = "device requested sleep\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnSleepReq: FuriHalNfcReturn = 32;
-#[doc = "< incorrent state for requested operation"]
+#[doc = "incorrent state for requested operation\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnWrongState: FuriHalNfcReturn = 33;
-#[doc = "< blocking procedure reached maximum runs"]
+#[doc = "blocking procedure reached maximum runs\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnMaxReruns: FuriHalNfcReturn = 34;
-#[doc = "< operation aborted due to disabled configuration"]
+#[doc = "operation aborted due to disabled configuration\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnDisabled: FuriHalNfcReturn = 35;
-#[doc = "< expected hw do not match"]
+#[doc = "expected hw do not match\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnHwMismatch: FuriHalNfcReturn = 36;
 pub const FuriHalNfcReturn_FuriHalNfcReturnLinkLoss: FuriHalNfcReturn = 37;
-#[doc = "< invalid or not initalized device handle"]
+#[doc = "invalid or not initalized device handle\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnInvalidHandle: FuriHalNfcReturn = 38;
-#[doc = "< Incomplete byte rcvd"]
+#[doc = "Incomplete byte rcvd\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnIncompleteByte: FuriHalNfcReturn = 40;
-#[doc = "< Incomplete byte rcvd - 1 bit"]
+#[doc = "Incomplete byte rcvd - 1 bit\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnIncompleteByte01: FuriHalNfcReturn = 41;
-#[doc = "< Incomplete byte rcvd - 2 bit"]
+#[doc = "Incomplete byte rcvd - 2 bit\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnIncompleteByte02: FuriHalNfcReturn = 42;
-#[doc = "< Incomplete byte rcvd - 3 bit"]
+#[doc = "Incomplete byte rcvd - 3 bit\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnIncompleteByte03: FuriHalNfcReturn = 43;
-#[doc = "< Incomplete byte rcvd - 4 bit"]
+#[doc = "Incomplete byte rcvd - 4 bit\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnIncompleteByte04: FuriHalNfcReturn = 44;
-#[doc = "< Incomplete byte rcvd - 5 bit"]
+#[doc = "Incomplete byte rcvd - 5 bit\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnIncompleteByte05: FuriHalNfcReturn = 45;
-#[doc = "< Incomplete byte rcvd - 6 bit"]
+#[doc = "Incomplete byte rcvd - 6 bit\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnIncompleteByte06: FuriHalNfcReturn = 46;
-#[doc = "< Incomplete byte rcvd - 7 bit"]
+#[doc = "Incomplete byte rcvd - 7 bit\n\n"]
 pub const FuriHalNfcReturn_FuriHalNfcReturnIncompleteByte07: FuriHalNfcReturn = 47;
 pub type FuriHalNfcReturn = core::ffi::c_uchar;
-#[doc = "< No mode selected/defined"]
+#[doc = "No mode selected/defined\n\n"]
 pub const FuriHalNfcMode_FuriHalNfcModeNone: FuriHalNfcMode = 0;
-#[doc = "< Mode to perform as NFCA (ISO14443A) Poller (PCD)"]
+#[doc = "Mode to perform as NFCA (ISO14443A) Poller (PCD)\n\n"]
 pub const FuriHalNfcMode_FuriHalNfcModePollNfca: FuriHalNfcMode = 1;
-#[doc = "< Mode to perform as NFCA T1T (Topaz) Poller (PCD)"]
+#[doc = "Mode to perform as NFCA T1T (Topaz) Poller (PCD)\n\n"]
 pub const FuriHalNfcMode_FuriHalNfcModePollNfcaT1t: FuriHalNfcMode = 2;
-#[doc = "< Mode to perform as NFCB (ISO14443B) Poller (PCD)"]
+#[doc = "Mode to perform as NFCB (ISO14443B) Poller (PCD)\n\n"]
 pub const FuriHalNfcMode_FuriHalNfcModePollNfcb: FuriHalNfcMode = 3;
-#[doc = "< Mode to perform as B' Calypso (Innovatron) (PCD)"]
+#[doc = "Mode to perform as B' Calypso (Innovatron) (PCD)\n\n"]
 pub const FuriHalNfcMode_FuriHalNfcModePollBPrime: FuriHalNfcMode = 4;
-#[doc = "< Mode to perform as CTS Poller (PCD)"]
+#[doc = "Mode to perform as CTS Poller (PCD)\n\n"]
 pub const FuriHalNfcMode_FuriHalNfcModePollBCts: FuriHalNfcMode = 5;
-#[doc = "< Mode to perform as NFCF (FeliCa) Poller (PCD)"]
+#[doc = "Mode to perform as NFCF (FeliCa) Poller (PCD)\n\n"]
 pub const FuriHalNfcMode_FuriHalNfcModePollNfcf: FuriHalNfcMode = 6;
-#[doc = "< Mode to perform as NFCV (ISO15963) Poller (PCD)"]
+#[doc = "Mode to perform as NFCV (ISO15963) Poller (PCD)\n\n"]
 pub const FuriHalNfcMode_FuriHalNfcModePollNfcv: FuriHalNfcMode = 7;
-#[doc = "< Mode to perform as PicoPass / iClass Poller (PCD)"]
+#[doc = "Mode to perform as PicoPass / iClass Poller (PCD)\n\n"]
 pub const FuriHalNfcMode_FuriHalNfcModePollPicopass: FuriHalNfcMode = 8;
-#[doc = "< Mode to perform as Active P2P (ISO18092) Initiator"]
+#[doc = "Mode to perform as Active P2P (ISO18092) Initiator\n\n"]
 pub const FuriHalNfcMode_FuriHalNfcModePollActiveP2p: FuriHalNfcMode = 9;
-#[doc = "< Mode to perform as NFCA (ISO14443A) Listener (PICC)"]
+#[doc = "Mode to perform as NFCA (ISO14443A) Listener (PICC)\n\n"]
 pub const FuriHalNfcMode_FuriHalNfcModeListenNfca: FuriHalNfcMode = 10;
-#[doc = "< Mode to perform as NFCA (ISO14443B) Listener (PICC)"]
+#[doc = "Mode to perform as NFCA (ISO14443B) Listener (PICC)\n\n"]
 pub const FuriHalNfcMode_FuriHalNfcModeListenNfcb: FuriHalNfcMode = 11;
-#[doc = "< Mode to perform as NFCA (ISO15963) Listener (PICC)"]
+#[doc = "Mode to perform as NFCA (ISO15963) Listener (PICC)\n\n"]
 pub const FuriHalNfcMode_FuriHalNfcModeListenNfcf: FuriHalNfcMode = 12;
-#[doc = "< Mode to perform as Active P2P (ISO18092) Target"]
+#[doc = "Mode to perform as Active P2P (ISO18092) Target\n\n"]
 pub const FuriHalNfcMode_FuriHalNfcModeListenActiveP2p: FuriHalNfcMode = 13;
 pub type FuriHalNfcMode = core::ffi::c_uchar;
-#[doc = "< Bit Rate 106 kbit/s (fc/128)"]
+#[doc = "Bit Rate 106 kbit/s (fc/128)\n\n"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate106: FuriHalNfcBitrate = 0;
-#[doc = "< Bit Rate 212 kbit/s (fc/64)"]
+#[doc = "Bit Rate 212 kbit/s (fc/64)\n\n"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate212: FuriHalNfcBitrate = 1;
-#[doc = "< Bit Rate 424 kbit/s (fc/32)"]
+#[doc = "Bit Rate 424 kbit/s (fc/32)\n\n"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate424: FuriHalNfcBitrate = 2;
-#[doc = "< Bit Rate 848 kbit/s (fc/16)"]
+#[doc = "Bit Rate 848 kbit/s (fc/16)\n\n"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate848: FuriHalNfcBitrate = 3;
-#[doc = "< Bit Rate 1695 kbit/s (fc/8)"]
+#[doc = "Bit Rate 1695 kbit/s (fc/8)\n\n"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate1695: FuriHalNfcBitrate = 4;
-#[doc = "< Bit Rate 3390 kbit/s (fc/4)"]
+#[doc = "Bit Rate 3390 kbit/s (fc/4)\n\n"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate3390: FuriHalNfcBitrate = 5;
-#[doc = "< Bit Rate 6780 kbit/s (fc/2)"]
+#[doc = "Bit Rate 6780 kbit/s (fc/2)\n\n"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate6780: FuriHalNfcBitrate = 6;
-#[doc = "< Bit Rate 13560 kbit/s (fc)"]
+#[doc = "Bit Rate 13560 kbit/s (fc)\n\n"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate13560: FuriHalNfcBitrate = 7;
-#[doc = "< Bit Rate 52.97 kbit/s (fc/256) Fast Mode VICC->VCD"]
+#[doc = "Bit Rate 52.97 kbit/s (fc/256) Fast Mode VICC->VCD\n\n"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate52p97: FuriHalNfcBitrate = 235;
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate26p48: FuriHalNfcBitrate = 236;
-#[doc = "< Bit Rate 1,66 kbit/s (fc/8192) NFCV VCD->VICC 1of256"]
+#[doc = "Bit Rate 1,66 kbit/s (fc/8192) NFCV VCD->VICC 1of256\n\n"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrate1p66: FuriHalNfcBitrate = 237;
-#[doc = "< Value indicating to keep the same previous bit rate"]
+#[doc = "Value indicating to keep the same previous bit rate\n\n"]
 pub const FuriHalNfcBitrate_FuriHalNfcBitrateKeep: FuriHalNfcBitrate = 255;
 pub type FuriHalNfcBitrate = core::ffi::c_uchar;
 extern "C" {
@@ -12473,9 +12470,9 @@ extern "C" {
 extern "C" {
     pub fn furi_hal_nfc_ll_set_guard_time(cycles: u32);
 }
-#[doc = "< No special error handling will be performed"]
+#[doc = "No special error handling will be performed\n\n"]
 pub const FuriHalNfcErrorHandling_FuriHalNfcErrorHandlingNone: FuriHalNfcErrorHandling = 0;
-#[doc = "< Error handling set to perform as NFC compliant device"]
+#[doc = "Error handling set to perform as NFC compliant device\n\n"]
 pub const FuriHalNfcErrorHandling_FuriHalNfcErrorHandlingNfc: FuriHalNfcErrorHandling = 1;
 pub const FuriHalNfcErrorHandling_FuriHalNfcErrorHandlingEmvco: FuriHalNfcErrorHandling = 2;
 pub type FuriHalNfcErrorHandling = core::ffi::c_uchar;
@@ -12520,52 +12517,52 @@ extern "C" {
     pub fn furi_hal_nfc_ll_poll();
 }
 extern "C" {
-    #[doc = " Transfer execution to address\n\n @param[in]  address  pointer to new executable"]
+    #[doc = "Transfer execution to address\n\n# Arguments\n\n* `address` - [Direction: In] pointer to new executable\n\n"]
     pub fn furi_hal_switch(address: *mut core::ffi::c_void);
 }
-#[doc = "< Metric measurement units"]
+#[doc = "Metric measurement units\n\n"]
 pub const LocaleMeasurementUnits_LocaleMeasurementUnitsMetric: LocaleMeasurementUnits = 0;
-#[doc = "< Imperial measurement units"]
+#[doc = "Imperial measurement units\n\n"]
 pub const LocaleMeasurementUnits_LocaleMeasurementUnitsImperial: LocaleMeasurementUnits = 1;
 pub type LocaleMeasurementUnits = core::ffi::c_uchar;
-#[doc = "< 24-hour format"]
+#[doc = "24-hour format\n\n"]
 pub const LocaleTimeFormat_LocaleTimeFormat24h: LocaleTimeFormat = 0;
-#[doc = "< 12-hour format"]
+#[doc = "12-hour format\n\n"]
 pub const LocaleTimeFormat_LocaleTimeFormat12h: LocaleTimeFormat = 1;
 pub type LocaleTimeFormat = core::ffi::c_uchar;
-#[doc = "< Day/Month/Year"]
+#[doc = "Day/Month/Year\n\n"]
 pub const LocaleDateFormat_LocaleDateFormatDMY: LocaleDateFormat = 0;
-#[doc = "< Month/Day/Year"]
+#[doc = "Month/Day/Year\n\n"]
 pub const LocaleDateFormat_LocaleDateFormatMDY: LocaleDateFormat = 1;
-#[doc = "< Year/Month/Day"]
+#[doc = "Year/Month/Day\n\n"]
 pub const LocaleDateFormat_LocaleDateFormatYMD: LocaleDateFormat = 2;
 pub type LocaleDateFormat = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Get Locale measurement units\n\n @return     The locale measurement units."]
+    #[doc = "Get Locale measurement units\n\nReturns:\n\n* The locale measurement units.\n\n"]
     pub fn locale_get_measurement_unit() -> LocaleMeasurementUnits;
 }
 extern "C" {
-    #[doc = " Set locale measurement units\n\n @param[in]  format  The locale measurements units"]
+    #[doc = "Set locale measurement units\n\n# Arguments\n\n* `format` - [Direction: In] The locale measurements units\n\n"]
     pub fn locale_set_measurement_unit(format: LocaleMeasurementUnits);
 }
 extern "C" {
-    #[doc = " Convert Fahrenheit to Celsius\n\n @param[in]  temp_f  The Temperature in Fahrenheit\n\n @return     The Temperature in Celsius"]
+    #[doc = "Convert Fahrenheit to Celsius\n\nReturns:\n\n* The Temperature in Celsius\n\n# Arguments\n\n* `temp_f` - [Direction: In] The Temperature in Fahrenheit\n\n"]
     pub fn locale_fahrenheit_to_celsius(temp_f: f32) -> f32;
 }
 extern "C" {
-    #[doc = " Convert Celsius to Fahrenheit\n\n @param[in]  temp_c  The Temperature in Celsius\n\n @return     The Temperature in Fahrenheit"]
+    #[doc = "Convert Celsius to Fahrenheit\n\nReturns:\n\n* The Temperature in Fahrenheit\n\n# Arguments\n\n* `temp_c` - [Direction: In] The Temperature in Celsius\n\n"]
     pub fn locale_celsius_to_fahrenheit(temp_c: f32) -> f32;
 }
 extern "C" {
-    #[doc = " Get Locale time format\n\n @return     The locale time format."]
+    #[doc = "Get Locale time format\n\nReturns:\n\n* The locale time format.\n\n"]
     pub fn locale_get_time_format() -> LocaleTimeFormat;
 }
 extern "C" {
-    #[doc = " Set Locale Time Format\n\n @param[in]  format  The Locale Time Format"]
+    #[doc = "Set Locale Time Format\n\n# Arguments\n\n* `format` - [Direction: In] The Locale Time Format\n\n"]
     pub fn locale_set_time_format(format: LocaleTimeFormat);
 }
 extern "C" {
-    #[doc = " Format time to furi string\n\n @param[out] out_str       The FuriString to store formatted time\n @param[in]  datetime      Pointer to the datetime\n @param[in]  format        The Locale Time Format\n @param[in]  show_seconds  The show seconds flag"]
+    #[doc = "Format time to furi string\n\n# Arguments\n\n* `out_str` - [Direction: In, Out] The FuriString to store formatted time\n* `datetime` - [Direction: In] Pointer to the datetime\n* `format` - [Direction: In] The Locale Time Format\n* `show_seconds` - [Direction: In] The show seconds flag\n\n"]
     pub fn locale_format_time(
         out_str: *mut FuriString,
         datetime: *const FuriHalRtcDateTime,
@@ -12574,15 +12571,15 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Get Locale DateFormat\n\n @return     The Locale DateFormat."]
+    #[doc = "Get Locale DateFormat\n\nReturns:\n\n* The Locale DateFormat.\n\n"]
     pub fn locale_get_date_format() -> LocaleDateFormat;
 }
 extern "C" {
-    #[doc = " Set Locale DateFormat\n\n @param[in]  format  The Locale DateFormat"]
+    #[doc = "Set Locale DateFormat\n\n# Arguments\n\n* `format` - [Direction: In] The Locale DateFormat\n\n"]
     pub fn locale_set_date_format(format: LocaleDateFormat);
 }
 extern "C" {
-    #[doc = " Format date to furi string\n\n @param[out] out_str    The FuriString to store formatted date\n @param[in]  datetime   Pointer to the datetime\n @param[in]  format     The format\n @param[in]  separator  The separator"]
+    #[doc = "Format date to furi string\n\n# Arguments\n\n* `out_str` - [Direction: In, Out] The FuriString to store formatted date\n* `datetime` - [Direction: In] Pointer to the datetime\n* `format` - [Direction: In] The format\n* `separator` - [Direction: In] The separator\n\n"]
     pub fn locale_format_date(
         out_str: *mut FuriString,
         datetime: *const FuriHalRtcDateTime,
@@ -13007,14 +13004,14 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " @brief Send internal (apply to permanent layer) notification message. Think twice before use.\n\n @param app notification record content\n @param sequence notification sequence"]
+    #[doc = "Send internal (apply to permanent layer) notification message. Think twice before use.\n\n# Arguments\n\n* `app` - notification record content\n* `sequence` - notification sequence\n\n"]
     pub fn notification_internal_message(
         app: *mut NotificationApp,
         sequence: *const NotificationSequence,
     );
 }
 extern "C" {
-    #[doc = " @brief Send internal (apply to permanent layer) notification message and wait for notification end. Think twice before use.\n\n @param app notification record content\n @param sequence notification sequence"]
+    #[doc = "Send internal (apply to permanent layer) notification message and wait for notification end. Think twice before use.\n\n# Arguments\n\n* `app` - notification record content\n* `sequence` - notification sequence\n\n"]
     pub fn notification_internal_message_block(
         app: *mut NotificationApp,
         sequence: *const NotificationSequence,
@@ -13348,7 +13345,7 @@ extern "C" {
     pub static message_note_b8: NotificationMessage;
 }
 extern "C" {
-    #[doc = " Messages"]
+    #[doc = "Messages\n\n"]
     pub static message_display_backlight_on: NotificationMessage;
 }
 extern "C" {
@@ -13457,7 +13454,7 @@ extern "C" {
     pub static message_force_display_brightness_setting_1f: NotificationMessage;
 }
 extern "C" {
-    #[doc = " Message sequences"]
+    #[doc = "Message sequences\n\n"]
     pub static sequence_reset_red: NotificationSequence;
 }
 extern "C" {
@@ -13482,23 +13479,23 @@ extern "C" {
     pub static sequence_set_vibro_on: NotificationSequence;
 }
 extern "C" {
-    #[doc = " Display: backlight wakeup"]
+    #[doc = "Display: backlight wakeup\n\n"]
     pub static sequence_display_backlight_on: NotificationSequence;
 }
 extern "C" {
-    #[doc = " Display: backlight force off"]
+    #[doc = "Display: backlight force off\n\n"]
     pub static sequence_display_backlight_off: NotificationSequence;
 }
 extern "C" {
-    #[doc = " Display: backlight force off after a delay of 1000ms"]
+    #[doc = "Display: backlight force off after a delay of 1000ms\n\n"]
     pub static sequence_display_backlight_off_delay_1000: NotificationSequence;
 }
 extern "C" {
-    #[doc = " Display: backlight always on lock"]
+    #[doc = "Display: backlight always on lock\n\n"]
     pub static sequence_display_backlight_enforce_on: NotificationSequence;
 }
 extern "C" {
-    #[doc = " Display: backlight always on unlock"]
+    #[doc = "Display: backlight always on unlock\n\n"]
     pub static sequence_display_backlight_enforce_auto: NotificationSequence;
 }
 extern "C" {
@@ -13789,27 +13786,27 @@ fn bindgen_test_layout_PowerInfo() {
     );
 }
 extern "C" {
-    #[doc = " Power off device"]
+    #[doc = "Power off device\n\n"]
     pub fn power_off(power: *mut Power);
 }
 extern "C" {
-    #[doc = " Reboot device\n\n @param mode      PowerBootMode"]
+    #[doc = "Reboot device\n\n# Arguments\n\n* `mode` - PowerBootMode\n\n"]
     pub fn power_reboot(mode: PowerBootMode);
 }
 extern "C" {
-    #[doc = " Get power info\n\n @param power     Power instance\n @param info      PowerInfo instance"]
+    #[doc = "Get power info\n\n# Arguments\n\n* `power` - Power instance\n* `info` - PowerInfo instance\n\n"]
     pub fn power_get_info(power: *mut Power, info: *mut PowerInfo);
 }
 extern "C" {
-    #[doc = " Get power event pubsub handler\n\n @param power     Power instance\n\n @return          FuriPubSub instance"]
+    #[doc = "Get power event pubsub handler\n\nReturns:\n\n* FuriPubSub instance\n\n# Arguments\n\n* `power` - Power instance\n\n"]
     pub fn power_get_pubsub(power: *mut Power) -> *mut FuriPubSub;
 }
 extern "C" {
-    #[doc = " Check battery health\n\n @return          true if battery is healthy"]
+    #[doc = "Check battery health\n\nReturns:\n\n* true if battery is healthy\n\n"]
     pub fn power_is_battery_healthy(power: *mut Power) -> bool;
 }
 extern "C" {
-    #[doc = " Enable or disable battery low level notification message\n\n @param power     Power instance\n @param enable    true - enable, false - disable"]
+    #[doc = "Enable or disable battery low level notification message\n\n# Arguments\n\n* `power` - Power instance\n* `enable` - true - enable, false - disable\n\n"]
     pub fn power_enable_low_battery_level_notification(power: *mut Power, enable: bool);
 }
 #[repr(C)]
@@ -13822,61 +13819,61 @@ pub struct Rpc {
 pub struct RpcSession {
     _unused: [u8; 0],
 }
-#[doc = " Callback to send to client any data (e.g. response to command)"]
+#[doc = "Callback to send to client any data (e.g. response to command)\n\n"]
 pub type RpcSendBytesCallback = ::core::option::Option<
     unsafe extern "C" fn(context: *mut core::ffi::c_void, bytes: *mut u8, bytes_len: usize),
 >;
-#[doc = " Callback to notify client that buffer is empty"]
+#[doc = "Callback to notify client that buffer is empty\n\n"]
 pub type RpcBufferIsEmptyCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
-#[doc = " Callback to notify transport layer that close_session command\n is received. Any other actions lays on transport layer.\n No destruction or session close performed."]
+#[doc = "Callback to notify transport layer that close_session command is received. Any other actions lays on transport layer. No destruction or session close performed.\n\n"]
 pub type RpcSessionClosedCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
-#[doc = " Callback to notify transport layer that session was closed\n and all operations were finished"]
+#[doc = "Callback to notify transport layer that session was closed and all operations were finished\n\n"]
 pub type RpcSessionTerminatedCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
 extern "C" {
-    #[doc = " Open RPC session\n\n USAGE:\n 1) rpc_session_open();\n 2) rpc_session_set_context();\n 3) rpc_session_set_send_bytes_callback();\n 4) rpc_session_set_close_callback();\n 5) while(1) {\n      rpc_session_feed();\n    }\n 6) rpc_session_close();\n\n\n @param   rpc     instance\n @return          pointer to RpcSession descriptor, or\n                  NULL if RPC is busy and can't open session now"]
+    #[doc = "Open RPC session\nUSAGE: 1) rpc_session_open(); 2) rpc_session_set_context(); 3) rpc_session_set_send_bytes_callback(); 4) rpc_session_set_close_callback(); 5) while(1) { rpc_session_feed(); } 6) rpc_session_close();\n\nReturns:\n\n* pointer to RpcSession descriptor, or NULL if RPC is busy and can't open session now\n\n# Arguments\n\n* `rpc` - instance\n\n"]
     pub fn rpc_session_open(rpc: *mut Rpc) -> *mut RpcSession;
 }
 extern "C" {
-    #[doc = " Close RPC session\n It is guaranteed that no callbacks will be called\n as soon as session is closed. So no need in setting\n callbacks to NULL after session close.\n\n @param   session     pointer to RpcSession descriptor"]
+    #[doc = "Close RPC session It is guaranteed that no callbacks will be called as soon as session is closed. So no need in setting callbacks to NULL after session close.\n\n# Arguments\n\n* `session` - pointer to RpcSession descriptor\n\n"]
     pub fn rpc_session_close(session: *mut RpcSession);
 }
 extern "C" {
-    #[doc = " Set session context for callbacks to pass\n\n @param   session     pointer to RpcSession descriptor\n @param   context     context to pass to callbacks"]
+    #[doc = "Set session context for callbacks to pass\n\n# Arguments\n\n* `session` - pointer to RpcSession descriptor\n* `context` - context to pass to callbacks\n\n"]
     pub fn rpc_session_set_context(session: *mut RpcSession, context: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Set callback to send bytes to client\n  WARN: It's forbidden to call RPC API within RpcSendBytesCallback\n\n @param   session     pointer to RpcSession descriptor\n @param   callback    callback to send bytes to client (can be NULL)"]
+    #[doc = "Set callback to send bytes to client WARN: It's forbidden to call RPC API within RpcSendBytesCallback\n\n# Arguments\n\n* `session` - pointer to RpcSession descriptor\n* `callback` - callback to send bytes to client (can be NULL)\n\n"]
     pub fn rpc_session_set_send_bytes_callback(
         session: *mut RpcSession,
         callback: RpcSendBytesCallback,
     );
 }
 extern "C" {
-    #[doc = " Set callback to notify that buffer is empty\n\n @param   session     pointer to RpcSession descriptor\n @param   callback    callback to notify client that buffer is empty (can be NULL)"]
+    #[doc = "Set callback to notify that buffer is empty\n\n# Arguments\n\n* `session` - pointer to RpcSession descriptor\n* `callback` - callback to notify client that buffer is empty (can be NULL)\n\n"]
     pub fn rpc_session_set_buffer_is_empty_callback(
         session: *mut RpcSession,
         callback: RpcBufferIsEmptyCallback,
     );
 }
 extern "C" {
-    #[doc = " Set callback to be called when RPC command to close session is received\n  WARN: It's forbidden to call RPC API within RpcSessionClosedCallback\n\n @param   session     pointer to RpcSession descriptor\n @param   callback    callback to inform about RPC close session command (can be NULL)"]
+    #[doc = "Set callback to be called when RPC command to close session is received WARN: It's forbidden to call RPC API within RpcSessionClosedCallback\n\n# Arguments\n\n* `session` - pointer to RpcSession descriptor\n* `callback` - callback to inform about RPC close session command (can be NULL)\n\n"]
     pub fn rpc_session_set_close_callback(
         session: *mut RpcSession,
         callback: RpcSessionClosedCallback,
     );
 }
 extern "C" {
-    #[doc = " Set callback to be called when RPC session is closed\n\n @param   session     pointer to RpcSession descriptor\n @param   callback    callback to inform about RPC session state"]
+    #[doc = "Set callback to be called when RPC session is closed\n\n# Arguments\n\n* `session` - pointer to RpcSession descriptor\n* `callback` - callback to inform about RPC session state\n\n"]
     pub fn rpc_session_set_terminated_callback(
         session: *mut RpcSession,
         callback: RpcSessionTerminatedCallback,
     );
 }
 extern "C" {
-    #[doc = " Give bytes to RPC service to decode them and perform command\n\n @param   session     pointer to RpcSession descriptor\n @param   buffer      buffer to provide to RPC service\n @param   size        size of buffer\n @param   timeout     max timeout to wait till all buffer will be consumed\n\n @return              actually consumed bytes"]
+    #[doc = "Give bytes to RPC service to decode them and perform command\n\nReturns:\n\n* actually consumed bytes\n\n# Arguments\n\n* `session` - pointer to RpcSession descriptor\n* `buffer` - buffer to provide to RPC service\n* `size` - size of buffer\n* `timeout` - max timeout to wait till all buffer will be consumed\n\n"]
     pub fn rpc_session_feed(
         session: *mut RpcSession,
         buffer: *mut u8,
@@ -13885,7 +13882,7 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
-    #[doc = " Get available size of RPC buffer\n\n @param   session     pointer to RpcSession descriptor\n\n @return              bytes available in buffer"]
+    #[doc = "Get available size of RPC buffer\n\nReturns:\n\n* bytes available in buffer\n\n# Arguments\n\n* `session` - pointer to RpcSession descriptor\n\n"]
     pub fn rpc_session_get_available_size(session: *mut RpcSession) -> usize;
 }
 pub const RpcAppSystemEvent_RpcAppEventSessionClose: RpcAppSystemEvent = 0;
@@ -13954,60 +13951,60 @@ extern "C" {
         data_size: usize,
     );
 }
-#[doc = "< Read access"]
+#[doc = "Read access\n\n"]
 pub const FS_AccessMode_FSAM_READ: FS_AccessMode = 1;
-#[doc = "< Write access"]
+#[doc = "Write access\n\n"]
 pub const FS_AccessMode_FSAM_WRITE: FS_AccessMode = 2;
-#[doc = "< Read and write access"]
+#[doc = "Read and write access\n\n"]
 pub const FS_AccessMode_FSAM_READ_WRITE: FS_AccessMode = 3;
-#[doc = " Access mode flags"]
+#[doc = "Access mode flags\n\n"]
 pub type FS_AccessMode = core::ffi::c_uchar;
-#[doc = "< Open file, fail if file doesn't exist"]
+#[doc = "Open file, fail if file doesn't exist\n\n"]
 pub const FS_OpenMode_FSOM_OPEN_EXISTING: FS_OpenMode = 1;
-#[doc = "< Open file. Create new file if not exist"]
+#[doc = "Open file. Create new file if not exist\n\n"]
 pub const FS_OpenMode_FSOM_OPEN_ALWAYS: FS_OpenMode = 2;
-#[doc = "< Open file. Create new file if not exist. Set R/W pointer to EOF"]
+#[doc = "Open file. Create new file if not exist. Set R/W pointer to EOF\n\n"]
 pub const FS_OpenMode_FSOM_OPEN_APPEND: FS_OpenMode = 4;
-#[doc = "< Creates a new file. Fails if the file is exist"]
+#[doc = "Creates a new file. Fails if the file is exist\n\n"]
 pub const FS_OpenMode_FSOM_CREATE_NEW: FS_OpenMode = 8;
-#[doc = "< Creates a new file. If file exist, truncate to zero size"]
+#[doc = "Creates a new file. If file exist, truncate to zero size\n\n"]
 pub const FS_OpenMode_FSOM_CREATE_ALWAYS: FS_OpenMode = 16;
-#[doc = " Open mode flags"]
+#[doc = "Open mode flags\n\n"]
 pub type FS_OpenMode = core::ffi::c_uchar;
-#[doc = "< No error"]
+#[doc = "No error\n\n"]
 pub const FS_Error_FSE_OK: FS_Error = 0;
-#[doc = "< FS not ready"]
+#[doc = "FS not ready\n\n"]
 pub const FS_Error_FSE_NOT_READY: FS_Error = 1;
-#[doc = "< File/Dir already exist"]
+#[doc = "File/Dir already exist\n\n"]
 pub const FS_Error_FSE_EXIST: FS_Error = 2;
-#[doc = "< File/Dir does not exist"]
+#[doc = "File/Dir does not exist\n\n"]
 pub const FS_Error_FSE_NOT_EXIST: FS_Error = 3;
-#[doc = "< Invalid API parameter"]
+#[doc = "Invalid API parameter\n\n"]
 pub const FS_Error_FSE_INVALID_PARAMETER: FS_Error = 4;
-#[doc = "< Access denied"]
+#[doc = "Access denied\n\n"]
 pub const FS_Error_FSE_DENIED: FS_Error = 5;
-#[doc = "< Invalid name/path"]
+#[doc = "Invalid name/path\n\n"]
 pub const FS_Error_FSE_INVALID_NAME: FS_Error = 6;
-#[doc = "< Internal error"]
+#[doc = "Internal error\n\n"]
 pub const FS_Error_FSE_INTERNAL: FS_Error = 7;
-#[doc = "< Function not implemented"]
+#[doc = "Function not implemented\n\n"]
 pub const FS_Error_FSE_NOT_IMPLEMENTED: FS_Error = 8;
-#[doc = "< File/Dir already opened"]
+#[doc = "File/Dir already opened\n\n"]
 pub const FS_Error_FSE_ALREADY_OPEN: FS_Error = 9;
-#[doc = " API errors enumeration"]
+#[doc = "API errors enumeration\n\n"]
 pub type FS_Error = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct File {
     _unused: [u8; 0],
 }
-#[doc = "  Structure that hold file info"]
+#[doc = "Structure that hold file info\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FileInfo {
-    #[doc = "< flags from FS_Flags enum"]
+    #[doc = "flags from FS_Flags enum\n\n"]
     pub flags: u8,
-    #[doc = "< file size"]
+    #[doc = "file size\n\n"]
     pub size: u64,
 }
 #[test]
@@ -14046,7 +14043,7 @@ fn bindgen_test_layout_FileInfo() {
     );
 }
 extern "C" {
-    #[doc = " Gets the error text from FS_Error\n @param error_id error id\n @return const char* error text"]
+    #[doc = "Gets the error text from FS_Error\n\nReturns:\n\n* const char* error text\n\n# Arguments\n\n* `error_id` - error id\n\n"]
     pub fn filesystem_api_error_get_desc(error_id: FS_Error) -> *const core::ffi::c_char;
 }
 pub const SDFsType_FST_UNKNOWN: SDFsType = 0;
@@ -14248,19 +14245,19 @@ pub struct Storage {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocates and initializes a file descriptor\n @return File*"]
+    #[doc = "Allocates and initializes a file descriptor\n\nReturns:\n\n* File*\n\n"]
     pub fn storage_file_alloc(storage: *mut Storage) -> *mut File;
 }
 extern "C" {
-    #[doc = " Frees the file descriptor. Closes the file if it was open."]
+    #[doc = "Frees the file descriptor. Closes the file if it was open.\n\n"]
     pub fn storage_file_free(file: *mut File);
 }
 extern "C" {
-    #[doc = " Get storage pubsub.\n Storage will send StorageEvent messages.\n @param storage\n @return FuriPubSub*"]
+    #[doc = "Get storage pubsub. Storage will send StorageEvent messages.\n\nReturns:\n\n* FuriPubSub*\n\n# Arguments\n\n* `storage` - \n\n"]
     pub fn storage_get_pubsub(storage: *mut Storage) -> *mut FuriPubSub;
 }
 extern "C" {
-    #[doc = " Opens an existing file or create a new one.\n @param file pointer to file object.\n @param path path to file\n @param access_mode access mode from FS_AccessMode\n @param open_mode open mode from FS_OpenMode\n @return success flag. You need to close the file even if the open operation failed."]
+    #[doc = "Opens an existing file or create a new one.\n\nReturns:\n\n* success flag. You need to close the file even if the open operation failed.\n\n# Arguments\n\n* `file` - pointer to file object.\n* `path` - path to file\n* `access_mode` - access mode from FS_AccessMode\n* `open_mode` - open mode from FS_OpenMode\n\n"]
     pub fn storage_file_open(
         file: *mut File,
         path: *const core::ffi::c_char,
@@ -14269,19 +14266,19 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Close the file.\n @param file pointer to a file object, the file object will be freed.\n @return success flag"]
+    #[doc = "Close the file.\n\nReturns:\n\n* success flag\n\n# Arguments\n\n* `file` - pointer to a file object, the file object will be freed.\n\n"]
     pub fn storage_file_close(file: *mut File) -> bool;
 }
 extern "C" {
-    #[doc = " Tells if the file is open\n @param file pointer to a file object\n @return bool true if file is open"]
+    #[doc = "Tells if the file is open\n\nReturns:\n\n* bool true if file is open\n\n# Arguments\n\n* `file` - pointer to a file object\n\n"]
     pub fn storage_file_is_open(file: *mut File) -> bool;
 }
 extern "C" {
-    #[doc = " Tells if the file is a directory\n @param file pointer to a file object\n @return bool true if file is a directory"]
+    #[doc = "Tells if the file is a directory\n\nReturns:\n\n* bool true if file is a directory\n\n# Arguments\n\n* `file` - pointer to a file object\n\n"]
     pub fn storage_file_is_dir(file: *mut File) -> bool;
 }
 extern "C" {
-    #[doc = " Reads bytes from a file into a buffer\n @param file pointer to file object.\n @param buff pointer to a buffer, for reading\n @param bytes_to_read how many bytes to read. Must be less than or equal to the size of the buffer.\n @return uint16_t how many bytes were actually read"]
+    #[doc = "Reads bytes from a file into a buffer\n\nReturns:\n\n* uint16_t how many bytes were actually read\n\n# Arguments\n\n* `file` - pointer to file object.\n* `buff` - pointer to a buffer, for reading\n* `bytes_to_read` - how many bytes to read. Must be less than or equal to the size of the buffer.\n\n"]
     pub fn storage_file_read(
         file: *mut File,
         buff: *mut core::ffi::c_void,
@@ -14289,7 +14286,7 @@ extern "C" {
     ) -> u16;
 }
 extern "C" {
-    #[doc = " Writes bytes from a buffer to a file\n @param file pointer to file object.\n @param buff pointer to buffer, for writing\n @param bytes_to_write how many bytes to write. Must be less than or equal to the size of the buffer.\n @return uint16_t how many bytes were actually written"]
+    #[doc = "Writes bytes from a buffer to a file\n\nReturns:\n\n* uint16_t how many bytes were actually written\n\n# Arguments\n\n* `file` - pointer to file object.\n* `buff` - pointer to buffer, for writing\n* `bytes_to_write` - how many bytes to write. Must be less than or equal to the size of the buffer.\n\n"]
     pub fn storage_file_write(
         file: *mut File,
         buff: *const core::ffi::c_void,
@@ -14297,39 +14294,39 @@ extern "C" {
     ) -> u16;
 }
 extern "C" {
-    #[doc = " Moves the r/w pointer\n @param file pointer to file object.\n @param offset offset to move the r/w pointer\n @param from_start set an offset from the start or from the current position\n @return success flag"]
+    #[doc = "Moves the r/w pointer\n\nReturns:\n\n* success flag\n\n# Arguments\n\n* `file` - pointer to file object.\n* `offset` - offset to move the r/w pointer\n* `from_start` - set an offset from the start or from the current position\n\n"]
     pub fn storage_file_seek(file: *mut File, offset: u32, from_start: bool) -> bool;
 }
 extern "C" {
-    #[doc = " Gets the position of the r/w pointer\n @param file pointer to file object.\n @return uint64_t position of the r/w pointer"]
+    #[doc = "Gets the position of the r/w pointer\n\nReturns:\n\n* uint64_t position of the r/w pointer\n\n# Arguments\n\n* `file` - pointer to file object.\n\n"]
     pub fn storage_file_tell(file: *mut File) -> u64;
 }
 extern "C" {
-    #[doc = " Truncates the file size to the current position of the r/w pointer\n @param file pointer to file object.\n @return bool success flag"]
+    #[doc = "Truncates the file size to the current position of the r/w pointer\n\nReturns:\n\n* bool success flag\n\n# Arguments\n\n* `file` - pointer to file object.\n\n"]
     pub fn storage_file_truncate(file: *mut File) -> bool;
 }
 extern "C" {
-    #[doc = " Gets the size of the file\n @param file pointer to file object.\n @return uint64_t size of the file"]
+    #[doc = "Gets the size of the file\n\nReturns:\n\n* uint64_t size of the file\n\n# Arguments\n\n* `file` - pointer to file object.\n\n"]
     pub fn storage_file_size(file: *mut File) -> u64;
 }
 extern "C" {
-    #[doc = " Checks that the r/w pointer is at the end of the file\n @param file pointer to file object.\n @return bool success flag"]
+    #[doc = "Checks that the r/w pointer is at the end of the file\n\nReturns:\n\n* bool success flag\n\n# Arguments\n\n* `file` - pointer to file object.\n\n"]
     pub fn storage_file_eof(file: *mut File) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Check that file exists\n\n @param storage\n @param path\n @return true if file exists"]
+    #[doc = "Check that file exists\n\nReturns:\n\n* true if file exists\n\n# Arguments\n\n* `storage` - \n* `path` - \n\n"]
     pub fn storage_file_exists(storage: *mut Storage, path: *const core::ffi::c_char) -> bool;
 }
 extern "C" {
-    #[doc = " Opens a directory to get objects from it\n @param app pointer to the api\n @param file pointer to file object.\n @param path path to directory\n @return bool success flag. You need to close the directory even if the open operation failed."]
+    #[doc = "Opens a directory to get objects from it\n\nReturns:\n\n* bool success flag. You need to close the directory even if the open operation failed.\n\n# Arguments\n\n* `app` - pointer to the api\n* `file` - pointer to file object.\n* `path` - path to directory\n\n"]
     pub fn storage_dir_open(file: *mut File, path: *const core::ffi::c_char) -> bool;
 }
 extern "C" {
-    #[doc = " Close the directory. Also free file handle structure and point it to the NULL.\n @param file pointer to a file object.\n @return bool success flag"]
+    #[doc = "Close the directory. Also free file handle structure and point it to the NULL.\n\nReturns:\n\n* bool success flag\n\n# Arguments\n\n* `file` - pointer to a file object.\n\n"]
     pub fn storage_dir_close(file: *mut File) -> bool;
 }
 extern "C" {
-    #[doc = " Reads the next object in the directory\n @param file pointer to file object.\n @param fileinfo pointer to the read FileInfo, may be NULL\n @param name pointer to name buffer, may be NULL\n @param name_length name buffer length\n @return success flag (if the next object does not exist, it also returns false and sets the file error id to FSE_NOT_EXIST)"]
+    #[doc = "Reads the next object in the directory\n\nReturns:\n\n* success flag (if the next object does not exist, it also returns false and sets the file error id to FSE_NOT_EXIST)\n\n# Arguments\n\n* `file` - pointer to file object.\n* `fileinfo` - pointer to the read FileInfo, may be NULL\n* `name` - pointer to name buffer, may be NULL\n* `name_length` - name buffer length\n\n"]
     pub fn storage_dir_read(
         file: *mut File,
         fileinfo: *mut FileInfo,
@@ -14338,7 +14335,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Retrieves unix timestamp of last access\n\n @param      storage    The storage instance\n @param      path       path to file/directory\n @param      timestamp  the timestamp pointer\n\n @return     FS_Error operation result"]
+    #[doc = "Retrieves unix timestamp of last access\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `storage` - The storage instance\n* `path` - path to file/directory\n* `timestamp` - the timestamp pointer\n\n"]
     pub fn storage_common_timestamp(
         storage: *mut Storage,
         path: *const core::ffi::c_char,
@@ -14346,7 +14343,7 @@ extern "C" {
     ) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Retrieves information about a file/directory\n @param app pointer to the api\n @param path path to file/directory\n @param fileinfo pointer to the read FileInfo, may be NULL\n @return FS_Error operation result"]
+    #[doc = "Retrieves information about a file/directory\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `app` - pointer to the api\n* `path` - path to file/directory\n* `fileinfo` - pointer to the read FileInfo, may be NULL\n\n"]
     pub fn storage_common_stat(
         storage: *mut Storage,
         path: *const core::ffi::c_char,
@@ -14354,12 +14351,12 @@ extern "C" {
     ) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Removes a file/directory from the repository, the directory must be empty and the file/directory must not be open\n @param app pointer to the api\n @param path\n @return FS_Error operation result"]
+    #[doc = "Removes a file/directory from the repository, the directory must be empty and the file/directory must not be open\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `app` - pointer to the api\n* `path` - \n\n"]
     pub fn storage_common_remove(storage: *mut Storage, path: *const core::ffi::c_char)
         -> FS_Error;
 }
 extern "C" {
-    #[doc = " Renames file/directory, file/directory must not be open\n @param app pointer to the api\n @param old_path old path\n @param new_path new path\n @return FS_Error operation result"]
+    #[doc = "Renames file/directory, file/directory must not be open\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `app` - pointer to the api\n* `old_path` - old path\n* `new_path` - new path\n\n"]
     pub fn storage_common_rename(
         storage: *mut Storage,
         old_path: *const core::ffi::c_char,
@@ -14367,7 +14364,7 @@ extern "C" {
     ) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Copy file, file must not be open\n @param app pointer to the api\n @param old_path old path\n @param new_path new path\n @return FS_Error operation result"]
+    #[doc = "Copy file, file must not be open\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `app` - pointer to the api\n* `old_path` - old path\n* `new_path` - new path\n\n"]
     pub fn storage_common_copy(
         storage: *mut Storage,
         old_path: *const core::ffi::c_char,
@@ -14375,7 +14372,7 @@ extern "C" {
     ) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Copy one folder contents into another with rename of all conflicting files\n @param app pointer to the api\n @param old_path old path\n @param new_path new path\n @return FS_Error operation result"]
+    #[doc = "Copy one folder contents into another with rename of all conflicting files\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `app` - pointer to the api\n* `old_path` - old path\n* `new_path` - new path\n\n"]
     pub fn storage_common_merge(
         storage: *mut Storage,
         old_path: *const core::ffi::c_char,
@@ -14383,11 +14380,11 @@ extern "C" {
     ) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Creates a directory\n @param app pointer to the api\n @param path directory path\n @return FS_Error operation result"]
+    #[doc = "Creates a directory\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `app` - pointer to the api\n* `path` - directory path\n\n"]
     pub fn storage_common_mkdir(storage: *mut Storage, path: *const core::ffi::c_char) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Gets general information about the storage\n @param app pointer to the api\n @param fs_path the path to the storage of interest\n @param total_space pointer to total space record, will be filled\n @param free_space pointer to free space record, will be filled\n @return FS_Error operation result"]
+    #[doc = "Gets general information about the storage\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `app` - pointer to the api\n* `fs_path` - the path to the storage of interest\n* `total_space` - pointer to total space record, will be filled\n* `free_space` - pointer to free space record, will be filled\n\n"]
     pub fn storage_common_fs_info(
         storage: *mut Storage,
         fs_path: *const core::ffi::c_char,
@@ -14396,42 +14393,42 @@ extern "C" {
     ) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Retrieves the error text from the error id\n @param error_id error id\n @return const char* error text"]
+    #[doc = "Retrieves the error text from the error id\n\nReturns:\n\n* const char* error text\n\n# Arguments\n\n* `error_id` - error id\n\n"]
     pub fn storage_error_get_desc(error_id: FS_Error) -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Retrieves the error id from the file object\n @param file pointer to file object. Pointer must not point to NULL. YOU CANNOT RETRIEVE THE ERROR ID IF THE FILE HAS BEEN CLOSED\n @return FS_Error error id"]
+    #[doc = "Retrieves the error id from the file object\n\nReturns:\n\n* FS_Error error id\n\n# Arguments\n\n* `file` - pointer to file object. Pointer must not point to NULL. YOU CANNOT RETRIEVE THE ERROR ID IF THE FILE HAS BEEN CLOSED\n\n"]
     pub fn storage_file_get_error(file: *mut File) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Retrieves the error text from the file object\n @param file pointer to file object. Pointer must not point to NULL. YOU CANNOT RETRIEVE THE ERROR TEXT IF THE FILE HAS BEEN CLOSED\n @return const char* error text"]
+    #[doc = "Retrieves the error text from the file object\n\nReturns:\n\n* const char* error text\n\n# Arguments\n\n* `file` - pointer to file object. Pointer must not point to NULL. YOU CANNOT RETRIEVE THE ERROR TEXT IF THE FILE HAS BEEN CLOSED\n\n"]
     pub fn storage_file_get_error_desc(file: *mut File) -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Formats SD Card\n @param api pointer to the api\n @return FS_Error operation result"]
+    #[doc = "Formats SD Card\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `api` - pointer to the api\n\n"]
     pub fn storage_sd_format(api: *mut Storage) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Will unmount the SD card\n @param api pointer to the api\n @return FS_Error operation result"]
+    #[doc = "Will unmount the SD card\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `api` - pointer to the api\n\n"]
     pub fn storage_sd_unmount(api: *mut Storage) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Retrieves SD card information\n @param api pointer to the api\n @param info pointer to the info\n @return FS_Error operation result"]
+    #[doc = "Retrieves SD card information\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `api` - pointer to the api\n* `info` - pointer to the info\n\n"]
     pub fn storage_sd_info(api: *mut Storage, info: *mut SDInfo) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Retrieves SD card status\n @param api pointer to the api\n @return FS_Error operation result"]
+    #[doc = "Retrieves SD card status\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `api` - pointer to the api\n\n"]
     pub fn storage_sd_status(api: *mut Storage) -> FS_Error;
 }
-#[doc = " Internal LFS Functions"]
+#[doc = "Internal LFS Functions\n\n"]
 pub type Storage_name_converter =
     ::core::option::Option<unsafe extern "C" fn(arg1: *mut FuriString)>;
 extern "C" {
-    #[doc = " Backs up internal storage to a tar archive\n @param api pointer to the api\n @param dstmane destination archive path\n @return FS_Error operation result"]
+    #[doc = "Backs up internal storage to a tar archive\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `api` - pointer to the api\n* `dstmane` - destination archive path\n\n"]
     pub fn storage_int_backup(api: *mut Storage, dstname: *const core::ffi::c_char) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Restores internal storage from a tar archive\n @param api pointer to the api\n @param dstmane archive path\n @param converter pointer to filename conversion function, may be NULL\n @return FS_Error operation result"]
+    #[doc = "Restores internal storage from a tar archive\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `api` - pointer to the api\n* `dstmane` - archive path\n* `converter` - pointer to filename conversion function, may be NULL\n\n"]
     pub fn storage_int_restore(
         api: *mut Storage,
         dstname: *const core::ffi::c_char,
@@ -14439,22 +14436,22 @@ extern "C" {
     ) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Removes a file/directory, the directory must be empty and the file/directory must not be open\n @param storage pointer to the api\n @param path\n @return true on success or if file/dir is not exist"]
+    #[doc = "Removes a file/directory, the directory must be empty and the file/directory must not be open\n\nReturns:\n\n* true on success or if file/dir is not exist\n\n# Arguments\n\n* `storage` - pointer to the api\n* `path` - \n\n"]
     pub fn storage_simply_remove(storage: *mut Storage, path: *const core::ffi::c_char) -> bool;
 }
 extern "C" {
-    #[doc = " Recursively removes a file/directory, the directory can be not empty\n @param storage pointer to the api\n @param path\n @return true on success or if file/dir is not exist"]
+    #[doc = "Recursively removes a file/directory, the directory can be not empty\n\nReturns:\n\n* true on success or if file/dir is not exist\n\n# Arguments\n\n* `storage` - pointer to the api\n* `path` - \n\n"]
     pub fn storage_simply_remove_recursive(
         storage: *mut Storage,
         path: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Creates a directory\n @param storage\n @param path\n @return true on success or if directory is already exist"]
+    #[doc = "Creates a directory\n\nReturns:\n\n* true on success or if directory is already exist\n\n# Arguments\n\n* `storage` - \n* `path` - \n\n"]
     pub fn storage_simply_mkdir(storage: *mut Storage, path: *const core::ffi::c_char) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Get next free filename.\n\n @param storage\n @param dirname\n @param filename\n @param fileextension\n @param nextfilename return name\n @param max_len  max len name"]
+    #[doc = "Get next free filename.\n\n# Arguments\n\n* `storage` - \n* `dirname` - \n* `filename` - \n* `fileextension` - \n* `nextfilename` - return name\n* `max_len` - max len name\n\n"]
     pub fn storage_get_next_filename(
         storage: *mut Storage,
         dirname: *const core::ffi::c_char,
@@ -14464,17 +14461,17 @@ extern "C" {
         max_len: u8,
     );
 }
-#[doc = " @brief  LPTIM Init structure definition"]
+#[doc = "LPTIM Init structure definition\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct LL_LPTIM_InitTypeDef {
-    #[doc = "< Specifies the source of the clock used by the LPTIM instance.\nThis parameter can be a value of @ref LPTIM_LL_EC_CLK_SOURCE.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_LPTIM_SetClockSource()."]
+    #[doc = "Specifies the source of the clock used by the LPTIM instance.\nThis parameter can be a value of  [`LPTIM_LL_EC_CLK_SOURCE`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPTIM_SetClockSource()`]\n\n"]
     pub ClockSource: u32,
-    #[doc = "< Specifies the prescaler division ratio.\nThis parameter can be a value of @ref LPTIM_LL_EC_PRESCALER.\n\nThis feature can be modified afterwards using using unitary\nfunction @ref LL_LPTIM_SetPrescaler()."]
+    #[doc = "Specifies the prescaler division ratio.\nThis parameter can be a value of  [`LPTIM_LL_EC_PRESCALER`]\nThis feature can be modified afterwards using using unitary\nfunction  [`LL_LPTIM_SetPrescaler()`]\n\n"]
     pub Prescaler: u32,
-    #[doc = "< Specifies the waveform shape.\nThis parameter can be a value of @ref LPTIM_LL_EC_OUTPUT_WAVEFORM.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_LPTIM_ConfigOutput()."]
+    #[doc = "Specifies the waveform shape.\nThis parameter can be a value of  [`LPTIM_LL_EC_OUTPUT_WAVEFORM`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPTIM_ConfigOutput()`]\n\n"]
     pub Waveform: u32,
-    #[doc = "< Specifies waveform polarity.\nThis parameter can be a value of @ref LPTIM_LL_EC_OUTPUT_POLARITY.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_LPTIM_ConfigOutput()."]
+    #[doc = "Specifies waveform polarity.\nThis parameter can be a value of  [`LPTIM_LL_EC_OUTPUT_POLARITY`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPTIM_ConfigOutput()`]\n\n"]
     pub Polarity: u32,
 }
 #[test]
@@ -14534,7 +14531,6 @@ fn bindgen_test_layout_LL_LPTIM_InitTypeDef() {
     );
 }
 extern "C" {
-    #[doc = " @defgroup LPTIM_LL_EF_Init Initialisation and deinitialisation functions\n @{"]
     pub fn LL_LPTIM_DeInit(LPTIMx: *mut LPTIM_TypeDef) -> ErrorStatus;
 }
 extern "C" {
@@ -14547,31 +14543,31 @@ pub const FuriHalPwmOutputId_FuriHalPwmOutputIdTim1PA7: FuriHalPwmOutputId = 0;
 pub const FuriHalPwmOutputId_FuriHalPwmOutputIdLptim2PA4: FuriHalPwmOutputId = 1;
 pub type FuriHalPwmOutputId = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Enable PWM channel and set parameters\n\n @param[in]  channel  PWM channel (FuriHalPwmOutputId)\n @param[in]  freq  Frequency in Hz\n @param[in]  duty  Duty cycle value in %"]
+    #[doc = "Enable PWM channel and set parameters\n\n# Arguments\n\n* `channel` - [Direction: In] PWM channel (FuriHalPwmOutputId)\n* `freq` - [Direction: In] Frequency in Hz\n* `duty` - [Direction: In] Duty cycle value in %\n\n"]
     pub fn furi_hal_pwm_start(channel: FuriHalPwmOutputId, freq: u32, duty: u8);
 }
 extern "C" {
-    #[doc = " Disable PWM channel\n\n @param[in]  channel  PWM channel (FuriHalPwmOutputId)"]
+    #[doc = "Disable PWM channel\n\n# Arguments\n\n* `channel` - [Direction: In] PWM channel (FuriHalPwmOutputId)\n\n"]
     pub fn furi_hal_pwm_stop(channel: FuriHalPwmOutputId);
 }
 extern "C" {
-    #[doc = " Set PWM channel parameters\n\n @param[in]  channel  PWM channel (FuriHalPwmOutputId)\n @param[in]  freq  Frequency in Hz\n @param[in]  duty  Duty cycle value in %"]
+    #[doc = "Set PWM channel parameters\n\n# Arguments\n\n* `channel` - [Direction: In] PWM channel (FuriHalPwmOutputId)\n* `freq` - [Direction: In] Frequency in Hz\n* `duty` - [Direction: In] Duty cycle value in %\n\n"]
     pub fn furi_hal_pwm_set_params(channel: FuriHalPwmOutputId, freq: u32, duty: u8);
 }
 pub const CC1101State_CC1101StateIDLE: CC1101State = 0;
-#[doc = " IDLE state"]
+#[doc = "IDLE state\n\n"]
 pub const CC1101State_CC1101StateRX: CC1101State = 1;
-#[doc = " Receive mode"]
+#[doc = "Receive mode\n\n"]
 pub const CC1101State_CC1101StateTX: CC1101State = 2;
-#[doc = " Transmit mode"]
+#[doc = "Transmit mode\n\n"]
 pub const CC1101State_CC1101StateFSTXON: CC1101State = 3;
-#[doc = " Fast TX ready"]
+#[doc = "Fast TX ready\n\n"]
 pub const CC1101State_CC1101StateCALIBRATE: CC1101State = 4;
-#[doc = " Frequency synthesizer calibration is running"]
+#[doc = "Frequency synthesizer calibration is running\n\n"]
 pub const CC1101State_CC1101StateSETTLING: CC1101State = 5;
-#[doc = " PLL is settling"]
+#[doc = "PLL is settling\n\n"]
 pub const CC1101State_CC1101StateRXFIFO_OVERFLOW: CC1101State = 6;
-#[doc = " RX FIFO has overflowed. Read out any useful data, then flush the FIFO with SFRX"]
+#[doc = "RX FIFO has overflowed. Read out any useful data, then flush the FIFO with SFRX\n\n"]
 pub const CC1101State_CC1101StateTXFIFO_UNDERFLOW: CC1101State = 7;
 pub type CC1101State = core::ffi::c_uchar;
 #[repr(C, packed)]
@@ -14650,15 +14646,15 @@ impl CC1101Status {
     }
 }
 extern "C" {
-    #[doc = " Strobe command to the device\n\n @param      handle  - pointer to FuriHalSpiHandle\n @param      strobe  - command to execute\n\n @return     device status"]
+    #[doc = "Strobe command to the device\n\nReturns:\n\n* device status\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n* `strobe` - - command to execute\n\n"]
     pub fn cc1101_strobe(handle: *mut FuriHalSpiBusHandle, strobe: u8) -> CC1101Status;
 }
 extern "C" {
-    #[doc = " Write device register\n\n @param      handle  - pointer to FuriHalSpiHandle\n @param      reg     - register\n @param      data    - data to write\n\n @return     device status"]
+    #[doc = "Write device register\n\nReturns:\n\n* device status\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n* `reg` - - register\n* `data` - - data to write\n\n"]
     pub fn cc1101_write_reg(handle: *mut FuriHalSpiBusHandle, reg: u8, data: u8) -> CC1101Status;
 }
 extern "C" {
-    #[doc = " Read device register\n\n @param      handle  - pointer to FuriHalSpiHandle\n @param      reg     - register\n @param[out] data    - pointer to data\n\n @return     device status"]
+    #[doc = "Read device register\n\nReturns:\n\n* device status\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n* `reg` - - register\n* `data` - [Direction: In, Out] - pointer to data\n\n"]
     pub fn cc1101_read_reg(
         handle: *mut FuriHalSpiBusHandle,
         reg: u8,
@@ -14666,72 +14662,72 @@ extern "C" {
     ) -> CC1101Status;
 }
 extern "C" {
-    #[doc = " Reset\n\n @param      handle  - pointer to FuriHalSpiHandle"]
+    #[doc = "Reset\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n\n"]
     pub fn cc1101_reset(handle: *mut FuriHalSpiBusHandle);
 }
 extern "C" {
-    #[doc = " Get status\n\n @param      handle  - pointer to FuriHalSpiHandle\n\n @return     CC1101Status structure"]
+    #[doc = "Get status\n\nReturns:\n\n* CC1101Status structure\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n\n"]
     pub fn cc1101_get_status(handle: *mut FuriHalSpiBusHandle) -> CC1101Status;
 }
 extern "C" {
-    #[doc = " Enable shutdown mode\n\n @param      handle  - pointer to FuriHalSpiHandle"]
+    #[doc = "Enable shutdown mode\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n\n"]
     pub fn cc1101_shutdown(handle: *mut FuriHalSpiBusHandle);
 }
 extern "C" {
-    #[doc = " Get raw RSSI value\n\n @param      handle  - pointer to FuriHalSpiHandle\n\n @return     rssi value"]
+    #[doc = "Get raw RSSI value\n\nReturns:\n\n* rssi value\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n\n"]
     pub fn cc1101_get_rssi(handle: *mut FuriHalSpiBusHandle) -> u8;
 }
 extern "C" {
-    #[doc = " Calibrate oscillator\n\n @param      handle  - pointer to FuriHalSpiHandle"]
+    #[doc = "Calibrate oscillator\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n\n"]
     pub fn cc1101_calibrate(handle: *mut FuriHalSpiBusHandle);
 }
 extern "C" {
-    #[doc = " Switch to idle\n\n @param      handle  - pointer to FuriHalSpiHandle"]
+    #[doc = "Switch to idle\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n\n"]
     pub fn cc1101_switch_to_idle(handle: *mut FuriHalSpiBusHandle);
 }
 extern "C" {
-    #[doc = " Switch to RX\n\n @param      handle  - pointer to FuriHalSpiHandle"]
+    #[doc = "Switch to RX\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n\n"]
     pub fn cc1101_switch_to_rx(handle: *mut FuriHalSpiBusHandle);
 }
 extern "C" {
-    #[doc = " Switch to TX\n\n @param      handle  - pointer to FuriHalSpiHandle"]
+    #[doc = "Switch to TX\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n\n"]
     pub fn cc1101_switch_to_tx(handle: *mut FuriHalSpiBusHandle);
 }
 extern "C" {
-    #[doc = " Flush RX FIFO\n\n @param      handle  - pointer to FuriHalSpiHandle"]
+    #[doc = "Flush RX FIFO\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n\n"]
     pub fn cc1101_flush_rx(handle: *mut FuriHalSpiBusHandle);
 }
 extern "C" {
-    #[doc = " Flush TX FIFO\n\n @param      handle  - pointer to FuriHalSpiHandle"]
+    #[doc = "Flush TX FIFO\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n\n"]
     pub fn cc1101_flush_tx(handle: *mut FuriHalSpiBusHandle);
 }
 extern "C" {
-    #[doc = " Set Frequency\n\n @param      handle  - pointer to FuriHalSpiHandle\n @param      value   - frequency in herz\n\n @return     real frequency that were synthesized"]
+    #[doc = "Set Frequency\n\nReturns:\n\n* real frequency that were synthesized\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n* `value` - - frequency in herz\n\n"]
     pub fn cc1101_set_frequency(handle: *mut FuriHalSpiBusHandle, value: u32) -> u32;
 }
 extern "C" {
-    #[doc = " Set Power Amplifier level table, ramp\n\n @param      handle  - pointer to FuriHalSpiHandle\n @param      value   - array of power level values"]
+    #[doc = "Set Power Amplifier level table, ramp\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n* `value` - - array of power level values\n\n"]
     pub fn cc1101_set_pa_table(handle: *mut FuriHalSpiBusHandle, value: *const u8);
 }
 extern "C" {
-    #[doc = " Write FIFO\n\n @param      handle  - pointer to FuriHalSpiHandle\n @param      data    pointer to byte array\n @param      size    write bytes count\n\n @return     size, written bytes count"]
+    #[doc = "Write FIFO\n\nReturns:\n\n* size, written bytes count\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n* `data` - pointer to byte array\n* `size` - write bytes count\n\n"]
     pub fn cc1101_write_fifo(handle: *mut FuriHalSpiBusHandle, data: *const u8, size: u8) -> u8;
 }
 extern "C" {
-    #[doc = " Read FIFO\n\n @param      handle  - pointer to FuriHalSpiHandle\n @param      data    pointer to byte array\n @param      size    bytes to read from fifo\n\n @return     size, read bytes count"]
+    #[doc = "Read FIFO\n\nReturns:\n\n* size, read bytes count\n\n# Arguments\n\n* `handle` - - pointer to FuriHalSpiHandle\n* `data` - pointer to byte array\n* `size` - bytes to read from fifo\n\n"]
     pub fn cc1101_read_fifo(handle: *mut FuriHalSpiBusHandle, data: *mut u8, size: *mut u8) -> u8;
 }
-#[doc = "\\brief Line Coding Structure"]
+#[doc = "Line Coding Structure\n\n"]
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct usb_cdc_line_coding {
-    #[doc = "<\\brief Data terminal rate, in bits per second."]
+    #[doc = "<\\brief Data terminal rate, in bits per second.\n\n"]
     pub dwDTERate: u32,
-    #[doc = "<\\brief Stop bits."]
+    #[doc = "<\\brief Stop bits.\n\n"]
     pub bCharFormat: u8,
-    #[doc = "<\\brief Parity."]
+    #[doc = "<\\brief Parity.\n\n"]
     pub bParityType: u8,
-    #[doc = "<\\brief Data bits (5,6,7,8 or 16)."]
+    #[doc = "<\\brief Data bits (5,6,7,8 or 16).\n\n"]
     pub bDataBits: u8,
 }
 #[test]
@@ -14896,68 +14892,68 @@ extern "C" {
     pub fn __clear_cache(arg1: *mut core::ffi::c_void, arg2: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Start Hid Keyboard Profile"]
+    #[doc = "Start Hid Keyboard Profile\n\n"]
     pub fn furi_hal_bt_hid_start();
 }
 extern "C" {
-    #[doc = " Stop Hid Keyboard Profile"]
+    #[doc = "Stop Hid Keyboard Profile\n\n"]
     pub fn furi_hal_bt_hid_stop();
 }
 extern "C" {
-    #[doc = " Press keyboard button\n\n @param button    button code from HID specification\n\n @return          true on success"]
+    #[doc = "Press keyboard button\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `button` - button code from HID specification\n\n"]
     pub fn furi_hal_bt_hid_kb_press(button: u16) -> bool;
 }
 extern "C" {
-    #[doc = " Release keyboard button\n\n @param button    button code from HID specification\n\n @return          true on success"]
+    #[doc = "Release keyboard button\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `button` - button code from HID specification\n\n"]
     pub fn furi_hal_bt_hid_kb_release(button: u16) -> bool;
 }
 extern "C" {
-    #[doc = " Release all keyboard buttons\n\n @return          true on success"]
+    #[doc = "Release all keyboard buttons\n\nReturns:\n\n* true on success\n\n"]
     pub fn furi_hal_bt_hid_kb_release_all() -> bool;
 }
 extern "C" {
-    #[doc = " Set mouse movement and send HID report\n\n @param      dx  x coordinate delta\n @param      dy  y coordinate delta"]
+    #[doc = "Set mouse movement and send HID report\n\n# Arguments\n\n* `dx` - x coordinate delta\n* `dy` - y coordinate delta\n\n"]
     pub fn furi_hal_bt_hid_mouse_move(dx: i8, dy: i8) -> bool;
 }
 extern "C" {
-    #[doc = " Set mouse button to pressed state and send HID report\n\n @param      button  key code"]
+    #[doc = "Set mouse button to pressed state and send HID report\n\n# Arguments\n\n* `button` - key code\n\n"]
     pub fn furi_hal_bt_hid_mouse_press(button: u8) -> bool;
 }
 extern "C" {
-    #[doc = " Set mouse button to released state and send HID report\n\n @param      button  key code"]
+    #[doc = "Set mouse button to released state and send HID report\n\n# Arguments\n\n* `button` - key code\n\n"]
     pub fn furi_hal_bt_hid_mouse_release(button: u8) -> bool;
 }
 extern "C" {
-    #[doc = " Set mouse button to released state and send HID report\n\n @param      button  key code"]
+    #[doc = "Set mouse button to released state and send HID report\n\n# Arguments\n\n* `button` - key code\n\n"]
     pub fn furi_hal_bt_hid_mouse_release_all() -> bool;
 }
 extern "C" {
-    #[doc = " Set mouse wheel position and send HID report\n\n @param      delta  number of scroll steps"]
+    #[doc = "Set mouse wheel position and send HID report\n\n# Arguments\n\n* `delta` - number of scroll steps\n\n"]
     pub fn furi_hal_bt_hid_mouse_scroll(delta: i8) -> bool;
 }
 extern "C" {
-    #[doc = " Set the following consumer key to pressed state and send HID report\n\n @param      button  key code"]
+    #[doc = "Set the following consumer key to pressed state and send HID report\n\n# Arguments\n\n* `button` - key code\n\n"]
     pub fn furi_hal_bt_hid_consumer_key_press(button: u16) -> bool;
 }
 extern "C" {
-    #[doc = " Set the following consumer key to released state and send HID report\n\n @param      button  key code"]
+    #[doc = "Set the following consumer key to released state and send HID report\n\n# Arguments\n\n* `button` - key code\n\n"]
     pub fn furi_hal_bt_hid_consumer_key_release(button: u16) -> bool;
 }
 extern "C" {
-    #[doc = " Set consumer key to released state and send HID report\n\n @param      button  key code"]
+    #[doc = "Set consumer key to released state and send HID report\n\n# Arguments\n\n* `button` - key code\n\n"]
     pub fn furi_hal_bt_hid_consumer_key_release_all() -> bool;
 }
-#[doc = "< New data obtained"]
+#[doc = "New data obtained\n\n"]
 pub const FuriHalInfraredTxGetDataState_FuriHalInfraredTxGetDataStateOk:
     FuriHalInfraredTxGetDataState = 0;
-#[doc = "< New data obtained, and this is end of package"]
+#[doc = "New data obtained, and this is end of package\n\n"]
 pub const FuriHalInfraredTxGetDataState_FuriHalInfraredTxGetDataStateDone:
     FuriHalInfraredTxGetDataState = 1;
-#[doc = "< New data obtained, and this is end of package and no more data available"]
+#[doc = "New data obtained, and this is end of package and no more data available\n\n"]
 pub const FuriHalInfraredTxGetDataState_FuriHalInfraredTxGetDataStateLastDone:
     FuriHalInfraredTxGetDataState = 2;
 pub type FuriHalInfraredTxGetDataState = core::ffi::c_uchar;
-#[doc = " Callback type for providing data to INFRARED DMA TX system. It is called every tim"]
+#[doc = "Callback type for providing data to INFRARED DMA TX system. It is called every tim\n\n"]
 pub type FuriHalInfraredTxGetDataISRCallback = ::core::option::Option<
     unsafe extern "C" fn(
         context: *mut core::ffi::c_void,
@@ -14965,86 +14961,86 @@ pub type FuriHalInfraredTxGetDataISRCallback = ::core::option::Option<
         level: *mut bool,
     ) -> FuriHalInfraredTxGetDataState,
 >;
-#[doc = " Callback type called every time signal is sent by DMA to Timer.\n\n Actually, it means there are 2 timings left to send for this signal, which is\n almost end. Don't use this callback to stop transmission, as far as there are\n next signal is charged for transmission by DMA."]
+#[doc = "Callback type called every time signal is sent by DMA to Timer.\nActually, it means there are 2 timings left to send for this signal, which is almost end. Don't use this callback to stop transmission, as far as there are next signal is charged for transmission by DMA.\n\n"]
 pub type FuriHalInfraredTxSignalSentISRCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
-#[doc = " Signature of callback function for receiving continuous INFRARED rx signal.\n\n @param      ctx[in]       context to pass to callback\n @param      level[in]     level of input INFRARED rx signal\n @param      duration[in]  duration of continuous rx signal level in us"]
+#[doc = "Signature of callback function for receiving continuous INFRARED rx signal.\n\n# Arguments\n\n* `ctx[in]` - context to pass to callback\n* `level[in]` - level of input INFRARED rx signal\n* `duration[in]` - duration of continuous rx signal level in us\n\n"]
 pub type FuriHalInfraredRxCaptureCallback = ::core::option::Option<
     unsafe extern "C" fn(ctx: *mut core::ffi::c_void, level: bool, duration: u32),
 >;
-#[doc = " Signature of callback function for reaching silence timeout on INFRARED port.\n\n @param      ctx[in]  context to pass to callback"]
+#[doc = "Signature of callback function for reaching silence timeout on INFRARED port.\n\n# Arguments\n\n* `ctx[in]` - context to pass to callback\n\n"]
 pub type FuriHalInfraredRxTimeoutCallback =
     ::core::option::Option<unsafe extern "C" fn(ctx: *mut core::ffi::c_void)>;
 extern "C" {
-    #[doc = " Initialize INFRARED RX timer to receive interrupts.\n\n It provides interrupts for every RX-signal edge changing with its duration."]
+    #[doc = "Initialize INFRARED RX timer to receive interrupts.\nIt provides interrupts for every RX-signal edge changing with its duration.\n\n"]
     pub fn furi_hal_infrared_async_rx_start();
 }
 extern "C" {
-    #[doc = " Deinitialize INFRARED RX interrupt."]
+    #[doc = "Deinitialize INFRARED RX interrupt.\n\n"]
     pub fn furi_hal_infrared_async_rx_stop();
 }
 extern "C" {
-    #[doc = " Setup hal for receiving silence timeout.\n\n Should be used with 'furi_hal_infrared_timeout_irq_set_callback()'.\n\n @param[in]  timeout_us  time to wait for silence on INFRARED port before\n                         generating IRQ."]
+    #[doc = "Setup hal for receiving silence timeout.\nShould be used with 'furi_hal_infrared_timeout_irq_set_callback()'.\n\n# Arguments\n\n* `timeout_us` - [Direction: In] time to wait for silence on INFRARED port before generating IRQ.\n\n"]
     pub fn furi_hal_infrared_async_rx_set_timeout(timeout_us: u32);
 }
 extern "C" {
-    #[doc = " Setup callback for previously initialized INFRARED RX interrupt.\n\n @param[in]  callback  callback to call when RX signal edge changing occurs\n @param[in]  ctx       context for callback"]
+    #[doc = "Setup callback for previously initialized INFRARED RX interrupt.\n\n# Arguments\n\n* `callback` - [Direction: In] callback to call when RX signal edge changing occurs\n* `ctx` - [Direction: In] context for callback\n\n"]
     pub fn furi_hal_infrared_async_rx_set_capture_isr_callback(
         callback: FuriHalInfraredRxCaptureCallback,
         ctx: *mut core::ffi::c_void,
     );
 }
 extern "C" {
-    #[doc = " Setup callback for reaching silence timeout on INFRARED port.\n\n Should setup hal with 'furi_hal_infrared_setup_rx_timeout_irq()' first.\n\n @param[in]  callback  callback for silence timeout\n @param[in]  ctx       context to pass to callback"]
+    #[doc = "Setup callback for reaching silence timeout on INFRARED port.\nShould setup hal with 'furi_hal_infrared_setup_rx_timeout_irq()' first.\n\n# Arguments\n\n* `callback` - [Direction: In] callback for silence timeout\n* `ctx` - [Direction: In] context to pass to callback\n\n"]
     pub fn furi_hal_infrared_async_rx_set_timeout_isr_callback(
         callback: FuriHalInfraredRxTimeoutCallback,
         ctx: *mut core::ffi::c_void,
     );
 }
 extern "C" {
-    #[doc = " Check if INFRARED is in use now.\n\n @return     true if INFRARED is busy, false otherwise."]
+    #[doc = "Check if INFRARED is in use now.\n\nReturns:\n\n* true if INFRARED is busy, false otherwise.\n\n"]
     pub fn furi_hal_infrared_is_busy() -> bool;
 }
 extern "C" {
-    #[doc = " Set callback providing new data.\n\n This function has to be called before furi_hal_infrared_async_tx_start().\n\n @param[in]  callback  function to provide new data\n @param[in]  context   context for callback"]
+    #[doc = "Set callback providing new data.\nThis function has to be called before furi_hal_infrared_async_tx_start().\n\n# Arguments\n\n* `callback` - [Direction: In] function to provide new data\n* `context` - [Direction: In] context for callback\n\n"]
     pub fn furi_hal_infrared_async_tx_set_data_isr_callback(
         callback: FuriHalInfraredTxGetDataISRCallback,
         context: *mut core::ffi::c_void,
     );
 }
 extern "C" {
-    #[doc = " Start IR asynchronous transmission.\n\n It can be stopped by 2 reasons:\n 1. implicit call for furi_hal_infrared_async_tx_stop()\n 2. callback can provide FuriHalInfraredTxGetDataStateLastDone response which\n    means no more data available for transmission.\n\n Any func (furi_hal_infrared_async_tx_stop() or\n furi_hal_infrared_async_tx_wait_termination()) has to be called to wait end of\n transmission and free resources.\n\n @param[in]  freq        frequency for PWM\n @param[in]  duty_cycle  duty cycle for PWM"]
+    #[doc = "Start IR asynchronous transmission.\nIt can be stopped by 2 reasons: 1. implicit call for furi_hal_infrared_async_tx_stop() 2. callback can provide FuriHalInfraredTxGetDataStateLastDone response which means no more data available for transmission.\nAny func (furi_hal_infrared_async_tx_stop() or furi_hal_infrared_async_tx_wait_termination()) has to be called to wait end of transmission and free resources.\n\n# Arguments\n\n* `freq` - [Direction: In] frequency for PWM\n* `duty_cycle` - [Direction: In] duty cycle for PWM\n\n"]
     pub fn furi_hal_infrared_async_tx_start(freq: u32, duty_cycle: f32);
 }
 extern "C" {
-    #[doc = " Stop IR asynchronous transmission and free resources.\n\n Transmission will stop as soon as transmission reaches end of package\n (FuriHalInfraredTxGetDataStateDone or FuriHalInfraredTxGetDataStateLastDone)."]
+    #[doc = "Stop IR asynchronous transmission and free resources.\nTransmission will stop as soon as transmission reaches end of package (FuriHalInfraredTxGetDataStateDone or FuriHalInfraredTxGetDataStateLastDone).\n\n"]
     pub fn furi_hal_infrared_async_tx_stop();
 }
 extern "C" {
-    #[doc = " Wait for end of IR asynchronous transmission and free resources.\n\n Transmission will stop as soon as transmission reaches end of transmission\n (FuriHalInfraredTxGetDataStateLastDone)."]
+    #[doc = "Wait for end of IR asynchronous transmission and free resources.\nTransmission will stop as soon as transmission reaches end of transmission (FuriHalInfraredTxGetDataStateLastDone).\n\n"]
     pub fn furi_hal_infrared_async_tx_wait_termination();
 }
 extern "C" {
-    #[doc = " Set callback for end of signal transmission\n\n @param[in]  callback  function to call when signal is sent\n @param[in]  context   context for callback"]
+    #[doc = "Set callback for end of signal transmission\n\n# Arguments\n\n* `callback` - [Direction: In] function to call when signal is sent\n* `context` - [Direction: In] context for callback\n\n"]
     pub fn furi_hal_infrared_async_tx_set_signal_sent_isr_callback(
         callback: FuriHalInfraredTxSignalSentISRCallback,
         context: *mut core::ffi::c_void,
     );
 }
 extern "C" {
-    #[doc = " @brief Init memory pool manager"]
+    #[doc = "Init memory pool manager\n\n"]
     pub fn furi_hal_memory_init();
 }
 extern "C" {
-    #[doc = " @brief Allocate memory from separate memory pool. That memory can't be freed.\n\n @param size\n @return void*"]
+    #[doc = "Allocate memory from separate memory pool. That memory can't be freed.\n\nReturns:\n\n* void*\n\n# Arguments\n\n* `size` - \n\n"]
     pub fn furi_hal_memory_alloc(size: usize) -> *mut core::ffi::c_void;
 }
 extern "C" {
-    #[doc = " @brief Get free memory pool size\n\n @return size_t"]
+    #[doc = "Get free memory pool size\n\nReturns:\n\n* size_t\n\n"]
     pub fn furi_hal_memory_get_free() -> usize;
 }
 extern "C" {
-    #[doc = " @brief Get max free block size from memory pool\n\n @return size_t"]
+    #[doc = "Get max free block size from memory pool\n\nReturns:\n\n* size_t\n\n"]
     pub fn furi_hal_memory_max_pool_block() -> usize;
 }
 pub const FuriHalMpuRegion_FuriHalMpuRegionNULL: FuriHalMpuRegion = 0;
@@ -15086,11 +15082,11 @@ pub const FuriHalMPURegionSize_FuriHalMPURegionSize2GB: FuriHalMPURegionSize = 3
 pub const FuriHalMPURegionSize_FuriHalMPURegionSize4GB: FuriHalMPURegionSize = 31;
 pub type FuriHalMPURegionSize = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " @brief Enable memory protection unit"]
+    #[doc = "Enable memory protection unit\n\n"]
     pub fn furi_hal_mpu_enable();
 }
 extern "C" {
-    #[doc = " @brief Disable memory protection unit"]
+    #[doc = "Disable memory protection unit\n\n"]
     pub fn furi_hal_mpu_disable();
 }
 extern "C" {
@@ -15117,36 +15113,36 @@ pub type HidU2fEvent = core::ffi::c_uchar;
 pub type HidU2fCallback =
     ::core::option::Option<unsafe extern "C" fn(ev: HidU2fEvent, context: *mut core::ffi::c_void)>;
 extern "C" {
-    #[doc = " Get HID U2F connection state\n\n @return      true / false"]
+    #[doc = "Get HID U2F connection state\n\nReturns:\n\n* true / false\n\n"]
     pub fn furi_hal_hid_u2f_is_connected() -> bool;
 }
 extern "C" {
-    #[doc = " Set HID U2F event callback\n\n @param      cb  callback\n @param      ctx  callback context"]
+    #[doc = "Set HID U2F event callback\n\n# Arguments\n\n* `cb` - callback\n* `ctx` - callback context\n\n"]
     pub fn furi_hal_hid_u2f_set_callback(cb: HidU2fCallback, ctx: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Get received U2F HID packet\n"]
+    #[doc = "Get received U2F HID packet\n\n"]
     pub fn furi_hal_hid_u2f_get_request(data: *mut u8) -> u32;
 }
 extern "C" {
-    #[doc = " Send U2F HID response packet\n\n @param      data  response data\n @param      len  packet length"]
+    #[doc = "Send U2F HID response packet\n\n# Arguments\n\n* `data` - response data\n* `len` - packet length\n\n"]
     pub fn furi_hal_hid_u2f_send_response(data: *mut u8, len: u8);
 }
-#[doc = " @brief  Structure definition of some features of COMP instance."]
+#[doc = "Structure definition of some features of COMP instance.\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct LL_COMP_InitTypeDef {
-    #[doc = "< Set comparator operating mode to adjust power and speed.\nThis parameter can be a value of @ref COMP_LL_EC_POWERMODE\n\nThis feature can be modified afterwards using unitary function @ref LL_COMP_SetPowerMode()."]
+    #[doc = "Set comparator operating mode to adjust power and speed.\nThis parameter can be a value of  [`COMP_LL_EC_POWERMODE`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetPowerMode()`]\n\n"]
     pub PowerMode: u32,
-    #[doc = "< Set comparator input plus (non-inverting input).\nThis parameter can be a value of @ref COMP_LL_EC_INPUT_PLUS\n\nThis feature can be modified afterwards using unitary function @ref LL_COMP_SetInputPlus()."]
+    #[doc = "Set comparator input plus (non-inverting input).\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_PLUS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputPlus()`]\n\n"]
     pub InputPlus: u32,
-    #[doc = "< Set comparator input minus (inverting input).\nThis parameter can be a value of @ref COMP_LL_EC_INPUT_MINUS\n\nThis feature can be modified afterwards using unitary function @ref LL_COMP_SetInputMinus()."]
+    #[doc = "Set comparator input minus (inverting input).\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_MINUS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputMinus()`]\n\n"]
     pub InputMinus: u32,
-    #[doc = "< Set comparator hysteresis mode of the input minus.\nThis parameter can be a value of @ref COMP_LL_EC_INPUT_HYSTERESIS\n\nThis feature can be modified afterwards using unitary function @ref LL_COMP_SetInputHysteresis()."]
+    #[doc = "Set comparator hysteresis mode of the input minus.\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_HYSTERESIS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputHysteresis()`]\n\n"]
     pub InputHysteresis: u32,
-    #[doc = "< Set comparator output polarity.\nThis parameter can be a value of @ref COMP_LL_EC_OUTPUT_POLARITY\n\nThis feature can be modified afterwards using unitary function @ref LL_COMP_SetOutputPolarity()."]
+    #[doc = "Set comparator output polarity.\nThis parameter can be a value of  [`COMP_LL_EC_OUTPUT_POLARITY`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetOutputPolarity()`]\n\n"]
     pub OutputPolarity: u32,
-    #[doc = "< Set comparator blanking source.\nThis parameter can be a value of @ref COMP_LL_EC_OUTPUT_BLANKING_SOURCE\n\nThis feature can be modified afterwards using unitary function @ref LL_COMP_SetOutputBlankingSource()."]
+    #[doc = "Set comparator blanking source.\nThis parameter can be a value of  [`COMP_LL_EC_OUTPUT_BLANKING_SOURCE`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetOutputBlankingSource()`]\n\n"]
     pub OutputBlankingSource: u32,
 }
 #[test]
@@ -15231,31 +15227,30 @@ extern "C" {
         COMP_InitStruct: *mut LL_COMP_InitTypeDef,
     ) -> ErrorStatus;
 }
-#[doc = " @defgroup DMA_LL_ES_INIT DMA Exported Init structure\n @{"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct LL_DMA_InitTypeDef {
-    #[doc = "< Specifies the peripheral base address for DMA transfer\nor as Source base address in case of memory to memory transfer direction.\n\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF."]
+    #[doc = "Specifies the peripheral base address for DMA transfer\nor as Source base address in case of memory to memory transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF.\n\n"]
     pub PeriphOrM2MSrcAddress: u32,
-    #[doc = "< Specifies the memory base address for DMA transfer\nor as Destination base address in case of memory to memory transfer direction.\n\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF."]
+    #[doc = "Specifies the memory base address for DMA transfer\nor as Destination base address in case of memory to memory transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF.\n\n"]
     pub MemoryOrM2MDstAddress: u32,
-    #[doc = "< Specifies if the data will be transferred from memory to peripheral,\nfrom memory to memory or from peripheral to memory.\nThis parameter can be a value of @ref DMA_LL_EC_DIRECTION\n\nThis feature can be modified afterwards using unitary function @ref LL_DMA_SetDataTransferDirection()."]
+    #[doc = "Specifies if the data will be transferred from memory to peripheral,\nfrom memory to memory or from peripheral to memory.\nThis parameter can be a value of  [`DMA_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetDataTransferDirection()`]\n\n"]
     pub Direction: u32,
-    #[doc = "< Specifies the normal or circular operation mode.\nThis parameter can be a value of @ref DMA_LL_EC_MODE\n@note: The circular buffer mode cannot be used if the memory to memory\ndata transfer direction is configured on the selected Channel\n\nThis feature can be modified afterwards using unitary function @ref LL_DMA_SetMode()."]
+    #[doc = "Specifies the normal or circular operation mode.\nThis parameter can be a value of  [`DMA_LL_EC_MODE`]\ndata transfer direction is configured on the selected Channel\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMode()`]\n\n# Notes\n\n* The circular buffer mode cannot be used if the memory to memory\n\n"]
     pub Mode: u32,
-    #[doc = "< Specifies whether the Peripheral address or Source address in case of memory to memory transfer direction\nis incremented or not.\nThis parameter can be a value of @ref DMA_LL_EC_PERIPH\n\nThis feature can be modified afterwards using unitary function @ref LL_DMA_SetPeriphIncMode()."]
+    #[doc = "Specifies whether the Peripheral address or Source address in case of memory to memory transfer direction\nis incremented or not.\nThis parameter can be a value of  [`DMA_LL_EC_PERIPH`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphIncMode()`]\n\n"]
     pub PeriphOrM2MSrcIncMode: u32,
-    #[doc = "< Specifies whether the Memory address or Destination address in case of memory to memory transfer direction\nis incremented or not.\nThis parameter can be a value of @ref DMA_LL_EC_MEMORY\n\nThis feature can be modified afterwards using unitary function @ref LL_DMA_SetMemoryIncMode()."]
+    #[doc = "Specifies whether the Memory address or Destination address in case of memory to memory transfer direction\nis incremented or not.\nThis parameter can be a value of  [`DMA_LL_EC_MEMORY`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMemoryIncMode()`]\n\n"]
     pub MemoryOrM2MDstIncMode: u32,
-    #[doc = "< Specifies the Peripheral data size alignment or Source data size alignment (byte, half word, word)\nin case of memory to memory transfer direction.\nThis parameter can be a value of @ref DMA_LL_EC_PDATAALIGN\n\nThis feature can be modified afterwards using unitary function @ref LL_DMA_SetPeriphSize()."]
+    #[doc = "Specifies the Peripheral data size alignment or Source data size alignment (byte, half word, word)\nin case of memory to memory transfer direction.\nThis parameter can be a value of  [`DMA_LL_EC_PDATAALIGN`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphSize()`]\n\n"]
     pub PeriphOrM2MSrcDataSize: u32,
-    #[doc = "< Specifies the Memory data size alignment or Destination data size alignment (byte, half word, word)\nin case of memory to memory transfer direction.\nThis parameter can be a value of @ref DMA_LL_EC_MDATAALIGN\n\nThis feature can be modified afterwards using unitary function @ref LL_DMA_SetMemorySize()."]
+    #[doc = "Specifies the Memory data size alignment or Destination data size alignment (byte, half word, word)\nin case of memory to memory transfer direction.\nThis parameter can be a value of  [`DMA_LL_EC_MDATAALIGN`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMemorySize()`]\n\n"]
     pub MemoryOrM2MDstDataSize: u32,
-    #[doc = "< Specifies the number of data to transfer, in data unit.\nThe data unit is equal to the source buffer configuration set in PeripheralSize\nor MemorySize parameters depending in the transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0x0000FFFF\n\nThis feature can be modified afterwards using unitary function @ref LL_DMA_SetDataLength()."]
+    #[doc = "Specifies the number of data to transfer, in data unit.\nThe data unit is equal to the source buffer configuration set in PeripheralSize\nor MemorySize parameters depending in the transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0x0000FFFF\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetDataLength()`]\n\n"]
     pub NbData: u32,
-    #[doc = "< Specifies the peripheral request.\nThis parameter can be a value of @ref DMAMUX_LL_EC_REQUEST\n\nThis feature can be modified afterwards using unitary function @ref LL_DMA_SetPeriphRequest()."]
+    #[doc = "Specifies the peripheral request.\nThis parameter can be a value of  [`DMAMUX_LL_EC_REQUEST`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphRequest()`]\n\n"]
     pub PeriphRequest: u32,
-    #[doc = "< Specifies the channel priority level.\nThis parameter can be a value of @ref DMA_LL_EC_PRIORITY\n\nThis feature can be modified afterwards using unitary function @ref LL_DMA_SetChannelPriorityLevel()."]
+    #[doc = "Specifies the channel priority level.\nThis parameter can be a value of  [`DMA_LL_EC_PRIORITY`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetChannelPriorityLevel()`]\n\n"]
     pub Priority: u32,
 }
 #[test]
@@ -15384,7 +15379,6 @@ fn bindgen_test_layout_LL_DMA_InitTypeDef() {
     );
 }
 extern "C" {
-    #[doc = " @defgroup DMA_LL_EF_Init Initialization and de-initialization functions\n @{"]
     pub fn LL_DMA_Init(
         DMAx: *mut DMA_TypeDef,
         Channel: u32,
@@ -15394,23 +15388,23 @@ extern "C" {
 extern "C" {
     pub fn LL_DMA_DeInit(DMAx: *mut DMA_TypeDef, Channel: u32) -> ErrorStatus;
 }
-#[doc = " @brief LL LPUART Init Structure definition"]
+#[doc = "LL LPUART Init Structure definition\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct LL_LPUART_InitTypeDef {
-    #[doc = "< Specifies the Prescaler to compute the communication baud rate.\nThis parameter can be a value of @ref LPUART_LL_EC_PRESCALER.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_LPUART_SetPrescaler()."]
+    #[doc = "Specifies the Prescaler to compute the communication baud rate.\nThis parameter can be a value of  [`LPUART_LL_EC_PRESCALER`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetPrescaler()`]\n\n"]
     pub PrescalerValue: u32,
-    #[doc = "< This field defines expected LPUART communication baud rate.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_LPUART_SetBaudRate()."]
+    #[doc = "This field defines expected LPUART communication baud rate.\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetBaudRate()`]\n\n"]
     pub BaudRate: u32,
-    #[doc = "< Specifies the number of data bits transmitted or received in a frame.\nThis parameter can be a value of @ref LPUART_LL_EC_DATAWIDTH.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_LPUART_SetDataWidth()."]
+    #[doc = "Specifies the number of data bits transmitted or received in a frame.\nThis parameter can be a value of  [`LPUART_LL_EC_DATAWIDTH`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetDataWidth()`]\n\n"]
     pub DataWidth: u32,
-    #[doc = "< Specifies the number of stop bits transmitted.\nThis parameter can be a value of @ref LPUART_LL_EC_STOPBITS.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_LPUART_SetStopBitsLength()."]
+    #[doc = "Specifies the number of stop bits transmitted.\nThis parameter can be a value of  [`LPUART_LL_EC_STOPBITS`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetStopBitsLength()`]\n\n"]
     pub StopBits: u32,
-    #[doc = "< Specifies the parity mode.\nThis parameter can be a value of @ref LPUART_LL_EC_PARITY.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_LPUART_SetParity()."]
+    #[doc = "Specifies the parity mode.\nThis parameter can be a value of  [`LPUART_LL_EC_PARITY`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetParity()`]\n\n"]
     pub Parity: u32,
-    #[doc = "< Specifies whether the Receive and/or Transmit mode is enabled or disabled.\nThis parameter can be a value of @ref LPUART_LL_EC_DIRECTION.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_LPUART_SetTransferDirection()."]
+    #[doc = "Specifies whether the Receive and/or Transmit mode is enabled or disabled.\nThis parameter can be a value of  [`LPUART_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetTransferDirection()`]\n\n"]
     pub TransferDirection: u32,
-    #[doc = "< Specifies whether the hardware flow control mode is enabled or disabled.\nThis parameter can be a value of @ref LPUART_LL_EC_HWCONTROL.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_LPUART_SetHWFlowCtrl()."]
+    #[doc = "Specifies whether the hardware flow control mode is enabled or disabled.\nThis parameter can be a value of  [`LPUART_LL_EC_HWCONTROL`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetHWFlowCtrl()`]\n\n"]
     pub HardwareFlowControl: u32,
 }
 #[test]
@@ -15505,15 +15499,15 @@ extern "C" {
         LPUART_InitStruct: *mut LL_LPUART_InitTypeDef,
     ) -> ErrorStatus;
 }
-#[doc = " @brief  RTC Init structures definition"]
+#[doc = "RTC Init structures definition\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct LL_RTC_InitTypeDef {
-    #[doc = "< Specifies the RTC Hours Format.\nThis parameter can be a value of @ref RTC_LL_EC_HOURFORMAT\n\nThis feature can be modified afterwards using unitary function\n@ref LL_RTC_SetHourFormat()."]
+    #[doc = "Specifies the RTC Hours Format.\nThis parameter can be a value of  [`RTC_LL_EC_HOURFORMAT`]\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetHourFormat()`]\n\n"]
     pub HourFormat: u32,
-    #[doc = "< Specifies the RTC Asynchronous Predivider value.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0x7F\n\nThis feature can be modified afterwards using unitary function\n@ref LL_RTC_SetAsynchPrescaler()."]
+    #[doc = "Specifies the RTC Asynchronous Predivider value.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0x7F\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetAsynchPrescaler()`]\n\n"]
     pub AsynchPrescaler: u32,
-    #[doc = "< Specifies the RTC Synchronous Predivider value.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0x7FFF\n\nThis feature can be modified afterwards using unitary function\n@ref LL_RTC_SetSynchPrescaler()."]
+    #[doc = "Specifies the RTC Synchronous Predivider value.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0x7FFF\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetSynchPrescaler()`]\n\n"]
     pub SynchPrescaler: u32,
 }
 #[test]
@@ -15570,25 +15564,25 @@ extern "C" {
 extern "C" {
     pub fn LL_RTC_EnterInitMode(RTCx: *mut RTC_TypeDef) -> ErrorStatus;
 }
-#[doc = " @brief LL USART Init Structure definition"]
+#[doc = "LL USART Init Structure definition\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct LL_USART_InitTypeDef {
-    #[doc = "< Specifies the Prescaler to compute the communication baud rate.\nThis parameter can be a value of @ref USART_LL_EC_PRESCALER.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_USART_SetPrescaler()."]
+    #[doc = "Specifies the Prescaler to compute the communication baud rate.\nThis parameter can be a value of  [`USART_LL_EC_PRESCALER`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetPrescaler()`]\n\n"]
     pub PrescalerValue: u32,
-    #[doc = "< This field defines expected Usart communication baud rate.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_USART_SetBaudRate()."]
+    #[doc = "This field defines expected Usart communication baud rate.\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetBaudRate()`]\n\n"]
     pub BaudRate: u32,
-    #[doc = "< Specifies the number of data bits transmitted or received in a frame.\nThis parameter can be a value of @ref USART_LL_EC_DATAWIDTH.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_USART_SetDataWidth()."]
+    #[doc = "Specifies the number of data bits transmitted or received in a frame.\nThis parameter can be a value of  [`USART_LL_EC_DATAWIDTH`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetDataWidth()`]\n\n"]
     pub DataWidth: u32,
-    #[doc = "< Specifies the number of stop bits transmitted.\nThis parameter can be a value of @ref USART_LL_EC_STOPBITS.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_USART_SetStopBitsLength()."]
+    #[doc = "Specifies the number of stop bits transmitted.\nThis parameter can be a value of  [`USART_LL_EC_STOPBITS`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetStopBitsLength()`]\n\n"]
     pub StopBits: u32,
-    #[doc = "< Specifies the parity mode.\nThis parameter can be a value of @ref USART_LL_EC_PARITY.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_USART_SetParity()."]
+    #[doc = "Specifies the parity mode.\nThis parameter can be a value of  [`USART_LL_EC_PARITY`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetParity()`]\n\n"]
     pub Parity: u32,
-    #[doc = "< Specifies whether the Receive and/or Transmit mode is enabled or disabled.\nThis parameter can be a value of @ref USART_LL_EC_DIRECTION.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_USART_SetTransferDirection()."]
+    #[doc = "Specifies whether the Receive and/or Transmit mode is enabled or disabled.\nThis parameter can be a value of  [`USART_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetTransferDirection()`]\n\n"]
     pub TransferDirection: u32,
-    #[doc = "< Specifies whether the hardware flow control mode is enabled or disabled.\nThis parameter can be a value of @ref USART_LL_EC_HWCONTROL.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_USART_SetHWFlowCtrl()."]
+    #[doc = "Specifies whether the hardware flow control mode is enabled or disabled.\nThis parameter can be a value of  [`USART_LL_EC_HWCONTROL`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetHWFlowCtrl()`]\n\n"]
     pub HardwareFlowControl: u32,
-    #[doc = "< Specifies whether USART oversampling mode is 16 or 8.\nThis parameter can be a value of @ref USART_LL_EC_OVERSAMPLING.\n\nThis feature can be modified afterwards using unitary\nfunction @ref LL_USART_SetOverSampling()."]
+    #[doc = "Specifies whether USART oversampling mode is 16 or 8.\nThis parameter can be a value of  [`USART_LL_EC_OVERSAMPLING`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetOverSampling()`]\n\n"]
     pub OverSampling: u32,
 }
 #[test]
@@ -15694,7 +15688,6 @@ extern "C" {
     ) -> ErrorStatus;
 }
 extern "C" {
-    #[doc = " @defgroup UTILS_EF_SYSTEM SYSTEM\n @{"]
     pub fn LL_SetSystemCoreClock(HCLKFrequency: u32);
 }
 pub type Elf32_Addr = u32;
@@ -15991,20 +15984,20 @@ fn bindgen_test_layout_FlipperApplicationManifestV1() {
 }
 pub type FlipperApplicationManifest = FlipperApplicationManifestV1;
 extern "C" {
-    #[doc = " @brief Check if manifest is valid\n\n @param manifest\n @return bool"]
+    #[doc = "Check if manifest is valid\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `manifest` - \n\n"]
     pub fn flipper_application_manifest_is_valid(
         manifest: *const FlipperApplicationManifest,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Check if manifest is compatible with current ELF API interface\n\n @param manifest\n @param api_interface\n @return bool"]
+    #[doc = "Check if manifest is compatible with current ELF API interface\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `manifest` - \n* `api_interface` - \n\n"]
     pub fn flipper_application_manifest_is_compatible(
         manifest: *const FlipperApplicationManifest,
         api_interface: *const ElfApiInterface,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Check if application is compatible with current hardware\n\n @param manifest\n @return bool"]
+    #[doc = "Check if application is compatible with current hardware\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `manifest` - \n\n"]
     pub fn flipper_application_manifest_is_target_compatible(
         manifest: *const FlipperApplicationManifest,
     ) -> bool;
@@ -16032,7 +16025,7 @@ pub const FlipperApplicationLoadStatus_FlipperApplicationLoadStatusMissingImport
     FlipperApplicationLoadStatus = 3;
 pub type FlipperApplicationLoadStatus = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " @brief Get text description of load status\n @param status Status code\n @return String pointer to description"]
+    #[doc = "Get text description of load status\n\nReturns:\n\n* String pointer to description\n\n# Arguments\n\n* `status` - Status code\n\n"]
     pub fn flipper_application_load_status_to_string(
         status: FlipperApplicationLoadStatus,
     ) -> *const core::ffi::c_char;
@@ -16043,44 +16036,44 @@ pub struct FlipperApplication {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " @brief Initialize FlipperApplication object\n @param storage Storage instance\n @param api_interface ELF API interface to use for pre-loading and symbol resolving\n @return Application instance"]
+    #[doc = "Initialize FlipperApplication object\n\nReturns:\n\n* Application instance\n\n# Arguments\n\n* `storage` - Storage instance\n* `api_interface` - ELF API interface to use for pre-loading and symbol resolving\n\n"]
     pub fn flipper_application_alloc(
         storage: *mut Storage,
         api_interface: *const ElfApiInterface,
     ) -> *mut FlipperApplication;
 }
 extern "C" {
-    #[doc = " @brief Destroy FlipperApplication object\n @param app Application pointer"]
+    #[doc = "Destroy FlipperApplication object\n\n# Arguments\n\n* `app` - Application pointer\n\n"]
     pub fn flipper_application_free(app: *mut FlipperApplication);
 }
 extern "C" {
-    #[doc = " @brief Validate elf file and load application metadata\n @param app Application pointer\n @return Preload result code"]
+    #[doc = "Validate elf file and load application metadata\n\nReturns:\n\n* Preload result code\n\n# Arguments\n\n* `app` - Application pointer\n\n"]
     pub fn flipper_application_preload(
         app: *mut FlipperApplication,
         path: *const core::ffi::c_char,
     ) -> FlipperApplicationPreloadStatus;
 }
 extern "C" {
-    #[doc = " @brief Validate elf file and load application manifest\n @param app Application pointer\n @return Preload result code"]
+    #[doc = "Validate elf file and load application manifest\n\nReturns:\n\n* Preload result code\n\n# Arguments\n\n* `app` - Application pointer\n\n"]
     pub fn flipper_application_preload_manifest(
         app: *mut FlipperApplication,
         path: *const core::ffi::c_char,
     ) -> FlipperApplicationPreloadStatus;
 }
 extern "C" {
-    #[doc = " @brief Get pointer to application manifest for preloaded application\n @param app Application pointer\n @return Pointer to application manifest"]
+    #[doc = "Get pointer to application manifest for preloaded application\n\nReturns:\n\n* Pointer to application manifest\n\n# Arguments\n\n* `app` - Application pointer\n\n"]
     pub fn flipper_application_get_manifest(
         app: *mut FlipperApplication,
     ) -> *const FlipperApplicationManifest;
 }
 extern "C" {
-    #[doc = " @brief Load sections and process relocations for already pre-loaded application\n @param app Application pointer\n @return Load result code"]
+    #[doc = "Load sections and process relocations for already pre-loaded application\n\nReturns:\n\n* Load result code\n\n# Arguments\n\n* `app` - Application pointer\n\n"]
     pub fn flipper_application_map_to_memory(
         app: *mut FlipperApplication,
     ) -> FlipperApplicationLoadStatus;
 }
 extern "C" {
-    #[doc = " @brief Create application thread at entry point address, using app name and\n stack size from metadata. Returned thread isn't started yet.\n Can be only called once for application instance.\n @param app Applicaiton pointer\n @param args Object to pass to app's entry point\n @return Created thread"]
+    #[doc = "Create application thread at entry point address, using app name and stack size from metadata. Returned thread isn't started yet. Can be only called once for application instance.\n\nReturns:\n\n* Created thread\n\n# Arguments\n\n* `app` - Applicaiton pointer\n* `args` - Object to pass to app's entry point\n\n"]
     pub fn flipper_application_spawn(
         app: *mut FlipperApplication,
         args: *mut core::ffi::c_void,
@@ -16092,85 +16085,85 @@ pub struct FlipperFormat {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocate FlipperFormat as string.\n @return FlipperFormat* pointer to a FlipperFormat instance"]
+    #[doc = "Allocate FlipperFormat as string.\n\nReturns:\n\n* FlipperFormat* pointer to a FlipperFormat instance\n\n"]
     pub fn flipper_format_string_alloc() -> *mut FlipperFormat;
 }
 extern "C" {
-    #[doc = " Allocate FlipperFormat as file.\n @return FlipperFormat* pointer to a FlipperFormat instance"]
+    #[doc = "Allocate FlipperFormat as file.\n\nReturns:\n\n* FlipperFormat* pointer to a FlipperFormat instance\n\n"]
     pub fn flipper_format_file_alloc(storage: *mut Storage) -> *mut FlipperFormat;
 }
 extern "C" {
-    #[doc = " Allocate FlipperFormat as file, buffered mode.\n @return FlipperFormat* pointer to a FlipperFormat instance"]
+    #[doc = "Allocate FlipperFormat as file, buffered mode.\n\nReturns:\n\n* FlipperFormat* pointer to a FlipperFormat instance\n\n"]
     pub fn flipper_format_buffered_file_alloc(storage: *mut Storage) -> *mut FlipperFormat;
 }
 extern "C" {
-    #[doc = " Open existing file.\n Use only if FlipperFormat allocated as a file.\n @param flipper_format Pointer to a FlipperFormat instance\n @param path File path\n @return True on success"]
+    #[doc = "Open existing file. Use only if FlipperFormat allocated as a file.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `path` - File path\n\n"]
     pub fn flipper_format_file_open_existing(
         flipper_format: *mut FlipperFormat,
         path: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Open existing file, buffered mode.\n Use only if FlipperFormat allocated as a file.\n @param flipper_format Pointer to a FlipperFormat instance\n @param path File path\n @return True on success"]
+    #[doc = "Open existing file, buffered mode. Use only if FlipperFormat allocated as a file.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `path` - File path\n\n"]
     pub fn flipper_format_buffered_file_open_existing(
         flipper_format: *mut FlipperFormat,
         path: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Open existing file for writing and add values to the end of file.\n Use only if FlipperFormat allocated as a file.\n @param flipper_format Pointer to a FlipperFormat instance\n @param path File path\n @return True on success"]
+    #[doc = "Open existing file for writing and add values to the end of file. Use only if FlipperFormat allocated as a file.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `path` - File path\n\n"]
     pub fn flipper_format_file_open_append(
         flipper_format: *mut FlipperFormat,
         path: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Open file. Creates a new file, or deletes the contents of the file if it already exists.\n Use only if FlipperFormat allocated as a file.\n @param flipper_format Pointer to a FlipperFormat instance\n @param path File path\n @return True on success"]
+    #[doc = "Open file. Creates a new file, or deletes the contents of the file if it already exists. Use only if FlipperFormat allocated as a file.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `path` - File path\n\n"]
     pub fn flipper_format_file_open_always(
         flipper_format: *mut FlipperFormat,
         path: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Open file. Creates a new file, fails if file already exists.\n Use only if FlipperFormat allocated as a file.\n @param flipper_format Pointer to a FlipperFormat instance\n @param path File path\n @return True on success"]
+    #[doc = "Open file. Creates a new file, fails if file already exists. Use only if FlipperFormat allocated as a file.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `path` - File path\n\n"]
     pub fn flipper_format_file_open_new(
         flipper_format: *mut FlipperFormat,
         path: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Closes the file, use only if FlipperFormat allocated as a file.\n @param flipper_format\n @return true\n @return false"]
+    #[doc = "Closes the file, use only if FlipperFormat allocated as a file.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `flipper_format` - \n\n"]
     pub fn flipper_format_file_close(flipper_format: *mut FlipperFormat) -> bool;
 }
 extern "C" {
-    #[doc = " Closes the file, use only if FlipperFormat allocated as a buffered file.\n @param flipper_format\n @return true\n @return false"]
+    #[doc = "Closes the file, use only if FlipperFormat allocated as a buffered file.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `flipper_format` - \n\n"]
     pub fn flipper_format_buffered_file_close(flipper_format: *mut FlipperFormat) -> bool;
 }
 extern "C" {
-    #[doc = " Free FlipperFormat.\n @param flipper_format Pointer to a FlipperFormat instance"]
+    #[doc = "Free FlipperFormat.\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
     pub fn flipper_format_free(flipper_format: *mut FlipperFormat);
 }
 extern "C" {
-    #[doc = " Set FlipperFormat mode.\n @param flipper_format Pointer to a FlipperFormat instance\n @param strict_mode True obligates not to skip valid fields. False by default."]
+    #[doc = "Set FlipperFormat mode.\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `strict_mode` - True obligates not to skip valid fields. False by default.\n\n"]
     pub fn flipper_format_set_strict_mode(flipper_format: *mut FlipperFormat, strict_mode: bool);
 }
 extern "C" {
-    #[doc = " Rewind the RW pointer.\n @param flipper_format Pointer to a FlipperFormat instance\n @return True on success"]
+    #[doc = "Rewind the RW pointer.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
     pub fn flipper_format_rewind(flipper_format: *mut FlipperFormat) -> bool;
 }
 extern "C" {
-    #[doc = " Move the RW pointer at the end. Can be useful if you want to add some data after reading.\n @param flipper_format Pointer to a FlipperFormat instance\n @return True on success"]
+    #[doc = "Move the RW pointer at the end. Can be useful if you want to add some data after reading.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
     pub fn flipper_format_seek_to_end(flipper_format: *mut FlipperFormat) -> bool;
 }
 extern "C" {
-    #[doc = " Check if the key exists.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @return true key exists\n @return false key is not exists"]
+    #[doc = "Check if the key exists.\n\nReturns:\n\n* true key exists\n* false key is not exists\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n\n"]
     pub fn flipper_format_key_exist(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Read the header (file type and version).\n @param flipper_format Pointer to a FlipperFormat instance\n @param filetype File type string\n @param version Version Value\n @return True on success"]
+    #[doc = "Read the header (file type and version).\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `filetype` - File type string\n* `version` - Version Value\n\n"]
     pub fn flipper_format_read_header(
         flipper_format: *mut FlipperFormat,
         filetype: *mut FuriString,
@@ -16178,7 +16171,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Write the header (file type and version).\n @param flipper_format Pointer to a FlipperFormat instance\n @param filetype File type string\n @param version Version Value\n @return True on success"]
+    #[doc = "Write the header (file type and version).\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `filetype` - File type string\n* `version` - Version Value\n\n"]
     pub fn flipper_format_write_header(
         flipper_format: *mut FlipperFormat,
         filetype: *mut FuriString,
@@ -16186,7 +16179,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Write the header (file type and version). Plain C string version.\n @param flipper_format Pointer to a FlipperFormat instance\n @param filetype File type string\n @param version Version Value\n @return True on success"]
+    #[doc = "Write the header (file type and version). Plain C string version.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `filetype` - File type string\n* `version` - Version Value\n\n"]
     pub fn flipper_format_write_header_cstr(
         flipper_format: *mut FlipperFormat,
         filetype: *const core::ffi::c_char,
@@ -16194,7 +16187,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Get the count of values by key\n @param flipper_format Pointer to a FlipperFormat instance\n @param key\n @param count\n @return bool"]
+    #[doc = "Get the count of values by key\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - \n* `count` - \n\n"]
     pub fn flipper_format_get_value_count(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16202,7 +16195,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Read a string by key\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Read a string by key\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_read_string(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16210,7 +16203,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Write key and string\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Write key and string\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_write_string(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16218,7 +16211,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Write key and string. Plain C string version.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Write key and string. Plain C string version.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_write_string_cstr(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16226,7 +16219,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Read array of uint64 in hex format by key\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @param data_size Values count\n @return True on success"]
+    #[doc = "Read array of uint64 in hex format by key\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n* `data_size` - Values count\n\n"]
     pub fn flipper_format_read_hex_uint64(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16235,7 +16228,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Write key and array of uint64 in hex format\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @param data_size Values count\n @return True on success"]
+    #[doc = "Write key and array of uint64 in hex format\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n* `data_size` - Values count\n\n"]
     pub fn flipper_format_write_hex_uint64(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16244,7 +16237,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Read array of uint32 by key\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @param data_size Values count\n @return True on success"]
+    #[doc = "Read array of uint32 by key\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n* `data_size` - Values count\n\n"]
     pub fn flipper_format_read_uint32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16253,7 +16246,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Write key and array of uint32\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @param data_size Values count\n @return True on success"]
+    #[doc = "Write key and array of uint32\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n* `data_size` - Values count\n\n"]
     pub fn flipper_format_write_uint32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16262,7 +16255,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Read array of int32 by key\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @param data_size Values count\n @return True on success"]
+    #[doc = "Read array of int32 by key\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n* `data_size` - Values count\n\n"]
     pub fn flipper_format_read_int32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16271,7 +16264,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Write key and array of int32\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @param data_size Values count\n @return True on success"]
+    #[doc = "Write key and array of int32\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n* `data_size` - Values count\n\n"]
     pub fn flipper_format_write_int32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16280,7 +16273,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Read array of bool by key\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @param data_size Values count\n @return True on success"]
+    #[doc = "Read array of bool by key\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n* `data_size` - Values count\n\n"]
     pub fn flipper_format_read_bool(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16289,7 +16282,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Write key and array of bool\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @param data_size Values count\n @return True on success"]
+    #[doc = "Write key and array of bool\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n* `data_size` - Values count\n\n"]
     pub fn flipper_format_write_bool(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16298,7 +16291,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Read array of float by key\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @param data_size Values count\n @return True on success"]
+    #[doc = "Read array of float by key\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n* `data_size` - Values count\n\n"]
     pub fn flipper_format_read_float(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16307,7 +16300,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Write key and array of float\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @param data_size Values count\n @return True on success"]
+    #[doc = "Write key and array of float\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n* `data_size` - Values count\n\n"]
     pub fn flipper_format_write_float(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16316,7 +16309,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Read array of hex-formatted bytes by key\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @param data_size Values count\n @return True on success"]
+    #[doc = "Read array of hex-formatted bytes by key\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n* `data_size` - Values count\n\n"]
     pub fn flipper_format_read_hex(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16325,7 +16318,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Write key and array of hex-formatted bytes\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @param data_size Values count\n @return True on success"]
+    #[doc = "Write key and array of hex-formatted bytes\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n* `data_size` - Values count\n\n"]
     pub fn flipper_format_write_hex(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16334,28 +16327,28 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Write comment\n @param flipper_format Pointer to a FlipperFormat instance\n @param data Comment text\n @return True on success"]
+    #[doc = "Write comment\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `data` - Comment text\n\n"]
     pub fn flipper_format_write_comment(
         flipper_format: *mut FlipperFormat,
         data: *mut FuriString,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Write comment. Plain C string version.\n @param flipper_format Pointer to a FlipperFormat instance\n @param data Comment text\n @return True on success"]
+    #[doc = "Write comment. Plain C string version.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `data` - Comment text\n\n"]
     pub fn flipper_format_write_comment_cstr(
         flipper_format: *mut FlipperFormat,
         data: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Removes the first matching key and its value. Sets the RW pointer to a position of deleted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @return True on success"]
+    #[doc = "Removes the first matching key and its value. Sets the RW pointer to a position of deleted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n\n"]
     pub fn flipper_format_delete_key(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Updates the value of the first matching key to a string value. Sets the RW pointer to a position at the end of inserted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Updates the value of the first matching key to a string value. Sets the RW pointer to a position at the end of inserted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_update_string(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16363,7 +16356,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Updates the value of the first matching key to a string value. Plain C version. Sets the RW pointer to a position at the end of inserted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Updates the value of the first matching key to a string value. Plain C version. Sets the RW pointer to a position at the end of inserted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_update_string_cstr(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16371,7 +16364,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Updates the value of the first matching key to a uint32 array value. Sets the RW pointer to a position at the end of inserted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Updates the value of the first matching key to a uint32 array value. Sets the RW pointer to a position at the end of inserted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_update_uint32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16380,7 +16373,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Updates the value of the first matching key to a int32 array value. Sets the RW pointer to a position at the end of inserted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Updates the value of the first matching key to a int32 array value. Sets the RW pointer to a position at the end of inserted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_update_int32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16389,7 +16382,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Updates the value of the first matching key to a bool array value. Sets the RW pointer to a position at the end of inserted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Updates the value of the first matching key to a bool array value. Sets the RW pointer to a position at the end of inserted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_update_bool(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16398,7 +16391,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Updates the value of the first matching key to a float array value. Sets the RW pointer to a position at the end of inserted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Updates the value of the first matching key to a float array value. Sets the RW pointer to a position at the end of inserted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_update_float(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16407,7 +16400,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Updates the value of the first matching key to an array of hex-formatted bytes. Sets the RW pointer to a position at the end of inserted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Updates the value of the first matching key to an array of hex-formatted bytes. Sets the RW pointer to a position at the end of inserted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_update_hex(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16416,7 +16409,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Updates the value of the first matching key to a string value, or adds the key and value if the key did not exist.\n Sets the RW pointer to a position at the end of inserted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Updates the value of the first matching key to a string value, or adds the key and value if the key did not exist. Sets the RW pointer to a position at the end of inserted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_insert_or_update_string(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16424,7 +16417,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Updates the value of the first matching key to a string value, or adds the key and value if the key did not exist.\n Plain C version.\n Sets the RW pointer to a position at the end of inserted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Updates the value of the first matching key to a string value, or adds the key and value if the key did not exist. Plain C version. Sets the RW pointer to a position at the end of inserted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_insert_or_update_string_cstr(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16432,7 +16425,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Updates the value of the first matching key to a uint32 array value, or adds the key and value if the key did not exist.\n  Sets the RW pointer to a position at the end of inserted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Updates the value of the first matching key to a uint32 array value, or adds the key and value if the key did not exist. Sets the RW pointer to a position at the end of inserted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_insert_or_update_uint32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16441,7 +16434,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Updates the value of the first matching key to a int32 array value, or adds the key and value if the key did not exist.\n Sets the RW pointer to a position at the end of inserted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Updates the value of the first matching key to a int32 array value, or adds the key and value if the key did not exist. Sets the RW pointer to a position at the end of inserted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_insert_or_update_int32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16450,7 +16443,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Updates the value of the first matching key to a bool array value, or adds the key and value if the key did not exist.\n Sets the RW pointer to a position at the end of inserted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Updates the value of the first matching key to a bool array value, or adds the key and value if the key did not exist. Sets the RW pointer to a position at the end of inserted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_insert_or_update_bool(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16459,7 +16452,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Updates the value of the first matching key to a float array value, or adds the key and value if the key did not exist.\n Sets the RW pointer to a position at the end of inserted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Updates the value of the first matching key to a float array value, or adds the key and value if the key did not exist. Sets the RW pointer to a position at the end of inserted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_insert_or_update_float(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16468,7 +16461,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Updates the value of the first matching key to an array of hex-formatted bytes, or adds the key and value if the key did not exist.\nSets the RW pointer to a position at the end of inserted data.\n @param flipper_format Pointer to a FlipperFormat instance\n @param key Key\n @param data Value\n @return True on success"]
+    #[doc = "Updates the value of the first matching key to an array of hex-formatted bytes, or adds the key and value if the key did not exist.\nSets the RW pointer to a position at the end of inserted data.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `key` - Key\n* `data` - Value\n\n"]
     pub fn flipper_format_insert_or_update_hex(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16492,23 +16485,23 @@ pub type StreamWriteCB = ::core::option::Option<
     unsafe extern "C" fn(stream: *mut Stream, context: *const core::ffi::c_void) -> bool,
 >;
 extern "C" {
-    #[doc = " Free Stream\n @param stream Stream instance"]
+    #[doc = "Free Stream\n\n# Arguments\n\n* `stream` - Stream instance\n\n"]
     pub fn stream_free(stream: *mut Stream);
 }
 extern "C" {
-    #[doc = " Clean (empty) Stream\n @param stream Stream instance"]
+    #[doc = "Clean (empty) Stream\n\n# Arguments\n\n* `stream` - Stream instance\n\n"]
     pub fn stream_clean(stream: *mut Stream);
 }
 extern "C" {
-    #[doc = " Indicates that the RW pointer is at the end of the stream\n @param stream Stream instance\n @return true if RW pointer is at the end of the stream\n @return false if RW pointer is not at the end of the stream"]
+    #[doc = "Indicates that the RW pointer is at the end of the stream\n\nReturns:\n\n* true if RW pointer is at the end of the stream\n* false if RW pointer is not at the end of the stream\n\n# Arguments\n\n* `stream` - Stream instance\n\n"]
     pub fn stream_eof(stream: *mut Stream) -> bool;
 }
 extern "C" {
-    #[doc = " Moves the RW pointer.\n @param stream Stream instance\n @param offset how much to move the pointer\n @param offset_type starting from what\n @return true\n @return false"]
+    #[doc = "Moves the RW pointer.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `stream` - Stream instance\n* `offset` - how much to move the pointer\n* `offset_type` - starting from what\n\n"]
     pub fn stream_seek(stream: *mut Stream, offset: i32, offset_type: StreamOffset) -> bool;
 }
 extern "C" {
-    #[doc = " Seek to next occurrence of the character\n\n @param      stream     Pointer to the stream instance\n @param[in]  c          The Character\n @param[in]  direction  The Direction\n\n @return     true on success"]
+    #[doc = "Seek to next occurrence of the character\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `stream` - Pointer to the stream instance\n* `c` - [Direction: In] The Character\n* `direction` - [Direction: In] The Direction\n\n"]
     pub fn stream_seek_to_char(
         stream: *mut Stream,
         c: core::ffi::c_char,
@@ -16516,23 +16509,23 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Gets the value of the RW pointer\n @param stream Stream instance\n @return size_t value of the RW pointer"]
+    #[doc = "Gets the value of the RW pointer\n\nReturns:\n\n* size_t value of the RW pointer\n\n# Arguments\n\n* `stream` - Stream instance\n\n"]
     pub fn stream_tell(stream: *mut Stream) -> usize;
 }
 extern "C" {
-    #[doc = " Gets the size of the stream\n @param stream Stream instance\n @return size_t size of the stream"]
+    #[doc = "Gets the size of the stream\n\nReturns:\n\n* size_t size of the stream\n\n# Arguments\n\n* `stream` - Stream instance\n\n"]
     pub fn stream_size(stream: *mut Stream) -> usize;
 }
 extern "C" {
-    #[doc = " Write N bytes to the stream\n @param stream Stream instance\n @param data data to write\n @param size size of data to be written\n @return size_t how many bytes was written"]
+    #[doc = "Write N bytes to the stream\n\nReturns:\n\n* size_t how many bytes was written\n\n# Arguments\n\n* `stream` - Stream instance\n* `data` - data to write\n* `size` - size of data to be written\n\n"]
     pub fn stream_write(stream: *mut Stream, data: *const u8, size: usize) -> usize;
 }
 extern "C" {
-    #[doc = " Read N bytes from stream\n @param stream Stream instance\n @param data data to be read\n @param count size of data to be read\n @return size_t how many bytes was read"]
+    #[doc = "Read N bytes from stream\n\nReturns:\n\n* size_t how many bytes was read\n\n# Arguments\n\n* `stream` - Stream instance\n* `data` - data to be read\n* `count` - size of data to be read\n\n"]
     pub fn stream_read(stream: *mut Stream, data: *mut u8, count: usize) -> usize;
 }
 extern "C" {
-    #[doc = " Delete N chars from the stream and write data by calling write_callback(context)\n @param stream Stream instance\n @param delete_size size of data to be deleted\n @param write_callback write callback\n @param context write callback context\n @return true if the operation was successful\n @return false on error"]
+    #[doc = "Delete N chars from the stream and write data by calling write_callback(context)\n\nReturns:\n\n* true if the operation was successful\n* false on error\n\n# Arguments\n\n* `stream` - Stream instance\n* `delete_size` - size of data to be deleted\n* `write_callback` - write callback\n* `context` - write callback context\n\n"]
     pub fn stream_delete_and_insert(
         stream: *mut Stream,
         delete_size: usize,
@@ -16541,32 +16534,32 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Read line from a stream (supports LF and CRLF line endings)\n @param stream\n @param str_result\n @return true if line length is not zero\n @return false otherwise"]
+    #[doc = "Read line from a stream (supports LF and CRLF line endings)\n\nReturns:\n\n* true if line length is not zero\n* false otherwise\n\n# Arguments\n\n* `stream` - \n* `str_result` - \n\n"]
     pub fn stream_read_line(stream: *mut Stream, str_result: *mut FuriString) -> bool;
 }
 extern "C" {
-    #[doc = " Moves the RW pointer to the start\n @param stream Stream instance"]
+    #[doc = "Moves the RW pointer to the start\n\n# Arguments\n\n* `stream` - Stream instance\n\n"]
     pub fn stream_rewind(stream: *mut Stream) -> bool;
 }
 extern "C" {
-    #[doc = " Write char to the stream\n @param stream Stream instance\n @param c char value\n @return size_t how many bytes was written"]
+    #[doc = "Write char to the stream\n\nReturns:\n\n* size_t how many bytes was written\n\n# Arguments\n\n* `stream` - Stream instance\n* `c` - char value\n\n"]
     pub fn stream_write_char(stream: *mut Stream, c: core::ffi::c_char) -> usize;
 }
 extern "C" {
-    #[doc = " Write string to the stream\n @param stream Stream instance\n @param string string value\n @return size_t how many bytes was written"]
+    #[doc = "Write string to the stream\n\nReturns:\n\n* size_t how many bytes was written\n\n# Arguments\n\n* `stream` - Stream instance\n* `string` - string value\n\n"]
     pub fn stream_write_string(stream: *mut Stream, string: *mut FuriString) -> usize;
 }
 extern "C" {
-    #[doc = " Write const char* to the stream\n @param stream Stream instance\n @param string c-string value\n @return size_t how many bytes was written"]
+    #[doc = "Write const char* to the stream\n\nReturns:\n\n* size_t how many bytes was written\n\n# Arguments\n\n* `stream` - Stream instance\n* `string` - c-string value\n\n"]
     pub fn stream_write_cstring(stream: *mut Stream, string: *const core::ffi::c_char) -> usize;
 }
 extern "C" {
-    #[doc = " Write formatted string to the stream\n @param stream Stream instance\n @param format\n @param ...\n @return size_t how many bytes was written"]
+    #[doc = "Write formatted string to the stream\n\nReturns:\n\n* size_t how many bytes was written\n\n# Arguments\n\n* `stream` - Stream instance\n* `format` - \n* `...` - \n\n"]
     pub fn stream_write_format(stream: *mut Stream, format: *const core::ffi::c_char, ...)
         -> usize;
 }
 extern "C" {
-    #[doc = " Write formatted string to the stream, va_list version\n @param stream Stream instance\n @param format\n @param args\n @return size_t how many bytes was written"]
+    #[doc = "Write formatted string to the stream, va_list version\n\nReturns:\n\n* size_t how many bytes was written\n\n# Arguments\n\n* `stream` - Stream instance\n* `format` - \n* `args` - \n\n"]
     pub fn stream_write_vaformat(
         stream: *mut Stream,
         format: *const core::ffi::c_char,
@@ -16574,28 +16567,28 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
-    #[doc = " Insert N chars to the stream, starting at the current pointer.\n Data will be inserted, not overwritten, so the stream will be increased in size.\n @param stream Stream instance\n @param data data to be inserted\n @param size size of data to be inserted\n @return true if the operation was successful\n @return false on error"]
+    #[doc = "Insert N chars to the stream, starting at the current pointer. Data will be inserted, not overwritten, so the stream will be increased in size.\n\nReturns:\n\n* true if the operation was successful\n* false on error\n\n# Arguments\n\n* `stream` - Stream instance\n* `data` - data to be inserted\n* `size` - size of data to be inserted\n\n"]
     pub fn stream_insert(stream: *mut Stream, data: *const u8, size: usize) -> bool;
 }
 extern "C" {
-    #[doc = " Insert char to the stream\n @param stream Stream instance\n @param c char value\n @return true if the operation was successful\n @return false on error"]
+    #[doc = "Insert char to the stream\n\nReturns:\n\n* true if the operation was successful\n* false on error\n\n# Arguments\n\n* `stream` - Stream instance\n* `c` - char value\n\n"]
     pub fn stream_insert_char(stream: *mut Stream, c: core::ffi::c_char) -> bool;
 }
 extern "C" {
-    #[doc = " Insert string to the stream\n @param stream Stream instance\n @param string string value\n @return true if the operation was successful\n @return false on error"]
+    #[doc = "Insert string to the stream\n\nReturns:\n\n* true if the operation was successful\n* false on error\n\n# Arguments\n\n* `stream` - Stream instance\n* `string` - string value\n\n"]
     pub fn stream_insert_string(stream: *mut Stream, string: *mut FuriString) -> bool;
 }
 extern "C" {
-    #[doc = " Insert const char* to the stream\n @param stream Stream instance\n @param string c-string value\n @return true if the operation was successful\n @return false on error"]
+    #[doc = "Insert const char* to the stream\n\nReturns:\n\n* true if the operation was successful\n* false on error\n\n# Arguments\n\n* `stream` - Stream instance\n* `string` - c-string value\n\n"]
     pub fn stream_insert_cstring(stream: *mut Stream, string: *const core::ffi::c_char) -> bool;
 }
 extern "C" {
-    #[doc = " Insert formatted string to the stream\n @param stream Stream instance\n @param format\n @param ...\n @return true if the operation was successful\n @return false on error"]
+    #[doc = "Insert formatted string to the stream\n\nReturns:\n\n* true if the operation was successful\n* false on error\n\n# Arguments\n\n* `stream` - Stream instance\n* `format` - \n* `...` - \n\n"]
     pub fn stream_insert_format(stream: *mut Stream, format: *const core::ffi::c_char, ...)
         -> bool;
 }
 extern "C" {
-    #[doc = " Insert formatted string to the stream, va_list version\n @param stream Stream instance\n @param format\n @param args\n @return true if the operation was successful\n @return false on error"]
+    #[doc = "Insert formatted string to the stream, va_list version\n\nReturns:\n\n* true if the operation was successful\n* false on error\n\n# Arguments\n\n* `stream` - Stream instance\n* `format` - \n* `args` - \n\n"]
     pub fn stream_insert_vaformat(
         stream: *mut Stream,
         format: *const core::ffi::c_char,
@@ -16603,7 +16596,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Delete N chars from the stream and insert char to the stream\n @param stream Stream instance\n @param delete_size size of data to be deleted\n @param c char value\n @return true if the operation was successful\n @return false on error"]
+    #[doc = "Delete N chars from the stream and insert char to the stream\n\nReturns:\n\n* true if the operation was successful\n* false on error\n\n# Arguments\n\n* `stream` - Stream instance\n* `delete_size` - size of data to be deleted\n* `c` - char value\n\n"]
     pub fn stream_delete_and_insert_char(
         stream: *mut Stream,
         delete_size: usize,
@@ -16611,7 +16604,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Delete N chars from the stream and insert string to the stream\n @param stream Stream instance\n @param delete_size size of data to be deleted\n @param string string value\n @return true if the operation was successful\n @return false on error"]
+    #[doc = "Delete N chars from the stream and insert string to the stream\n\nReturns:\n\n* true if the operation was successful\n* false on error\n\n# Arguments\n\n* `stream` - Stream instance\n* `delete_size` - size of data to be deleted\n* `string` - string value\n\n"]
     pub fn stream_delete_and_insert_string(
         stream: *mut Stream,
         delete_size: usize,
@@ -16619,7 +16612,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Delete N chars from the stream and insert const char* to the stream\n @param stream Stream instance\n @param delete_size size of data to be deleted\n @param string c-string value\n @return true if the operation was successful\n @return false on error"]
+    #[doc = "Delete N chars from the stream and insert const char* to the stream\n\nReturns:\n\n* true if the operation was successful\n* false on error\n\n# Arguments\n\n* `stream` - Stream instance\n* `delete_size` - size of data to be deleted\n* `string` - c-string value\n\n"]
     pub fn stream_delete_and_insert_cstring(
         stream: *mut Stream,
         delete_size: usize,
@@ -16627,7 +16620,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Delete N chars from the stream and insert formatted string to the stream\n @param stream Stream instance\n @param delete_size size of data to be deleted\n @param format\n @param ...\n @return true if the operation was successful\n @return false on error"]
+    #[doc = "Delete N chars from the stream and insert formatted string to the stream\n\nReturns:\n\n* true if the operation was successful\n* false on error\n\n# Arguments\n\n* `stream` - Stream instance\n* `delete_size` - size of data to be deleted\n* `format` - \n* `...` - \n\n"]
     pub fn stream_delete_and_insert_format(
         stream: *mut Stream,
         delete_size: usize,
@@ -16636,7 +16629,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Delete N chars from the stream and insert formatted string to the stream, va_list version\n @param stream Stream instance\n @param delete_size size of data to be deleted\n @param format\n @param args\n @return true if the operation was successful\n @return false on error"]
+    #[doc = "Delete N chars from the stream and insert formatted string to the stream, va_list version\n\nReturns:\n\n* true if the operation was successful\n* false on error\n\n# Arguments\n\n* `stream` - Stream instance\n* `delete_size` - size of data to be deleted\n* `format` - \n* `args` - \n\n"]
     pub fn stream_delete_and_insert_vaformat(
         stream: *mut Stream,
         delete_size: usize,
@@ -16645,19 +16638,19 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Remove N chars from the stream, starting at the current pointer.\n The size may be larger than stream size, the stream will be cleared from current RW pointer to the end.\n @param stream Stream instance\n @param size how many chars need to be deleted\n @return true if the operation was successful\n @return false on error"]
+    #[doc = "Remove N chars from the stream, starting at the current pointer. The size may be larger than stream size, the stream will be cleared from current RW pointer to the end.\n\nReturns:\n\n* true if the operation was successful\n* false on error\n\n# Arguments\n\n* `stream` - Stream instance\n* `size` - how many chars need to be deleted\n\n"]
     pub fn stream_delete(stream: *mut Stream, size: usize) -> bool;
 }
 extern "C" {
-    #[doc = " Copy data from one stream to another. Data will be copied from current RW pointer and to current RW pointer.\n @param stream_from\n @param stream_to\n @param size\n @return size_t"]
+    #[doc = "Copy data from one stream to another. Data will be copied from current RW pointer and to current RW pointer.\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `stream_from` - \n* `stream_to` - \n* `size` - \n\n"]
     pub fn stream_copy(stream_from: *mut Stream, stream_to: *mut Stream, size: usize) -> usize;
 }
 extern "C" {
-    #[doc = " Copy data from one stream to another. Data will be copied from start of one stream and to start of other stream.\n @param stream_from\n @param stream_to\n @return size_t"]
+    #[doc = "Copy data from one stream to another. Data will be copied from start of one stream and to start of other stream.\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `stream_from` - \n* `stream_to` - \n\n"]
     pub fn stream_copy_full(stream_from: *mut Stream, stream_to: *mut Stream) -> usize;
 }
 extern "C" {
-    #[doc = " Splits one stream into two others. The original stream will remain untouched.\n @param stream\n @param stream_left\n @param stream_right\n @return true\n @return false"]
+    #[doc = "Splits one stream into two others. The original stream will remain untouched.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `stream` - \n* `stream_left` - \n* `stream_right` - \n\n"]
     pub fn stream_split(
         stream: *mut Stream,
         stream_left: *mut Stream,
@@ -16665,7 +16658,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Loads data to the stream from a file. Data will be loaded to the current RW pointer. RW pointer will be moved to the end of the stream.\n @param stream Stream instance\n @param storage\n @param path\n @return size_t"]
+    #[doc = "Loads data to the stream from a file. Data will be loaded to the current RW pointer. RW pointer will be moved to the end of the stream.\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `stream` - Stream instance\n* `storage` - \n* `path` - \n\n"]
     pub fn stream_load_from_file(
         stream: *mut Stream,
         storage: *mut Storage,
@@ -16673,7 +16666,7 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
-    #[doc = " Writes data from a stream to a file. Data will be saved starting from the current RW pointer. RW pointer will be moved to the end of the stream.\n @param stream Stream instance\n @param storage\n @param path\n @param mode\n @return size_t"]
+    #[doc = "Writes data from a stream to a file. Data will be saved starting from the current RW pointer. RW pointer will be moved to the end of the stream.\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `stream` - Stream instance\n* `storage` - \n* `path` - \n* `mode` - \n\n"]
     pub fn stream_save_to_file(
         stream: *mut Stream,
         storage: *mut Storage,
@@ -16682,11 +16675,11 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
-    #[doc = " Dump stream inner data (size, RW position, content)\n @param stream Stream instance"]
+    #[doc = "Dump stream inner data (size, RW position, content)\n\n# Arguments\n\n* `stream` - Stream instance\n\n"]
     pub fn stream_dump_data(stream: *mut Stream);
 }
 extern "C" {
-    #[doc = " Returns the underlying stream instance.\n Use only if you know what you are doing.\n @param flipper_format\n @return Stream*"]
+    #[doc = "Returns the underlying stream instance. Use only if you know what you are doing.\n\nReturns:\n\n* Stream*\n\n# Arguments\n\n* `flipper_format` - \n\n"]
     pub fn flipper_format_get_raw_stream(flipper_format: *mut FlipperFormat) -> *mut Stream;
 }
 #[repr(C)]
@@ -16783,11 +16776,11 @@ pub const InfraredStatus_InfraredStatusDone: InfraredStatus = 2;
 pub const InfraredStatus_InfraredStatusReady: InfraredStatus = 3;
 pub type InfraredStatus = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Initialize decoder.\n\n \\return      returns pointer to INFRARED decoder handler if success, otherwise - error."]
+    #[doc = "Initialize decoder.\n\nReturns:\n\n* returns pointer to INFRARED decoder handler if success, otherwise - error.\n\n"]
     pub fn infrared_alloc_decoder() -> *mut InfraredDecoderHandler;
 }
 extern "C" {
-    #[doc = " Provide to decoder next timing.\n\n \\param[in]   handler     - handler to INFRARED decoders. Should be acquired with \\c infrared_alloc_decoder().\n \\param[in]   level       - high(true) or low(false) level of input signal to analyze.\n                          it should alternate every call, otherwise it is an error case,\n                          and decoder resets its state and start decoding from the start.\n \\param[in]   duration    - duration of steady high/low input signal.\n \\return      if message is ready, returns pointer to decoded message, returns NULL.\n              Note: ownership of returned ptr belongs to handler. So pointer is valid\n              up to next infrared_free_decoder(), infrared_reset_decoder(),\n              infrared_decode(), infrared_check_decoder_ready() calls."]
+    #[doc = "Provide to decoder next timing.\n\nReturns:\n\n* if message is ready, returns pointer to decoded message, returns NULL. Note: ownership of returned ptr belongs to handler. So pointer is valid up to next infrared_free_decoder(), infrared_reset_decoder(), infrared_decode(), infrared_check_decoder_ready() calls.\n\n# Arguments\n\n* `handler` - [Direction: In] - handler to INFRARED decoders. Should be acquired with \\c infrared_alloc_decoder().\n* `level` - [Direction: In] - high(true) or low(false) level of input signal to analyze. it should alternate every call, otherwise it is an error case, and decoder resets its state and start decoding from the start.\n* `duration` - [Direction: In] - duration of steady high/low input signal.\n\n"]
     pub fn infrared_decode(
         handler: *mut InfraredDecoderHandler,
         level: bool,
@@ -16795,51 +16788,51 @@ extern "C" {
     ) -> *const InfraredMessage;
 }
 extern "C" {
-    #[doc = " Check whether decoder is ready.\n Functionality is quite similar to infrared_decode(), but with no timing providing.\n Some protocols (e.g. Sony SIRC) has variable payload length, which means we\n can't recognize end of message right after receiving last bit. That's why\n application should call to infrared_check_decoder_ready() after some timeout to\n retrieve decoded message, if so.\n\n \\param[in]   handler     - handler to INFRARED decoders. Should be acquired with \\c infrared_alloc_decoder().\n \\return      if message is ready, returns pointer to decoded message, returns NULL.\n              Note: ownership of returned ptr belongs to handler. So pointer is valid\n              up to next infrared_free_decoder(), infrared_reset_decoder(),\n              infrared_decode(), infrared_check_decoder_ready() calls."]
+    #[doc = "Check whether decoder is ready. Functionality is quite similar to infrared_decode(), but with no timing providing. Some protocols (e.g. Sony SIRC) has variable payload length, which means we can't recognize end of message right after receiving last bit. That's why application should call to infrared_check_decoder_ready() after some timeout to retrieve decoded message, if so.\n\nReturns:\n\n* if message is ready, returns pointer to decoded message, returns NULL. Note: ownership of returned ptr belongs to handler. So pointer is valid up to next infrared_free_decoder(), infrared_reset_decoder(), infrared_decode(), infrared_check_decoder_ready() calls.\n\n# Arguments\n\n* `handler` - [Direction: In] - handler to INFRARED decoders. Should be acquired with \\c infrared_alloc_decoder().\n\n"]
     pub fn infrared_check_decoder_ready(
         handler: *mut InfraredDecoderHandler,
     ) -> *const InfraredMessage;
 }
 extern "C" {
-    #[doc = " Deinitialize decoder and free allocated memory.\n\n \\param[in]   handler     - handler to INFRARED decoders. Should be acquired with \\c infrared_alloc_decoder()."]
+    #[doc = "Deinitialize decoder and free allocated memory.\n\n# Arguments\n\n* `handler` - [Direction: In] - handler to INFRARED decoders. Should be acquired with \\c infrared_alloc_decoder().\n\n"]
     pub fn infrared_free_decoder(handler: *mut InfraredDecoderHandler);
 }
 extern "C" {
-    #[doc = " Reset INFRARED decoder.\n\n \\param[in]   handler     - handler to INFRARED decoders. Should be acquired with \\c infrared_alloc_decoder()."]
+    #[doc = "Reset INFRARED decoder.\n\n# Arguments\n\n* `handler` - [Direction: In] - handler to INFRARED decoders. Should be acquired with \\c infrared_alloc_decoder().\n\n"]
     pub fn infrared_reset_decoder(handler: *mut InfraredDecoderHandler);
 }
 extern "C" {
-    #[doc = " Get protocol name by protocol enum.\n\n \\param[in]   protocol    - protocol identifier.\n \\return      string to protocol name."]
+    #[doc = "Get protocol name by protocol enum.\n\nReturns:\n\n* string to protocol name.\n\n# Arguments\n\n* `protocol` - [Direction: In] - protocol identifier.\n\n"]
     pub fn infrared_get_protocol_name(protocol: InfraredProtocol) -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get protocol enum by protocol name.\n\n \\param[in]   protocol_name   - string to protocol name.\n \\return      protocol identifier."]
+    #[doc = "Get protocol enum by protocol name.\n\nReturns:\n\n* protocol identifier.\n\n# Arguments\n\n* `protocol_name` - [Direction: In] - string to protocol name.\n\n"]
     pub fn infrared_get_protocol_by_name(
         protocol_name: *const core::ffi::c_char,
     ) -> InfraredProtocol;
 }
 extern "C" {
-    #[doc = " Get address length by protocol enum.\n\n \\param[in]   protocol    - protocol identifier.\n \\return      length of address in bits."]
+    #[doc = "Get address length by protocol enum.\n\nReturns:\n\n* length of address in bits.\n\n# Arguments\n\n* `protocol` - [Direction: In] - protocol identifier.\n\n"]
     pub fn infrared_get_protocol_address_length(protocol: InfraredProtocol) -> u8;
 }
 extern "C" {
-    #[doc = " Get command length by protocol enum.\n\n \\param[in]   protocol    - protocol identifier.\n \\return      length of command in bits."]
+    #[doc = "Get command length by protocol enum.\n\nReturns:\n\n* length of command in bits.\n\n# Arguments\n\n* `protocol` - [Direction: In] - protocol identifier.\n\n"]
     pub fn infrared_get_protocol_command_length(protocol: InfraredProtocol) -> u8;
 }
 extern "C" {
-    #[doc = " Checks whether protocol valid.\n\n \\param[in]   protocol    - protocol identifier.\n \\return      true if protocol is valid, false otherwise."]
+    #[doc = "Checks whether protocol valid.\n\nReturns:\n\n* true if protocol is valid, false otherwise.\n\n# Arguments\n\n* `protocol` - [Direction: In] - protocol identifier.\n\n"]
     pub fn infrared_is_protocol_valid(protocol: InfraredProtocol) -> bool;
 }
 extern "C" {
-    #[doc = " Allocate INFRARED encoder.\n\n \\return      encoder handler."]
+    #[doc = "Allocate INFRARED encoder.\n\nReturns:\n\n* encoder handler.\n\n"]
     pub fn infrared_alloc_encoder() -> *mut InfraredEncoderHandler;
 }
 extern "C" {
-    #[doc = " Free encoder handler previously allocated with \\c infrared_alloc_encoder().\n\n \\param[in]   handler     - handler to INFRARED encoder. Should be acquired with \\c infrared_alloc_encoder()."]
+    #[doc = "Free encoder handler previously allocated with \\c infrared_alloc_encoder().\n\n# Arguments\n\n* `handler` - [Direction: In] - handler to INFRARED encoder. Should be acquired with \\c infrared_alloc_encoder().\n\n"]
     pub fn infrared_free_encoder(handler: *mut InfraredEncoderHandler);
 }
 extern "C" {
-    #[doc = " Encode previously set INFRARED message.\n Usage:\n  1) alloc with \\c infrared_alloc_encoder()\n  2) set message to encode with \\c infrared_reset_encoder()\n  3) call for \\c infrared_encode() to continuously get one at a time timings.\n  4) when \\c infrared_encode() returns InfraredStatusDone, it means new message is fully encoded.\n  5) to encode additional timings, just continue calling \\c infrared_encode().\n\n \\param[in]   handler     - handler to INFRARED encoder. Should be acquired with \\c infrared_alloc_encoder().\n \\param[out]  duration    - encoded timing.\n \\param[out]  level       - encoded level.\n\n \\return      status of encode operation."]
+    #[doc = "Encode previously set INFRARED message. Usage: 1) alloc with \\c infrared_alloc_encoder() 2) set message to encode with \\c infrared_reset_encoder() 3) call for \\c infrared_encode() to continuously get one at a time timings. 4) when \\c infrared_encode() returns InfraredStatusDone, it means new message is fully encoded. 5) to encode additional timings, just continue calling \\c infrared_encode().\n\nReturns:\n\n* status of encode operation.\n\n# Arguments\n\n* `handler` - [Direction: In] - handler to INFRARED encoder. Should be acquired with \\c infrared_alloc_encoder().\n* `duration` - [Direction: In, Out] - encoded timing.\n* `level` - [Direction: In, Out] - encoded level.\n\n"]
     pub fn infrared_encode(
         handler: *mut InfraredEncoderHandler,
         duration: *mut u32,
@@ -16847,34 +16840,34 @@ extern "C" {
     ) -> InfraredStatus;
 }
 extern "C" {
-    #[doc = " Reset INFRARED encoder and set new message to encode. If it's not called after receiveing\n InfraredStatusDone in \\c infrared_encode(), encoder will encode repeat messages\n till the end of time.\n\n \\param[in]   handler     - handler to INFRARED encoder. Should be acquired with \\c infrared_alloc_encoder().\n \\param[in]   message     - message to encode."]
+    #[doc = "Reset INFRARED encoder and set new message to encode. If it's not called after receiveing InfraredStatusDone in \\c infrared_encode(), encoder will encode repeat messages till the end of time.\n\n# Arguments\n\n* `handler` - [Direction: In] - handler to INFRARED encoder. Should be acquired with \\c infrared_alloc_encoder().\n* `message` - [Direction: In] - message to encode.\n\n"]
     pub fn infrared_reset_encoder(
         handler: *mut InfraredEncoderHandler,
         message: *const InfraredMessage,
     );
 }
 extern "C" {
-    #[doc = " Get PWM frequency value for selected protocol\n\n \\param[in]   protocol    - protocol to get from PWM frequency\n\n \\return      frequency"]
+    #[doc = "Get PWM frequency value for selected protocol\n\nReturns:\n\n* frequency\n\n# Arguments\n\n* `protocol` - [Direction: In] - protocol to get from PWM frequency\n\n"]
     pub fn infrared_get_protocol_frequency(protocol: InfraredProtocol) -> u32;
 }
 extern "C" {
-    #[doc = " Get PWM duty cycle value for selected protocol\n\n \\param[in]   protocol    - protocol to get from PWM duty cycle\n\n \\return      duty cycle"]
+    #[doc = "Get PWM duty cycle value for selected protocol\n\nReturns:\n\n* duty cycle\n\n# Arguments\n\n* `protocol` - [Direction: In] - protocol to get from PWM duty cycle\n\n"]
     pub fn infrared_get_protocol_duty_cycle(protocol: InfraredProtocol) -> f32;
 }
 extern "C" {
-    #[doc = " Get the minimum count of signal repeats for the selected protocol\n\n \\param[in]   protocol    - protocol to get the repeat count from\n\n \\return      repeat count"]
+    #[doc = "Get the minimum count of signal repeats for the selected protocol\n\nReturns:\n\n* repeat count\n\n# Arguments\n\n* `protocol` - [Direction: In] - protocol to get the repeat count from\n\n"]
     pub fn infrared_get_protocol_min_repeat_count(protocol: InfraredProtocol) -> usize;
 }
 extern "C" {
-    #[doc = " Send message over INFRARED.\n\n \\param[in]   message     - message to send.\n \\param[in]   times       - number of times message should be sent."]
+    #[doc = "Send message over INFRARED.\n\n# Arguments\n\n* `message` - [Direction: In] - message to send.\n* `times` - [Direction: In] - number of times message should be sent.\n\n"]
     pub fn infrared_send(message: *const InfraredMessage, times: core::ffi::c_int);
 }
 extern "C" {
-    #[doc = " Send raw data through infrared port.\n\n \\param[in]   timings - array of timings to send.\n \\param[in]   timings_cnt - timings array size.\n \\param[in]   start_from_mark - true if timings starts from mark,\n              otherwise from space"]
+    #[doc = "Send raw data through infrared port.\n\n# Arguments\n\n* `timings` - [Direction: In] - array of timings to send.\n* `timings_cnt` - [Direction: In] - timings array size.\n* `start_from_mark` - [Direction: In] - true if timings starts from mark, otherwise from space\n\n"]
     pub fn infrared_send_raw(timings: *const u32, timings_cnt: u32, start_from_mark: bool);
 }
 extern "C" {
-    #[doc = " Send raw data through infrared port, with additional settings.\n\n \\param[in]   timings - array of timings to send.\n \\param[in]   timings_cnt - timings array size.\n \\param[in]   start_from_mark - true if timings starts from mark,\n              otherwise from space\n \\param[in]   duty_cycle - duty cycle to generate on PWM\n \\param[in]   frequency - frequency to generate on PWM"]
+    #[doc = "Send raw data through infrared port, with additional settings.\n\n# Arguments\n\n* `timings` - [Direction: In] - array of timings to send.\n* `timings_cnt` - [Direction: In] - timings array size.\n* `start_from_mark` - [Direction: In] - true if timings starts from mark, otherwise from space\n* `duty_cycle` - [Direction: In] - duty cycle to generate on PWM\n* `frequency` - [Direction: In] - frequency to generate on PWM\n\n"]
     pub fn infrared_send_raw_ext(
         timings: *const u32,
         timings_cnt: u32,
@@ -16895,24 +16888,24 @@ pub struct InfraredWorkerSignal {
 }
 pub const InfraredWorkerGetSignalResponse_InfraredWorkerGetSignalResponseNew:
     InfraredWorkerGetSignalResponse = 0;
-#[doc = " Signal, provided by callback is new and encoder should be reseted"]
+#[doc = "Signal, provided by callback is new and encoder should be reseted\n\n"]
 pub const InfraredWorkerGetSignalResponse_InfraredWorkerGetSignalResponseSame:
     InfraredWorkerGetSignalResponse = 1;
-#[doc = " Signal, provided by callback is same. No encoder resetting."]
+#[doc = "Signal, provided by callback is same. No encoder resetting.\n\n"]
 pub const InfraredWorkerGetSignalResponse_InfraredWorkerGetSignalResponseStop:
     InfraredWorkerGetSignalResponse = 2;
 pub type InfraredWorkerGetSignalResponse = core::ffi::c_uchar;
-#[doc = " Callback type for providing next signal to send. Should be used with\n infrared_worker_make_decoded_signal() or infrared_worker_make_raw_signal()"]
+#[doc = "Callback type for providing next signal to send. Should be used with infrared_worker_make_decoded_signal() or infrared_worker_make_raw_signal()\n\n"]
 pub type InfraredWorkerGetSignalCallback = ::core::option::Option<
     unsafe extern "C" fn(
         context: *mut core::ffi::c_void,
         instance: *mut InfraredWorker,
     ) -> InfraredWorkerGetSignalResponse,
 >;
-#[doc = " Callback type for 'message is sent' event"]
+#[doc = "Callback type for 'message is sent' event\n\n"]
 pub type InfraredWorkerMessageSentCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
-#[doc = " Callback type to call by InfraredWorker thread when new signal is received"]
+#[doc = "Callback type to call by InfraredWorker thread when new signal is received\n\n"]
 pub type InfraredWorkerReceivedSignalCallback = ::core::option::Option<
     unsafe extern "C" fn(
         context: *mut core::ffi::c_void,
@@ -16920,23 +16913,23 @@ pub type InfraredWorkerReceivedSignalCallback = ::core::option::Option<
     ),
 >;
 extern "C" {
-    #[doc = " Allocate InfraredWorker\n\n @return just created instance of InfraredWorker"]
+    #[doc = "Allocate InfraredWorker\n\nReturns:\n\n* just created instance of InfraredWorker\n\n"]
     pub fn infrared_worker_alloc() -> *mut InfraredWorker;
 }
 extern "C" {
-    #[doc = " Free InfraredWorker\n\n @param[in]   instance - InfraredWorker instance"]
+    #[doc = "Free InfraredWorker\n\n# Arguments\n\n* `instance` - [Direction: In] - InfraredWorker instance\n\n"]
     pub fn infrared_worker_free(instance: *mut InfraredWorker);
 }
 extern "C" {
-    #[doc = " Start InfraredWorker thread, initialise furi_hal, prepare all work.\n\n @param[in]   instance - InfraredWorker instance"]
+    #[doc = "Start InfraredWorker thread, initialise furi_hal, prepare all work.\n\n# Arguments\n\n* `instance` - [Direction: In] - InfraredWorker instance\n\n"]
     pub fn infrared_worker_rx_start(instance: *mut InfraredWorker);
 }
 extern "C" {
-    #[doc = " Stop InfraredWorker thread, deinitialize furi_hal.\n\n @param[in]   instance - InfraredWorker instance"]
+    #[doc = "Stop InfraredWorker thread, deinitialize furi_hal.\n\n# Arguments\n\n* `instance` - [Direction: In] - InfraredWorker instance\n\n"]
     pub fn infrared_worker_rx_stop(instance: *mut InfraredWorker);
 }
 extern "C" {
-    #[doc = " Set received data callback InfraredWorker\n\n @param[in]   instance - InfraredWorker instance\n @param[in]   context - context to pass to callbacks\n @param[in]   callback - InfraredWorkerReceivedSignalCallback callback"]
+    #[doc = "Set received data callback InfraredWorker\n\n# Arguments\n\n* `instance` - [Direction: In] - InfraredWorker instance\n* `context` - [Direction: In] - context to pass to callbacks\n* `callback` - [Direction: In] - InfraredWorkerReceivedSignalCallback callback\n\n"]
     pub fn infrared_worker_rx_set_received_signal_callback(
         instance: *mut InfraredWorker,
         callback: InfraredWorkerReceivedSignalCallback,
@@ -16944,30 +16937,30 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Enable blinking on receiving any signal on IR port.\n\n @param[in]   instance - instance of InfraredWorker\n @param[in]   enable - true if you want to enable blinking\n                       false otherwise"]
+    #[doc = "Enable blinking on receiving any signal on IR port.\n\n# Arguments\n\n* `instance` - [Direction: In] - instance of InfraredWorker\n* `enable` - [Direction: In] - true if you want to enable blinking false otherwise\n\n"]
     pub fn infrared_worker_rx_enable_blink_on_receiving(
         instance: *mut InfraredWorker,
         enable: bool,
     );
 }
 extern "C" {
-    #[doc = " Enable decoding of received infrared signals.\n\n @param[in]   instance - instance of InfraredWorker\n @param[in]   enable - true if you want to enable decoding\n                       false otherwise"]
+    #[doc = "Enable decoding of received infrared signals.\n\n# Arguments\n\n* `instance` - [Direction: In] - instance of InfraredWorker\n* `enable` - [Direction: In] - true if you want to enable decoding false otherwise\n\n"]
     pub fn infrared_worker_rx_enable_signal_decoding(instance: *mut InfraredWorker, enable: bool);
 }
 extern "C" {
-    #[doc = " Clarify is received signal either decoded or raw\n\n @param[in]   signal - received signal\n @return      true if signal is decoded, false if signal is raw"]
+    #[doc = "Clarify is received signal either decoded or raw\n\nReturns:\n\n* true if signal is decoded, false if signal is raw\n\n# Arguments\n\n* `signal` - [Direction: In] - received signal\n\n"]
     pub fn infrared_worker_signal_is_decoded(signal: *const InfraredWorkerSignal) -> bool;
 }
 extern "C" {
-    #[doc = " Start transmitting signal. Callback InfraredWorkerGetSignalCallback should be\n set before this function is called, as it calls for it to fill buffer before\n starting transmission.\n\n @param[in]   instance - InfraredWorker instance"]
+    #[doc = "Start transmitting signal. Callback InfraredWorkerGetSignalCallback should be set before this function is called, as it calls for it to fill buffer before starting transmission.\n\n# Arguments\n\n* `instance` - [Direction: In] - InfraredWorker instance\n\n"]
     pub fn infrared_worker_tx_start(instance: *mut InfraredWorker);
 }
 extern "C" {
-    #[doc = " Stop transmitting signal. Waits for end of current signal and stops transmission.\n\n @param[in]   instance - InfraredWorker instance"]
+    #[doc = "Stop transmitting signal. Waits for end of current signal and stops transmission.\n\n# Arguments\n\n* `instance` - [Direction: In] - InfraredWorker instance\n\n"]
     pub fn infrared_worker_tx_stop(instance: *mut InfraredWorker);
 }
 extern "C" {
-    #[doc = " Set callback for providing next signal to send\n\n @param[in]   instance - InfraredWorker instance\n @param[in]   context - context to pass to callbacks\n @param[in]   callback - InfraredWorkerGetSignalCallback callback"]
+    #[doc = "Set callback for providing next signal to send\n\n# Arguments\n\n* `instance` - [Direction: In] - InfraredWorker instance\n* `context` - [Direction: In] - context to pass to callbacks\n* `callback` - [Direction: In] - InfraredWorkerGetSignalCallback callback\n\n"]
     pub fn infrared_worker_tx_set_get_signal_callback(
         instance: *mut InfraredWorker,
         callback: InfraredWorkerGetSignalCallback,
@@ -16975,7 +16968,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Set callback for end of signal transmitting\n\n @param[in]   instance - InfraredWorker instance\n @param[in]   context - context to pass to callbacks\n @param[in]   callback - InfraredWorkerMessageSentCallback callback"]
+    #[doc = "Set callback for end of signal transmitting\n\n# Arguments\n\n* `instance` - [Direction: In] - InfraredWorker instance\n* `context` - [Direction: In] - context to pass to callbacks\n* `callback` - [Direction: In] - InfraredWorkerMessageSentCallback callback\n\n"]
     pub fn infrared_worker_tx_set_signal_sent_callback(
         instance: *mut InfraredWorker,
         callback: InfraredWorkerMessageSentCallback,
@@ -16983,14 +16976,14 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Callback to pass to infrared_worker_tx_set_get_signal_callback() if signal\n is steady and will not be changed between infrared_worker start and stop.\n Before starting transmission, desired steady signal must be set with\n infrared_worker_make_decoded_signal() or infrared_worker_make_raw_signal().\n\n This function should not be implicitly called.\n\n @param[in]   context - context\n @param[out]  instance - InfraredWorker instance"]
+    #[doc = "Callback to pass to infrared_worker_tx_set_get_signal_callback() if signal is steady and will not be changed between infrared_worker start and stop. Before starting transmission, desired steady signal must be set with infrared_worker_make_decoded_signal() or infrared_worker_make_raw_signal().\nThis function should not be implicitly called.\n\n# Arguments\n\n* `context` - [Direction: In] - context\n* `instance` - [Direction: In, Out] - InfraredWorker instance\n\n"]
     pub fn infrared_worker_tx_get_signal_steady_callback(
         context: *mut core::ffi::c_void,
         instance: *mut InfraredWorker,
     ) -> InfraredWorkerGetSignalResponse;
 }
 extern "C" {
-    #[doc = " Acquire raw signal from interface struct 'InfraredWorkerSignal'.\n First, you have to ensure that signal is raw.\n\n @param[in]   signal - received signal\n @param[out]  timings - pointer to array of timings\n @param[out]  timings_cnt - pointer to amount of timings"]
+    #[doc = "Acquire raw signal from interface struct 'InfraredWorkerSignal'. First, you have to ensure that signal is raw.\n\n# Arguments\n\n* `signal` - [Direction: In] - received signal\n* `timings` - [Direction: In, Out] - pointer to array of timings\n* `timings_cnt` - [Direction: In, Out] - pointer to amount of timings\n\n"]
     pub fn infrared_worker_get_raw_signal(
         signal: *const InfraredWorkerSignal,
         timings: *mut *const u32,
@@ -16998,20 +16991,20 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Acquire decoded message from interface struct 'InfraredWorkerSignal'.\n First, you have to ensure that signal is decoded.\n\n @param[in]   signal - received signal\n @return      decoded INFRARED message"]
+    #[doc = "Acquire decoded message from interface struct 'InfraredWorkerSignal'. First, you have to ensure that signal is decoded.\n\nReturns:\n\n* decoded INFRARED message\n\n# Arguments\n\n* `signal` - [Direction: In] - received signal\n\n"]
     pub fn infrared_worker_get_decoded_signal(
         signal: *const InfraredWorkerSignal,
     ) -> *const InfraredMessage;
 }
 extern "C" {
-    #[doc = " Set current decoded signal for InfraredWorker instance\n\n @param[out]  instance - InfraredWorker instance\n @param[in]   message - decoded signal"]
+    #[doc = "Set current decoded signal for InfraredWorker instance\n\n# Arguments\n\n* `instance` - [Direction: In, Out] - InfraredWorker instance\n* `message` - [Direction: In] - decoded signal\n\n"]
     pub fn infrared_worker_set_decoded_signal(
         instance: *mut InfraredWorker,
         message: *const InfraredMessage,
     );
 }
 extern "C" {
-    #[doc = " Set current raw signal for InfraredWorker instance\n\n @param[out]  instance - InfraredWorker instance\n @param[in]   timings - array of raw timings\n @param[in]   timings_cnt - size of array of raw timings"]
+    #[doc = "Set current raw signal for InfraredWorker instance\n\n# Arguments\n\n* `instance` - [Direction: In, Out] - InfraredWorker instance\n* `timings` - [Direction: In] - array of raw timings\n* `timings_cnt` - [Direction: In] - size of array of raw timings\n\n"]
     pub fn infrared_worker_set_raw_signal(
         instance: *mut InfraredWorker,
         timings: *const u32,
@@ -17441,7 +17434,7 @@ fn bindgen_test_layout_LFRFIDT5577() {
     );
 }
 extern "C" {
-    #[doc = " @brief Write T5577 tag data to tag\n\n @param data"]
+    #[doc = "Write T5577 tag data to tag\n\n# Arguments\n\n* `data` - \n\n"]
     pub fn t5577_write(data: *mut LFRFIDT5577);
 }
 pub const LFRFIDProtocol_LFRFIDProtocolEM4100: LFRFIDProtocol = 0;
@@ -17467,7 +17460,7 @@ extern "C" {
     pub static mut lfrfid_protocols: [*const ProtocolBase; 0usize];
 }
 extern "C" {
-    #[doc = " @brief Save protocol from dictionary to file\n\n @param dict\n @param protocol\n @param filename\n @return true\n @return false"]
+    #[doc = "Save protocol from dictionary to file\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `dict` - \n* `protocol` - \n* `filename` - \n\n"]
     pub fn lfrfid_dict_file_save(
         dict: *mut ProtocolDict,
         protocol: ProtocolId,
@@ -17475,7 +17468,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Load protocol from file to dictionary\n\n @param dict\n @param filename\n @return ProtocolId"]
+    #[doc = "Load protocol from file to dictionary\n\nReturns:\n\n* ProtocolId\n\n# Arguments\n\n* `dict` - \n* `filename` - \n\n"]
     pub fn lfrfid_dict_file_load(
         dict: *mut ProtocolDict,
         filename: *const core::ffi::c_char,
@@ -17487,29 +17480,29 @@ pub struct LFRFIDRawFile {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " @brief Allocate a new LFRFIDRawFile instance\n\n @param storage\n @return LFRFIDRawFile*"]
+    #[doc = "Allocate a new LFRFIDRawFile instance\n\nReturns:\n\n* LFRFIDRawFile*\n\n# Arguments\n\n* `storage` - \n\n"]
     pub fn lfrfid_raw_file_alloc(storage: *mut Storage) -> *mut LFRFIDRawFile;
 }
 extern "C" {
-    #[doc = " @brief Free a LFRFIDRawFile instance\n\n @param file"]
+    #[doc = "Free a LFRFIDRawFile instance\n\n# Arguments\n\n* `file` - \n\n"]
     pub fn lfrfid_raw_file_free(file: *mut LFRFIDRawFile);
 }
 extern "C" {
-    #[doc = " @brief Open RAW file for writing\n\n @param file\n @param file_path\n @return bool"]
+    #[doc = "Open RAW file for writing\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `file` - \n* `file_path` - \n\n"]
     pub fn lfrfid_raw_file_open_write(
         file: *mut LFRFIDRawFile,
         file_path: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Open RAW file for reading\n @param file\n @param file_path\n @return bool"]
+    #[doc = "Open RAW file for reading\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `file` - \n* `file_path` - \n\n"]
     pub fn lfrfid_raw_file_open_read(
         file: *mut LFRFIDRawFile,
         file_path: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Write RAW file header\n\n @param file\n @param frequency\n @param duty_cycle\n @param max_buffer_size\n @return bool"]
+    #[doc = "Write RAW file header\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `file` - \n* `frequency` - \n* `duty_cycle` - \n* `max_buffer_size` - \n\n"]
     pub fn lfrfid_raw_file_write_header(
         file: *mut LFRFIDRawFile,
         frequency: f32,
@@ -17518,7 +17511,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Write data to RAW file\n\n @param file\n @param buffer_data\n @param buffer_size\n @return bool"]
+    #[doc = "Write data to RAW file\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `file` - \n* `buffer_data` - \n* `buffer_size` - \n\n"]
     pub fn lfrfid_raw_file_write_buffer(
         file: *mut LFRFIDRawFile,
         buffer_data: *mut u8,
@@ -17526,7 +17519,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Read RAW file header\n\n @param file\n @param frequency\n @param duty_cycle\n @return bool"]
+    #[doc = "Read RAW file header\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `file` - \n* `frequency` - \n* `duty_cycle` - \n\n"]
     pub fn lfrfid_raw_file_read_header(
         file: *mut LFRFIDRawFile,
         frequency: *mut f32,
@@ -17534,7 +17527,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Read varint-encoded pair from RAW file\n\n @param file\n @param duration\n @param pulse\n @param pass_end file was wrapped around, can be NULL\n @return bool"]
+    #[doc = "Read varint-encoded pair from RAW file\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `file` - \n* `duration` - \n* `pulse` - \n* `pass_end` - file was wrapped around, can be NULL\n\n"]
     pub fn lfrfid_raw_file_read_pair(
         file: *mut LFRFIDRawFile,
         duration: *mut u32,
@@ -17590,23 +17583,23 @@ pub struct LFRFIDWorker {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocate LF-RFID worker\n @return LFRFIDWorker*"]
+    #[doc = "Allocate LF-RFID worker\n\nReturns:\n\n* LFRFIDWorker*\n\n"]
     pub fn lfrfid_worker_alloc(dict: *mut ProtocolDict) -> *mut LFRFIDWorker;
 }
 extern "C" {
-    #[doc = " Free LF-RFID worker\n @param worker"]
+    #[doc = "Free LF-RFID worker\n\n# Arguments\n\n* `worker` - \n\n"]
     pub fn lfrfid_worker_free(worker: *mut LFRFIDWorker);
 }
 extern "C" {
-    #[doc = " Start LF-RFID worker thread\n @param worker"]
+    #[doc = "Start LF-RFID worker thread\n\n# Arguments\n\n* `worker` - \n\n"]
     pub fn lfrfid_worker_start_thread(worker: *mut LFRFIDWorker);
 }
 extern "C" {
-    #[doc = " Stop LF-RFID worker thread\n @param worker"]
+    #[doc = "Stop LF-RFID worker thread\n\n# Arguments\n\n* `worker` - \n\n"]
     pub fn lfrfid_worker_stop_thread(worker: *mut LFRFIDWorker);
 }
 extern "C" {
-    #[doc = " @brief Start read mode\n\n @param worker\n @param type\n @param callback\n @param context"]
+    #[doc = "Start read mode\n\n# Arguments\n\n* `worker` - \n* `type` - \n* `callback` - \n* `context` - \n\n"]
     pub fn lfrfid_worker_read_start(
         worker: *mut LFRFIDWorker,
         type_: LFRFIDWorkerReadType,
@@ -17615,7 +17608,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " @brief Start write mode\n\n @param worker\n @param protocol\n @param callback\n @param context"]
+    #[doc = "Start write mode\n\n# Arguments\n\n* `worker` - \n* `protocol` - \n* `callback` - \n* `context` - \n\n"]
     pub fn lfrfid_worker_write_start(
         worker: *mut LFRFIDWorker,
         protocol: LFRFIDProtocol,
@@ -17624,11 +17617,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Start emulate mode\n @param worker"]
+    #[doc = "Start emulate mode\n\n# Arguments\n\n* `worker` - \n\n"]
     pub fn lfrfid_worker_emulate_start(worker: *mut LFRFIDWorker, protocol: LFRFIDProtocol);
 }
 extern "C" {
-    #[doc = " @brief Start raw read mode\n\n @param worker\n @param filename\n @param type\n @param callback\n @param context"]
+    #[doc = "Start raw read mode\n\n# Arguments\n\n* `worker` - \n* `filename` - \n* `type` - \n* `callback` - \n* `context` - \n\n"]
     pub fn lfrfid_worker_read_raw_start(
         worker: *mut LFRFIDWorker,
         filename: *const core::ffi::c_char,
@@ -17638,7 +17631,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Emulate raw read mode\n @param worker\n @param filename\n @param callback\n @param context"]
+    #[doc = "Emulate raw read mode\n\n# Arguments\n\n* `worker` - \n* `filename` - \n* `callback` - \n* `context` - \n\n"]
     pub fn lfrfid_worker_emulate_raw_start(
         worker: *mut LFRFIDWorker,
         filename: *const core::ffi::c_char,
@@ -17647,7 +17640,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Stop all modes\n @param worker"]
+    #[doc = "Stop all modes\n\n# Arguments\n\n* `worker` - \n\n"]
     pub fn lfrfid_worker_stop(worker: *mut LFRFIDWorker);
 }
 #[repr(C)]
@@ -17656,15 +17649,15 @@ pub struct LFRFIDRawWorker {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " @brief Allocate a new LFRFIDRawWorker instance\n\n @return LFRFIDRawWorker*"]
+    #[doc = "Allocate a new LFRFIDRawWorker instance\n\nReturns:\n\n* LFRFIDRawWorker*\n\n"]
     pub fn lfrfid_raw_worker_alloc() -> *mut LFRFIDRawWorker;
 }
 extern "C" {
-    #[doc = " @brief Free a LFRFIDRawWorker instance\n\n @param worker LFRFIDRawWorker instance"]
+    #[doc = "Free a LFRFIDRawWorker instance\n\n# Arguments\n\n* `worker` - LFRFIDRawWorker instance\n\n"]
     pub fn lfrfid_raw_worker_free(worker: *mut LFRFIDRawWorker);
 }
 extern "C" {
-    #[doc = " @brief Start reading\n\n @param worker LFRFIDRawWorker instance\n @param file_path path where file will be saved\n @param frequency HW frequency\n @param duty_cycle HW duty cycle\n @param callback callback for read event\n @param context context for callback"]
+    #[doc = "Start reading\n\n# Arguments\n\n* `worker` - LFRFIDRawWorker instance\n* `file_path` - path where file will be saved\n* `frequency` - HW frequency\n* `duty_cycle` - HW duty cycle\n* `callback` - callback for read event\n* `context` - context for callback\n\n"]
     pub fn lfrfid_raw_worker_start_read(
         worker: *mut LFRFIDRawWorker,
         file_path: *const core::ffi::c_char,
@@ -17675,7 +17668,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " @brief Start emulate\n\n @param worker LFRFIDRawWorker instance\n @param file_path path to file that will be emulated\n @param callback callback for emulate event\n @param context context for callback"]
+    #[doc = "Start emulate\n\n# Arguments\n\n* `worker` - LFRFIDRawWorker instance\n* `file_path` - path to file that will be emulated\n* `callback` - callback for emulate event\n* `context` - context for callback\n\n"]
     pub fn lfrfid_raw_worker_start_emulate(
         worker: *mut LFRFIDRawWorker,
         file_path: *const core::ffi::c_char,
@@ -17684,7 +17677,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " @brief Stop worker\n\n @param worker"]
+    #[doc = "Stop worker\n\n# Arguments\n\n* `worker` - \n\n"]
     pub fn lfrfid_raw_worker_stop(worker: *mut LFRFIDRawWorker);
 }
 pub const BitLibParity_BitLibParityEven: BitLibParity = 0;
@@ -17693,39 +17686,39 @@ pub const BitLibParity_BitLibParityAlways0: BitLibParity = 2;
 pub const BitLibParity_BitLibParityAlways1: BitLibParity = 3;
 pub type BitLibParity = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " @brief Push a bit into a byte array.\n  @param data array to push bit into\n  @param data_size array size\n  @param bit bit to push"]
+    #[doc = "Push a bit into a byte array.\n\n# Arguments\n\n* `data` - array to push bit into\n* `data_size` - array size\n* `bit` - bit to push\n\n"]
     pub fn bit_lib_push_bit(data: *mut u8, data_size: usize, bit: bool);
 }
 extern "C" {
-    #[doc = " @brief Set a bit in a byte array.\n  @param data array to set bit in\n  @param position The position of the bit to set.\n  @param bit bit value to set"]
+    #[doc = "Set a bit in a byte array.\n\n# Arguments\n\n* `data` - array to set bit in\n* `position` - The position of the bit to set.\n* `bit` - bit value to set\n\n"]
     pub fn bit_lib_set_bit(data: *mut u8, position: usize, bit: bool);
 }
 extern "C" {
-    #[doc = " @brief Set the bit at the given position to the given value.\n @param data The data to set the bit in.\n @param position The position of the bit to set.\n @param byte The data to set the bit to.\n @param length The length of the data."]
+    #[doc = "Set the bit at the given position to the given value.\n\n# Arguments\n\n* `data` - The data to set the bit in.\n* `position` - The position of the bit to set.\n* `byte` - The data to set the bit to.\n* `length` - The length of the data.\n\n"]
     pub fn bit_lib_set_bits(data: *mut u8, position: usize, byte: u8, length: u8);
 }
 extern "C" {
-    #[doc = " @brief Get the bit of a byte.\n @param data The byte to get the bits from.\n @param position The position of the bit.\n @return The bit."]
+    #[doc = "Get the bit of a byte.\n\nReturns:\n\n* The bit.\n\n# Arguments\n\n* `data` - The byte to get the bits from.\n* `position` - The position of the bit.\n\n"]
     pub fn bit_lib_get_bit(data: *const u8, position: usize) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Get the bits of a data, as uint8_t.\n @param data The data to get the bits from.\n @param position The position of the first bit.\n @param length The length of the bits.\n @return The bits."]
+    #[doc = "Get the bits of a data, as uint8_t.\n\nReturns:\n\n* The bits.\n\n# Arguments\n\n* `data` - The data to get the bits from.\n* `position` - The position of the first bit.\n* `length` - The length of the bits.\n\n"]
     pub fn bit_lib_get_bits(data: *const u8, position: usize, length: u8) -> u8;
 }
 extern "C" {
-    #[doc = " @brief Get the bits of a data, as uint16_t.\n @param data The data to get the bits from.\n @param position The position of the first bit.\n @param length The length of the bits.\n @return The bits."]
+    #[doc = "Get the bits of a data, as uint16_t.\n\nReturns:\n\n* The bits.\n\n# Arguments\n\n* `data` - The data to get the bits from.\n* `position` - The position of the first bit.\n* `length` - The length of the bits.\n\n"]
     pub fn bit_lib_get_bits_16(data: *const u8, position: usize, length: u8) -> u16;
 }
 extern "C" {
-    #[doc = " @brief Get the bits of a data, as uint32_t.\n @param data The data to get the bits from.\n @param position The position of the first bit.\n @param length The length of the bits.\n @return The bits."]
+    #[doc = "Get the bits of a data, as uint32_t.\n\nReturns:\n\n* The bits.\n\n# Arguments\n\n* `data` - The data to get the bits from.\n* `position` - The position of the first bit.\n* `length` - The length of the bits.\n\n"]
     pub fn bit_lib_get_bits_32(data: *const u8, position: usize, length: u8) -> u32;
 }
 extern "C" {
-    #[doc = " @brief Test parity of given bits\n @param bits Bits to test parity of\n @param parity Parity to test against\n @return true if parity is correct, false otherwise"]
+    #[doc = "Test parity of given bits\n\nReturns:\n\n* true if parity is correct, false otherwise\n\n# Arguments\n\n* `bits` - Bits to test parity of\n* `parity` - Parity to test against\n\n"]
     pub fn bit_lib_test_parity_32(bits: u32, parity: BitLibParity) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Test parity of bit array, check parity for every parity_length block from start\n\n @param data Bit array\n @param position Start position\n @param length Bit count\n @param parity Parity to test against\n @param parity_length Parity block length\n @return true\n @return false"]
+    #[doc = "Test parity of bit array, check parity for every parity_length block from start\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `data` - Bit array\n* `position` - Start position\n* `length` - Bit count\n* `parity` - Parity to test against\n* `parity_length` - Parity block length\n\n"]
     pub fn bit_lib_test_parity(
         data: *const u8,
         position: usize,
@@ -17735,7 +17728,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Add parity to bit array\n\n @param data Source bit array\n @param position Start position\n @param dest Destination bit array\n @param dest_position Destination position\n @param source_length Source bit count\n @param parity_length Parity block length\n @param parity Parity to test against\n @return size_t"]
+    #[doc = "Add parity to bit array\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `data` - Source bit array\n* `position` - Start position\n* `dest` - Destination bit array\n* `dest_position` - Destination position\n* `source_length` - Source bit count\n* `parity_length` - Parity block length\n* `parity` - Parity to test against\n\n"]
     pub fn bit_lib_add_parity(
         data: *const u8,
         position: usize,
@@ -17747,12 +17740,12 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Remove bit every n in array and shift array left. Useful to remove parity.\n\n @param data Bit array\n @param position Start position\n @param length Bit count\n @param n every n bit will be removed\n @return size_t"]
+    #[doc = "Remove bit every n in array and shift array left. Useful to remove parity.\n\nReturns:\n\n* size_t\n\n# Arguments\n\n* `data` - Bit array\n* `position` - Start position\n* `length` - Bit count\n* `n` - every n bit will be removed\n\n"]
     pub fn bit_lib_remove_bit_every_nth(data: *mut u8, position: usize, length: u8, n: u8)
         -> usize;
 }
 extern "C" {
-    #[doc = " @brief Copy bits from source to destination.\n\n @param data destination array\n @param position position in destination array\n @param length length of bits to copy\n @param source source array\n @param source_position position in source array"]
+    #[doc = "Copy bits from source to destination.\n\n# Arguments\n\n* `data` - destination array\n* `position` - position in destination array\n* `length` - length of bits to copy\n* `source` - source array\n* `source_position` - position in source array\n\n"]
     pub fn bit_lib_copy_bits(
         data: *mut u8,
         position: usize,
@@ -17762,15 +17755,15 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " @brief Reverse bits in bit array\n\n @param data Bit array\n @param position start position\n @param length length of bits to reverse"]
+    #[doc = "Reverse bits in bit array\n\n# Arguments\n\n* `data` - Bit array\n* `position` - start position\n* `length` - length of bits to reverse\n\n"]
     pub fn bit_lib_reverse_bits(data: *mut u8, position: usize, length: u8);
 }
 extern "C" {
-    #[doc = " @brief Count 1 bits in data\n\n @param data\n @return uint8_t set bit count"]
+    #[doc = "Count 1 bits in data\n\nReturns:\n\n* uint8_t set bit count\n\n# Arguments\n\n* `data` - \n\n"]
     pub fn bit_lib_get_bit_count(data: u32) -> u8;
 }
 extern "C" {
-    #[doc = " @brief Print data as bit array\n\n @param data\n @param length"]
+    #[doc = "Print data as bit array\n\n# Arguments\n\n* `data` - \n* `length` - \n\n"]
     pub fn bit_lib_print_bits(data: *const u8, length: usize);
 }
 #[repr(C)]
@@ -17826,7 +17819,7 @@ fn bindgen_test_layout_BitLibRegion() {
     );
 }
 extern "C" {
-    #[doc = " @brief Print data as bit array and mark regions. Regions needs to be sorted by start position.\n\n @param regions\n @param region_count\n @param data\n @param length"]
+    #[doc = "Print data as bit array and mark regions. Regions needs to be sorted by start position.\n\n# Arguments\n\n* `regions` - \n* `region_count` - \n* `data` - \n* `length` - \n\n"]
     pub fn bit_lib_print_regions(
         regions: *const BitLibRegion,
         region_count: usize,
@@ -17835,15 +17828,15 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " @brief Reverse bits in uint16_t, faster than generic bit_lib_reverse_bits.\n\n @param data\n @return uint16_t"]
+    #[doc = "Reverse bits in uint16_t, faster than generic bit_lib_reverse_bits.\n\nReturns:\n\n* uint16_t\n\n# Arguments\n\n* `data` - \n\n"]
     pub fn bit_lib_reverse_16_fast(data: u16) -> u16;
 }
 extern "C" {
-    #[doc = " @brief Reverse bits in uint8_t, faster than generic bit_lib_reverse_bits.\n\n @param byte Byte\n @return uint8_t the reversed byte"]
+    #[doc = "Reverse bits in uint8_t, faster than generic bit_lib_reverse_bits.\n\nReturns:\n\n* uint8_t the reversed byte\n\n# Arguments\n\n* `byte` - Byte\n\n"]
     pub fn bit_lib_reverse_8_fast(byte: u8) -> u8;
 }
 extern "C" {
-    #[doc = " @brief Slow, but generic CRC8 implementation\n\n @param data\n @param data_size\n @param polynom CRC polynom\n @param init init value\n @param ref_in true if the right bit is older\n @param ref_out true to reverse output\n @param xor_out xor output with this value\n @return uint8_t"]
+    #[doc = "Slow, but generic CRC8 implementation\n\nReturns:\n\n* uint8_t\n\n# Arguments\n\n* `data` - \n* `data_size` - \n* `polynom` - CRC polynom\n* `init` - init value\n* `ref_in` - true if the right bit is older\n* `ref_out` - true to reverse output\n* `xor_out` - xor output with this value\n\n"]
     pub fn bit_lib_crc8(
         data: *const u8,
         data_size: usize,
@@ -17855,7 +17848,7 @@ extern "C" {
     ) -> u16;
 }
 extern "C" {
-    #[doc = " @brief Slow, but generic CRC16 implementation\n\n @param data\n @param data_size\n @param polynom CRC polynom\n @param init init value\n @param ref_in true if the right bit is older\n @param ref_out true to reverse output\n @param xor_out xor output with this value\n @return uint16_t"]
+    #[doc = "Slow, but generic CRC16 implementation\n\nReturns:\n\n* uint16_t\n\n# Arguments\n\n* `data` - \n* `data_size` - \n* `polynom` - CRC polynom\n* `init` - init value\n* `ref_in` - true if the right bit is older\n* `ref_out` - true to reverse output\n* `xor_out` - xor output with this value\n\n"]
     pub fn bit_lib_crc16(
         data: *const u8,
         data_size: usize,
@@ -17898,11 +17891,11 @@ extern "C" {
     ) -> core::ffi::c_int;
 }
 extern "C" {
-    #[doc = " Allocate file stream\n @return Stream*"]
+    #[doc = "Allocate file stream\n\nReturns:\n\n* Stream*\n\n"]
     pub fn file_stream_alloc(storage: *mut Storage) -> *mut Stream;
 }
 extern "C" {
-    #[doc = " Opens an existing file or create a new one.\n @param stream pointer to file stream object.\n @param path path to file\n @param access_mode access mode from FS_AccessMode\n @param open_mode open mode from FS_OpenMode\n @return success flag. You need to close the file even if the open operation failed."]
+    #[doc = "Opens an existing file or create a new one.\n\nReturns:\n\n* success flag. You need to close the file even if the open operation failed.\n\n# Arguments\n\n* `stream` - pointer to file stream object.\n* `path` - path to file\n* `access_mode` - access mode from FS_AccessMode\n* `open_mode` - open mode from FS_OpenMode\n\n"]
     pub fn file_stream_open(
         stream: *mut Stream,
         path: *const core::ffi::c_char,
@@ -17911,19 +17904,19 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Closes the file.\n @param stream\n @return true\n @return false"]
+    #[doc = "Closes the file.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `stream` - \n\n"]
     pub fn file_stream_close(stream: *mut Stream) -> bool;
 }
 extern "C" {
-    #[doc = " Retrieves the error id from the file object\n @param stream pointer to stream object.\n @return FS_Error error id"]
+    #[doc = "Retrieves the error id from the file object\n\nReturns:\n\n* FS_Error error id\n\n# Arguments\n\n* `stream` - pointer to stream object.\n\n"]
     pub fn file_stream_get_error(stream: *mut Stream) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Allocate a file stream with buffered read operations\n @return Stream*"]
+    #[doc = "Allocate a file stream with buffered read operations\n\nReturns:\n\n* Stream*\n\n"]
     pub fn buffered_file_stream_alloc(storage: *mut Storage) -> *mut Stream;
 }
 extern "C" {
-    #[doc = " Opens an existing file or creates a new one.\n @param stream pointer to file stream object.\n @param path path to file\n @param access_mode access mode from FS_AccessMode\n @param open_mode open mode from FS_OpenMode\n @return True on success, False on failure. You need to close the file even if the open operation failed."]
+    #[doc = "Opens an existing file or creates a new one.\n\nReturns:\n\n* True on success, False on failure. You need to close the file even if the open operation failed.\n\n# Arguments\n\n* `stream` - pointer to file stream object.\n* `path` - path to file\n* `access_mode` - access mode from FS_AccessMode\n* `open_mode` - open mode from FS_OpenMode\n\n"]
     pub fn buffered_file_stream_open(
         stream: *mut Stream,
         path: *const core::ffi::c_char,
@@ -17932,15 +17925,15 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Closes the file.\n @param stream pointer to file stream object.\n @return True on success, False on failure."]
+    #[doc = "Closes the file.\n\nReturns:\n\n* True on success, False on failure.\n\n# Arguments\n\n* `stream` - pointer to file stream object.\n\n"]
     pub fn buffered_file_stream_close(stream: *mut Stream) -> bool;
 }
 extern "C" {
-    #[doc = " Forces write from cache to the underlying file.\n @param stream pointer to file stream object.\n @return True on success, False on failure."]
+    #[doc = "Forces write from cache to the underlying file.\n\nReturns:\n\n* True on success, False on failure.\n\n# Arguments\n\n* `stream` - pointer to file stream object.\n\n"]
     pub fn buffered_file_stream_sync(stream: *mut Stream) -> bool;
 }
 extern "C" {
-    #[doc = " Retrieves the error id from the file object\n @param stream pointer to stream object.\n @return FS_Error error id"]
+    #[doc = "Retrieves the error id from the file object\n\nReturns:\n\n* FS_Error error id\n\n# Arguments\n\n* `stream` - pointer to stream object.\n\n"]
     pub fn buffered_file_stream_get_error(stream: *mut Stream) -> FS_Error;
 }
 #[repr(C)]
@@ -19914,66 +19907,66 @@ pub struct iButtonKey {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocate key\n @return iButtonKey*"]
+    #[doc = "Allocate key\n\nReturns:\n\n* iButtonKey*\n\n"]
     pub fn ibutton_key_alloc() -> *mut iButtonKey;
 }
 extern "C" {
-    #[doc = " Free key\n @param key"]
+    #[doc = "Free key\n\n# Arguments\n\n* `key` - \n\n"]
     pub fn ibutton_key_free(key: *mut iButtonKey);
 }
 extern "C" {
-    #[doc = " Copy key\n @param to\n @param from"]
+    #[doc = "Copy key\n\n# Arguments\n\n* `to` - \n* `from` - \n\n"]
     pub fn ibutton_key_set(to: *mut iButtonKey, from: *const iButtonKey);
 }
 extern "C" {
-    #[doc = " Set key data\n @param key\n @param data\n @param data_count"]
+    #[doc = "Set key data\n\n# Arguments\n\n* `key` - \n* `data` - \n* `data_count` - \n\n"]
     pub fn ibutton_key_set_data(key: *mut iButtonKey, data: *mut u8, data_count: u8);
 }
 extern "C" {
-    #[doc = " Clear key data\n @param key"]
+    #[doc = "Clear key data\n\n# Arguments\n\n* `key` - \n\n"]
     pub fn ibutton_key_clear_data(key: *mut iButtonKey);
 }
 extern "C" {
-    #[doc = " Get pointer to key data\n @param key\n @return const uint8_t*"]
+    #[doc = "Get pointer to key data\n\nReturns:\n\n* const uint8_t*\n\n# Arguments\n\n* `key` - \n\n"]
     pub fn ibutton_key_get_data_p(key: *mut iButtonKey) -> *const u8;
 }
 extern "C" {
-    #[doc = " Get key data size\n @param key\n @return uint8_t"]
+    #[doc = "Get key data size\n\nReturns:\n\n* uint8_t\n\n# Arguments\n\n* `key` - \n\n"]
     pub fn ibutton_key_get_data_size(key: *mut iButtonKey) -> u8;
 }
 extern "C" {
-    #[doc = " Set key type\n @param key\n @param key_type"]
+    #[doc = "Set key type\n\n# Arguments\n\n* `key` - \n* `key_type` - \n\n"]
     pub fn ibutton_key_set_type(key: *mut iButtonKey, key_type: iButtonKeyType);
 }
 extern "C" {
-    #[doc = " Get key type\n @param key\n @return iButtonKeyType"]
+    #[doc = "Get key type\n\nReturns:\n\n* iButtonKeyType\n\n# Arguments\n\n* `key` - \n\n"]
     pub fn ibutton_key_get_type(key: *mut iButtonKey) -> iButtonKeyType;
 }
 extern "C" {
-    #[doc = " Get type string from key type\n @param key_type\n @return const char*"]
+    #[doc = "Get type string from key type\n\nReturns:\n\n* const char*\n\n# Arguments\n\n* `key_type` - \n\n"]
     pub fn ibutton_key_get_string_by_type(key_type: iButtonKeyType) -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Get key type from string\n @param type_string\n @param key_type\n @return bool"]
+    #[doc = "Get key type from string\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `type_string` - \n* `key_type` - \n\n"]
     pub fn ibutton_key_get_type_by_string(
         type_string: *const core::ffi::c_char,
         key_type: *mut iButtonKeyType,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Get key data size from type\n @param key_type\n @return uint8_t"]
+    #[doc = "Get key data size from type\n\nReturns:\n\n* uint8_t\n\n# Arguments\n\n* `key_type` - \n\n"]
     pub fn ibutton_key_get_size_by_type(key_type: iButtonKeyType) -> u8;
 }
 extern "C" {
-    #[doc = " Get max key size\n @return uint8_t"]
+    #[doc = "Get max key size\n\nReturns:\n\n* uint8_t\n\n"]
     pub fn ibutton_key_get_max_size() -> u8;
 }
 extern "C" {
-    #[doc = " Check if CRC for onewire key is valid\n @param key\n @return true\n @return false"]
+    #[doc = "Check if CRC for onewire key is valid\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `key` - \n\n"]
     pub fn ibutton_key_dallas_crc_is_valid(key: *mut iButtonKey) -> bool;
 }
 extern "C" {
-    #[doc = " Check if onewire key is a DS1990 key\n @param key\n @return true\n @return false"]
+    #[doc = "Check if onewire key is a DS1990 key\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `key` - \n\n"]
     pub fn ibutton_key_dallas_is_1990_key(key: *mut iButtonKey) -> bool;
 }
 pub const iButtonWorkerWriteResult_iButtonWorkerWriteOK: iButtonWorkerWriteResult = 0;
@@ -19994,23 +19987,23 @@ pub struct iButtonWorker {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocate ibutton worker\n @return iButtonWorker*"]
+    #[doc = "Allocate ibutton worker\n\nReturns:\n\n* iButtonWorker*\n\n"]
     pub fn ibutton_worker_alloc() -> *mut iButtonWorker;
 }
 extern "C" {
-    #[doc = " Free ibutton worker\n @param worker"]
+    #[doc = "Free ibutton worker\n\n# Arguments\n\n* `worker` - \n\n"]
     pub fn ibutton_worker_free(worker: *mut iButtonWorker);
 }
 extern "C" {
-    #[doc = " Start ibutton worker thread\n @param worker"]
+    #[doc = "Start ibutton worker thread\n\n# Arguments\n\n* `worker` - \n\n"]
     pub fn ibutton_worker_start_thread(worker: *mut iButtonWorker);
 }
 extern "C" {
-    #[doc = " Stop ibutton worker thread\n @param worker"]
+    #[doc = "Stop ibutton worker thread\n\n# Arguments\n\n* `worker` - \n\n"]
     pub fn ibutton_worker_stop_thread(worker: *mut iButtonWorker);
 }
 extern "C" {
-    #[doc = " Set \"read success\" callback\n @param worker\n @param callback\n @param context"]
+    #[doc = "Set \"read success\" callback\n\n# Arguments\n\n* `worker` - \n* `callback` - \n* `context` - \n\n"]
     pub fn ibutton_worker_read_set_callback(
         worker: *mut iButtonWorker,
         callback: iButtonWorkerReadCallback,
@@ -20018,11 +20011,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Start read mode\n @param worker\n @param key"]
+    #[doc = "Start read mode\n\n# Arguments\n\n* `worker` - \n* `key` - \n\n"]
     pub fn ibutton_worker_read_start(worker: *mut iButtonWorker, key: *mut iButtonKey);
 }
 extern "C" {
-    #[doc = " Set \"write event\" callback\n @param worker\n @param callback\n @param context"]
+    #[doc = "Set \"write event\" callback\n\n# Arguments\n\n* `worker` - \n* `callback` - \n* `context` - \n\n"]
     pub fn ibutton_worker_write_set_callback(
         worker: *mut iButtonWorker,
         callback: iButtonWorkerWriteCallback,
@@ -20030,11 +20023,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Start write mode\n @param worker\n @param key"]
+    #[doc = "Start write mode\n\n# Arguments\n\n* `worker` - \n* `key` - \n\n"]
     pub fn ibutton_worker_write_start(worker: *mut iButtonWorker, key: *mut iButtonKey);
 }
 extern "C" {
-    #[doc = " Set \"emulate success\" callback\n @param worker\n @param callback\n @param context"]
+    #[doc = "Set \"emulate success\" callback\n\n# Arguments\n\n* `worker` - \n* `callback` - \n* `context` - \n\n"]
     pub fn ibutton_worker_emulate_set_callback(
         worker: *mut iButtonWorker,
         callback: iButtonWorkerEmulateCallback,
@@ -20042,11 +20035,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Start emulate mode\n @param worker\n @param key"]
+    #[doc = "Start emulate mode\n\n# Arguments\n\n* `worker` - \n* `key` - \n\n"]
     pub fn ibutton_worker_emulate_start(worker: *mut iButtonWorker, key: *mut iButtonKey);
 }
 extern "C" {
-    #[doc = " Stop all modes\n @param worker"]
+    #[doc = "Stop all modes\n\n# Arguments\n\n* `worker` - \n\n"]
     pub fn ibutton_worker_stop(worker: *mut iButtonWorker);
 }
 extern "C" {
@@ -20063,7 +20056,7 @@ pub struct OneWireDevice {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocate onewire device with ID\n @param id_1\n @param id_2\n @param id_3\n @param id_4\n @param id_5\n @param id_6\n @param id_7\n @param id_8\n @return OneWireDevice*"]
+    #[doc = "Allocate onewire device with ID\n\nReturns:\n\n* OneWireDevice*\n\n# Arguments\n\n* `id_1` - \n* `id_2` - \n* `id_3` - \n* `id_4` - \n* `id_5` - \n* `id_6` - \n* `id_7` - \n* `id_8` - \n\n"]
     pub fn onewire_device_alloc(
         id_1: u8,
         id_2: u8,
@@ -20076,28 +20069,28 @@ extern "C" {
     ) -> *mut OneWireDevice;
 }
 extern "C" {
-    #[doc = " Deallocate onewire device\n @param device"]
+    #[doc = "Deallocate onewire device\n\n# Arguments\n\n* `device` - \n\n"]
     pub fn onewire_device_free(device: *mut OneWireDevice);
 }
 extern "C" {
-    #[doc = " Send ID report, called from onewire slave\n @param device"]
+    #[doc = "Send ID report, called from onewire slave\n\n# Arguments\n\n* `device` - \n\n"]
     pub fn onewire_device_send_id(device: *mut OneWireDevice);
 }
 extern "C" {
-    #[doc = " Attach device to onewire slave bus\n @param device\n @param bus"]
+    #[doc = "Attach device to onewire slave bus\n\n# Arguments\n\n* `device` - \n* `bus` - \n\n"]
     pub fn onewire_device_attach(device: *mut OneWireDevice, bus: *mut OneWireSlave);
 }
 extern "C" {
-    #[doc = " Attach device from onewire slave bus\n @param device"]
+    #[doc = "Attach device from onewire slave bus\n\n# Arguments\n\n* `device` - \n\n"]
     pub fn onewire_device_detach(device: *mut OneWireDevice);
 }
 extern "C" {
-    #[doc = " Get pointer to device id array\n @param device\n @return uint8_t*"]
+    #[doc = "Get pointer to device id array\n\nReturns:\n\n* uint8_t*\n\n# Arguments\n\n* `device` - \n\n"]
     pub fn onewire_device_get_id_p(device: *mut OneWireDevice) -> *mut u8;
 }
-#[doc = "< Search for alarmed device"]
+#[doc = "Search for alarmed device\n\n"]
 pub const OneWireHostSearchMode_CONDITIONAL_SEARCH: OneWireHostSearchMode = 0;
-#[doc = "< Search all devices"]
+#[doc = "Search all devices\n\n"]
 pub const OneWireHostSearchMode_NORMAL_SEARCH: OneWireHostSearchMode = 1;
 pub type OneWireHostSearchMode = core::ffi::c_uchar;
 #[repr(C)]
@@ -20106,59 +20099,59 @@ pub struct OneWireHost {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocate onewire host bus\n @param pin\n @return OneWireHost*"]
+    #[doc = "Allocate onewire host bus\n\nReturns:\n\n* OneWireHost*\n\n# Arguments\n\n* `pin` - \n\n"]
     pub fn onewire_host_alloc(gpio_pin: *const GpioPin) -> *mut OneWireHost;
 }
 extern "C" {
-    #[doc = " Deallocate onewire host bus\n @param host"]
+    #[doc = "Deallocate onewire host bus\n\n# Arguments\n\n* `host` - \n\n"]
     pub fn onewire_host_free(host: *mut OneWireHost);
 }
 extern "C" {
-    #[doc = " Reset bus\n @param host\n @return bool"]
+    #[doc = "Reset bus\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `host` - \n\n"]
     pub fn onewire_host_reset(host: *mut OneWireHost) -> bool;
 }
 extern "C" {
-    #[doc = " Read one bit\n @param host\n @return bool"]
+    #[doc = "Read one bit\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `host` - \n\n"]
     pub fn onewire_host_read_bit(host: *mut OneWireHost) -> bool;
 }
 extern "C" {
-    #[doc = " Read one byte\n @param host\n @return uint8_t"]
+    #[doc = "Read one byte\n\nReturns:\n\n* uint8_t\n\n# Arguments\n\n* `host` - \n\n"]
     pub fn onewire_host_read(host: *mut OneWireHost) -> u8;
 }
 extern "C" {
-    #[doc = " Read many bytes\n @param host\n @param buffer\n @param count"]
+    #[doc = "Read many bytes\n\n# Arguments\n\n* `host` - \n* `buffer` - \n* `count` - \n\n"]
     pub fn onewire_host_read_bytes(host: *mut OneWireHost, buffer: *mut u8, count: u16);
 }
 extern "C" {
-    #[doc = " Write one bit\n @param host\n @param value"]
+    #[doc = "Write one bit\n\n# Arguments\n\n* `host` - \n* `value` - \n\n"]
     pub fn onewire_host_write_bit(host: *mut OneWireHost, value: bool);
 }
 extern "C" {
-    #[doc = " Write one byte\n @param host\n @param value"]
+    #[doc = "Write one byte\n\n# Arguments\n\n* `host` - \n* `value` - \n\n"]
     pub fn onewire_host_write(host: *mut OneWireHost, value: u8);
 }
 extern "C" {
-    #[doc = " Skip ROM command\n @param host"]
+    #[doc = "Skip ROM command\n\n# Arguments\n\n* `host` - \n\n"]
     pub fn onewire_host_skip(host: *mut OneWireHost);
 }
 extern "C" {
-    #[doc = " Start working with the bus\n @param host"]
+    #[doc = "Start working with the bus\n\n# Arguments\n\n* `host` - \n\n"]
     pub fn onewire_host_start(host: *mut OneWireHost);
 }
 extern "C" {
-    #[doc = " Stop working with the bus\n @param host"]
+    #[doc = "Stop working with the bus\n\n# Arguments\n\n* `host` - \n\n"]
     pub fn onewire_host_stop(host: *mut OneWireHost);
 }
 extern "C" {
-    #[doc = " @param host"]
+    #[doc = "# Arguments\n\n* `host` - \n\n"]
     pub fn onewire_host_reset_search(host: *mut OneWireHost);
 }
 extern "C" {
-    #[doc = " @param host\n @param family_code"]
+    #[doc = "# Arguments\n\n* `host` - \n* `family_code` - \n\n"]
     pub fn onewire_host_target_search(host: *mut OneWireHost, family_code: u8);
 }
 extern "C" {
-    #[doc = " @param host\n @param newAddr\n @param mode\n @return uint8_t"]
+    #[doc = "Returns:\n\n* uint8_t\n\n# Arguments\n\n* `host` - \n* `newAddr` - \n* `mode` - \n\n"]
     pub fn onewire_host_search(
         host: *mut OneWireHost,
         new_addr: *mut u8,
@@ -20168,31 +20161,31 @@ extern "C" {
 pub type OneWireSlaveResultCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
 extern "C" {
-    #[doc = " Allocate onewire slave\n @param gpio_pin\n @return OneWireSlave*"]
+    #[doc = "Allocate onewire slave\n\nReturns:\n\n* OneWireSlave*\n\n# Arguments\n\n* `gpio_pin` - \n\n"]
     pub fn onewire_slave_alloc(gpio_pin: *const GpioPin) -> *mut OneWireSlave;
 }
 extern "C" {
-    #[doc = " Free onewire slave\n @param bus"]
+    #[doc = "Free onewire slave\n\n# Arguments\n\n* `bus` - \n\n"]
     pub fn onewire_slave_free(bus: *mut OneWireSlave);
 }
 extern "C" {
-    #[doc = " Start working with the bus\n @param bus"]
+    #[doc = "Start working with the bus\n\n# Arguments\n\n* `bus` - \n\n"]
     pub fn onewire_slave_start(bus: *mut OneWireSlave);
 }
 extern "C" {
-    #[doc = " Stop working with the bus\n @param bus"]
+    #[doc = "Stop working with the bus\n\n# Arguments\n\n* `bus` - \n\n"]
     pub fn onewire_slave_stop(bus: *mut OneWireSlave);
 }
 extern "C" {
-    #[doc = " Attach device for emulation\n @param bus\n @param device"]
+    #[doc = "Attach device for emulation\n\n# Arguments\n\n* `bus` - \n* `device` - \n\n"]
     pub fn onewire_slave_attach(bus: *mut OneWireSlave, device: *mut OneWireDevice);
 }
 extern "C" {
-    #[doc = " Detach device from bus\n @param bus"]
+    #[doc = "Detach device from bus\n\n# Arguments\n\n* `bus` - \n\n"]
     pub fn onewire_slave_detach(bus: *mut OneWireSlave);
 }
 extern "C" {
-    #[doc = " Set a callback to report emulation success\n @param bus\n @param result_cb\n @param context"]
+    #[doc = "Set a callback to report emulation success\n\n# Arguments\n\n* `bus` - \n* `result_cb` - \n* `context` - \n\n"]
     pub fn onewire_slave_set_result_callback(
         bus: *mut OneWireSlave,
         result_cb: OneWireSlaveResultCallback,
@@ -20309,11 +20302,11 @@ fn bindgen_test_layout_SubGhzBlockDecoder() {
     );
 }
 extern "C" {
-    #[doc = " Add data bit when decoding.\n @param decoder Pointer to a SubGhzBlockDecoder instance\n @param bit data, 1bit"]
+    #[doc = "Add data bit when decoding.\n\n# Arguments\n\n* `decoder` - Pointer to a SubGhzBlockDecoder instance\n* `bit` - data, 1bit\n\n"]
     pub fn subghz_protocol_blocks_add_bit(decoder: *mut SubGhzBlockDecoder, bit: u8);
 }
 extern "C" {
-    #[doc = " Add data to_128 bit when decoding.\n @param decoder Pointer to a SubGhzBlockDecoder instance\n @param head_64_bit Pointer to a head_64_bit\n @param bit data, 1bit"]
+    #[doc = "Add data to_128 bit when decoding.\n\n# Arguments\n\n* `decoder` - Pointer to a SubGhzBlockDecoder instance\n* `head_64_bit` - Pointer to a head_64_bit\n* `bit` - data, 1bit\n\n"]
     pub fn subghz_protocol_blocks_add_to_128_bit(
         decoder: *mut SubGhzBlockDecoder,
         bit: u8,
@@ -20321,7 +20314,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Getting the hash sum of the last randomly received parcel.\n @param decoder Pointer to a SubGhzBlockDecoder instance\n @return hash Hash sum"]
+    #[doc = "Getting the hash sum of the last randomly received parcel.\n\nReturns:\n\n* hash Hash sum\n\n# Arguments\n\n* `decoder` - Pointer to a SubGhzBlockDecoder instance\n\n"]
     pub fn subghz_protocol_blocks_get_hash_data(decoder: *mut SubGhzBlockDecoder, len: usize)
         -> u8;
 }
@@ -20331,7 +20324,7 @@ pub const SubGhzProtocolBlockAlignBit_SubGhzProtocolBlockAlignBitRight:
     SubGhzProtocolBlockAlignBit = 1;
 pub type SubGhzProtocolBlockAlignBit = core::ffi::c_uchar;
 extern "C" {
-    #[doc = " Set data bit when encoding HEX array.\n @param bit_value The value of the bit to be set\n @param data_array Pointer to a HEX array\n @param set_index_bit Number set a bit in the array starting from the left\n @param max_size_array array size, check not to overflow"]
+    #[doc = "Set data bit when encoding HEX array.\n\n# Arguments\n\n* `bit_value` - The value of the bit to be set\n* `data_array` - Pointer to a HEX array\n* `set_index_bit` - Number set a bit in the array starting from the left\n* `max_size_array` - array size, check not to overflow\n\n"]
     pub fn subghz_protocol_blocks_set_bit_array(
         bit_value: bool,
         data_array: *mut u8,
@@ -20340,12 +20333,12 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Get data bit when encoding HEX array.\n @param data_array Pointer to a HEX array\n @param read_index_bit Number get a bit in the array starting from the left\n @return bool value bit"]
+    #[doc = "Get data bit when encoding HEX array.\n\nReturns:\n\n* bool value bit\n\n# Arguments\n\n* `data_array` - Pointer to a HEX array\n* `read_index_bit` - Number get a bit in the array starting from the left\n\n"]
     pub fn subghz_protocol_blocks_get_bit_array(data_array: *mut u8, read_index_bit: usize)
         -> bool;
 }
 extern "C" {
-    #[doc = " Generating an upload from data.\n @param data_array Pointer to a HEX array\n @param count_bit_data_array How many bits in the array are processed\n @param upload Pointer to a LevelDuration\n @param max_size_upload upload size, check not to overflow\n @param duration_bit duration 1 bit\n @param align_bit alignment of useful bits in an array"]
+    #[doc = "Generating an upload from data.\n\n# Arguments\n\n* `data_array` - Pointer to a HEX array\n* `count_bit_data_array` - How many bits in the array are processed\n* `upload` - Pointer to a LevelDuration\n* `max_size_upload` - upload size, check not to overflow\n* `duration_bit` - duration 1 bit\n* `align_bit` - alignment of useful bits in an array\n\n"]
     pub fn subghz_protocol_blocks_get_upload_from_bit_array(
         data_array: *mut u8,
         count_bit_data_array: usize,
@@ -20366,79 +20359,79 @@ pub struct SubGhzEnvironment {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocate SubGhzEnvironment.\n @return SubGhzEnvironment* pointer to a SubGhzEnvironment instance"]
+    #[doc = "Allocate SubGhzEnvironment.\n\nReturns:\n\n* SubGhzEnvironment* pointer to a SubGhzEnvironment instance\n\n"]
     pub fn subghz_environment_alloc() -> *mut SubGhzEnvironment;
 }
 extern "C" {
-    #[doc = " Free SubGhzEnvironment.\n @param instance Pointer to a SubGhzEnvironment instance"]
+    #[doc = "Free SubGhzEnvironment.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzEnvironment instance\n\n"]
     pub fn subghz_environment_free(instance: *mut SubGhzEnvironment);
 }
 extern "C" {
-    #[doc = " Downloading the manufacture key file.\n @param instance Pointer to a SubGhzEnvironment instance\n @param filename Full path to the file\n @return true On success"]
+    #[doc = "Downloading the manufacture key file.\n\nReturns:\n\n* true On success\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzEnvironment instance\n* `filename` - Full path to the file\n\n"]
     pub fn subghz_environment_load_keystore(
         instance: *mut SubGhzEnvironment,
         filename: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Get pointer to a SubGhzKeystore* instance.\n @return SubGhzEnvironment* pointer to a SubGhzEnvironment instance"]
+    #[doc = "Get pointer to a SubGhzKeystore* instance.\n\nReturns:\n\n* SubGhzEnvironment* pointer to a SubGhzEnvironment instance\n\n"]
     pub fn subghz_environment_get_keystore(instance: *mut SubGhzEnvironment)
         -> *mut SubGhzKeystore;
 }
 extern "C" {
-    #[doc = " Set filename to work with Came Atomo.\n @param instance Pointer to a SubGhzEnvironment instance\n @param filename Full path to the file"]
+    #[doc = "Set filename to work with Came Atomo.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzEnvironment instance\n* `filename` - Full path to the file\n\n"]
     pub fn subghz_environment_set_came_atomo_rainbow_table_file_name(
         instance: *mut SubGhzEnvironment,
         filename: *const core::ffi::c_char,
     );
 }
 extern "C" {
-    #[doc = " Get filename to work with Came Atomo.\n @param instance Pointer to a SubGhzEnvironment instance\n @return Full path to the file"]
+    #[doc = "Get filename to work with Came Atomo.\n\nReturns:\n\n* Full path to the file\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzEnvironment instance\n\n"]
     pub fn subghz_environment_get_came_atomo_rainbow_table_file_name(
         instance: *mut SubGhzEnvironment,
     ) -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Set filename to work with Alutech at-4n.\n @param instance Pointer to a SubGhzEnvironment instance\n @param filename Full path to the file"]
+    #[doc = "Set filename to work with Alutech at-4n.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzEnvironment instance\n* `filename` - Full path to the file\n\n"]
     pub fn subghz_environment_set_alutech_at_4n_rainbow_table_file_name(
         instance: *mut SubGhzEnvironment,
         filename: *const core::ffi::c_char,
     );
 }
 extern "C" {
-    #[doc = " Get filename to work with Alutech at-4n.\n @param instance Pointer to a SubGhzEnvironment instance\n @return Full path to the file"]
+    #[doc = "Get filename to work with Alutech at-4n.\n\nReturns:\n\n* Full path to the file\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzEnvironment instance\n\n"]
     pub fn subghz_environment_get_alutech_at_4n_rainbow_table_file_name(
         instance: *mut SubGhzEnvironment,
     ) -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Set filename to work with Nice Flor-S.\n @param instance Pointer to a SubGhzEnvironment instance\n @param filename Full path to the file"]
+    #[doc = "Set filename to work with Nice Flor-S.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzEnvironment instance\n* `filename` - Full path to the file\n\n"]
     pub fn subghz_environment_set_nice_flor_s_rainbow_table_file_name(
         instance: *mut SubGhzEnvironment,
         filename: *const core::ffi::c_char,
     );
 }
 extern "C" {
-    #[doc = " Get filename to work with Nice Flor-S.\n @param instance Pointer to a SubGhzEnvironment instance\n @return Full path to the file"]
+    #[doc = "Get filename to work with Nice Flor-S.\n\nReturns:\n\n* Full path to the file\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzEnvironment instance\n\n"]
     pub fn subghz_environment_get_nice_flor_s_rainbow_table_file_name(
         instance: *mut SubGhzEnvironment,
     ) -> *const core::ffi::c_char;
 }
 extern "C" {
-    #[doc = " Set list of protocols to work.\n @param instance Pointer to a SubGhzEnvironment instance\n @param protocol_registry_items Pointer to a SubGhzProtocolRegistry"]
+    #[doc = "Set list of protocols to work.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzEnvironment instance\n* `protocol_registry_items` - Pointer to a SubGhzProtocolRegistry\n\n"]
     pub fn subghz_environment_set_protocol_registry(
         instance: *mut SubGhzEnvironment,
         protocol_registry_items: *mut core::ffi::c_void,
     );
 }
 extern "C" {
-    #[doc = " Get list of protocols to work.\n @param instance Pointer to a SubGhzEnvironment instance\n @return Pointer to a SubGhzProtocolRegistry"]
+    #[doc = "Get list of protocols to work.\n\nReturns:\n\n* Pointer to a SubGhzProtocolRegistry\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzEnvironment instance\n\n"]
     pub fn subghz_environment_get_protocol_registry(
         instance: *mut SubGhzEnvironment,
     ) -> *mut core::ffi::c_void;
 }
 extern "C" {
-    #[doc = " Get list of protocols names.\n @param instance Pointer to a SubGhzEnvironment instance\n @param idx index protocols\n @return Pointer to a SubGhzProtocolRegistry"]
+    #[doc = "Get list of protocols names.\n\nReturns:\n\n* Pointer to a SubGhzProtocolRegistry\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzEnvironment instance\n* `idx` - index protocols\n\n"]
     pub fn subghz_environment_get_protocol_name_registry(
         instance: *mut SubGhzEnvironment,
         idx: usize,
@@ -20900,14 +20893,14 @@ fn bindgen_test_layout_SubGhzBlockGeneric() {
     );
 }
 extern "C" {
-    #[doc = " Get name preset.\n @param preset_name name preset\n @param preset_str Output name preset"]
+    #[doc = "Get name preset.\n\n# Arguments\n\n* `preset_name` - name preset\n* `preset_str` - Output name preset\n\n"]
     pub fn subghz_block_generic_get_preset_name(
         preset_name: *const core::ffi::c_char,
         preset_str: *mut FuriString,
     );
 }
 extern "C" {
-    #[doc = " Serialize data SubGhzBlockGeneric.\n @param instance Pointer to a SubGhzBlockGeneric instance\n @param flipper_format Pointer to a FlipperFormat instance\n @param preset The modulation on which the signal was received, SubGhzRadioPreset\n @return true On success"]
+    #[doc = "Serialize data SubGhzBlockGeneric.\n\nReturns:\n\n* true On success\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzBlockGeneric instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `preset` - The modulation on which the signal was received, SubGhzRadioPreset\n\n"]
     pub fn subghz_block_generic_serialize(
         instance: *mut SubGhzBlockGeneric,
         flipper_format: *mut FlipperFormat,
@@ -20915,22 +20908,22 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Deserialize data SubGhzBlockGeneric.\n @param instance Pointer to a SubGhzBlockGeneric instance\n @param flipper_format Pointer to a FlipperFormat instance\n @return true On success"]
+    #[doc = "Deserialize data SubGhzBlockGeneric.\n\nReturns:\n\n* true On success\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzBlockGeneric instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
     pub fn subghz_block_generic_deserialize(
         instance: *mut SubGhzBlockGeneric,
         flipper_format: *mut FlipperFormat,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Flip the data bitwise\n\n @param      key        In data\n @param      bit_count  number of data bits\n\n @return     Reverse data"]
+    #[doc = "Flip the data bitwise\n\nReturns:\n\n* Reverse data\n\n# Arguments\n\n* `key` - In data\n* `bit_count` - number of data bits\n\n"]
     pub fn subghz_protocol_blocks_reverse_key(key: u64, bit_count: u8) -> u64;
 }
 extern "C" {
-    #[doc = " Get parity the data bitwise\n\n @param      key        In data\n @param      bit_count  number of data bits\n\n @return     parity"]
+    #[doc = "Get parity the data bitwise\n\nReturns:\n\n* parity\n\n# Arguments\n\n* `key` - In data\n* `bit_count` - number of data bits\n\n"]
     pub fn subghz_protocol_blocks_get_parity(key: u64, bit_count: u8) -> u8;
 }
 extern "C" {
-    #[doc = " CRC-4\n\n @param      message     array of bytes to check\n @param      size        number of bytes in message\n @param      polynomial  CRC polynomial\n @param      init        starting crc value\n\n @return     CRC value"]
+    #[doc = "CRC-4\n\nReturns:\n\n* CRC value\n\n# Arguments\n\n* `message` - array of bytes to check\n* `size` - number of bytes in message\n* `polynomial` - CRC polynomial\n* `init` - starting crc value\n\n"]
     pub fn subghz_protocol_blocks_crc4(
         message: *const u8,
         size: usize,
@@ -20939,7 +20932,7 @@ extern "C" {
     ) -> u8;
 }
 extern "C" {
-    #[doc = " CRC-7\n\n @param      message     array of bytes to check\n @param      size        number of bytes in message\n @param      polynomial  CRC polynomial\n @param      init        starting crc value\n\n @return     CRC value"]
+    #[doc = "CRC-7\n\nReturns:\n\n* CRC value\n\n# Arguments\n\n* `message` - array of bytes to check\n* `size` - number of bytes in message\n* `polynomial` - CRC polynomial\n* `init` - starting crc value\n\n"]
     pub fn subghz_protocol_blocks_crc7(
         message: *const u8,
         size: usize,
@@ -20948,7 +20941,7 @@ extern "C" {
     ) -> u8;
 }
 extern "C" {
-    #[doc = " Generic Cyclic Redundancy Check CRC-8. Example polynomial: 0x31 = x8 + x5 +\n x4 + 1 (x8 is implicit) Example polynomial: 0x80 = x8 + x7 (a normal\n bit-by-bit parity XOR)\n\n @param      message     array of bytes to check\n @param      size        number of bytes in message\n @param      polynomial  byte is from x^7 to x^0 (x^8 is implicitly one)\n @param      init        starting crc value\n\n @return     CRC value"]
+    #[doc = "Generic Cyclic Redundancy Check CRC-8. Example polynomial: 0x31 = x8 + x5 + x4 + 1 (x8 is implicit) Example polynomial: 0x80 = x8 + x7 (a normal bit-by-bit parity XOR)\n\nReturns:\n\n* CRC value\n\n# Arguments\n\n* `message` - array of bytes to check\n* `size` - number of bytes in message\n* `polynomial` - byte is from x^7 to x^0 (x^8 is implicitly one)\n* `init` - starting crc value\n\n"]
     pub fn subghz_protocol_blocks_crc8(
         message: *const u8,
         size: usize,
@@ -20957,7 +20950,7 @@ extern "C" {
     ) -> u8;
 }
 extern "C" {
-    #[doc = " \"Little-endian\" Cyclic Redundancy Check CRC-8 LE Input and output are\n reflected, i.e. least significant bit is shifted in first\n\n @param      message     array of bytes to check\n @param      size        number of bytes in message\n @param      polynomial  CRC polynomial\n @param      init        starting crc value\n\n @return     CRC value"]
+    #[doc = "\"Little-endian\" Cyclic Redundancy Check CRC-8 LE Input and output are reflected, i.e. least significant bit is shifted in first\n\nReturns:\n\n* CRC value\n\n# Arguments\n\n* `message` - array of bytes to check\n* `size` - number of bytes in message\n* `polynomial` - CRC polynomial\n* `init` - starting crc value\n\n"]
     pub fn subghz_protocol_blocks_crc8le(
         message: *const u8,
         size: usize,
@@ -20966,7 +20959,7 @@ extern "C" {
     ) -> u8;
 }
 extern "C" {
-    #[doc = " CRC-16 LSB. Input and output are reflected, i.e. least significant bit is\n shifted in first. Note that poly and init already need to be reflected\n\n @param      message     array of bytes to check\n @param      size        number of bytes in message\n @param      polynomial  CRC polynomial\n @param      init        starting crc value\n\n @return     CRC value"]
+    #[doc = "CRC-16 LSB. Input and output are reflected, i.e. least significant bit is shifted in first. Note that poly and init already need to be reflected\n\nReturns:\n\n* CRC value\n\n# Arguments\n\n* `message` - array of bytes to check\n* `size` - number of bytes in message\n* `polynomial` - CRC polynomial\n* `init` - starting crc value\n\n"]
     pub fn subghz_protocol_blocks_crc16lsb(
         message: *const u8,
         size: usize,
@@ -20975,7 +20968,7 @@ extern "C" {
     ) -> u16;
 }
 extern "C" {
-    #[doc = " CRC-16\n\n @param      message     array of bytes to check\n @param      size        number of bytes in message\n @param      polynomial  CRC polynomial\n @param      init        starting crc value\n\n @return     CRC value"]
+    #[doc = "CRC-16\n\nReturns:\n\n* CRC value\n\n# Arguments\n\n* `message` - array of bytes to check\n* `size` - number of bytes in message\n* `polynomial` - CRC polynomial\n* `init` - starting crc value\n\n"]
     pub fn subghz_protocol_blocks_crc16(
         message: *const u8,
         size: usize,
@@ -20984,7 +20977,7 @@ extern "C" {
     ) -> u16;
 }
 extern "C" {
-    #[doc = " Digest-8 by \"LFSR-based Toeplitz hash\"\n\n @param      message  bytes of message data\n @param      size     number of bytes to digest\n @param      gen      key stream generator, needs to includes the MSB if the\n                      LFSR is rolling\n @param      key      initial key\n\n @return     digest value"]
+    #[doc = "Digest-8 by \"LFSR-based Toeplitz hash\"\n\nReturns:\n\n* digest value\n\n# Arguments\n\n* `message` - bytes of message data\n* `size` - number of bytes to digest\n* `gen` - key stream generator, needs to includes the MSB if the LFSR is rolling\n* `key` - initial key\n\n"]
     pub fn subghz_protocol_blocks_lfsr_digest8(
         message: *const u8,
         size: usize,
@@ -20993,7 +20986,7 @@ extern "C" {
     ) -> u8;
 }
 extern "C" {
-    #[doc = " Digest-8 by \"LFSR-based Toeplitz hash\", byte reflect, bit reflect\n\n @param      message  bytes of message data\n @param      size     number of bytes to digest\n @param      gen      key stream generator, needs to includes the MSB if the\n                      LFSR is rolling\n @param      key      initial key\n\n @return     digest value"]
+    #[doc = "Digest-8 by \"LFSR-based Toeplitz hash\", byte reflect, bit reflect\n\nReturns:\n\n* digest value\n\n# Arguments\n\n* `message` - bytes of message data\n* `size` - number of bytes to digest\n* `gen` - key stream generator, needs to includes the MSB if the LFSR is rolling\n* `key` - initial key\n\n"]
     pub fn subghz_protocol_blocks_lfsr_digest8_reflect(
         message: *const u8,
         size: usize,
@@ -21002,7 +20995,7 @@ extern "C" {
     ) -> u8;
 }
 extern "C" {
-    #[doc = " Digest-16 by \"LFSR-based Toeplitz hash\"\n\n @param      message  bytes of message data\n @param      size     number of bytes to digest\n @param      gen      key stream generator, needs to includes the MSB if the\n                      LFSR is rolling\n @param      key      initial key\n\n @return     digest value"]
+    #[doc = "Digest-16 by \"LFSR-based Toeplitz hash\"\n\nReturns:\n\n* digest value\n\n# Arguments\n\n* `message` - bytes of message data\n* `size` - number of bytes to digest\n* `gen` - key stream generator, needs to includes the MSB if the LFSR is rolling\n* `key` - initial key\n\n"]
     pub fn subghz_protocol_blocks_lfsr_digest16(
         message: *const u8,
         size: usize,
@@ -21011,19 +21004,19 @@ extern "C" {
     ) -> u16;
 }
 extern "C" {
-    #[doc = " Compute Addition of a number of bytes\n\n @param      message  bytes of message data\n @param      size     number of bytes to sum\n\n @return     summation value"]
+    #[doc = "Compute Addition of a number of bytes\n\nReturns:\n\n* summation value\n\n# Arguments\n\n* `message` - bytes of message data\n* `size` - number of bytes to sum\n\n"]
     pub fn subghz_protocol_blocks_add_bytes(message: *const u8, size: usize) -> u8;
 }
 extern "C" {
-    #[doc = " Compute bit parity of a single byte (8 bits)\n\n @param      byte  single byte to check\n\n @return     1 odd parity, 0 even parity"]
+    #[doc = "Compute bit parity of a single byte (8 bits)\n\nReturns:\n\n* 1 odd parity, 0 even parity\n\n# Arguments\n\n* `byte` - single byte to check\n\n"]
     pub fn subghz_protocol_blocks_parity8(byte: u8) -> u8;
 }
 extern "C" {
-    #[doc = " Compute bit parity of a number of bytes\n\n @param      message  bytes of message data\n @param      size     number of bytes to sum\n\n @return     1 odd parity, 0 even parity"]
+    #[doc = "Compute bit parity of a number of bytes\n\nReturns:\n\n* 1 odd parity, 0 even parity\n\n# Arguments\n\n* `message` - bytes of message data\n* `size` - number of bytes to sum\n\n"]
     pub fn subghz_protocol_blocks_parity_bytes(message: *const u8, size: usize) -> u8;
 }
 extern "C" {
-    #[doc = " Compute XOR (byte-wide parity) of a number of bytes\n\n @param      message  bytes of message data\n @param      size     number of bytes to sum\n\n @return     summation value, per bit-position 1 odd parity, 0 even parity"]
+    #[doc = "Compute XOR (byte-wide parity) of a number of bytes\n\nReturns:\n\n* summation value, per bit-position 1 odd parity, 0 even parity\n\n# Arguments\n\n* `message` - bytes of message data\n* `size` - number of bytes to sum\n\n"]
     pub fn subghz_protocol_blocks_xor_bytes(message: *const u8, size: usize) -> u8;
 }
 pub type SubGhzProtocolDecoderBaseRxCallback = ::core::option::Option<
@@ -21083,14 +21076,14 @@ fn bindgen_test_layout_SubGhzProtocolDecoderBase() {
     );
 }
 extern "C" {
-    #[doc = " Getting a textual representation of the received data.\n @param decoder_base Pointer to a SubGhzProtocolDecoderBase instance\n @param output Resulting text"]
+    #[doc = "Getting a textual representation of the received data.\n\n# Arguments\n\n* `decoder_base` - Pointer to a SubGhzProtocolDecoderBase instance\n* `output` - Resulting text\n\n"]
     pub fn subghz_protocol_decoder_base_get_string(
         decoder_base: *mut SubGhzProtocolDecoderBase,
         output: *mut FuriString,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Serialize data SubGhzProtocolDecoderBase.\n @param decoder_base Pointer to a SubGhzProtocolDecoderBase instance\n @param flipper_format Pointer to a FlipperFormat instance\n @param preset The modulation on which the signal was received, SubGhzRadioPreset\n @return true On success"]
+    #[doc = "Serialize data SubGhzProtocolDecoderBase.\n\nReturns:\n\n* true On success\n\n# Arguments\n\n* `decoder_base` - Pointer to a SubGhzProtocolDecoderBase instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `preset` - The modulation on which the signal was received, SubGhzRadioPreset\n\n"]
     pub fn subghz_protocol_decoder_base_serialize(
         decoder_base: *mut SubGhzProtocolDecoderBase,
         flipper_format: *mut FlipperFormat,
@@ -21098,7 +21091,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Getting the hash sum of the last randomly received parcel.\n @param decoder_base Pointer to a SubGhzProtocolDecoderBase instance\n @return hash Hash sum"]
+    #[doc = "Getting the hash sum of the last randomly received parcel.\n\nReturns:\n\n* hash Hash sum\n\n# Arguments\n\n* `decoder_base` - Pointer to a SubGhzProtocolDecoderBase instance\n\n"]
     pub fn subghz_protocol_decoder_base_get_hash_data(
         decoder_base: *mut SubGhzProtocolDecoderBase,
     ) -> u8;
@@ -21156,7 +21149,7 @@ extern "C" {
     pub static subghz_protocol_raw: SubGhzProtocol;
 }
 extern "C" {
-    #[doc = " Open file for writing\n @param instance Pointer to a SubGhzProtocolDecoderRAW instance\n @param dev_name  File name\n @param preset The modulation on which the signal was received, SubGhzRadioPreset\n @return true On success"]
+    #[doc = "Open file for writing\n\nReturns:\n\n* true On success\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzProtocolDecoderRAW instance\n* `dev_name` - File name\n* `preset` - The modulation on which the signal was received, SubGhzRadioPreset\n\n"]
     pub fn subghz_protocol_raw_save_to_file_init(
         instance: *mut SubGhzProtocolDecoderRAW,
         dev_name: *const core::ffi::c_char,
@@ -21164,29 +21157,29 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Stop writing file to flash\n @param instance Pointer to a SubGhzProtocolDecoderRAW instance"]
+    #[doc = "Stop writing file to flash\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzProtocolDecoderRAW instance\n\n"]
     pub fn subghz_protocol_raw_save_to_file_stop(instance: *mut SubGhzProtocolDecoderRAW);
 }
 extern "C" {
-    #[doc = " Get the number of samples received SubGhzProtocolDecoderRAW.\n @param instance Pointer to a SubGhzProtocolDecoderRAW instance\n @return count of samples"]
+    #[doc = "Get the number of samples received SubGhzProtocolDecoderRAW.\n\nReturns:\n\n* count of samples\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzProtocolDecoderRAW instance\n\n"]
     pub fn subghz_protocol_raw_get_sample_write(instance: *mut SubGhzProtocolDecoderRAW) -> usize;
 }
 extern "C" {
-    #[doc = " Allocate SubGhzProtocolDecoderRAW.\n @param environment Pointer to a SubGhzEnvironment instance\n @return SubGhzProtocolDecoderRAW* pointer to a SubGhzProtocolDecoderRAW instance"]
+    #[doc = "Allocate SubGhzProtocolDecoderRAW.\n\nReturns:\n\n* SubGhzProtocolDecoderRAW* pointer to a SubGhzProtocolDecoderRAW instance\n\n# Arguments\n\n* `environment` - Pointer to a SubGhzEnvironment instance\n\n"]
     pub fn subghz_protocol_decoder_raw_alloc(
         environment: *mut SubGhzEnvironment,
     ) -> *mut core::ffi::c_void;
 }
 extern "C" {
-    #[doc = " Free SubGhzProtocolDecoderRAW.\n @param context Pointer to a SubGhzProtocolDecoderRAW instance"]
+    #[doc = "Free SubGhzProtocolDecoderRAW.\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolDecoderRAW instance\n\n"]
     pub fn subghz_protocol_decoder_raw_free(context: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Reset decoder SubGhzProtocolDecoderRAW.\n @param context Pointer to a SubGhzProtocolDecoderRAW instance"]
+    #[doc = "Reset decoder SubGhzProtocolDecoderRAW.\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolDecoderRAW instance\n\n"]
     pub fn subghz_protocol_decoder_raw_reset(context: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Parse a raw sequence of levels and durations received from the air.\n @param context Pointer to a SubGhzProtocolDecoderRAW instance\n @param level Signal level true-high false-low\n @param duration Duration of this level in, us"]
+    #[doc = "Parse a raw sequence of levels and durations received from the air.\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolDecoderRAW instance\n* `level` - Signal level true-high false-low\n* `duration` - Duration of this level in, us\n\n"]
     pub fn subghz_protocol_decoder_raw_feed(
         context: *mut core::ffi::c_void,
         level: bool,
@@ -21194,42 +21187,42 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Deserialize data SubGhzProtocolDecoderRAW.\n @param context Pointer to a SubGhzProtocolDecoderRAW instance\n @param flipper_format Pointer to a FlipperFormat instance\n @return true On success"]
+    #[doc = "Deserialize data SubGhzProtocolDecoderRAW.\n\nReturns:\n\n* true On success\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolDecoderRAW instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
     pub fn subghz_protocol_decoder_raw_deserialize(
         context: *mut core::ffi::c_void,
         flipper_format: *mut FlipperFormat,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Getting a textual representation of the received data.\n @param context Pointer to a SubGhzProtocolDecoderRAW instance\n @param output Resulting text"]
+    #[doc = "Getting a textual representation of the received data.\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolDecoderRAW instance\n* `output` - Resulting text\n\n"]
     pub fn subghz_protocol_decoder_raw_get_string(
         context: *mut core::ffi::c_void,
         output: *mut FuriString,
     );
 }
 extern "C" {
-    #[doc = " Allocate SubGhzProtocolEncoderRAW.\n @param environment Pointer to a SubGhzEnvironment instance\n @return SubGhzProtocolEncoderRAW* pointer to a SubGhzProtocolEncoderRAW instance"]
+    #[doc = "Allocate SubGhzProtocolEncoderRAW.\n\nReturns:\n\n* SubGhzProtocolEncoderRAW* pointer to a SubGhzProtocolEncoderRAW instance\n\n# Arguments\n\n* `environment` - Pointer to a SubGhzEnvironment instance\n\n"]
     pub fn subghz_protocol_encoder_raw_alloc(
         environment: *mut SubGhzEnvironment,
     ) -> *mut core::ffi::c_void;
 }
 extern "C" {
-    #[doc = " Free SubGhzProtocolEncoderRAW.\n @param context Pointer to a SubGhzProtocolEncoderRAW instance"]
+    #[doc = "Free SubGhzProtocolEncoderRAW.\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolEncoderRAW instance\n\n"]
     pub fn subghz_protocol_encoder_raw_free(context: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Forced transmission stop.\n @param context Pointer to a SubGhzProtocolEncoderRAW instance"]
+    #[doc = "Forced transmission stop.\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolEncoderRAW instance\n\n"]
     pub fn subghz_protocol_encoder_raw_stop(context: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " pause writing to flash.\n @param context Pointer to a SubGhzProtocolEncoderRAW instance\n @param pause pause writing"]
+    #[doc = "pause writing to flash.\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolEncoderRAW instance\n* `pause` - pause writing\n\n"]
     pub fn subghz_protocol_raw_save_to_file_pause(
         instance: *mut SubGhzProtocolDecoderRAW,
         pause: bool,
     );
 }
 extern "C" {
-    #[doc = " Set callback on completion of file transfer.\n @param instance Pointer to a SubGhzProtocolEncoderRAW instance\n @param callback_end Callback, SubGhzProtocolEncoderRAWCallbackEnd\n @param context_end Context"]
+    #[doc = "Set callback on completion of file transfer.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzProtocolEncoderRAW instance\n* `callback_end` - Callback, SubGhzProtocolEncoderRAWCallbackEnd\n* `context_end` - Context\n\n"]
     pub fn subghz_protocol_raw_file_encoder_worker_set_callback_end(
         instance: *mut SubGhzProtocolEncoderRAW,
         callback_end: SubGhzProtocolEncoderRAWCallbackEnd,
@@ -21237,21 +21230,21 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " File generation for RAW work.\n @param flipper_format Pointer to a FlipperFormat instance\n @param file_path File path"]
+    #[doc = "File generation for RAW work.\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `file_path` - File path\n\n"]
     pub fn subghz_protocol_raw_gen_fff_data(
         flipper_format: *mut FlipperFormat,
         file_path: *const core::ffi::c_char,
     );
 }
 extern "C" {
-    #[doc = " Deserialize and generating an upload to send.\n @param context Pointer to a SubGhzProtocolEncoderRAW instance\n @param flipper_format Pointer to a FlipperFormat instance\n @return true On success"]
+    #[doc = "Deserialize and generating an upload to send.\n\nReturns:\n\n* true On success\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolEncoderRAW instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
     pub fn subghz_protocol_encoder_raw_deserialize(
         context: *mut core::ffi::c_void,
         flipper_format: *mut FlipperFormat,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Getting the level and duration of the upload to be loaded into DMA.\n @param context Pointer to a SubGhzProtocolEncoderRAW instance\n @return LevelDuration"]
+    #[doc = "Getting the level and duration of the upload to be loaded into DMA.\n\nReturns:\n\n* LevelDuration\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolEncoderRAW instance\n\n"]
     pub fn subghz_protocol_encoder_raw_yield(context: *mut core::ffi::c_void) -> LevelDuration;
 }
 #[repr(C)]
@@ -21267,23 +21260,23 @@ pub type SubGhzReceiverCallback = ::core::option::Option<
     ),
 >;
 extern "C" {
-    #[doc = " Allocate and init SubGhzReceiver.\n @param environment Pointer to a SubGhzEnvironment instance\n @return SubGhzReceiver* pointer to a SubGhzReceiver instance"]
+    #[doc = "Allocate and init SubGhzReceiver.\n\nReturns:\n\n* SubGhzReceiver* pointer to a SubGhzReceiver instance\n\n# Arguments\n\n* `environment` - Pointer to a SubGhzEnvironment instance\n\n"]
     pub fn subghz_receiver_alloc_init(environment: *mut SubGhzEnvironment) -> *mut SubGhzReceiver;
 }
 extern "C" {
-    #[doc = " Free SubGhzReceiver.\n @param instance Pointer to a SubGhzReceiver instance"]
+    #[doc = "Free SubGhzReceiver.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzReceiver instance\n\n"]
     pub fn subghz_receiver_free(instance: *mut SubGhzReceiver);
 }
 extern "C" {
-    #[doc = " Parse a raw sequence of levels and durations received from the air.\n @param instance Pointer to a SubGhzReceiver instance\n @param level Signal level true-high false-low\n @param duration Duration of this level in, us"]
+    #[doc = "Parse a raw sequence of levels and durations received from the air.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzReceiver instance\n* `level` - Signal level true-high false-low\n* `duration` - Duration of this level in, us\n\n"]
     pub fn subghz_receiver_decode(instance: *mut SubGhzReceiver, level: bool, duration: u32);
 }
 extern "C" {
-    #[doc = " Reset decoder SubGhzReceiver.\n @param instance Pointer to a SubGhzReceiver instance"]
+    #[doc = "Reset decoder SubGhzReceiver.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzReceiver instance\n\n"]
     pub fn subghz_receiver_reset(instance: *mut SubGhzReceiver);
 }
 extern "C" {
-    #[doc = " Set a callback upon completion of successful decoding of one of the protocols.\n @param instance Pointer to a SubGhzReceiver instance\n @param callback Callback, SubGhzReceiverCallback\n @param context Context"]
+    #[doc = "Set a callback upon completion of successful decoding of one of the protocols.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzReceiver instance\n* `callback` - Callback, SubGhzReceiverCallback\n* `context` - Context\n\n"]
     pub fn subghz_receiver_set_rx_callback(
         instance: *mut SubGhzReceiver,
         callback: SubGhzReceiverCallback,
@@ -21291,11 +21284,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Set the filter of receivers that will work at the moment.\n @param instance Pointer to a SubGhzReceiver instance\n @param filter Filter, SubGhzProtocolFlag"]
+    #[doc = "Set the filter of receivers that will work at the moment.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzReceiver instance\n* `filter` - Filter, SubGhzProtocolFlag\n\n"]
     pub fn subghz_receiver_set_filter(instance: *mut SubGhzReceiver, filter: SubGhzProtocolFlag);
 }
 extern "C" {
-    #[doc = " Search for a cattery by his name.\n @param instance Pointer to a SubGhzReceiver instance\n @param decoder_name Receiver name\n @return SubGhzProtocolDecoderBase* pointer to a SubGhzProtocolDecoderBase instance"]
+    #[doc = "Search for a cattery by his name.\n\nReturns:\n\n* SubGhzProtocolDecoderBase* pointer to a SubGhzProtocolDecoderBase instance\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzReceiver instance\n* `decoder_name` - Receiver name\n\n"]
     pub fn subghz_receiver_search_decoder_base_by_name(
         instance: *mut SubGhzReceiver,
         decoder_name: *const core::ffi::c_char,
@@ -21344,21 +21337,21 @@ fn bindgen_test_layout_SubGhzProtocolRegistry() {
     );
 }
 extern "C" {
-    #[doc = " Registration by name SubGhzProtocol.\n @param protocol_registry SubGhzProtocolRegistry\n @param name Protocol name\n @return SubGhzProtocol* pointer to a SubGhzProtocol instance"]
+    #[doc = "Registration by name SubGhzProtocol.\n\nReturns:\n\n* SubGhzProtocol* pointer to a SubGhzProtocol instance\n\n# Arguments\n\n* `protocol_registry` - SubGhzProtocolRegistry\n* `name` - Protocol name\n\n"]
     pub fn subghz_protocol_registry_get_by_name(
         protocol_registry: *const SubGhzProtocolRegistry,
         name: *const core::ffi::c_char,
     ) -> *const SubGhzProtocol;
 }
 extern "C" {
-    #[doc = " Registration protocol by index in array SubGhzProtocol.\n @param protocol_registry SubGhzProtocolRegistry\n @param index Protocol by index in array\n @return SubGhzProtocol* pointer to a SubGhzProtocol instance"]
+    #[doc = "Registration protocol by index in array SubGhzProtocol.\n\nReturns:\n\n* SubGhzProtocol* pointer to a SubGhzProtocol instance\n\n# Arguments\n\n* `protocol_registry` - SubGhzProtocolRegistry\n* `index` - Protocol by index in array\n\n"]
     pub fn subghz_protocol_registry_get_by_index(
         protocol_registry: *const SubGhzProtocolRegistry,
         index: usize,
     ) -> *const SubGhzProtocol;
 }
 extern "C" {
-    #[doc = " Getting the number of registered protocols.\n @param protocol_registry SubGhzProtocolRegistry\n @return Number of protocols"]
+    #[doc = "Getting the number of registered protocols.\n\nReturns:\n\n* Number of protocols\n\n# Arguments\n\n* `protocol_registry` - SubGhzProtocolRegistry\n\n"]
     pub fn subghz_protocol_registry_count(
         protocol_registry: *const SubGhzProtocolRegistry,
     ) -> usize;
@@ -21443,7 +21436,7 @@ pub struct SubGhzTxRxWorker {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " SubGhzTxRxWorker, add data to transfer\n @param instance  Pointer to a SubGhzTxRxWorker instance\n @param data      *data\n @param size      data size\n @return bool     true if ok"]
+    #[doc = "SubGhzTxRxWorker, add data to transfer\n\nReturns:\n\n* bool true if ok\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzTxRxWorker instance\n* `data` - *data\n* `size` - data size\n\n"]
     pub fn subghz_tx_rx_worker_write(
         instance: *mut SubGhzTxRxWorker,
         data: *mut u8,
@@ -21451,11 +21444,11 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " SubGhzTxRxWorker, get available data\n @param instance   Pointer to a SubGhzTxRxWorker instance\n @return size_t    data size"]
+    #[doc = "SubGhzTxRxWorker, get available data\n\nReturns:\n\n* size_t data size\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzTxRxWorker instance\n\n"]
     pub fn subghz_tx_rx_worker_available(instance: *mut SubGhzTxRxWorker) -> usize;
 }
 extern "C" {
-    #[doc = " SubGhzTxRxWorker, read data\n @param instance   Pointer to a SubGhzTxRxWorker instance\n @param data       *data\n @param size       max data size, which can be read\n @return size_t    data size, how much is actually read"]
+    #[doc = "SubGhzTxRxWorker, read data\n\nReturns:\n\n* size_t data size, how much is actually read\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzTxRxWorker instance\n* `data` - *data\n* `size` - max data size, which can be read\n\n"]
     pub fn subghz_tx_rx_worker_read(
         instance: *mut SubGhzTxRxWorker,
         data: *mut u8,
@@ -21463,7 +21456,7 @@ extern "C" {
     ) -> usize;
 }
 extern "C" {
-    #[doc = " Сallback SubGhzTxRxWorker when there is data to read in an empty buffer\n @param instance Pointer to a SubGhzTxRxWorker instance\n @param callback SubGhzTxRxWorkerCallbackHaveRead callback\n @param context"]
+    #[doc = "Сallback SubGhzTxRxWorker when there is data to read in an empty buffer\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzTxRxWorker instance\n* `callback` - SubGhzTxRxWorkerCallbackHaveRead callback\n* `context` - \n\n"]
     pub fn subghz_tx_rx_worker_set_callback_have_read(
         instance: *mut SubGhzTxRxWorker,
         callback: SubGhzTxRxWorkerCallbackHaveRead,
@@ -21471,23 +21464,23 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Allocate SubGhzTxRxWorker\n @return SubGhzTxRxWorker* Pointer to a SubGhzTxRxWorker instance"]
+    #[doc = "Allocate SubGhzTxRxWorker\n\nReturns:\n\n* SubGhzTxRxWorker* Pointer to a SubGhzTxRxWorker instance\n\n"]
     pub fn subghz_tx_rx_worker_alloc() -> *mut SubGhzTxRxWorker;
 }
 extern "C" {
-    #[doc = " Free SubGhzTxRxWorker\n @param instance Pointer to a SubGhzTxRxWorker instance"]
+    #[doc = "Free SubGhzTxRxWorker\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzTxRxWorker instance\n\n"]
     pub fn subghz_tx_rx_worker_free(instance: *mut SubGhzTxRxWorker);
 }
 extern "C" {
-    #[doc = " Start SubGhzTxRxWorker\n @param instance Pointer to a SubGhzTxRxWorker instance\n @return bool - true if ok"]
+    #[doc = "Start SubGhzTxRxWorker\n\nReturns:\n\n* bool - true if ok\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzTxRxWorker instance\n\n"]
     pub fn subghz_tx_rx_worker_start(instance: *mut SubGhzTxRxWorker, frequency: u32) -> bool;
 }
 extern "C" {
-    #[doc = " Stop SubGhzTxRxWorker\n @param instance Pointer to a SubGhzTxRxWorker instance"]
+    #[doc = "Stop SubGhzTxRxWorker\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzTxRxWorker instance\n\n"]
     pub fn subghz_tx_rx_worker_stop(instance: *mut SubGhzTxRxWorker);
 }
 extern "C" {
-    #[doc = " Check if worker is running\n @param instance Pointer to a SubGhzTxRxWorker instance\n @return bool - true if running"]
+    #[doc = "Check if worker is running\n\nReturns:\n\n* bool - true if running\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzTxRxWorker instance\n\n"]
     pub fn subghz_tx_rx_worker_is_running(instance: *mut SubGhzTxRxWorker) -> bool;
 }
 #[repr(C)]
@@ -21504,45 +21497,45 @@ extern "C" {
     pub fn subghz_worker_rx_callback(level: bool, duration: u32, context: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Allocate SubGhzWorker.\n @return SubGhzWorker* Pointer to a SubGhzWorker instance"]
+    #[doc = "Allocate SubGhzWorker.\n\nReturns:\n\n* SubGhzWorker* Pointer to a SubGhzWorker instance\n\n"]
     pub fn subghz_worker_alloc() -> *mut SubGhzWorker;
 }
 extern "C" {
-    #[doc = " Free SubGhzWorker.\n @param instance Pointer to a SubGhzWorker instance"]
+    #[doc = "Free SubGhzWorker.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzWorker instance\n\n"]
     pub fn subghz_worker_free(instance: *mut SubGhzWorker);
 }
 extern "C" {
-    #[doc = " Overrun callback SubGhzWorker.\n @param instance Pointer to a SubGhzWorker instance\n @param callback SubGhzWorkerOverrunCallback callback"]
+    #[doc = "Overrun callback SubGhzWorker.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzWorker instance\n* `callback` - SubGhzWorkerOverrunCallback callback\n\n"]
     pub fn subghz_worker_set_overrun_callback(
         instance: *mut SubGhzWorker,
         callback: SubGhzWorkerOverrunCallback,
     );
 }
 extern "C" {
-    #[doc = " Pair callback SubGhzWorker.\n @param instance Pointer to a SubGhzWorker instance\n @param callback SubGhzWorkerOverrunCallback callback"]
+    #[doc = "Pair callback SubGhzWorker.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzWorker instance\n* `callback` - SubGhzWorkerOverrunCallback callback\n\n"]
     pub fn subghz_worker_set_pair_callback(
         instance: *mut SubGhzWorker,
         callback: SubGhzWorkerPairCallback,
     );
 }
 extern "C" {
-    #[doc = " Context callback SubGhzWorker.\n @param instance Pointer to a SubGhzWorker instance\n @param context"]
+    #[doc = "Context callback SubGhzWorker.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzWorker instance\n* `context` - \n\n"]
     pub fn subghz_worker_set_context(instance: *mut SubGhzWorker, context: *mut core::ffi::c_void);
 }
 extern "C" {
-    #[doc = " Start SubGhzWorker.\n @param instance Pointer to a SubGhzWorker instance"]
+    #[doc = "Start SubGhzWorker.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzWorker instance\n\n"]
     pub fn subghz_worker_start(instance: *mut SubGhzWorker);
 }
 extern "C" {
-    #[doc = " Stop SubGhzWorker\n @param instance Pointer to a SubGhzWorker instance"]
+    #[doc = "Stop SubGhzWorker\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzWorker instance\n\n"]
     pub fn subghz_worker_stop(instance: *mut SubGhzWorker);
 }
 extern "C" {
-    #[doc = " Check if worker is running.\n @param instance Pointer to a SubGhzWorker instance\n @return bool - true if running"]
+    #[doc = "Check if worker is running.\n\nReturns:\n\n* bool - true if running\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzWorker instance\n\n"]
     pub fn subghz_worker_is_running(instance: *mut SubGhzWorker) -> bool;
 }
 extern "C" {
-    #[doc = " Short duration filter setting.\n glues short durations into 1. The default setting is 30 us, if set to 0 the filter will be disabled\n @param instance Pointer to a SubGhzWorker instance\n @param timeout time in us"]
+    #[doc = "Short duration filter setting. glues short durations into 1. The default setting is 30 us, if set to 0 the filter will be disabled\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzWorker instance\n* `timeout` - time in us\n\n"]
     pub fn subghz_worker_set_filter(instance: *mut SubGhzWorker, timeout: u16);
 }
 #[repr(C)]
@@ -21551,66 +21544,66 @@ pub struct SubGhzTransmitter {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = " Allocate and init SubGhzTransmitter.\n @param environment Pointer to a SubGhzEnvironment instance\n @return SubGhzTransmitter* pointer to a SubGhzTransmitter instance"]
+    #[doc = "Allocate and init SubGhzTransmitter.\n\nReturns:\n\n* SubGhzTransmitter* pointer to a SubGhzTransmitter instance\n\n# Arguments\n\n* `environment` - Pointer to a SubGhzEnvironment instance\n\n"]
     pub fn subghz_transmitter_alloc_init(
         environment: *mut SubGhzEnvironment,
         protocol_name: *const core::ffi::c_char,
     ) -> *mut SubGhzTransmitter;
 }
 extern "C" {
-    #[doc = " Free SubGhzTransmitter.\n @param instance Pointer to a SubGhzTransmitter instance"]
+    #[doc = "Free SubGhzTransmitter.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzTransmitter instance\n\n"]
     pub fn subghz_transmitter_free(instance: *mut SubGhzTransmitter);
 }
 extern "C" {
-    #[doc = " Get protocol instance.\n @param instance Pointer to a SubGhzTransmitter instance"]
+    #[doc = "Get protocol instance.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzTransmitter instance\n\n"]
     pub fn subghz_transmitter_get_protocol_instance(
         instance: *mut SubGhzTransmitter,
     ) -> *mut SubGhzProtocolEncoderBase;
 }
 extern "C" {
-    #[doc = " Forced transmission stop.\n @param instance Pointer to a SubGhzTransmitter instance"]
+    #[doc = "Forced transmission stop.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzTransmitter instance\n\n"]
     pub fn subghz_transmitter_stop(instance: *mut SubGhzTransmitter) -> bool;
 }
 extern "C" {
-    #[doc = " Deserialize and generating an upload to send.\n @param instance Pointer to a SubGhzTransmitter instance\n @param flipper_format Pointer to a FlipperFormat instance\n @return true On success"]
+    #[doc = "Deserialize and generating an upload to send.\n\nReturns:\n\n* true On success\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzTransmitter instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
     pub fn subghz_transmitter_deserialize(
         instance: *mut SubGhzTransmitter,
         flipper_format: *mut FlipperFormat,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Getting the level and duration of the upload to be loaded into DMA.\n @param context Pointer to a SubGhzTransmitter instance\n @return LevelDuration"]
+    #[doc = "Getting the level and duration of the upload to be loaded into DMA.\n\nReturns:\n\n* LevelDuration\n\n# Arguments\n\n* `context` - Pointer to a SubGhzTransmitter instance\n\n"]
     pub fn subghz_transmitter_yield(context: *mut core::ffi::c_void) -> LevelDuration;
 }
 extern "C" {
-    #[doc = " Extract int value and trim arguments string\n\n @param args - arguments string\n @param word first argument, output\n @return true - success\n @return false - arguments string does not contain int"]
+    #[doc = "Extract int value and trim arguments string\n\nReturns:\n\n* true - success\n* false - arguments string does not contain int\n\n# Arguments\n\n* `args` - - arguments string\n* `word` - first argument, output\n\n"]
     pub fn args_read_int_and_trim(args: *mut FuriString, value: *mut core::ffi::c_int) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Extract first argument from arguments string and trim arguments string\n\n @param args arguments string\n @param word first argument, output\n @return true - success\n @return false - arguments string does not contain anything"]
+    #[doc = "Extract first argument from arguments string and trim arguments string\n\nReturns:\n\n* true - success\n* false - arguments string does not contain anything\n\n# Arguments\n\n* `args` - arguments string\n* `word` - first argument, output\n\n"]
     pub fn args_read_string_and_trim(args: *mut FuriString, word: *mut FuriString) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Extract the first quoted argument from the argument string and trim the argument string. If the argument is not quoted, calls args_read_string_and_trim.\n\n @param args arguments string\n @param word first argument, output, without quotes\n @return true - success\n @return false - arguments string does not contain anything"]
+    #[doc = "Extract the first quoted argument from the argument string and trim the argument string. If the argument is not quoted, calls args_read_string_and_trim.\n\nReturns:\n\n* true - success\n* false - arguments string does not contain anything\n\n# Arguments\n\n* `args` - arguments string\n* `word` - first argument, output, without quotes\n\n"]
     pub fn args_read_probably_quoted_string_and_trim(
         args: *mut FuriString,
         word: *mut FuriString,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Convert hex ASCII values to byte array\n\n @param args arguments string\n @param bytes byte array pointer, output\n @param bytes_count needed bytes count\n @return true - success\n @return false - arguments string does not contain enough values, or contain non-hex ASCII values"]
+    #[doc = "Convert hex ASCII values to byte array\n\nReturns:\n\n* true - success\n* false - arguments string does not contain enough values, or contain non-hex ASCII values\n\n# Arguments\n\n* `args` - arguments string\n* `bytes` - byte array pointer, output\n* `bytes_count` - needed bytes count\n\n"]
     pub fn args_read_hex_bytes(args: *mut FuriString, bytes: *mut u8, bytes_count: usize) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Get length of first word from arguments string\n\n @param args arguments string\n @return size_t length of first word"]
+    #[doc = "Get length of first word from arguments string\n\nReturns:\n\n* size_t length of first word\n\n# Arguments\n\n* `args` - arguments string\n\n"]
     pub fn args_get_first_word_length(args: *mut FuriString) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Get length of arguments string\n\n @param args arguments string\n @return size_t length of arguments string"]
+    #[doc = "Get length of arguments string\n\nReturns:\n\n* size_t length of arguments string\n\n# Arguments\n\n* `args` - arguments string\n\n"]
     pub fn args_length(args: *mut FuriString) -> usize;
 }
 extern "C" {
-    #[doc = " @brief Convert ASCII hex values to byte\n\n @param hi_nibble ASCII hi nibble character\n @param low_nibble ASCII low nibble character\n @param byte byte pointer, output\n @return bool conversion status"]
+    #[doc = "Convert ASCII hex values to byte\n\nReturns:\n\n* bool conversion status\n\n# Arguments\n\n* `hi_nibble` - ASCII hi nibble character\n* `low_nibble` - ASCII low nibble character\n* `byte` - byte pointer, output\n\n"]
     pub fn args_char_to_hex(
         hi_nibble: core::ffi::c_char,
         low_nibble: core::ffi::c_char,
@@ -21634,11 +21627,11 @@ extern "C" {
 pub struct DirWalk {
     _unused: [u8; 0],
 }
-#[doc = "< OK"]
+#[doc = "OK\n\n"]
 pub const DirWalkResult_DirWalkOK: DirWalkResult = 0;
-#[doc = "< Error"]
+#[doc = "Error\n\n"]
 pub const DirWalkResult_DirWalkError: DirWalkResult = 1;
-#[doc = "< Last element"]
+#[doc = "Last element\n\n"]
 pub const DirWalkResult_DirWalkLast: DirWalkResult = 2;
 pub type DirWalkResult = core::ffi::c_uchar;
 pub type DirWalkFilterCb = ::core::option::Option<
@@ -21649,19 +21642,19 @@ pub type DirWalkFilterCb = ::core::option::Option<
     ) -> bool,
 >;
 extern "C" {
-    #[doc = " Allocate DirWalk\n @param storage\n @return DirWalk*"]
+    #[doc = "Allocate DirWalk\n\nReturns:\n\n* DirWalk*\n\n# Arguments\n\n* `storage` - \n\n"]
     pub fn dir_walk_alloc(storage: *mut Storage) -> *mut DirWalk;
 }
 extern "C" {
-    #[doc = " Free DirWalk\n @param dir_walk"]
+    #[doc = "Free DirWalk\n\n# Arguments\n\n* `dir_walk` - \n\n"]
     pub fn dir_walk_free(dir_walk: *mut DirWalk);
 }
 extern "C" {
-    #[doc = " Set recursive mode (true by default)\n @param dir_walk\n @param recursive"]
+    #[doc = "Set recursive mode (true by default)\n\n# Arguments\n\n* `dir_walk` - \n* `recursive` - \n\n"]
     pub fn dir_walk_set_recursive(dir_walk: *mut DirWalk, recursive: bool);
 }
 extern "C" {
-    #[doc = " Set filter callback (Should return true if the data is valid)\n @param dir_walk\n @param cb\n @param context"]
+    #[doc = "Set filter callback (Should return true if the data is valid)\n\n# Arguments\n\n* `dir_walk` - \n* `cb` - \n* `context` - \n\n"]
     pub fn dir_walk_set_filter_cb(
         dir_walk: *mut DirWalk,
         cb: DirWalkFilterCb,
@@ -21669,15 +21662,15 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " Open directory\n @param dir_walk\n @param path\n @return true\n @return false"]
+    #[doc = "Open directory\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `dir_walk` - \n* `path` - \n\n"]
     pub fn dir_walk_open(dir_walk: *mut DirWalk, path: *const core::ffi::c_char) -> bool;
 }
 extern "C" {
-    #[doc = " Get error id\n @param dir_walk\n @return FS_Error"]
+    #[doc = "Get error id\n\nReturns:\n\n* FS_Error\n\n# Arguments\n\n* `dir_walk` - \n\n"]
     pub fn dir_walk_get_error(dir_walk: *mut DirWalk) -> FS_Error;
 }
 extern "C" {
-    #[doc = " Read next element from directory\n @param dir_walk\n @param return_path\n @param fileinfo\n @return DirWalkResult"]
+    #[doc = "Read next element from directory\n\nReturns:\n\n* DirWalkResult\n\n# Arguments\n\n* `dir_walk` - \n* `return_path` - \n* `fileinfo` - \n\n"]
     pub fn dir_walk_read(
         dir_walk: *mut DirWalk,
         return_path: *mut FuriString,
@@ -21685,11 +21678,11 @@ extern "C" {
     ) -> DirWalkResult;
 }
 extern "C" {
-    #[doc = " Close directory\n @param dir_walk"]
+    #[doc = "Close directory\n\n# Arguments\n\n* `dir_walk` - \n\n"]
     pub fn dir_walk_close(dir_walk: *mut DirWalk);
 }
 extern "C" {
-    #[doc = " Compare two floating point numbers\n @param a         First number to compare\n @param b         Second number to compare\n\n @return          bool true if a equals b, false otherwise"]
+    #[doc = "Compare two floating point numbers\n\nReturns:\n\n* bool true if a equals b, false otherwise\n\n# Arguments\n\n* `a` - First number to compare\n* `b` - Second number to compare\n\n"]
     pub fn float_is_equal(a: f32, b: f32) -> bool;
 }
 #[repr(C)]
@@ -22006,15 +21999,15 @@ extern "C" {
     pub fn manchester_encoder_finish(state: *mut ManchesterEncoderState)
         -> ManchesterEncoderResult;
 }
-#[doc = " \\brief          MD5 context structure"]
+#[doc = "MD5 context structure\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct md5_context {
-    #[doc = "< number of bytes processed"]
+    #[doc = "number of bytes processed\n\n"]
     pub total: [u32; 2usize],
-    #[doc = "< intermediate digest state"]
+    #[doc = "intermediate digest state\n\n"]
     pub state: [u32; 4usize],
-    #[doc = "< data block being processed"]
+    #[doc = "data block being processed\n\n"]
     pub buffer: [core::ffi::c_uchar; 64usize],
 }
 #[test]
@@ -22063,34 +22056,34 @@ fn bindgen_test_layout_md5_context() {
     );
 }
 extern "C" {
-    #[doc = " \\brief          MD5 context setup\n\n \\param ctx      context to be initialized"]
+    #[doc = "MD5 context setup\n\n# Arguments\n\n* `ctx` - context to be initialized\n\n"]
     pub fn md5_starts(ctx: *mut md5_context);
 }
 extern "C" {
-    #[doc = " \\brief          MD5 process buffer\n\n \\param ctx      MD5 context\n \\param input    buffer holding the  data\n \\param ilen     length of the input data"]
+    #[doc = "MD5 process buffer\n\n# Arguments\n\n* `ctx` - MD5 context\n* `input` - buffer holding the data\n* `ilen` - length of the input data\n\n"]
     pub fn md5_update(ctx: *mut md5_context, input: *const core::ffi::c_uchar, ilen: usize);
 }
 extern "C" {
-    #[doc = " \\brief          MD5 final digest\n\n \\param ctx      MD5 context\n \\param output   MD5 checksum result"]
+    #[doc = "MD5 final digest\n\n# Arguments\n\n* `ctx` - MD5 context\n* `output` - MD5 checksum result\n\n"]
     pub fn md5_finish(ctx: *mut md5_context, output: *mut core::ffi::c_uchar);
 }
 extern "C" {
     pub fn md5_process(ctx: *mut md5_context, data: *const core::ffi::c_uchar);
 }
 extern "C" {
-    #[doc = " \\brief          Output = MD5( input buffer )\n\n \\param input    buffer holding the  data\n \\param ilen     length of the input data\n \\param output   MD5 checksum result"]
+    #[doc = "Output = MD5( input buffer )\n\n# Arguments\n\n* `input` - buffer holding the data\n* `ilen` - length of the input data\n* `output` - MD5 checksum result\n\n"]
     pub fn md5(input: *const core::ffi::c_uchar, ilen: usize, output: *mut core::ffi::c_uchar);
 }
 extern "C" {
-    #[doc = " @brief Extract filename without extension from path.\n\n @param path path string\n @param filename output filename string. Must be initialized before."]
+    #[doc = "Extract filename without extension from path.\n\n# Arguments\n\n* `path` - path string\n* `filename` - output filename string. Must be initialized before.\n\n"]
     pub fn path_extract_filename_no_ext(path: *const core::ffi::c_char, filename: *mut FuriString);
 }
 extern "C" {
-    #[doc = " @brief Extract filename string from path.\n\n @param path path string\n @param filename output filename string. Must be initialized before.\n @param trim_ext true - get filename without extension"]
+    #[doc = "Extract filename string from path.\n\n# Arguments\n\n* `path` - path string\n* `filename` - output filename string. Must be initialized before.\n* `trim_ext` - true - get filename without extension\n\n"]
     pub fn path_extract_filename(path: *mut FuriString, filename: *mut FuriString, trim_ext: bool);
 }
 extern "C" {
-    #[doc = " @brief Extract file extension from path.\n\n @param path path string\n @param ext output extension string\n @param ext_len_max maximum extension string length"]
+    #[doc = "Extract file extension from path.\n\n# Arguments\n\n* `path` - path string\n* `ext` - output extension string\n* `ext_len_max` - maximum extension string length\n\n"]
     pub fn path_extract_extension(
         path: *mut FuriString,
         ext: *mut core::ffi::c_char,
@@ -22098,19 +22091,19 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " @brief Extract last path component\n\n @param path path string\n @param filename output string. Must be initialized before."]
+    #[doc = "Extract last path component\n\n# Arguments\n\n* `path` - path string\n* `filename` - output string. Must be initialized before.\n\n"]
     pub fn path_extract_basename(path: *const core::ffi::c_char, basename: *mut FuriString);
 }
 extern "C" {
-    #[doc = " @brief Extract path, except for last component\n\n @param path path string\n @param filename output string. Must be initialized before."]
+    #[doc = "Extract path, except for last component\n\n# Arguments\n\n* `path` - path string\n* `filename` - output string. Must be initialized before.\n\n"]
     pub fn path_extract_dirname(path: *const core::ffi::c_char, dirname: *mut FuriString);
 }
 extern "C" {
-    #[doc = " @brief Appends new component to path, adding path delimiter\n\n @param path path string\n @param suffix path part to apply"]
+    #[doc = "Appends new component to path, adding path delimiter\n\n# Arguments\n\n* `path` - path string\n* `suffix` - path part to apply\n\n"]
     pub fn path_append(path: *mut FuriString, suffix: *const core::ffi::c_char);
 }
 extern "C" {
-    #[doc = " @brief Appends new component to path, adding path delimiter\n\n @param path first path part\n @param suffix second path part\n @param out_path output string to combine parts into. Must be initialized"]
+    #[doc = "Appends new component to path, adding path delimiter\n\n# Arguments\n\n* `path` - first path part\n* `suffix` - second path part\n* `out_path` - output string to combine parts into. Must be initialized\n\n"]
     pub fn path_concat(
         path: *const core::ffi::c_char,
         suffix: *const core::ffi::c_char,
@@ -22118,11 +22111,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " @brief Check that path contains only ascii characters\n\n @param path\n @return true\n @return false"]
+    #[doc = "Check that path contains only ascii characters\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `path` - \n\n"]
     pub fn path_contains_only_ascii(path: *const core::ffi::c_char) -> bool;
 }
 extern "C" {
-    #[doc = " Generates random name\n @param name buffer to write random name\n @param max_name_size length of given buffer"]
+    #[doc = "Generates random name\n\n# Arguments\n\n* `name` - buffer to write random name\n* `max_name_size` - length of given buffer\n\n"]
     pub fn set_random_name(name: *mut core::ffi::c_char, max_name_size: u8);
 }
 extern "C" {
@@ -22152,7 +22145,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " Allocate string stream\n @return Stream*"]
+    #[doc = "Allocate string stream\n\nReturns:\n\n* Stream*\n\n"]
     pub fn string_stream_alloc() -> *mut Stream;
 }
 #[repr(C)]
@@ -22258,14 +22251,14 @@ extern "C" {
     pub fn tar_archive_finalize(archive: *mut TarArchive) -> bool;
 }
 extern "C" {
-    #[doc = " Get the index of a uint32_t array element which is closest to the given value.\n\n Returned index corresponds to the first element found.\n If no suitable elements were found, the function returns 0.\n\n @param   value           value to be searched.\n @param   values          pointer to the array to perform the search in.\n @param   values_count    array size.\n\n @return value's index."]
+    #[doc = "Get the index of a uint32_t array element which is closest to the given value.\nReturned index corresponds to the first element found. If no suitable elements were found, the function returns 0.\n\nReturns:\n\n* value's index.\n\n# Arguments\n\n* `value` - value to be searched.\n* `values` - pointer to the array to perform the search in.\n* `values_count` - array size.\n\n"]
     pub fn value_index_uint32(value: u32, values: *const u32, values_count: u8) -> u8;
 }
 extern "C" {
-    #[doc = " Get the index of a float array element which is closest to the given value.\n\n Returned index corresponds to the first element found.\n If no suitable elements were found, the function returns 0.\n\n @param   value           value to be searched.\n @param   values          pointer to the array to perform the search in.\n @param   values_count    array size.\n\n @return value's index."]
+    #[doc = "Get the index of a float array element which is closest to the given value.\nReturned index corresponds to the first element found. If no suitable elements were found, the function returns 0.\n\nReturns:\n\n* value's index.\n\n# Arguments\n\n* `value` - value to be searched.\n* `values` - pointer to the array to perform the search in.\n* `values_count` - array size.\n\n"]
     pub fn value_index_float(value: f32, values: *const f32, values_count: u8) -> u8;
 }
 extern "C" {
-    #[doc = " Get the index of a bool array element which is equal to the given value.\n\n Returned index corresponds to the first element found.\n If no suitable elements were found, the function returns 0.\n\n @param   value           value to be searched.\n @param   values          pointer to the array to perform the search in.\n @param   values_count    array size.\n\n @return value's index."]
+    #[doc = "Get the index of a bool array element which is equal to the given value.\nReturned index corresponds to the first element found. If no suitable elements were found, the function returns 0.\n\nReturns:\n\n* value's index.\n\n# Arguments\n\n* `value` - value to be searched.\n* `values` - pointer to the array to perform the search in.\n* `values_count` - array size.\n\n"]
     pub fn value_index_bool(value: bool, values: *const bool, values_count: u8) -> u8;
 }

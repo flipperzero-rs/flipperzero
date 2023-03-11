@@ -1,3 +1,0 @@
-[toolchain]
-channel = "nightly-2022-11-03"
-targets = ["thumbv7em-none-eabihf"]

@@ -15,8 +15,11 @@ or even point to a local `flipperzero-firmware` checkout.
 
 ## Current process
 
+Prerequisites: [A recent version of libclang installed](https://rust-lang.github.io/rust-bindgen/requirements.html)
+
 To update the SDK you require a checkout of [`flipperzero-firmware`] pointing at the target
 commit/tag and need to run `./fbt` to download the toolchain and build a local copy of the SDK.
+Alternatively you can download a prebuilt SDK from the [Flipper Zero Update Server](https://update.flipperzero.one/builds/firmware/).
 
 Once the SDK is built, run the [`generate-bindings`] script to build a new [`bindings.rs`]:
 
