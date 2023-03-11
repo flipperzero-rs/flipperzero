@@ -4,11 +4,8 @@ use std::io::{self, Write};
 use std::time::Duration;
 
 use crossterm::event::{Event, KeyEvent, KeyModifiers, KeyCode, KeyEventKind};
-use serialport::{self, SerialPortType, SerialPort};
+use flipperzero_tools::serial;
 
-/// STMicroelectronics Virtual COM Port
-const HWID: (u16, u16) = (0x0483, 0x5740);
-const BAUD: u32 = 115200;
 const DEL: char = '\x7f';
 
 fn main() -> io::Result<()> {
@@ -16,18 +13,11 @@ fn main() -> io::Result<()> {
     #[cfg(windows)]
     let _ = crossterm::ansi_support::supports_ansi();
 
-    let ports = serialport::available_ports().expect("no serial ports found");
-    let port = ports.iter().find(|p| {
-        match &p.port_type {
-            SerialPortType::UsbPort(usb) if (usb.vid, usb.pid) == HWID => true,
-            _ => false,
-        }
-    }).expect("unable to find Flipper Zero serial port");
-
-    eprintln!("Opening {}...", port.port_name);
-    let mut port = serialport::new(&port.port_name, BAUD)
+    let port_info = serial::find_flipperzero().expect("unable to find Flipper Zero");
+    let mut port = serialport::new(&port_info.port_name, serial::BAUD_115200)
         .timeout(Duration::from_millis(10))
-        .open_native().expect("unable to open serial port");
+        .open()
+        .expect("unable to open serial port");
     
     port.clear(serialport::ClearBuffer::All).unwrap();
 
@@ -36,7 +26,7 @@ fn main() -> io::Result<()> {
     crossterm::terminal::enable_raw_mode()?;
     port.write_data_terminal_ready(true)?;
 
-    if let Err(err) = run(&mut port) {
+    if let Err(err) = run(port.as_mut()) {
         eprintln!("ERROR: {}", err);
     }
 
