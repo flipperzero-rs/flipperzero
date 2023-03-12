@@ -10,9 +10,14 @@ use clap::{Parser, Subcommand};
 use flipperzero_tools::storage::FlipperPath;
 use flipperzero_tools::{serial, storage};
 
+/// Flipper Zero storage tool
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Cli {
+    /// Serial port (e.g. `COM3` on Windows or `/dev/ttyUSB0` on Linux)
+    #[arg(short, long)]
+    port: Option<String>,
+    /// Commands
     #[command(subcommand)]
     command: Option<Commands>
 }
@@ -58,6 +63,7 @@ enum Commands {
         #[arg(default_value = "/")]
         flipper_path: FlipperPath,
     },
+    /// Calculate MD5 hash of remote file
     Md5sum {
         /// Flipper path
         flipper_path: FlipperPath,
@@ -75,7 +81,7 @@ fn main() {
         Some(c) => c,
     };
 
-    let port_info = serial::find_flipperzero().expect("unable to find Flipper Zero");
+    let port_info = serial::find_flipperzero(cli.port.as_deref()).expect("unable to find Flipper Zero");
     let port = serialport::new(&port_info.port_name, serial::BAUD_115200)
         .timeout(Duration::from_secs(30))
         .open()

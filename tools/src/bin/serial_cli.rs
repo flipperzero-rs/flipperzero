@@ -3,18 +3,30 @@
 use std::io::{self, Write};
 use std::time::Duration;
 
+use clap::Parser;
 use crossterm::event::{Event, KeyEvent, KeyModifiers, KeyCode, KeyEventKind};
 use flipperzero_tools::serial;
 
 const ETXT: char = '\x03'; // ^C
 const DEL: char = '\x7f';
 
+/// Flipper Zero serial client
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Cli {
+    /// Serial port (e.g. `COM3` on Windows or `/dev/ttyUSB0` on Linux)
+    #[arg(short, long)]
+    port: Option<String>
+}
+
 fn main() -> io::Result<()> {
     // Enable ANSI support on Windows
     #[cfg(windows)]
     let _ = crossterm::ansi_support::supports_ansi();
 
-    let port_info = serial::find_flipperzero().expect("unable to find Flipper Zero");
+    let cli = Cli::parse();
+
+    let port_info = serial::find_flipperzero(cli.port.as_deref()).expect("unable to find Flipper Zero");
     let mut port = serialport::new(&port_info.port_name, serial::BAUD_115200)
         .timeout(Duration::from_millis(10))
         .open()

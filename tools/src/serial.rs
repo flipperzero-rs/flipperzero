@@ -17,13 +17,19 @@ pub static CLI_EOL: Lazy<BytesRegex> = Lazy::new(|| BytesRegex::new(r"\r\n").unw
 pub static CLI_READY: Lazy<BytesRegex> = Lazy::new(|| BytesRegex::new(r"Ready\?\r\n").unwrap());
 
 /// Try to find the Flipper Zero USB serial port.
-pub fn find_flipperzero() -> Option<SerialPortInfo> {
+pub fn find_flipperzero(port_name: Option<&str>) -> Option<SerialPortInfo> {
     let ports = serialport::available_ports().ok()?;
     
     ports.into_iter().find(|p| {
-        match &p.port_type {
-            SerialPortType::UsbPort(usb) if (usb.vid, usb.pid) == HWID => true,
-            _ => false,
+        if let Some(port) = port_name {
+            // Search for port by name
+            p.port_name == port
+        } else {
+            // Auto-detect port
+            match &p.port_type {
+                SerialPortType::UsbPort(usb) if (usb.vid, usb.pid) == HWID => true,
+                _ => false,
+            }
         }
     })
 }
