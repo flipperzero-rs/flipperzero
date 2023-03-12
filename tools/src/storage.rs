@@ -1,143 +1,61 @@
 //! Storage interface.
 
 use std::fmt::Display;
-use std::io;
+use std::io::{Read, Write};
+use std::{io, fs};
 use std::ops::Add;
+use std::path::Path;
 
 use bytes::BytesMut;
-use once_cell::sync::Lazy;
-use regex::bytes::Regex;
+use regex::Regex;
 use serialport::SerialPort;
+
+use crate::serial::{SerialCli, CLI_EOL};
 
 const BUF_SIZE: usize = 1024;
 
-static CLI_PROMPT: Lazy<Regex> = Lazy::new(|| Regex::new(r">: ").unwrap());
-static CLI_EOL: Lazy<Regex> = Lazy::new(|| Regex::new(r"\r\n").unwrap());
 
-/// Buffered reader for [`SerialPort`].
-pub struct SerialReader {
-    port: Box<dyn SerialPort>,
-    buffer: BytesMut,
-}
-
-impl SerialReader {
-    /// Create new [`SerialReader`] connected to a [`SerialPort`].
-    pub fn new(port: Box<dyn SerialPort>) -> Self {
-        Self { 
-            port,
-            buffer: BytesMut::with_capacity(BUF_SIZE),
-        }
-    }
-
-    /// Get reference to underlying [`SerialPort`].
-    pub fn get_ref(&self) -> &dyn SerialPort {
-        self.port.as_ref()
-    }
-
-    /// Get mutable reference to underlying [`SerialPort`].
-    pub fn get_mut(&mut self) -> &mut dyn SerialPort {
-        self.port.as_mut()
-    }
-
-    /// Read from [`SerialPort`] until [`Regex`] is matched.
-    pub fn read_until(&mut self, regex: &Regex, trim: bool) -> io::Result<BytesMut> {
-        let mut buf = [0u8; BUF_SIZE];
-        loop {
-            if let Some(m) = regex.find(&self.buffer) {
-                let start = m.start();
-                let end = m.end();
-
-                let mut data = self.buffer.split_to(end);
-                if trim {
-                    data.truncate(data.len() - (end - start));
-                }
-
-                return Ok(data);
-            }
-
-            // We always read at least 1 byte.
-            let n = (self.port.bytes_to_read()? as usize).clamp(1, buf.len());
-
-            self.port.read_exact(&mut buf[..n])?;
-            self.buffer.extend_from_slice(&buf[..n]);
-        }
-    }
-}
-
+/// Interface to Flipper device storage.
 pub struct FlipperStorage {
-    reader: SerialReader,
+    cli: SerialCli,
 }
 
 impl FlipperStorage {
     /// Create new [`FlipperStorage`] connected to a [`SerialPort`].
     pub fn new(port: Box<dyn SerialPort>) -> Self {
         Self {
-            reader: SerialReader::new(port),
+            cli: SerialCli::new(port),
         }
     }
 
-    /// Associated stream.
+    /// Start serial interface.
+    pub fn start(&mut self) -> io::Result<()> {
+        self.cli.start()
+    }
+
+    /// Get reference to underlying [`SerialPort`].
     pub fn port(&self) -> &dyn SerialPort {
-        self.reader.get_ref()
+        self.cli.port()
     }
     
+    /// Get mutable reference to underlying [`SerialPort`].
     pub fn port_mut(&mut self) -> &mut dyn SerialPort {
-        self.reader.get_mut()
-    }
-
-
-    pub fn start(&mut self) -> serialport::Result<()> {
-        self.port().clear(serialport::ClearBuffer::Input)?;
-
-        // Send command with known syntax to make sure buffer is flushed
-        self.send("device_info\r")?;
-        self.reader.read_until(&Regex::new(r"hardware_model").unwrap(), true)?;
-
-        // Read buffer until we get prompt
-        self.reader.read_until(&*CLI_PROMPT, true)?;
-
-        Ok(())
-    }
-
-    /// Send line to device.
-    pub fn send(&mut self, line: &str) -> io::Result<()> {
-        write!(self.port_mut(), "{line}")
-    }
-
-    /// Send line to device and wait for next end-of-line.
-    pub fn send_and_wait_eol(&mut self, line: &str) -> io::Result<BytesMut> {
-        self.send(line)?;
-
-        self.reader.read_until(&*CLI_EOL, true)
-    }
-
-    /// Send line to device and wait for next CLI prompt.
-    pub fn send_and_wait_prompt(&mut self, line: &str) -> io::Result<BytesMut> {
-        self.send(line)?;
-
-        self.reader.read_until(&*CLI_PROMPT, true)
-    }
-
-    /// Extract error text.
-    fn get_error(data: &str) -> Option<&str> {
-        let (_, text) = data.split_once("Storage error: ")?;
-
-        Some(text.trim())
+        self.cli.port_mut()
     }
 
     /// List files and directories on the device.
-    pub fn list_tree(&mut self, path: FlipperPath) -> io::Result<()> {
+    pub fn list_tree(&mut self, path: &FlipperPath) -> io::Result<()> {
         // Note: The `storage list` command expects that paths do not end with a slash.
-        self.send_and_wait_eol(&format!("storage list {}\r", path))?;
+        self.cli.send_and_wait_eol(&format!("storage list {}", path))?;
 
-        let data = self.reader.read_until(&*CLI_PROMPT, true)?;
+        let data = self.cli.read_until_prompt()?;
         for line in CLI_EOL.split(&data).map(|line| String::from_utf8_lossy(line)) {
             let line = line.trim();
             if line.is_empty() {
                 continue;
             }
 
-            if let Some(error) = Self::get_error(line) {
+            if let Some(error) = SerialCli::get_error(line) {
                 eprintln!("ERROR: {error}");
                 continue;
             }
@@ -153,7 +71,7 @@ impl FlipperStorage {
                         let path = path.clone() + info;
 
                         eprintln!("{path}");
-                        self.list_tree(path)?;
+                        self.list_tree(&path)?;
                     },
                     // File
                     "[F]" => {
@@ -170,6 +88,169 @@ impl FlipperStorage {
         }
 
         Ok(())
+    }
+
+    /// Send local file to the device.
+    pub fn send_file(&mut self, from: impl AsRef<Path>, to: &FlipperPath) -> io::Result<()> {
+        self.remove(to).ok();
+
+        let mut file = fs::File::open(from.as_ref())?;
+
+        let mut buf = [0u8; BUF_SIZE];
+        loop {
+            let n = file.read(&mut buf)?;
+            if n == 0 {
+                break;
+            }
+
+            self.cli.send_and_wait_eol(&format!("storage write_chunk \"{to}\" {n}"))?;
+            let line = self.cli.read_until_eol()?;
+            let line = String::from_utf8_lossy(&line);
+
+            if let Some(error) = SerialCli::get_error(&line) {
+                self.cli.read_until_prompt()?;
+
+                return Err(io::Error::new(io::ErrorKind::Other, error));
+            }
+
+            self.port_mut().write_all(&buf[..n])?;
+            self.cli.read_until_prompt()?;
+        }
+
+        Ok(())
+    }
+
+    /// Receive remote file from the device.
+    pub fn receive_file(&mut self, from: &FlipperPath, to: impl AsRef<Path>) -> io::Result<()> {
+        let mut file = fs::File::options()
+            .create(true)
+            .write(true)
+            .open(to.as_ref())?;
+
+        let data = self.read_file(from)?;
+        file.write_all(&data)?;
+
+        Ok(())
+    }
+
+    /// Read file data from the device.
+    pub fn read_file(&mut self, path: &FlipperPath) -> io::Result<BytesMut> {
+        self.cli.send_and_wait_eol(&format!("storage read_chunks \"{path}\" {}", BUF_SIZE))?;
+        let line = self.cli.read_until_eol()?;
+        let line = String::from_utf8_lossy(&line);
+
+        if let Some(error) = SerialCli::get_error(&line) {
+            self.cli.read_until_prompt()?;
+
+            return Err(io::Error::new(io::ErrorKind::Other, error));
+        }
+
+        let (_, size) = line.split_once(": ")
+            .ok_or_else(|| io::Error::new(io::ErrorKind::Other, "failed to read chunk size"))?;
+        let size: usize = size.parse().or_else(|_| Err(io::Error::new(io::ErrorKind::Other, "failed to parse chunk size")))?;
+
+        let mut data = BytesMut::with_capacity(BUF_SIZE);
+
+        let mut buf = [0u8; BUF_SIZE];
+        while data.len() < size {
+            self.cli.read_until_ready()?;
+            self.cli.send_line("y")?;
+
+            let n = (size - data.len()).min(BUF_SIZE);
+            self.port_mut().read_exact(&mut buf[..n])?;
+            data.extend_from_slice(&buf[..n]);
+        }
+
+        Ok(data)
+    }
+
+    /// Does the file or directory exist on the device?
+    pub fn exist(&mut self, path: &FlipperPath) -> io::Result<bool> {
+        let exist = match self.stat(path) {
+            Err(_err) => {
+                false
+            },
+            Ok(_) => true,
+        };
+
+        Ok(exist)
+    }
+
+    /// Does the directory exist on the device?
+    pub fn exist_dir(&mut self, path: &FlipperPath) -> io::Result<bool> {
+        let exist = match self.stat(path) {
+            Err(_err) => {
+                false
+            },
+            Ok(stat) => stat.contains("Directory") || stat.contains("Storage"),
+        };
+
+        Ok(exist)
+    }
+
+    /// Does the file exist on the device?
+    pub fn exist_file(&mut self, path: &FlipperPath) -> io::Result<bool> {
+        let exist = match self.stat(path) {
+            Err(_err) => {
+                false
+            },
+            Ok(stat) => stat.contains("File, size:"),
+        };
+
+        Ok(exist)
+    }
+
+    /// File size in bytes
+    pub fn size(&mut self, path: &FlipperPath) -> io::Result<usize> {
+        let line = self.stat(path)?;
+
+        let size = Regex::new(r"File, size: (.+)b").unwrap()
+            .captures(&line)
+            .and_then(|m| m[1].parse::<usize>().ok())
+            .ok_or_else(|| io::Error::new(io::ErrorKind::Other, "failed to parse size"))?;
+
+        Ok(size)
+    }
+
+    /// Stat a file or directory.
+    fn stat(&mut self, path: &FlipperPath) -> io::Result<String> {
+        self.cli.send_and_wait_eol(&format!("storage stat {path}"))?;
+        let line = self.cli.consume_response()?;
+
+        Ok(line)
+    }
+
+    /// Make directory on the device.
+    pub fn mkdir(&mut self, path: &FlipperPath) -> io::Result<()> {
+        self.cli.send_and_wait_eol(&format!("storage mkdir {path}"))?;
+        self.cli.consume_response()?;
+
+        Ok(())
+    }
+
+    /// Format external storage.
+    pub fn format_ext(&mut self) -> io::Result<()> {
+        self.cli.send_and_wait_eol("storage format /ext")?;
+        self.cli.send_and_wait_eol("y")?;
+        self.cli.consume_response()?;
+
+        Ok(())
+    }
+
+    /// Remove file or directory.
+    pub fn remove(&mut self, path: &FlipperPath) -> io::Result<()> {
+        self.cli.send_and_wait_eol(&format!("storage remove {path}"))?;
+        self.cli.consume_response()?;
+
+        Ok(())
+    }
+
+    /// Calculate MD5 hash of file.
+    pub fn md5sum(&mut self, path: &FlipperPath)  -> io::Result<String> {
+        self.cli.send_and_wait_eol(&format!("storage md5 {path}"))?;
+        let line = self.cli.consume_response()?;
+
+        Ok(line)
     }
 }
 
@@ -196,7 +277,9 @@ impl FlipperPath {
             self.0 = String::from(path);
         } else {
             // Relative path
-            self.0 += "/";
+            if !self.0.ends_with('/') {
+                self.0 += "/";
+            }
             self.0 += path;
         }
     }

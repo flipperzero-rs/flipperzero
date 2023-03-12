@@ -6,6 +6,7 @@ use std::time::Duration;
 use crossterm::event::{Event, KeyEvent, KeyModifiers, KeyCode, KeyEventKind};
 use flipperzero_tools::serial;
 
+const ETXT: char = '\x03'; // ^C
 const DEL: char = '\x7f';
 
 fn main() -> io::Result<()> {
@@ -65,6 +66,12 @@ fn run(port: &mut dyn serialport::SerialPort) -> io::Result<()> {
                         (KeyModifiers::CONTROL, KeyCode::Char(']')) => {
                             eprintln!("Exiting...");
                             return Ok(());
+                        },
+                        (KeyModifiers::CONTROL, KeyCode::Char('c')) => {
+                            write!(port, "{ETXT}")?
+                        },
+                        (KeyModifiers::SHIFT, KeyCode::Char(c)) => {
+                            write!(port, "{c}")?;
                         },
                         (KeyModifiers::NONE, KeyCode::Char(c)) => {
                             write!(port, "{c}")?;

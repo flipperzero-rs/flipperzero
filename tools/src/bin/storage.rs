@@ -1,6 +1,9 @@
 //! Storage CLI.
+//!
+//! See: https://github.com/flipperdevices/flipperzero-firmware/blob/dev/scripts/storage.py
 
-use std::io;
+use std::process;
+use std::path::PathBuf;
 use std::time::Duration;
 
 use clap::{Parser, Subcommand};
@@ -17,63 +20,115 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     /// Create directory
-    Mkdir,
+    Mkdir {
+        /// Flipper path
+        flipper_path: FlipperPath,
+    },
     /// Format flash card
     Format,
     /// Remove file/directory
-    Remove,
+    Remove {
+        /// Flipper path
+        flipper_path: FlipperPath,
+    },
     /// Read file
     Read,
-    /// Print size of file
-    Size,
+    /// Print size of file (in bytes)
+    Size {
+        /// Flipper path
+        flipper_path: FlipperPath,
+    },
     /// Receive file
-    Receive,
+    Receive {
+        /// Flipper path
+        flipper_path: FlipperPath,
+        /// Local path
+        local_path: PathBuf,
+    },
     /// Send file or directory
-    Send,
+    Send {
+        /// Local path
+        local_path: PathBuf,
+        /// Flipper path
+        flipper_path: FlipperPath,
+    },
     /// Recursively list files and dirs
     List {
         /// Flipper path
         #[arg(default_value = "/")]
-        flipper_path: String,
+        flipper_path: FlipperPath,
+    },
+    Md5sum {
+        /// Flipper path
+        flipper_path: FlipperPath,
     },
 }
 
-fn main() -> io::Result<()> {
+fn main() {
     let cli = Cli::parse();
 
     let command = match &cli.command {
         None => {
             eprintln!("No subcommand specified");
-            return Ok(());
+            process::exit(2);
         },
         Some(c) => c,
     };
 
     let port_info = serial::find_flipperzero().expect("unable to find Flipper Zero");
-    let mut port = serialport::new(&port_info.port_name, serial::BAUD_115200)
+    let port = serialport::new(&port_info.port_name, serial::BAUD_115200)
         .timeout(Duration::from_secs(30))
         .open()
         .expect("unable to open serial port");
 
-    port.clear(serialport::ClearBuffer::All).unwrap();
-    port.write_data_terminal_ready(true)?;
-
     let mut store = storage::FlipperStorage::new(port);
-    store.start()?;
+    store.start().expect("failed to start storage");
 
-    match command {
-        Commands::Mkdir => todo!(),
-        Commands::Format => todo!(),
-        Commands::Remove => todo!(),
-        Commands::Read => todo!(),
-        Commands::Size => todo!(),
-        Commands::Receive => todo!(),
-        Commands::Send => todo!(),
-        Commands::List { flipper_path } => {
-            let flipper_path = FlipperPath::from(flipper_path.as_str());
-            store.list_tree(flipper_path)?;
+    let result = match command {
+        Commands::Mkdir { flipper_path } => {
+            store.mkdir(flipper_path)
         },
-    }
+        Commands::Format => {
+            store.format_ext()
+        },
+        Commands::Remove { flipper_path } => {
+            store.remove(flipper_path)
+        },
+        Commands::Read => todo!(),
+        Commands::Size { flipper_path } => {
+            match store.size(flipper_path) {
+                Err(err) => Err(err),
+                Ok(size) => {
+                    println!("{size}");
 
-    Ok(())
+                    Ok(())
+                }
+            }
+        },
+        Commands::Receive { flipper_path, local_path } => {
+            store.receive_file(flipper_path, &local_path)
+        },
+        Commands::Send { local_path, flipper_path } => {
+            store.send_file(local_path.as_path(), flipper_path)
+        },
+        Commands::List { flipper_path } => {
+            store.list_tree(flipper_path)
+        },
+        Commands::Md5sum { flipper_path } => {
+            match store.md5sum(flipper_path) {
+                Err(err) => Err(err),
+                Ok(md5sum) => {
+                    println!("{md5sum}");
+
+                    Ok(())
+                }
+            }
+        },
+
+    };
+
+    if let Err(err) = result {
+        eprintln!("ERROR: {err}");
+        process::exit(1);
+    }
 }
