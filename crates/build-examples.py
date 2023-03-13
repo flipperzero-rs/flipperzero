@@ -7,9 +7,8 @@ import os
 from pathlib import Path, PurePosixPath
 from subprocess import run
 
-FLIPPERZERO_FIRMWARE = Path(os.environ.get('FLIPPERZERO_FIRMWARE', '../../flipperzero-firmware'))
 PYTHON = 'python'
-STORAGE_SCRIPT = FLIPPERZERO_FIRMWARE / 'scripts' / 'storage.py'
+TOOLS_PATH = '../tools'
 INSTALL_PATH = PurePosixPath('/ext/apps/Examples')
 EXAMPLES = ["dialog", "gpio", "gui", "hello-rust", "notification"]
 
@@ -36,7 +35,7 @@ def main():
             target = INSTALL_PATH / f'{example}.fap'
 
             logging.info('Copying %s to %s', binary, target)
-            run([PYTHON, STORAGE_SCRIPT, 'send', os.fspath(binary), os.fspath(target)], check=True)
+            run(['cargo', 'run', '--release', '--bin', 'storage', '--', 'send', os.fspath(binary), os.fspath(target)], cwd=TOOLS_PATH, check=True)
 
 
 if __name__ == '__main__':
