@@ -2,7 +2,6 @@
 //! *Note:* This currently requires using nightly.
 
 #![no_std]
-#![feature(alloc_error_handler)]
 
 use core::alloc::{GlobalAlloc, Layout};
 use core::ffi::c_void;
@@ -31,11 +30,3 @@ unsafe impl GlobalAlloc for FuriAlloc {
 
 #[global_allocator]
 static ALLOCATOR: FuriAlloc = FuriAlloc;
-
-#[alloc_error_handler]
-fn on_oom(_layout: Layout) -> ! {
-    unsafe {
-        sys::furi_thread_yield();
-        sys::crash!("Rust: Out of Memory");
-    }
-}

@@ -1,12 +1,12 @@
 [package]
 name = "flipperzero"
-version = "0.7.2"
-description = "Rust for Flipper Zero"
-repository = "https://github.com/dcoles/flipperzero-rs"
-readme = "../../README.md"
-license = "MIT"
-edition = "2021"
-rust-version = "1.64.0"
+version.workspace = true
+description.workspace = true
+repository.workspace = true
+readme.workspace = true
+license.workspace = true
+edition.workspace = true
+rust-version.workspace = true
 autobins = false
 autotests = false
 autobenches = false
@@ -21,12 +21,12 @@ bench = false
 test = false
 
 [dependencies]
-flipperzero-sys = { path = "../sys", version = "0.7.2" }
-ufmt = "0.2.0"
+flipperzero-sys.workspace = true
+ufmt.workspace = true
 
 [dev-dependencies]
-flipperzero-alloc = { path = "../alloc", version = "0.7.2" }
-flipperzero-rt = { path = "../rt", version = "0.7.2" }
+flipperzero-alloc.workspace = true
+flipperzero-rt.workspace = true
 
 [features]
 default = ["unstable_lints", "unstable_intrinsics"]
