@@ -33,6 +33,10 @@ flipperzero-rt.workspace = true
 # enables features requiring an allocator
 alloc = []
 
+[[test]]
+name = "dolphin"
+harness = false
+
 [[example]]
 name = "dialog"
 required-features = ["alloc"]

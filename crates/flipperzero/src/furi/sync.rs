@@ -78,3 +78,24 @@ impl<T: ?Sized> Drop for MutexGuard<'_, T> {
 // `UnsendUnsync` is actually a bit too strong.
 // As long as `T` implements `Sync`, it's fine to access it from another thread.
 unsafe impl<T: ?Sized + Sync> Sync for MutexGuard<'_, T> {}
+
+#[flipperzero_test::tests]
+mod tests {
+    use super::Mutex;
+
+    #[test]
+    fn unshared_mutex_does_not_block() {
+        let mutex = Mutex::new(7u64);
+
+        {
+            let mut value = mutex.lock().expect("should not fail");
+            assert_eq!(*value, 7);
+            *value = 42;
+        }
+
+        {
+            let value = mutex.lock().expect("should not fail");
+            assert_eq!(*value, 42);
+        }
+    }
+}
