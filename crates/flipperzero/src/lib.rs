@@ -25,6 +25,7 @@ flipperzero_test::tests_runner!(
     name = "flipperzero-rs Unit Tests",
     [
         crate::furi::message_queue::tests,
+        crate::furi::rng::tests,
         crate::furi::sync::tests,
         crate::toolbox::md5::tests,
         crate::toolbox::sha256::tests,

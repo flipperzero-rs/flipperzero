@@ -2,6 +2,7 @@
 
 pub mod io;
 pub mod message_queue;
+pub mod rng;
 pub mod sync;
 pub mod thread;
 

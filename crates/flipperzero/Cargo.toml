@@ -25,6 +25,9 @@ flipperzero-sys.workspace = true
 flipperzero-test.workspace = true
 ufmt.workspace = true
 
+# HAL wrappers
+rand_core = "0.6"
+
 # Toolbox
 digest = "0.10"
 
