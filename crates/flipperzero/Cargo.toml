@@ -25,9 +25,15 @@ flipperzero-sys.workspace = true
 flipperzero-test.workspace = true
 ufmt.workspace = true
 
+# Toolbox
+digest = "0.10"
+
 [dev-dependencies]
 flipperzero-alloc.workspace = true
 flipperzero-rt.workspace = true
+
+# Toolbox
+sha2 = { version = "0.10", default-features = false }
 
 [features]
 # enables features requiring an allocator
