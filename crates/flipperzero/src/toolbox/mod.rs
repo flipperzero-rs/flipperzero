@@ -11,5 +11,8 @@
 //! - Using an equivalent pure-Rust type enables the Rust compiler to optimize the
 //!   application more effectively, at the cost of larger binary size.
 
+pub(crate) mod md5;
+pub use self::md5::Md5;
+
 pub(crate) mod sha256;
 pub use sha256::Sha256;

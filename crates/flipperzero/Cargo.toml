@@ -33,6 +33,7 @@ flipperzero-alloc.workspace = true
 flipperzero-rt.workspace = true
 
 # Toolbox
+md-5 = { version = "0.10", default-features = false }
 sha2 = { version = "0.10", default-features = false }
 
 [features]
