@@ -1,12 +1,12 @@
 [package]
 name = "flipperzero-rt"
-version = "0.6.0"
-description = "Rust for Flipper Zero"
-repository = "https://github.com/dcoles/flipperzero-rs"
-readme = "../../README.md"
-license = "MIT"
-edition = "2021"
-rust-version = "1.64.0"
+version.workspace = true
+description.workspace = true
+repository.workspace = true
+readme.workspace = true
+license.workspace = true
+edition.workspace = true
+rust-version.workspace = true
 autobins = false
 autoexamples = false
 autotests = false
@@ -22,4 +22,4 @@ bench = false
 test = false
 
 [dependencies]
-flipperzero-sys = { path = "../sys", version = "0.6.0" }
+flipperzero-sys.workspace = true

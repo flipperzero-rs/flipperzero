@@ -1,4 +1,4 @@
-//! Dialog example for Flipper Zero.
+//! Demonstrates use of the Flipper Zero Dialog API.
 
 #![no_main]
 #![no_std]
@@ -11,8 +11,10 @@ extern crate flipperzero_alloc;
 
 use core::ffi::CStr;
 
-use flipperzero::gui::canvas::Align;
-use flipperzero::dialogs::{self, DialogMessage, DialogMessageButton, DialogsApp};
+use flipperzero::{
+    dialogs::{self, DialogMessage, DialogMessageButton, DialogsApp},
+    gui::canvas::Align,
+};
 use flipperzero_rt::{entry, manifest};
 
 manifest!(name = "Rust dialog example");

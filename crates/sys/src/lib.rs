@@ -14,7 +14,7 @@ mod bindings;
 /// Will automatically add a NUL terminator.
 #[macro_export]
 macro_rules! c_string {
-    ($str:literal $(,)?) => {{
+    ($str:expr $(,)?) => {{
         concat!($str, "\0").as_ptr() as *const core::ffi::c_char
     }};
 }
@@ -22,21 +22,20 @@ macro_rules! c_string {
 /// Crash the system.
 #[macro_export]
 macro_rules! crash {
-    ($msg:literal $(,)?) => {
+    ($msg:expr $(,)?) => {
         unsafe {
             // Crash message is passed via r12
             let msg = $crate::c_string!($msg);
             core::arch::asm!("", in("r12") msg, options(nomem, nostack));
 
             $crate::__furi_crash();
-            // `unreachable!` generates exception machinery, `noreturn` does not
-            core::arch::asm!("", options(noreturn));
+            core::hint::unreachable_unchecked();
         }
     };
 }
 
-/// Re-export bindings
+// Re-export bindings
 pub use bindings::*;
 
-/// Definition of inline functions
+// Definition of inline functions
 pub use inlines::furi_hal_gpio::*;

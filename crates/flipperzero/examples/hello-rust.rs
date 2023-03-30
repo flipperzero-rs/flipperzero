@@ -7,6 +7,10 @@
 // Required for panic handler
 extern crate flipperzero_rt;
 
+// Required for allocator
+#[cfg(feature = "alloc")]
+extern crate flipperzero_alloc;
+
 use flipperzero::println;
 use flipperzero_rt::{entry, manifest};
 
@@ -16,7 +20,7 @@ manifest!(
     app_version = 1,
     has_icon = true,
     // See `docs/icons.md` for icon format
-    icon = "rustacean-10x10.icon",
+    icon = "icons/rustacean-10x10.icon",
 );
 
 // Define the entry function
@@ -24,7 +28,7 @@ entry!(main);
 
 // Entry point
 fn main(_args: *mut u8) -> i32 {
-    println!("Hello, Rust!");
+    println!("Hello, {}!", "Rust");
 
     0
 }

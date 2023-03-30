@@ -11,14 +11,6 @@ env:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        target:
-          - crates
-          - examples/hello-rust
-          - examples/gui
-          - examples/notification
-          - examples/gpio
     uses: ./.github/workflows/_build_and_test.yml
     with:
-      target: ${{ matrix.target }}
+      target: crates

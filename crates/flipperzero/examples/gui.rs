@@ -1,4 +1,5 @@
-//! GUI example for Flipper Zero.
+//! Demonstrates use of the Flipper Zero GUI.
+//!
 //! This app write "Hello, Rust!" to the display.
 
 #![no_main]
@@ -6,6 +7,10 @@
 
 // Required for panic handler
 extern crate flipperzero_rt;
+
+// Required for allocator
+#[cfg(feature = "alloc")]
+extern crate flipperzero_alloc;
 
 use core::ffi::{c_char, c_void};
 use core::ptr;
@@ -23,7 +28,7 @@ manifest!(name = "Rust GUI example");
 entry!(main);
 
 /// View draw handler.
-pub extern "C" fn draw_callback(canvas: *mut sys::Canvas, _context: *mut c_void) {
+pub unsafe extern "C" fn draw_callback(canvas: *mut sys::Canvas, _context: *mut c_void) {
     unsafe {
         sys::canvas_draw_str(canvas, 39, 31, sys::c_string!("Hello, Rust!"));
     }

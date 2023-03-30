@@ -1,4 +1,4 @@
-//! Example of using the Flipper Zero notification API.
+//! Demonstrates use of the Flipper Zero notification API.
 //! This currently uses the `flipperzero-sys` crate as it is not currently
 //! exposed in the high-level `flipperzero` crate.
 //! 
@@ -10,6 +10,10 @@
 
 // Required for panic handler
 extern crate flipperzero_rt;
+
+// Required for allocator
+#[cfg(feature = "alloc")]
+extern crate flipperzero_alloc;
 
 use core::ffi::c_char;
 use core::time::Duration;
