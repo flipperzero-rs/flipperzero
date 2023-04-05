@@ -22,13 +22,13 @@ pub mod vibro;
 
 const RECORD_NOTIFICATION: *const c_char = sys::c_string!("notification");
 
-/// A handle to the Notification app.
-pub struct NotificationApp {
+/// A handle to the Notification service.
+pub struct NotificationService {
     data: UnsafeRecord<sys::NotificationApp>,
 }
 
-impl NotificationApp {
-    /// Obtains a handle to the Notifications app.
+impl NotificationService {
+    /// Obtains a handle to the Notifications service.
     pub fn open() -> Self {
         Self {
             data: unsafe { UnsafeRecord::open(RECORD_NOTIFICATION) },
@@ -268,7 +268,7 @@ pub struct NotificationSequence(&'static [*const NotificationMessage]);
 
 impl NotificationSequence {
     #[doc(hidden)]
-    pub const fn constsruct(sequence: &'static [*const NotificationMessage]) -> Self {
+    pub const fn construct(sequence: &'static [*const NotificationMessage]) -> Self {
         Self(sequence)
     }
 
@@ -285,7 +285,7 @@ macro_rules! notification_sequence {
                 $(&$x as *const _),*,
                 ::core::ptr::null()
             ];
-            $crate::notification::NotificationSequence::constsruct(S)
+            $crate::notification::NotificationSequence::construct(S)
         }
     };
 }
