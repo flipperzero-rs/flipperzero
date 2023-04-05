@@ -1,5 +1,7 @@
 //! Furi notifications.
 
+use bitflags::bitflags;
+
 use core::ffi::c_char;
 
 use flipperzero_sys as sys;
@@ -50,51 +52,26 @@ impl NotificationApp {
     }
 }
 
-#[repr(u8)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Light {
-    Off = 0,
+bitflags! {
+    pub struct Light: u8 {
+        const OFF = 0;
 
-    Red = 0b0001,
-    Green = 0b0010,
-    Blue = 0b0100,
-    Backlight = 0b1000,
+        const RED = 0b0001;
+        const GREEN = 0b0010;
+        const BLUE = 0b0100;
+        const BACKLIGHT = 0b1000;
 
-    Cyan = 0b0110,
-    Magenta = 0b0101,
-    Yellow = 0b0011,
+        const CYAN = Self::GREEN.bits() | Self::BLUE.bits();
+        const MAGENTA = Self::RED.bits() | Self::BLUE.bits();
+        const YELLOW = Self::RED.bits() | Self::GREEN.bits();
 
-    White = 0b0111,
-}
-
-impl core::ops::BitOr for Light {
-    type Output = Self;
-
-    fn bitor(self, rhs: Self) -> Self::Output {
-        match (self, rhs) {
-            (Self::Off, l) | (l, Self::Off) => l,
-
-            (Self::Red, Self::Red) => Self::Red,
-            (Self::Green, Self::Green) => Self::Green,
-            (Self::Blue, Self::Blue) => Self::Blue,
-            (Self::Backlight, Self::Backlight) => Self::Backlight,
-            (Self::Cyan, Self::Cyan) => Self::Cyan,
-            (Self::Magenta, Self::Magenta) => Self::Magenta,
-            (Self::Yellow, Self::Yellow) => Self::Yellow,
-            (Self::White, Self::White) => Self::White,
-
-            (Self::Red, Self::Green) | (Self::Green, Self::Red) => Self::Yellow,
-            (Self::Red, Self::Blue) | (Self::Blue, Self::Red) => Self::Magenta,
-            (Self::Green, Self::Blue) | (Self::Blue, Self::Green) => Self::Cyan,
-
-            _ => Self::White, //FIXME undefined?
-        }
+        const WHITE = Self::RED.bits() | Self::GREEN.bits() | Self::BLUE.bits();
     }
 }
 
 impl Light {
     pub const fn to_sys(self) -> sys::Light {
-        self as sys::Light
+        self.bits() as sys::Light
     }
 }
 
