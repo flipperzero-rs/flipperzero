@@ -5,12 +5,18 @@ use core::ffi::c_char;
 use flipperzero_sys as sys;
 use flipperzero_sys::furi::UnsafeRecord;
 
+///Default backlight notification sequences.
+pub mod backlight;
+///Useful notification sequences for user feedback.
+pub mod feedback;
+///Default led notification sequences.
+pub mod led;
 ///Default notification messages.
 pub mod messages;
-///Default notification sequences.
-pub mod sequences;
 ///Default notification sounds.
 pub mod sounds;
+///Default vibration notification sequences.
+pub mod vibro;
 
 const RECORD_NOTIFICATION: *const c_char = sys::c_string!("notification");
 
