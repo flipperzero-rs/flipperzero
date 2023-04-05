@@ -1,4 +1,4 @@
-use super::{messages, notes, NotificationSequence};
+use super::{messages, sounds, NotificationSequence};
 use crate::notification_sequence;
 
 pub const RESET_RED: NotificationSequence = notification_sequence![messages::RED_0];
@@ -141,14 +141,14 @@ pub const SUCCESS: NotificationSequence = notification_sequence![
     messages::DISPLAY_BACKLIGHT_ON,
     messages::GREEN_255,
     messages::VIBRO_ON,
-    notes::C5,
+    sounds::C5,
     messages::DELAY_50,
     messages::VIBRO_OFF,
-    notes::E5,
+    sounds::E5,
     messages::DELAY_50,
-    notes::G5,
+    sounds::G5,
     messages::DELAY_50,
-    notes::C6,
+    sounds::C6,
     messages::DELAY_50,
     messages::SOUND_OFF,
 ];

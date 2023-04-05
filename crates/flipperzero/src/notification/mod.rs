@@ -7,10 +7,10 @@ use flipperzero_sys::furi::UnsafeRecord;
 
 ///Default notification messages.
 pub mod messages;
-///Default notification notes.
-pub mod notes;
 ///Default notification sequences.
 pub mod sequences;
+///Default notification sounds.
+pub mod sounds;
 
 const RECORD_NOTIFICATION: *const c_char = sys::c_string!("notification");
 

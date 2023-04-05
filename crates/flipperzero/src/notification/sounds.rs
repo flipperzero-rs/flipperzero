@@ -1,3 +1,5 @@
+//! Common sounds that can be produced by the Flipper Zero.
+
 use super::NotificationMessage;
 
 pub static CLICK: NotificationMessage = NotificationMessage::sound_on(1.0, 1.0);
