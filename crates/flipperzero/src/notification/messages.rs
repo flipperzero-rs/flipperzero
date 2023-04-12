@@ -15,25 +15,25 @@ pub const GREEN_0: NotificationMessage = NotificationMessage::led_green(0);
 pub const BLUE_0: NotificationMessage = NotificationMessage::led_blue(0);
 
 pub const BLINK_START_10: NotificationMessage =
-    NotificationMessage::led_blink_start(10, 100, Light::Off);
+    NotificationMessage::led_blink_start(10, 100, Light::OFF);
 pub const BLINK_START_100: NotificationMessage =
-    NotificationMessage::led_blink_start(100, 1000, Light::Off);
+    NotificationMessage::led_blink_start(100, 1000, Light::OFF);
 pub const BLINK_STOP: NotificationMessage = NotificationMessage::led_blink_stop();
 
 pub const BLINK_SET_COLOR_RED: NotificationMessage =
-    NotificationMessage::led_blink_color(Light::Red);
+    NotificationMessage::led_blink_color(Light::RED);
 pub const BLINK_SET_COLOR_GREEN: NotificationMessage =
-    NotificationMessage::led_blink_color(Light::Green);
+    NotificationMessage::led_blink_color(Light::GREEN);
 pub const BLINK_SET_COLOR_BLUE: NotificationMessage =
-    NotificationMessage::led_blink_color(Light::Blue);
+    NotificationMessage::led_blink_color(Light::BLUE);
 pub const BLINK_SET_COLOR_CYAN: NotificationMessage =
-    NotificationMessage::led_blink_color(Light::Cyan);
+    NotificationMessage::led_blink_color(Light::CYAN);
 pub const BLINK_SET_COLOR_MAGENTA: NotificationMessage =
-    NotificationMessage::led_blink_color(Light::Magenta);
+    NotificationMessage::led_blink_color(Light::MAGENTA);
 pub const BLINK_SET_COLOR_YELLOW: NotificationMessage =
-    NotificationMessage::led_blink_color(Light::Yellow);
+    NotificationMessage::led_blink_color(Light::YELLOW);
 pub const BLINK_SET_COLOR_WHITE: NotificationMessage =
-    NotificationMessage::led_blink_color(Light::White);
+    NotificationMessage::led_blink_color(Light::WHITE);
 
 pub const DELAY_1: NotificationMessage = NotificationMessage::delay(1);
 pub const DELAY_10: NotificationMessage = NotificationMessage::delay(10);
