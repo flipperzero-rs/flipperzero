@@ -48,6 +48,10 @@ alloc = []
 name = "dolphin"
 harness = false
 
+[[test]]
+name = "string"
+harness = false
+
 [[example]]
 name = "dialog"
 required-features = ["alloc"]
