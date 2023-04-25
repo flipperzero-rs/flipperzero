@@ -18,10 +18,11 @@ all-features = true
 
 [lib]
 bench = false
-test = false
+harness = false
 
 [dependencies]
 flipperzero-sys.workspace = true
+flipperzero-test.workspace = true
 ufmt.workspace = true
 
 [dev-dependencies]
@@ -31,6 +32,10 @@ flipperzero-rt.workspace = true
 [features]
 # enables features requiring an allocator
 alloc = []
+
+[[test]]
+name = "dolphin"
+harness = false
 
 [[example]]
 name = "dialog"

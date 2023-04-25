@@ -82,3 +82,45 @@ impl<M: Sized> Drop for MessageQueue<M> {
         unsafe { sys::furi_message_queue_free(self.hnd) }
     }
 }
+
+#[flipperzero_test::tests]
+mod tests {
+    use core::time::Duration;
+
+    use flipperzero_sys::furi::Status;
+
+    use super::MessageQueue;
+
+    #[test]
+    fn capacity() {
+        let queue = MessageQueue::new(3);
+        assert_eq!(queue.len(), 0);
+        assert_eq!(queue.space(), 3);
+        assert_eq!(queue.capacity(), 3);
+
+        // Adding a message to the queue should consume capacity.
+        queue.put(2, Duration::from_millis(1)).unwrap();
+        assert_eq!(queue.len(), 1);
+        assert_eq!(queue.space(), 2);
+        assert_eq!(queue.capacity(), 3);
+
+        // We should be able to fill the queue to capacity.
+        queue.put(4, Duration::from_millis(1)).unwrap();
+        queue.put(6, Duration::from_millis(1)).unwrap();
+        assert_eq!(queue.len(), 3);
+        assert_eq!(queue.space(), 0);
+        assert_eq!(queue.capacity(), 3);
+
+        // Attempting to add another message should time out.
+        assert_eq!(
+            queue.put(7, Duration::from_millis(1)),
+            Err(Status::ERR_TIMEOUT),
+        );
+
+        // Removing a message from the queue frees up capacity.
+        assert_eq!(queue.get(Duration::from_millis(1)), Ok(2));
+        assert_eq!(queue.len(), 2);
+        assert_eq!(queue.space(), 1);
+        assert_eq!(queue.capacity(), 3);
+    }
+}

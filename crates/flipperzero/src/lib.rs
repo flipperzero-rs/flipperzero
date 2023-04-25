@@ -1,6 +1,7 @@
 //! High-level bindings for the Flipper Zero.
 
 #![no_std]
+#![cfg_attr(test, no_main)]
 
 #[cfg(feature = "alloc")]
 extern crate alloc;
@@ -18,3 +19,8 @@ pub mod __internal {
     // Re-export for use in macros
     pub use ufmt;
 }
+
+flipperzero_test::tests_runner!(
+    name = "flipperzero-rs Unit Tests",
+    [crate::furi::message_queue::tests, crate::furi::sync::tests]
+);

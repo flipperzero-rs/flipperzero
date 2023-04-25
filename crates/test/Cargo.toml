@@ -1,0 +1,20 @@
+[package]
+name = "flipperzero-test"
+version = "0.1.0"
+repository.workspace = true
+readme.workspace = true
+license.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+autobins = false
+autotests = false
+autobenches = false
+
+[dependencies]
+flipperzero-sys.workspace = true
+flipperzero-test-macros = { version = "=0.1.0", path = "macros" }
+ufmt.workspace = true
+
+[lib]
+bench = false
+test = false

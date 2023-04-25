@@ -43,6 +43,11 @@ impl FlipperStorage {
         self.cli.port_mut()
     }
 
+    /// Get mutable reference to underlying [`SerialCli`].
+    pub fn cli_mut(&mut self) -> &mut SerialCli {
+        &mut self.cli
+    }
+
     /// List files and directories on the device.
     pub fn list_tree(&mut self, path: &FlipperPath) -> io::Result<()> {
         // Note: The `storage list` command expects that paths do not end with a slash.
