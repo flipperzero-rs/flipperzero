@@ -11,6 +11,9 @@
 //! - Using an equivalent pure-Rust type enables the Rust compiler to optimize the
 //!   application more effectively, at the cost of larger binary size.
 
+pub(crate) mod crc32;
+pub use self::crc32::Crc32;
+
 pub(crate) mod md5;
 pub use self::md5::Md5;
 
