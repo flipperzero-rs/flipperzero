@@ -13,6 +13,7 @@ pub mod gui;
 pub mod io;
 pub mod macros;
 pub mod storage;
+pub mod toolbox;
 
 #[doc(hidden)]
 pub mod __internal {
@@ -22,5 +23,12 @@ pub mod __internal {
 
 flipperzero_test::tests_runner!(
     name = "flipperzero-rs Unit Tests",
-    [crate::furi::message_queue::tests, crate::furi::sync::tests]
+    [
+        crate::furi::message_queue::tests,
+        crate::furi::rng::tests,
+        crate::furi::sync::tests,
+        crate::toolbox::crc32::tests,
+        crate::toolbox::md5::tests,
+        crate::toolbox::sha256::tests,
+    ]
 );
