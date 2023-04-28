@@ -68,7 +68,7 @@ impl UpdateCore for Md5Core {
     #[inline]
     fn update_blocks(&mut self, blocks: &[Block<Self>]) {
         for block in blocks {
-            self.state.total[0] += Self::BlockSize::U32;
+            self.state.total[0] += Self::BlockSize::U32; // i.e. 64u32
             if self.state.total[0] < Self::BlockSize::U32 {
                 self.state.total[1] += 1;
             }

@@ -52,17 +52,16 @@ impl UpdateCore for Sha256Core {
     #[inline]
     fn update_blocks(&mut self, blocks: &[Block<Self>]) {
         for block in blocks {
-            self.state.total[0] += Self::BlockSize::U32;
+            self.state.total[0] += Self::BlockSize::U32; // i.e. 64u32
             if self.state.total[0] < Self::BlockSize::U32 {
                 self.state.total[1] += 1;
             }
 
             unsafe {
-                sys::memcpy(
+                core::ptr::copy_nonoverlapping(
+                    block.as_ptr(),
                     self.state.wbuf.as_mut_ptr().cast(),
-                    block.as_ptr().cast(),
-                    Self::BlockSize::U32,
-                );
+                    Self::BlockSize::USIZE);
                 sys::sha256_process(&mut self.state);
             }
         }
