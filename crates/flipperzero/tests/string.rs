@@ -810,109 +810,124 @@ mod tests {
     */
 }
 
+#[flipperzero_test::tests]
 mod str_tests {
-    use core::assert_matches;
-    use core::borrow::Cow;
     use core::cmp::Ordering::{Equal, Greater, Less};
-    use core::str::{from_utf8, from_utf8_unchecked};
+
+    use flipperzero::furi::string::String;
 
     #[test]
-    fn test_le() {
-        assert!("" <= "");
-        assert!("" <= "foo");
-        assert!("foo" <= "foo");
-        assert_ne!("foo", "bar");
+    fn le() {
+        assert!(String::from("") <= String::from(""));
+        assert!(String::from("") <= String::from("foo"));
+        assert!(String::from("foo") <= String::from("foo"));
+        assert_ne!(String::from("foo"), String::from("bar"));
     }
 
     #[test]
-    fn test_find() {
-        assert_eq!("hello".find('l'), Some(2));
-        assert_eq!("hello".find(|c: char| c == 'o'), Some(4));
-        assert!("hello".find('x').is_none());
-        assert!("hello".find(|c: char| c == 'x').is_none());
-        assert_eq!("ประเทศไทย中华Việt Nam".find('华'), Some(30));
-        assert_eq!("ประเทศไทย中华Việt Nam".find(|c: char| c == '华'), Some(30));
+    fn find() {
+        assert_eq!(String::from("hello").find('l'), Some(2));
+        // assert_eq!(String::from("hello").find(|c: char| c == 'o'), Some(4));
+        assert!(String::from("hello").find('x').is_none());
+        // assert!(String::from("hello").find(|c: char| c == 'x').is_none());
+        assert_eq!(String::from("ประเทศไทย中华Việt Nam").find('华'), Some(30));
+        // assert_eq!(
+        //     String::from("ประเทศไทย中华Việt Nam").find(|c: char| c == '华'),
+        //     Some(30)
+        // );
     }
 
     #[test]
-    fn test_rfind() {
-        assert_eq!("hello".rfind('l'), Some(3));
-        assert_eq!("hello".rfind(|c: char| c == 'o'), Some(4));
-        assert!("hello".rfind('x').is_none());
-        assert!("hello".rfind(|c: char| c == 'x').is_none());
-        assert_eq!("ประเทศไทย中华Việt Nam".rfind('华'), Some(30));
-        assert_eq!("ประเทศไทย中华Việt Nam".rfind(|c: char| c == '华'), Some(30));
+    fn rfind() {
+        assert_eq!(String::from("hello").rfind('l'), Some(3));
+        // assert_eq!(String::from("hello").rfind(|c: char| c == 'o'), Some(4));
+        assert!(String::from("hello").rfind('x').is_none());
+        // assert!(String::from("hello").rfind(|c: char| c == 'x').is_none());
+        assert_eq!(String::from("ประเทศไทย中华Việt Nam").rfind('华'), Some(30));
+        // assert_eq!(
+        //     String::from("ประเทศไทย中华Việt Nam").rfind(|c: char| c == '华'),
+        //     Some(30)
+        // );
     }
 
+    /*
     #[test]
-    fn test_collect() {
-        let empty = "";
+    fn collect() {
+        let empty = String::from("");
         let s: String = empty.chars().collect();
         assert_eq!(empty, s);
-        let data = "ประเทศไทย中";
+        let data = String::from("ประเทศไทย中");
         let s: String = data.chars().collect();
         assert_eq!(data, s);
     }
 
     #[test]
-    fn test_into_bytes() {
+    fn into_bytes() {
         let data = String::from("asdf");
         let buf = data.into_bytes();
         assert_eq!(buf, b"asdf");
     }
+    */
 
     #[test]
-    fn test_find_str() {
+    fn find_str() {
         // byte positions
-        assert_eq!("".find(""), Some(0));
-        assert!("banana".find("apple pie").is_none());
+        assert_eq!(String::from("").find(&String::from("")), Some(0));
+        assert!(String::from("banana")
+            .find(&String::from("apple pie"))
+            .is_none());
 
-        let data = "abcabc";
-        assert_eq!(data[0..6].find("ab"), Some(0));
-        assert_eq!(data[2..6].find("ab"), Some(3 - 2));
-        assert!(data[2..4].find("ab").is_none());
+        let mut data = String::from("abcabc");
+        let ab = String::from("ab");
+        assert_eq!(data.find(&ab), Some(0));
+        assert!(data.strip_prefix(&ab));
+        assert_eq!(data.find(&ab), Some(3 - 2));
+        data.truncate(2);
+        assert!(data.find(&ab).is_none());
 
         let string = "ประเทศไทย中华Việt Nam";
         let mut data = String::from(string);
         data.push_str(string);
-        assert!(data.find("ไท华").is_none());
-        assert_eq!(data[0..43].find(""), Some(0));
-        assert_eq!(data[6..43].find(""), Some(6 - 6));
+        assert!(data.find(&String::from("ไท华")).is_none());
+        assert_eq!(data.find(&String::from("")), Some(0));
+        // assert_eq!(data[6..43].find(""), Some(6 - 6));
 
-        assert_eq!(data[0..43].find("ประ"), Some(0));
-        assert_eq!(data[0..43].find("ทศไ"), Some(12));
-        assert_eq!(data[0..43].find("ย中"), Some(24));
-        assert_eq!(data[0..43].find("iệt"), Some(34));
-        assert_eq!(data[0..43].find("Nam"), Some(40));
+        assert_eq!(data.find(&String::from("ประ")), Some(0));
+        assert_eq!(data.find(&String::from("ทศไ")), Some(12));
+        assert_eq!(data.find(&String::from("ย中")), Some(24));
+        assert_eq!(data.find(&String::from("iệt")), Some(34));
+        assert_eq!(data.find(&String::from("Nam")), Some(40));
 
-        assert_eq!(data[43..86].find("ประ"), Some(43 - 43));
-        assert_eq!(data[43..86].find("ทศไ"), Some(55 - 43));
-        assert_eq!(data[43..86].find("ย中"), Some(67 - 43));
-        assert_eq!(data[43..86].find("iệt"), Some(77 - 43));
-        assert_eq!(data[43..86].find("Nam"), Some(83 - 43));
+        let data = data.split_off(43);
+        assert_eq!(data.find(&String::from("ประ")), Some(43 - 43));
+        assert_eq!(data.find(&String::from("ทศไ")), Some(55 - 43));
+        assert_eq!(data.find(&String::from("ย中")), Some(67 - 43));
+        assert_eq!(data.find(&String::from("iệt")), Some(77 - 43));
+        assert_eq!(data.find(&String::from("Nam")), Some(83 - 43));
 
-        // find every substring -- assert that it finds it, or an earlier occurrence.
-        let string = "Việt Namacbaabcaabaaba";
-        for (i, ci) in string.char_indices() {
-            let ip = i + ci.len_utf8();
-            for j in string[ip..]
-                .char_indices()
-                .map(|(i, _)| i)
-                .chain(Some(string.len() - ip))
-            {
-                let pat = &string[i..ip + j];
-                assert!(match string.find(pat) {
-                    None => false,
-                    Some(x) => x <= i,
-                });
-                assert!(match string.rfind(pat) {
-                    None => false,
-                    Some(x) => x >= i,
-                });
-            }
-        }
+        // // find every substring -- assert that it finds it, or an earlier occurrence.
+        // let string = "Việt Namacbaabcaabaaba";
+        // for (i, ci) in string.char_indices() {
+        //     let ip = i + ci.len_utf8();
+        //     for j in string[ip..]
+        //         .char_indices()
+        //         .map(|(i, _)| i)
+        //         .chain(Some(string.len() - ip))
+        //     {
+        //         let pat = &string[i..ip + j];
+        //         assert!(match string.find(pat) {
+        //             None => false,
+        //             Some(x) => x <= i,
+        //         });
+        //         assert!(match string.rfind(pat) {
+        //             None => false,
+        //             Some(x) => x >= i,
+        //         });
+        //     }
+        // }
     }
 
+    /*
     fn s(x: &str) -> String {
         x.to_string()
     }
@@ -925,13 +940,13 @@ mod str_tests {
     }
 
     #[test]
-    fn test_concat_for_different_types() {
+    fn concat_for_different_types() {
         test_concat!("ab", vec![s("a"), s("b")]);
         test_concat!("ab", vec!["a", "b"]);
     }
 
     #[test]
-    fn test_concat_for_different_lengths() {
+    fn concat_for_different_lengths() {
         let empty: &[&str] = &[];
         test_concat!("", empty);
         test_concat!("a", ["a"]);
@@ -947,7 +962,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_join_for_different_types() {
+    fn join_for_different_types() {
         test_join!("a-b", ["a", "b"], "-");
         let hyphen = "-".to_string();
         test_join!("a-b", [s("a"), s("b")], &*hyphen);
@@ -957,7 +972,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_join_for_different_lengths() {
+    fn join_for_different_lengths() {
         let empty: &[&str] = &[];
         test_join!("", empty, "-");
         test_join!("a", ["a"], "-");
@@ -968,7 +983,7 @@ mod str_tests {
     // join has fast paths for small separators up to 4 bytes
     // this tests the slow paths.
     #[test]
-    fn test_join_for_different_lengths_with_long_separator() {
+    fn join_for_different_lengths_with_long_separator() {
         assert_eq!("～～～～～".len(), 15);
 
         let empty: &[&str] = &[];
@@ -979,7 +994,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_join_issue_80335() {
+    fn join_issue_80335() {
         use core::{borrow::Borrow, cell::Cell};
 
         struct WeirdBorrow {
@@ -1011,8 +1026,7 @@ mod str_tests {
     }
 
     #[test]
-    #[cfg_attr(miri, ignore)] // Miri is too slow
-    fn test_unsafe_slice() {
+    fn unsafe_slice() {
         assert_eq!("ab", unsafe { "abc".get_unchecked(0..2) });
         assert_eq!("bc", unsafe { "abc".get_unchecked(1..3) });
         assert_eq!("", unsafe { "abc".get_unchecked(1..1) });
@@ -1039,54 +1053,62 @@ mod str_tests {
             letters.get_unchecked(0..500000)
         });
     }
+    */
 
     #[test]
-    fn test_starts_with() {
-        assert!("".starts_with(""));
-        assert!("abc".starts_with(""));
-        assert!("abc".starts_with("a"));
-        assert!(!"a".starts_with("abc"));
-        assert!(!"".starts_with("abc"));
-        assert!(!"ödd".starts_with("-"));
-        assert!("ödd".starts_with("öd"));
+    fn starts_with() {
+        assert!(String::from("").starts_with(&String::from("")));
+        assert!(String::from("abc").starts_with(&String::from("")));
+        assert!(String::from("abc").starts_with(&String::from("a")));
+        assert!(!String::from("a").starts_with(&String::from("abc")));
+        assert!(!String::from("").starts_with(&String::from("abc")));
+        assert!(!String::from("ödd").starts_with(&String::from("-")));
+        assert!(String::from("ödd").starts_with(&String::from("öd")));
     }
 
     #[test]
-    fn test_ends_with() {
-        assert!("".ends_with(""));
-        assert!("abc".ends_with(""));
-        assert!("abc".ends_with("c"));
-        assert!(!"a".ends_with("abc"));
-        assert!(!"".ends_with("abc"));
-        assert!(!"ddö".ends_with("-"));
-        assert!("ddö".ends_with("dö"));
+    fn ends_with() {
+        assert!(String::from("").ends_with(&String::from("")));
+        assert!(String::from("abc").ends_with(&String::from("")));
+        assert!(String::from("abc").ends_with(&String::from("c")));
+        assert!(!String::from("a").ends_with(&String::from("abc")));
+        assert!(!String::from("").ends_with(&String::from("abc")));
+        assert!(!String::from("ddö").ends_with(&String::from("-")));
+        assert!(String::from("ddö").ends_with(&String::from("dö")));
     }
 
     #[test]
-    fn test_is_empty() {
-        assert!("".is_empty());
-        assert!(!"a".is_empty());
+    fn is_empty() {
+        assert!(String::from("").is_empty());
+        assert!(!String::from("a").is_empty());
     }
 
+    /*
     #[test]
-    fn test_replacen() {
-        assert_eq!("".replacen('a', "b", 5), "");
-        assert_eq!("acaaa".replacen("a", "b", 3), "bcbba");
-        assert_eq!("aaaa".replacen("a", "b", 0), "aaaa");
+    fn replacen() {
+        assert_eq!(String::from("").replacen('a', "b", 5), "");
+        assert_eq!(String::from("acaaa").replacen("a", "b", 3), "bcbba");
+        assert_eq!(String::from("aaaa").replacen("a", "b", 0), "aaaa");
 
         let test = "test";
-        assert_eq!(" test test ".replacen(test, "toast", 3), " toast toast ");
-        assert_eq!(" test test ".replacen(test, "toast", 0), " test test ");
-        assert_eq!(" test test ".replacen(test, "", 5), "   ");
+        assert_eq!(
+            String::from(" test test ").replacen(test, "toast", 3),
+            " toast toast "
+        );
+        assert_eq!(
+            String::from(" test test ").replacen(test, "toast", 0),
+            " test test "
+        );
+        assert_eq!(String::from(" test test ").replacen(test, "", 5), "   ");
 
         assert_eq!(
-            "qwer123zxc789".replacen(char::is_numeric, "", 3),
+            String::from("qwer123zxc789").replacen(char::is_numeric, "", 3),
             "qwerzxc789"
         );
     }
 
     #[test]
-    fn test_replace() {
+    fn replace() {
         let a = "a";
         assert_eq!("".replace(a, "b"), "");
         assert_eq!("a".replace(a, "b"), "b");
@@ -1097,7 +1119,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_replace_2a() {
+    fn replace_2a() {
         let data = "ประเทศไทย中华";
         let repl = "دولة الكويت";
 
@@ -1107,7 +1129,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_replace_2b() {
+    fn replace_2b() {
         let data = "ประเทศไทย中华";
         let repl = "دولة الكويت";
 
@@ -1117,7 +1139,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_replace_2c() {
+    fn replace_2c() {
         let data = "ประเทศไทย中华";
         let repl = "دولة الكويت";
 
@@ -1127,7 +1149,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_replace_2d() {
+    fn replace_2d() {
         let data = "ประเทศไทย中华";
         let repl = "دولة الكويت";
 
@@ -1136,8 +1158,8 @@ mod str_tests {
     }
 
     #[test]
-    fn test_replace_pattern() {
-        let data = "abcdαβγδabcdαβγδ";
+    fn replace_pattern() {
+        let data = String::from("abcdαβγδabcdαβγδ");
         assert_eq!(data.replace("dαβ", "😺😺😺"), "abc😺😺😺γδabc😺😺😺γδ");
         assert_eq!(data.replace('γ', "😺😺😺"), "abcdαβ😺😺😺δabcdαβ😺😺😺δ");
         assert_eq!(
@@ -1364,7 +1386,7 @@ mod str_tests {
 
         #[test]
         #[should_panic]
-        fn test_slice_fail() {
+        fn slice_fail() {
             let _ = &"中华Việt Nam"[0..2];
         }
 
@@ -1546,33 +1568,33 @@ mod str_tests {
         #[should_panic(
             expected = "byte index 1024 is out of bounds of `Lorem ipsum dolor sit amet"
         )]
-        fn test_slice_fail_truncated_1() {
+        fn slice_fail_truncated_1() {
             let _ = &LOREM_PARAGRAPH[..1024];
         }
         // check the truncation in the panic message
         #[test]
         #[should_panic(expected = "luctus, im`[...]")]
-        fn test_slice_fail_truncated_2() {
+        fn slice_fail_truncated_2() {
             let _ = &LOREM_PARAGRAPH[..1024];
         }
     }
 
     #[test]
-    fn test_str_slice_rangetoinclusive_ok() {
-        let s = "abcαβγ";
+    fn str_slice_rangetoinclusive_ok() {
+        let s = String::from("abcαβγ");
         assert_eq!(&s[..=2], "abc");
         assert_eq!(&s[..=4], "abcα");
     }
 
     #[test]
     #[should_panic]
-    fn test_str_slice_rangetoinclusive_notok() {
-        let s = "abcαβγ";
+    fn str_slice_rangetoinclusive_notok() {
+        let s = String::from("abcαβγ");
         let _ = &s[..=3];
     }
 
     #[test]
-    fn test_str_slicemut_rangetoinclusive_ok() {
+    fn str_slicemut_rangetoinclusive_ok() {
         let mut s = "abcαβγ".to_owned();
         let s: &mut str = &mut s;
         assert_eq!(&mut s[..=2], "abc");
@@ -1581,15 +1603,15 @@ mod str_tests {
 
     #[test]
     #[should_panic]
-    fn test_str_slicemut_rangetoinclusive_notok() {
+    fn str_slicemut_rangetoinclusive_notok() {
         let mut s = "abcαβγ".to_owned();
         let s: &mut str = &mut s;
         let _ = &mut s[..=3];
     }
 
     #[test]
-    fn test_is_char_boundary() {
-        let s = "ศไทย中华Việt Nam β-release 🐱123";
+    fn is_char_boundary() {
+        let s = String::from("ศไทย中华Việt Nam β-release 🐱123");
         assert!(s.is_char_boundary(0));
         assert!(s.is_char_boundary(s.len()));
         assert!(!s.is_char_boundary(s.len() + 1));
@@ -1606,250 +1628,123 @@ mod str_tests {
             }
         }
     }
+    */
+
+    fn check_trim(s: &str, f: impl FnOnce(&mut String), r: &str) {
+        let mut s = String::from(s);
+        f(&mut s);
+        assert_eq!(s, String::from(r));
+    }
 
     #[test]
-    fn test_trim_start_matches() {
+    fn trim_start_matches() {
         let v: &[char] = &[];
-        assert_eq!(" *** foo *** ".trim_start_matches(v), " *** foo *** ");
-        let chars: &[char] = &['*', ' '];
-        assert_eq!(" *** foo *** ".trim_start_matches(chars), "foo *** ");
-        assert_eq!(" ***  *** ".trim_start_matches(chars), "");
-        assert_eq!("foo *** ".trim_start_matches(chars), "foo *** ");
-
-        assert_eq!("11foo1bar11".trim_start_matches('1'), "foo1bar11");
-        let chars: &[char] = &['1', '2'];
-        assert_eq!("12foo1bar12".trim_start_matches(chars), "foo1bar12");
-        assert_eq!(
-            "123foo1bar123".trim_start_matches(|c: char| c.is_numeric()),
-            "foo1bar123"
+        check_trim(
+            " *** foo *** ",
+            |s| s.trim_start_matches(v),
+            " *** foo *** ",
         );
+        let chars: &[char] = &['*', ' '];
+        check_trim(" *** foo *** ", |s| s.trim_start_matches(chars), "foo *** ");
+        check_trim(" ***  *** ", |s| s.trim_start_matches(chars), "");
+        check_trim("foo *** ", |s| s.trim_start_matches(chars), "foo *** ");
+
+        check_trim("11foo1bar11", |s| s.trim_start_matches('1'), "foo1bar11");
+        let chars: &[char] = &['1', '2'];
+        check_trim("12foo1bar12", |s| s.trim_start_matches(chars), "foo1bar12");
+        // check_trim(
+        //     "123foo1bar123",
+        //     |s| s.trim_start_matches(|c: char| c.is_numeric()),
+        //     "foo1bar123",
+        // );
     }
 
     #[test]
-    fn test_trim_end_matches() {
+    fn trim_end_matches() {
         let v: &[char] = &[];
-        assert_eq!(" *** foo *** ".trim_end_matches(v), " *** foo *** ");
+        check_trim(" *** foo *** ", |s| s.trim_end_matches(v), " *** foo *** ");
         let chars: &[char] = &['*', ' '];
-        assert_eq!(" *** foo *** ".trim_end_matches(chars), " *** foo");
-        assert_eq!(" ***  *** ".trim_end_matches(chars), "");
-        assert_eq!(" *** foo".trim_end_matches(chars), " *** foo");
+        check_trim(" *** foo *** ", |s| s.trim_end_matches(chars), " *** foo");
+        check_trim(" ***  *** ", |s| s.trim_end_matches(chars), "");
+        check_trim(" *** foo", |s| s.trim_end_matches(chars), " *** foo");
 
-        assert_eq!("11foo1bar11".trim_end_matches('1'), "11foo1bar");
+        check_trim("11foo1bar11", |s| s.trim_end_matches('1'), "11foo1bar");
         let chars: &[char] = &['1', '2'];
-        assert_eq!("12foo1bar12".trim_end_matches(chars), "12foo1bar");
-        assert_eq!(
-            "123foo1bar123".trim_end_matches(|c: char| c.is_numeric()),
-            "123foo1bar"
-        );
+        check_trim("12foo1bar12", |s| s.trim_end_matches(chars), "12foo1bar");
+        // check_trim(
+        //     "123foo1bar123",
+        //     |s| s.trim_end_matches(|c: char| c.is_numeric()),
+        //     "123foo1bar",
+        // );
     }
 
     #[test]
-    fn test_trim_matches() {
+    fn trim_matches() {
         let v: &[char] = &[];
-        assert_eq!(" *** foo *** ".trim_matches(v), " *** foo *** ");
+        check_trim(" *** foo *** ", |s| s.trim_matches(v), " *** foo *** ");
         let chars: &[char] = &['*', ' '];
-        assert_eq!(" *** foo *** ".trim_matches(chars), "foo");
-        assert_eq!(" ***  *** ".trim_matches(chars), "");
-        assert_eq!("foo".trim_matches(chars), "foo");
+        check_trim(" *** foo *** ", |s| s.trim_matches(chars), "foo");
+        check_trim(" ***  *** ", |s| s.trim_matches(chars), "");
+        check_trim("foo", |s| s.trim_matches(chars), "foo");
 
-        assert_eq!("11foo1bar11".trim_matches('1'), "foo1bar");
+        check_trim("11foo1bar11", |s| s.trim_matches('1'), "foo1bar");
         let chars: &[char] = &['1', '2'];
-        assert_eq!("12foo1bar12".trim_matches(chars), "foo1bar");
-        assert_eq!(
-            "123foo1bar123".trim_matches(|c: char| c.is_numeric()),
-            "foo1bar"
-        );
+        check_trim("12foo1bar12", |s| s.trim_matches(chars), "foo1bar");
+        // check_trim(
+        //     "123foo1bar123",
+        //     |s| s.trim_matches(|c: char| c.is_numeric()),
+        //     "foo1bar",
+        // );
     }
 
     #[test]
-    fn test_trim_start() {
-        assert_eq!("".trim_start(), "");
-        assert_eq!("a".trim_start(), "a");
-        assert_eq!("    ".trim_start(), "");
-        assert_eq!("     blah".trim_start(), "blah");
-        assert_eq!("   \u{3000}  wut".trim_start(), "wut");
-        assert_eq!("hey ".trim_start(), "hey ");
+    fn trim_start() {
+        check_trim("", |s| s.trim_start(), "");
+        check_trim("a", |s| s.trim_start(), "a");
+        check_trim("    ", |s| s.trim_start(), "");
+        check_trim("     blah", |s| s.trim_start(), "blah");
+        check_trim("   \u{3000}  wut", |s| s.trim_start(), "wut");
+        check_trim("hey ", |s| s.trim_start(), "hey ");
     }
 
     #[test]
-    fn test_trim_end() {
-        assert_eq!("".trim_end(), "");
-        assert_eq!("a".trim_end(), "a");
-        assert_eq!("    ".trim_end(), "");
-        assert_eq!("blah     ".trim_end(), "blah");
-        assert_eq!("wut   \u{3000}  ".trim_end(), "wut");
-        assert_eq!(" hey".trim_end(), " hey");
+    fn trim_end() {
+        check_trim("", |s| s.trim_end(), "");
+        check_trim("a", |s| s.trim_end(), "a");
+        check_trim("    ", |s| s.trim_end(), "");
+        check_trim("blah     ", |s| s.trim_end(), "blah");
+        check_trim("wut   \u{3000}  ", |s| s.trim_end(), "wut");
+        check_trim(" hey", |s| s.trim_end(), " hey");
     }
 
     #[test]
-    fn test_trim() {
-        assert_eq!("".trim(), "");
-        assert_eq!("a".trim(), "a");
-        assert_eq!("    ".trim(), "");
-        assert_eq!("    blah     ".trim(), "blah");
-        assert_eq!("\nwut   \u{3000}  ".trim(), "wut");
-        assert_eq!(" hey dude ".trim(), "hey dude");
+    fn trim() {
+        check_trim("", |s| s.trim(), "");
+        check_trim("a", |s| s.trim(), "a");
+        check_trim("    ", |s| s.trim(), "");
+        check_trim("    blah     ", |s| s.trim(), "blah");
+        check_trim("\nwut   \u{3000}  ", |s| s.trim(), "wut");
+        check_trim(" hey dude ", |s| s.trim(), "hey dude");
     }
 
     #[test]
-    fn test_is_whitespace() {
-        assert!("".chars().all(|c| c.is_whitespace()));
-        assert!(" ".chars().all(|c| c.is_whitespace()));
-        assert!("\u{2009}".chars().all(|c| c.is_whitespace())); // Thin space
-        assert!("  \n\t   ".chars().all(|c| c.is_whitespace()));
-        assert!(!"   _   ".chars().all(|c| c.is_whitespace()));
-    }
-
-    #[test]
-    fn test_is_utf8() {
-        // deny overlong encodings
-        assert!(from_utf8(&[0xc0, 0x80]).is_err());
-        assert!(from_utf8(&[0xc0, 0xae]).is_err());
-        assert!(from_utf8(&[0xe0, 0x80, 0x80]).is_err());
-        assert!(from_utf8(&[0xe0, 0x80, 0xaf]).is_err());
-        assert!(from_utf8(&[0xe0, 0x81, 0x81]).is_err());
-        assert!(from_utf8(&[0xf0, 0x82, 0x82, 0xac]).is_err());
-        assert!(from_utf8(&[0xf4, 0x90, 0x80, 0x80]).is_err());
-
-        // deny surrogates
-        assert!(from_utf8(&[0xED, 0xA0, 0x80]).is_err());
-        assert!(from_utf8(&[0xED, 0xBF, 0xBF]).is_err());
-
-        assert!(from_utf8(&[0xC2, 0x80]).is_ok());
-        assert!(from_utf8(&[0xDF, 0xBF]).is_ok());
-        assert!(from_utf8(&[0xE0, 0xA0, 0x80]).is_ok());
-        assert!(from_utf8(&[0xED, 0x9F, 0xBF]).is_ok());
-        assert!(from_utf8(&[0xEE, 0x80, 0x80]).is_ok());
-        assert!(from_utf8(&[0xEF, 0xBF, 0xBF]).is_ok());
-        assert!(from_utf8(&[0xF0, 0x90, 0x80, 0x80]).is_ok());
-        assert!(from_utf8(&[0xF4, 0x8F, 0xBF, 0xBF]).is_ok());
-    }
-
-    #[test]
-    fn test_const_is_utf8() {
-        const _: () = {
-            // deny overlong encodings
-            assert!(from_utf8(&[0xc0, 0x80]).is_err());
-            assert!(from_utf8(&[0xc0, 0xae]).is_err());
-            assert!(from_utf8(&[0xe0, 0x80, 0x80]).is_err());
-            assert!(from_utf8(&[0xe0, 0x80, 0xaf]).is_err());
-            assert!(from_utf8(&[0xe0, 0x81, 0x81]).is_err());
-            assert!(from_utf8(&[0xf0, 0x82, 0x82, 0xac]).is_err());
-            assert!(from_utf8(&[0xf4, 0x90, 0x80, 0x80]).is_err());
-
-            // deny surrogates
-            assert!(from_utf8(&[0xED, 0xA0, 0x80]).is_err());
-            assert!(from_utf8(&[0xED, 0xBF, 0xBF]).is_err());
-
-            assert!(from_utf8(&[0xC2, 0x80]).is_ok());
-            assert!(from_utf8(&[0xDF, 0xBF]).is_ok());
-            assert!(from_utf8(&[0xE0, 0xA0, 0x80]).is_ok());
-            assert!(from_utf8(&[0xED, 0x9F, 0xBF]).is_ok());
-            assert!(from_utf8(&[0xEE, 0x80, 0x80]).is_ok());
-            assert!(from_utf8(&[0xEF, 0xBF, 0xBF]).is_ok());
-            assert!(from_utf8(&[0xF0, 0x90, 0x80, 0x80]).is_ok());
-            assert!(from_utf8(&[0xF4, 0x8F, 0xBF, 0xBF]).is_ok());
-        };
-    }
-
-    #[test]
-    fn from_utf8_mostly_ascii() {
-        // deny invalid bytes embedded in long stretches of ascii
-        for i in 32..64 {
-            let mut data = [0; 128];
-            data[i] = 0xC0;
-            assert!(from_utf8(&data).is_err());
-            data[i] = 0xC2;
-            assert!(from_utf8(&data).is_err());
-        }
-    }
-
-    #[test]
-    fn const_from_utf8_mostly_ascii() {
-        const _: () = {
-            // deny invalid bytes embedded in long stretches of ascii
-            let mut i = 32;
-            while i < 64 {
-                let mut data = [0; 128];
-                data[i] = 0xC0;
-                assert!(from_utf8(&data).is_err());
-                data[i] = 0xC2;
-                assert!(from_utf8(&data).is_err());
-
-                i = i + 1;
-            }
-        };
-    }
-
-    #[test]
-    fn from_utf8_error() {
-        macro_rules! test {
-            ($input: expr, $expected_valid_up_to:pat, $expected_error_len:pat) => {
-                let error = from_utf8($input).unwrap_err();
-                assert_matches!(error.valid_up_to(), $expected_valid_up_to);
-                assert_matches!(error.error_len(), $expected_error_len);
-
-                const _: () = {
-                    match from_utf8($input) {
-                        Err(error) => {
-                            let valid_up_to = error.valid_up_to();
-                            let error_len = error.error_len();
-
-                            assert!(matches!(valid_up_to, $expected_valid_up_to));
-                            assert!(matches!(error_len, $expected_error_len));
-                        }
-                        Ok(_) => unreachable!(),
-                    }
-                };
-            };
-        }
-        test!(b"A\xC3\xA9 \xFF ", 4, Some(1));
-        test!(b"A\xC3\xA9 \x80 ", 4, Some(1));
-        test!(b"A\xC3\xA9 \xC1 ", 4, Some(1));
-        test!(b"A\xC3\xA9 \xC1", 4, Some(1));
-        test!(b"A\xC3\xA9 \xC2", 4, None);
-        test!(b"A\xC3\xA9 \xC2 ", 4, Some(1));
-        test!(b"A\xC3\xA9 \xC2\xC0", 4, Some(1));
-        test!(b"A\xC3\xA9 \xE0", 4, None);
-        test!(b"A\xC3\xA9 \xE0\x9F", 4, Some(1));
-        test!(b"A\xC3\xA9 \xE0\xA0", 4, None);
-        test!(b"A\xC3\xA9 \xE0\xA0\xC0", 4, Some(2));
-        test!(b"A\xC3\xA9 \xE0\xA0 ", 4, Some(2));
-        test!(b"A\xC3\xA9 \xED\xA0\x80 ", 4, Some(1));
-        test!(b"A\xC3\xA9 \xF1", 4, None);
-        test!(b"A\xC3\xA9 \xF1\x80", 4, None);
-        test!(b"A\xC3\xA9 \xF1\x80\x80", 4, None);
-        test!(b"A\xC3\xA9 \xF1 ", 4, Some(1));
-        test!(b"A\xC3\xA9 \xF1\x80 ", 4, Some(2));
-        test!(b"A\xC3\xA9 \xF1\x80\x80 ", 4, Some(3));
-    }
-
-    #[test]
-    fn test_as_bytes() {
+    fn to_bytes() {
         // no null
         let v = [
             224, 184, 168, 224, 185, 132, 224, 184, 151, 224, 184, 162, 228, 184, 173, 229, 141,
             142, 86, 105, 225, 187, 135, 116, 32, 78, 97, 109,
         ];
         let b: &[u8] = &[];
-        assert_eq!("".as_bytes(), b);
-        assert_eq!("abc".as_bytes(), b"abc");
-        assert_eq!("ศไทย中华Việt Nam".as_bytes(), v);
+        assert_eq!(String::from("").to_bytes(), b);
+        assert_eq!(String::from("abc").to_bytes(), b"abc");
+        assert_eq!(String::from("ศไทย中华Việt Nam").to_bytes(), v);
     }
 
+    /*
     #[test]
-    #[should_panic]
-    fn test_as_bytes_fail() {
-        // Don't double free. (I'm not sure if this exercises the
-        // original problem code path anymore.)
-        let s = String::from("");
-        let _bytes = s.as_bytes();
-        panic!();
-    }
-
-    #[test]
-    fn test_as_ptr() {
-        let buf = "hello".as_ptr();
+    fn as_ptr() {
+        let s = String::from("hello");
+        let buf = s.as_ptr();
         unsafe {
             assert_eq!(*buf.offset(0), b'h');
             assert_eq!(*buf.offset(1), b'e');
@@ -1876,35 +1771,39 @@ mod str_tests {
             i += 1;
         }
     }
+    */
 
     #[test]
-    fn test_contains() {
-        assert!("abcde".contains("bcd"));
-        assert!("abcde".contains("abcd"));
-        assert!("abcde".contains("bcde"));
-        assert!("abcde".contains(""));
-        assert!("".contains(""));
-        assert!(!"abcde".contains("def"));
-        assert!(!"".contains("a"));
+    fn contains() {
+        let empty = String::new();
+        let abcde = String::from("abcde");
+        assert!(abcde.contains(&String::from("bcd")));
+        assert!(abcde.contains(&String::from("abcd")));
+        assert!(abcde.contains(&String::from("bcde")));
+        assert!(abcde.contains(&String::from("")));
+        assert!(empty.contains(&String::from("")));
+        assert!(!abcde.contains(&String::from("def")));
+        assert!(!empty.contains(&String::from("a")));
 
-        let data = "ประเทศไทย中华Việt Nam";
-        assert!(data.contains("ประเ"));
-        assert!(data.contains("ะเ"));
-        assert!(data.contains("中华"));
-        assert!(!data.contains("ไท华"));
+        let data = String::from("ประเทศไทย中华Việt Nam");
+        assert!(data.contains(&String::from("ประเ")));
+        assert!(data.contains(&String::from("ะเ")));
+        assert!(data.contains(&String::from("中华")));
+        assert!(!data.contains(&String::from("ไท华")));
     }
 
     #[test]
-    fn test_contains_char() {
-        assert!("abc".contains('b'));
-        assert!("a".contains('a'));
-        assert!(!"abc".contains('d'));
-        assert!(!"".contains('a'));
+    fn contains_char() {
+        assert!(String::from("abc").contains('b'));
+        assert!(String::from("a").contains('a'));
+        assert!(!String::from("abc").contains('d'));
+        assert!(!String::from("").contains('a'));
     }
 
+    /*
     #[test]
-    fn test_split_at() {
-        let s = "ศไทย中华Việt Nam";
+    fn split_at() {
+        let s = String::from("ศไทย中华Việt Nam");
         for (index, _) in s.char_indices() {
             let (a, b) = s.split_at(index);
             assert_eq!(&s[..a.len()], a);
@@ -1916,8 +1815,8 @@ mod str_tests {
     }
 
     #[test]
-    fn test_split_at_mut() {
-        let mut s = "Hello World".to_string();
+    fn split_at_mut() {
+        let mut s = String::from("Hello World");
         {
             let (a, b) = s.split_at_mut(5);
             a.make_ascii_uppercase();
@@ -1928,13 +1827,13 @@ mod str_tests {
 
     #[test]
     #[should_panic]
-    fn test_split_at_boundscheck() {
+    fn split_at_boundscheck() {
         let s = "ศไทย中华Việt Nam";
         let _ = s.split_at(1);
     }
 
     #[test]
-    fn test_escape_unicode() {
+    fn escape_unicode() {
         assert_eq!("abc".escape_unicode().to_string(), "\\u{61}\\u{62}\\u{63}");
         assert_eq!("a c".escape_unicode().to_string(), "\\u{61}\\u{20}\\u{63}");
         assert_eq!("\r\n\t".escape_unicode().to_string(), "\\u{d}\\u{a}\\u{9}");
@@ -1965,7 +1864,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_escape_debug() {
+    fn escape_debug() {
         // Note that there are subtleties with the number of backslashes
         // on the left- and right-hand sides. In particular, Unicode code points
         // are usually escaped with two backslashes on the right-hand side, as
@@ -1995,7 +1894,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_escape_default() {
+    fn escape_default() {
         assert_eq!("abc".escape_default().to_string(), "abc");
         assert_eq!("a c".escape_default().to_string(), "a c");
         assert_eq!("éèê".escape_default().to_string(), "\\u{e9}\\u{e8}\\u{ea}");
@@ -2019,19 +1918,21 @@ mod str_tests {
             "\\u{10d4ea}\\r"
         );
     }
+    */
 
     #[test]
-    fn test_total_ord() {
-        assert_eq!("1234".cmp("123"), Greater);
-        assert_eq!("123".cmp("1234"), Less);
-        assert_eq!("1234".cmp("1234"), Equal);
-        assert_eq!("12345555".cmp("123456"), Less);
-        assert_eq!("22".cmp("1234"), Greater);
+    fn total_ord() {
+        assert_eq!(String::from("1234").cmp(&String::from("123")), Greater);
+        assert_eq!(String::from("123").cmp(&String::from("1234")), Less);
+        assert_eq!(String::from("1234").cmp(&String::from("1234")), Equal);
+        assert_eq!(String::from("12345555").cmp(&String::from("123456")), Less);
+        assert_eq!(String::from("22").cmp(&String::from("1234")), Greater);
     }
 
+    /*
     #[test]
-    fn test_iterator() {
-        let s = "ศไทย中华Việt Nam";
+    fn iterator() {
+        let s = String::from("ศไทย中华Việt Nam");
         let v = [
             'ศ', 'ไ', 'ท', 'ย', '中', '华', 'V', 'i', 'ệ', 't', ' ', 'N', 'a', 'm',
         ];
@@ -2048,8 +1949,8 @@ mod str_tests {
     }
 
     #[test]
-    fn test_rev_iterator() {
-        let s = "ศไทย中华Việt Nam";
+    fn rev_iterator() {
+        let s = String::from("ศไทย中华Việt Nam");
         let v = [
             'm', 'a', 'N', ' ', 't', 'ệ', 'i', 'V', '华', '中', 'ย', 'ท', 'ไ', 'ศ',
         ];
@@ -2065,8 +1966,8 @@ mod str_tests {
     }
 
     #[test]
-    fn test_to_lowercase_rev_iterator() {
-        let s = "AÖßÜ💩ΣΤΙΓΜΑΣǅﬁİ";
+    fn to_lowercase_rev_iterator() {
+        let s = String::from("AÖßÜ💩ΣΤΙΓΜΑΣǅﬁİ");
         let v = [
             '\u{307}', 'i', 'ﬁ', 'ǆ', 'σ', 'α', 'μ', 'γ', 'ι', 'τ', 'σ', '💩', 'ü', 'ß', 'ö', 'a',
         ];
@@ -2082,8 +1983,8 @@ mod str_tests {
     }
 
     #[test]
-    fn test_to_uppercase_rev_iterator() {
-        let s = "aößü💩στιγμαςǅﬁᾀ";
+    fn to_uppercase_rev_iterator() {
+        let s = String::from("aößü💩στιγμαςǅﬁᾀ");
         let v = [
             'Ι', 'Ἀ', 'I', 'F', 'Ǆ', 'Σ', 'Α', 'Μ', 'Γ', 'Ι', 'Τ', 'Σ', '💩', 'Ü', 'S', 'S', 'Ö',
             'A',
@@ -2100,10 +2001,9 @@ mod str_tests {
     }
 
     #[test]
-    #[cfg_attr(miri, ignore)] // Miri is too slow
-    fn test_chars_decoding() {
+    fn chars_decoding() {
         let mut bytes = [0; 4];
-        for c in (0..0x110000).filter_map(std::char::from_u32) {
+        for c in (0..0x110000).filter_map(core::char::from_u32) {
             let s = c.encode_utf8(&mut bytes);
             if Some(c) != s.chars().next() {
                 panic!("character {:x}={} does not decode correctly", c as u32, c);
@@ -2112,10 +2012,9 @@ mod str_tests {
     }
 
     #[test]
-    #[cfg_attr(miri, ignore)] // Miri is too slow
-    fn test_chars_rev_decoding() {
+    fn chars_rev_decoding() {
         let mut bytes = [0; 4];
-        for c in (0..0x110000).filter_map(std::char::from_u32) {
+        for c in (0..0x110000).filter_map(core::char::from_u32) {
             let s = c.encode_utf8(&mut bytes);
             if Some(c) != s.chars().rev().next() {
                 panic!("character {:x}={} does not decode correctly", c as u32, c);
@@ -2124,23 +2023,23 @@ mod str_tests {
     }
 
     #[test]
-    fn test_iterator_clone() {
-        let s = "ศไทย中华Việt Nam";
+    fn iterator_clone() {
+        let s = String::from("ศไทย中华Việt Nam");
         let mut it = s.chars();
         it.next();
         assert!(it.clone().zip(it).all(|(x, y)| x == y));
     }
 
     #[test]
-    fn test_iterator_last() {
-        let s = "ศไทย中华Việt Nam";
+    fn iterator_last() {
+        let s = String::from("ศไทย中华Việt Nam");
         let mut it = s.chars();
         it.next();
         assert_eq!(it.last(), Some('m'));
     }
 
     #[test]
-    fn test_chars_debug() {
+    fn chars_debug() {
         let s = "ศไทย中华Việt Nam";
         let c = s.chars();
         assert_eq!(
@@ -2150,8 +2049,8 @@ mod str_tests {
     }
 
     #[test]
-    fn test_bytesator() {
-        let s = "ศไทย中华Việt Nam";
+    fn bytesator() {
+        let s = String::from("ศไทย中华Việt Nam");
         let v = [
             224, 184, 168, 224, 185, 132, 224, 184, 151, 224, 184, 162, 228, 184, 173, 229, 141,
             142, 86, 105, 225, 187, 135, 116, 32, 78, 97, 109,
@@ -2165,8 +2064,8 @@ mod str_tests {
     }
 
     #[test]
-    fn test_bytes_revator() {
-        let s = "ศไทย中华Việt Nam";
+    fn bytes_revator() {
+        let s = String::from("ศไทย中华Việt Nam");
         let v = [
             224, 184, 168, 224, 185, 132, 224, 184, 151, 224, 184, 162, 228, 184, 173, 229, 141,
             142, 86, 105, 225, 187, 135, 116, 32, 78, 97, 109,
@@ -2180,8 +2079,8 @@ mod str_tests {
     }
 
     #[test]
-    fn test_bytesator_nth() {
-        let s = "ศไทย中华Việt Nam";
+    fn bytesator_nth() {
+        let s = String::from("ศไทย中华Việt Nam");
         let v = [
             224, 184, 168, 224, 185, 132, 224, 184, 151, 224, 184, 162, 228, 184, 173, 229, 141,
             142, 86, 105, 225, 187, 135, 116, 32, 78, 97, 109,
@@ -2194,24 +2093,24 @@ mod str_tests {
     }
 
     #[test]
-    fn test_bytesator_count() {
-        let s = "ศไทย中华Việt Nam";
+    fn bytesator_count() {
+        let s = String::from("ศไทย中华Việt Nam");
 
         let b = s.bytes();
         assert_eq!(b.count(), 28)
     }
 
     #[test]
-    fn test_bytesator_last() {
-        let s = "ศไทย中华Việt Nam";
+    fn bytesator_last() {
+        let s = String::from("ศไทย中华Việt Nam");
 
         let b = s.bytes();
         assert_eq!(b.last().unwrap(), 109)
     }
 
     #[test]
-    fn test_char_indicesator() {
-        let s = "ศไทย中华Việt Nam";
+    fn char_indicesator() {
+        let s = String::from("ศไทย中华Việt Nam");
         let p = [0, 3, 6, 9, 12, 15, 18, 19, 20, 23, 24, 25, 26, 27];
         let v = [
             'ศ', 'ไ', 'ท', 'ย', '中', '华', 'V', 'i', 'ệ', 't', ' ', 'N', 'a', 'm',
@@ -2229,8 +2128,8 @@ mod str_tests {
     }
 
     #[test]
-    fn test_char_indices_revator() {
-        let s = "ศไทย中华Việt Nam";
+    fn char_indices_revator() {
+        let s = String::from("ศไทย中华Việt Nam");
         let p = [27, 26, 25, 24, 23, 20, 19, 18, 15, 12, 9, 6, 3, 0];
         let v = [
             'm', 'a', 'N', ' ', 't', 'ệ', 'i', 'V', '华', '中', 'ย', 'ท', 'ไ', 'ศ',
@@ -2248,15 +2147,15 @@ mod str_tests {
     }
 
     #[test]
-    fn test_char_indices_last() {
-        let s = "ศไทย中华Việt Nam";
+    fn char_indices_last() {
+        let s = String::from("ศไทย中华Việt Nam");
         let mut it = s.char_indices();
         it.next();
         assert_eq!(it.last(), Some((27, 'm')));
     }
 
     #[test]
-    fn test_splitn_char_iterator() {
+    fn splitn_char_iterator() {
         let data = "\nMäry häd ä little lämb\nLittle lämb\n";
 
         let split: Vec<&str> = data.splitn(4, ' ').collect();
@@ -2274,7 +2173,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_split_char_iterator_no_trailing() {
+    fn split_char_iterator_no_trailing() {
         let data = "\nMäry häd ä little lämb\nLittle lämb\n";
 
         let split: Vec<&str> = data.split('\n').collect();
@@ -2285,7 +2184,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_split_char_iterator_inclusive() {
+    fn split_char_iterator_inclusive() {
         let data = "\nMäry häd ä little lämb\nLittle lämb\n";
 
         let split: Vec<&str> = data.split_inclusive('\n').collect();
@@ -2304,7 +2203,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_split_char_iterator_inclusive_rev() {
+    fn split_char_iterator_inclusive_rev() {
         let data = "\nMäry häd ä little lämb\nLittle lämb\n";
 
         let split: Vec<&str> = data.split_inclusive('\n').rev().collect();
@@ -2328,7 +2227,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_rsplit() {
+    fn rsplit() {
         let data = "\nMäry häd ä little lämb\nLittle lämb\n";
 
         let split: Vec<&str> = data.rsplit(' ').collect();
@@ -2348,7 +2247,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_rsplitn() {
+    fn rsplitn() {
         let data = "\nMäry häd ä little lämb\nLittle lämb\n";
 
         let split: Vec<&str> = data.rsplitn(2, ' ').collect();
@@ -2362,31 +2261,37 @@ mod str_tests {
     }
 
     #[test]
-    fn test_split_once() {
-        assert_eq!("".split_once("->"), None);
-        assert_eq!("-".split_once("->"), None);
-        assert_eq!("->".split_once("->"), Some(("", "")));
-        assert_eq!("a->".split_once("->"), Some(("a", "")));
-        assert_eq!("->b".split_once("->"), Some(("", "b")));
-        assert_eq!("a->b".split_once("->"), Some(("a", "b")));
-        assert_eq!("a->b->c".split_once("->"), Some(("a", "b->c")));
-        assert_eq!("---".split_once("--"), Some(("", "-")));
+    fn split_once() {
+        assert_eq!(String::from("").split_once("->"), None);
+        assert_eq!(String::from("-").split_once("->"), None);
+        assert_eq!(String::from("->").split_once("->"), Some(("", "")));
+        assert_eq!(String::from("a->").split_once("->"), Some(("a", "")));
+        assert_eq!(String::from("->b").split_once("->"), Some(("", "b")));
+        assert_eq!(String::from("a->b").split_once("->"), Some(("a", "b")));
+        assert_eq!(
+            String::from("a->b->c").split_once("->"),
+            Some(("a", "b->c"))
+        );
+        assert_eq!(String::from("---").split_once("--"), Some(("", "-")));
     }
 
     #[test]
-    fn test_rsplit_once() {
-        assert_eq!("".rsplit_once("->"), None);
-        assert_eq!("-".rsplit_once("->"), None);
-        assert_eq!("->".rsplit_once("->"), Some(("", "")));
-        assert_eq!("a->".rsplit_once("->"), Some(("a", "")));
-        assert_eq!("->b".rsplit_once("->"), Some(("", "b")));
-        assert_eq!("a->b".rsplit_once("->"), Some(("a", "b")));
-        assert_eq!("a->b->c".rsplit_once("->"), Some(("a->b", "c")));
-        assert_eq!("---".rsplit_once("--"), Some(("-", "")));
+    fn rsplit_once() {
+        assert_eq!(String::from("").rsplit_once("->"), None);
+        assert_eq!(String::from("-").rsplit_once("->"), None);
+        assert_eq!(String::from("->").rsplit_once("->"), Some(("", "")));
+        assert_eq!(String::from("a->").rsplit_once("->"), Some(("a", "")));
+        assert_eq!(String::from("->b").rsplit_once("->"), Some(("", "b")));
+        assert_eq!(String::from("a->b").rsplit_once("->"), Some(("a", "b")));
+        assert_eq!(
+            String::from("a->b->c").rsplit_once("->"),
+            Some(("a->b", "c"))
+        );
+        assert_eq!(String::from("---").rsplit_once("--"), Some(("-", "")));
     }
 
     #[test]
-    fn test_split_whitespace() {
+    fn split_whitespace() {
         let data = "\n \tMäry   häd\tä  little lämb\nLittle lämb\n";
         let words: Vec<&str> = data.split_whitespace().collect();
         assert_eq!(
@@ -2396,7 +2301,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_lines() {
+    fn lines() {
         let data = "\nMäry häd ä little lämb\n\r\nLittle lämb\n";
         let lines: Vec<&str> = data.lines().collect();
         assert_eq!(lines, ["", "Märy häd ä little lämb", "", "Little lämb"]);
@@ -2407,7 +2312,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_splitator() {
+    fn splitator() {
         fn t(s: &str, sep: &str, u: &[&str]) {
             let v: Vec<&str> = s.split(sep).collect();
             assert_eq!(v, u);
@@ -2429,8 +2334,8 @@ mod str_tests {
     }
 
     #[test]
-    fn test_str_default() {
-        use std::default::Default;
+    fn str_default() {
+        use core::default::Default;
 
         fn t<S: Default + AsRef<str>>() {
             let s: S = Default::default();
@@ -2443,31 +2348,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_str_container() {
-        fn sum_len(v: &[&str]) -> usize {
-            v.iter().map(|x| x.len()).sum()
-        }
-
-        let s = "01234";
-        assert_eq!(5, sum_len(&["012", "", "34"]));
-        assert_eq!(5, sum_len(&["01", "2", "34", ""]));
-        assert_eq!(5, sum_len(&[s]));
-    }
-
-    #[test]
-    fn test_str_from_utf8() {
-        let xs = b"hello";
-        assert_eq!(from_utf8(xs), Ok("hello"));
-
-        let xs = "ศไทย中华Việt Nam".as_bytes();
-        assert_eq!(from_utf8(xs), Ok("ศไทย中华Việt Nam"));
-
-        let xs = b"hello\xFF";
-        assert!(from_utf8(xs).is_err());
-    }
-
-    #[test]
-    fn test_pattern_deref_forward() {
+    fn pattern_deref_forward() {
         let data = "aabcdaa";
         assert!(data.contains("bcd"));
         assert!(data.contains(&"bcd"));
@@ -2475,53 +2356,47 @@ mod str_tests {
     }
 
     #[test]
-    fn test_empty_match_indices() {
+    fn empty_match_indices() {
         let data = "aä中!";
         let vec: Vec<_> = data.match_indices("").collect();
         assert_eq!(vec, [(0, ""), (1, ""), (3, ""), (6, ""), (7, "")]);
     }
+    */
 
-    #[test]
-    fn test_bool_from_str() {
-        assert_eq!("true".parse().ok(), Some(true));
-        assert_eq!("false".parse().ok(), Some(false));
-        assert_eq!("not even a boolean".parse::<bool>().ok(), None);
-    }
-
-    fn check_contains_all_substrings(s: &str) {
-        assert!(s.contains(""));
-        for i in 0..s.len() {
-            for j in i + 1..=s.len() {
-                assert!(s.contains(&s[i..j]));
-            }
-        }
+    fn check_contains_all_substrings(s: &String) {
+        assert!(s.contains(&String::from("")));
+        // for i in 0..s.len() {
+        //     for j in i + 1..=s.len() {
+        //         assert!(s.contains(&s[i..j]));
+        //     }
+        // }
     }
 
     #[test]
-    #[cfg_attr(miri, ignore)] // Miri is too slow
     fn strslice_issue_16589() {
-        assert!("bananas".contains("nana"));
+        assert!(String::from("bananas").contains(&String::from("nana")));
 
         // prior to the fix for #16589, x.contains("abcdabcd") returned false
         // test all substrings for good measure
-        check_contains_all_substrings("012345678901234567890123456789bcdabcdabcd");
+        check_contains_all_substrings(&String::from("012345678901234567890123456789bcdabcdabcd"));
     }
 
     #[test]
     fn strslice_issue_16878() {
-        assert!(!"1234567ah012345678901ah".contains("hah"));
-        assert!(!"00abc01234567890123456789abc".contains("bcabc"));
+        assert!(!String::from("1234567ah012345678901ah").contains(&String::from("hah")));
+        assert!(!String::from("00abc01234567890123456789abc").contains(&String::from("bcabc")));
     }
 
     #[test]
-    #[cfg_attr(miri, ignore)] // Miri is too slow
-    fn test_strslice_contains() {
-        let x = "There are moments, Jeeves, when one asks oneself, 'Do trousers matter?'";
-        check_contains_all_substrings(x);
+    fn strslice_contains() {
+        let x =
+            String::from("There are moments, Jeeves, when one asks oneself, 'Do trousers matter?'");
+        check_contains_all_substrings(&x);
     }
 
+    /*
     #[test]
-    fn test_rsplitn_char_iterator() {
+    fn rsplitn_char_iterator() {
         let data = "\nMäry häd ä little lämb\nLittle lämb\n";
 
         let mut split: Vec<&str> = data.rsplitn(4, ' ').collect();
@@ -2543,7 +2418,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_split_char_iterator() {
+    fn split_char_iterator() {
         let data = "\nMäry häd ä little lämb\nLittle lämb\n";
 
         let split: Vec<&str> = data.split(' ').collect();
@@ -2601,7 +2476,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_rev_split_char_iterator_no_trailing() {
+    fn rev_split_char_iterator_no_trailing() {
         let data = "\nMäry häd ä little lämb\nLittle lämb\n";
 
         let mut split: Vec<&str> = data.split('\n').rev().collect();
@@ -2614,44 +2489,47 @@ mod str_tests {
     }
 
     #[test]
-    fn test_utf16_code_units() {
+    fn utf16_code_units() {
         assert_eq!(
             "é\u{1F4A9}".encode_utf16().collect::<Vec<u16>>(),
             [0xE9, 0xD83D, 0xDCA9]
         )
     }
+    */
 
     #[test]
     fn starts_with_in_unicode() {
-        assert!(!"├── Cargo.toml".starts_with("# "));
+        assert!(!String::from("├── Cargo.toml").starts_with(&String::from("# ")));
     }
 
     #[test]
     fn starts_short_long() {
-        assert!(!"".starts_with("##"));
-        assert!(!"##".starts_with("####"));
-        assert!("####".starts_with("##"));
-        assert!(!"##ä".starts_with("####"));
-        assert!("####ä".starts_with("##"));
-        assert!(!"##".starts_with("####ä"));
-        assert!("##ä##".starts_with("##ä"));
+        let empty = String::from("");
+        assert!(!empty.starts_with(&String::from("##")));
+        assert!(!String::from("##").starts_with(&String::from("####")));
+        assert!(String::from("####").starts_with(&String::from("##")));
+        assert!(!String::from("##ä").starts_with(&String::from("####")));
+        assert!(String::from("####ä").starts_with(&String::from("##")));
+        assert!(!String::from("##").starts_with(&String::from("####ä")));
+        assert!(String::from("##ä##").starts_with(&String::from("##ä")));
 
-        assert!("".starts_with(""));
-        assert!("ä".starts_with(""));
-        assert!("#ä".starts_with(""));
-        assert!("##ä".starts_with(""));
-        assert!("ä###".starts_with(""));
-        assert!("#ä##".starts_with(""));
-        assert!("##ä#".starts_with(""));
+        assert!(empty.starts_with(&empty));
+        assert!(String::from("ä").starts_with(&empty));
+        assert!(String::from("#ä").starts_with(&empty));
+        assert!(String::from("##ä").starts_with(&empty));
+        assert!(String::from("ä###").starts_with(&empty));
+        assert!(String::from("#ä##").starts_with(&empty));
+        assert!(String::from("##ä#").starts_with(&empty));
     }
 
     #[test]
     fn contains_weird_cases() {
-        assert!("* \t".contains(' '));
-        assert!(!"* \t".contains('?'));
-        assert!(!"* \t".contains('\u{1F4A9}'));
+        assert!(String::from("* \t").contains(' '));
+        assert!(!String::from("* \t").contains('?'));
+        assert!(!String::from("* \t").contains('\u{1F4A9}'));
     }
 
+    /*
     #[test]
     fn trim_ws() {
         assert_eq!(
@@ -2730,7 +2608,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_into_string() {
+    fn into_string() {
         // The only way to acquire a Box<str> in the first place is through a String, so just
         // test that we can round-trip between Box<str> and String.
         let string = String::from("Some text goes here");
@@ -2738,7 +2616,7 @@ mod str_tests {
     }
 
     #[test]
-    fn test_box_slice_clone() {
+    fn box_slice_clone() {
         let data = String::from("hello HELLO hello HELLO yes YES 5 中ä华!!!");
         let data2 = data.clone().into_boxed_str().clone().into_string();
 
@@ -2746,17 +2624,20 @@ mod str_tests {
     }
 
     #[test]
-    fn test_cow_from() {
+    fn cow_from() {
         let borrowed = "borrowed";
         let owned = String::from("owned");
         match (Cow::from(owned.clone()), Cow::from(borrowed)) {
-            (Cow::Owned(o), Cow::Borrowed(b)) => assert!(o == owned && b == borrowed),
+            (Cow::Owned(o), Cow::Borrowed(b)) => {
+                assert!(o == owned && b == borrowed);
+            }
             _ => panic!("invalid `Cow::from`"),
         }
     }
 
+    #[cfg(feature = "alloc")]
     #[test]
-    fn test_repeat() {
+    fn repeat() {
         assert_eq!("".repeat(3), "");
         assert_eq!("abc".repeat(0), "");
         assert_eq!("α".repeat(3), "ααα");
@@ -3083,34 +2964,11 @@ mod str_tests {
     }
 
     #[test]
-    fn test_str_multiline() {
-        let a: String = "this \
-    is a test"
-            .to_string();
-        let b: String = "this \
-                  is \
-                  another \
-                  test"
-            .to_string();
-        assert_eq!(a, "this is a test".to_string());
-        assert_eq!(b, "this is another test".to_string());
-    }
-
-    #[test]
-    fn test_str_escapes() {
-        let x = "\\\\\
-        ";
-        assert_eq!(x, r"\\"); // extraneous whitespace stripped
-    }
-
-    #[test]
     fn const_str_ptr() {
         const A: [u8; 2] = ['h' as u8, 'i' as u8];
         const B: &'static [u8; 2] = &A;
         const C: *const u8 = B as *const u8;
 
-        // Miri does not deduplicate consts (https://github.com/rust-lang/miri/issues/131)
-        #[cfg(not(miri))]
         {
             let foo = &A as *const u8;
             assert_eq!(foo, C);
@@ -3344,6 +3202,11 @@ mod str_tests {
     fn ceil_char_boundary_above_len_panic() {
         let _ = "x".ceil_char_boundary(2);
     }
+    */
 }
 
-flipperzero_test::tests_runner!(name = "String Integration Test", [crate::tests]);
+flipperzero_test::tests_runner!(
+    name = "String Integration Test",
+    stack_size = 4096,
+    [crate::tests, crate::str_tests]
+);
