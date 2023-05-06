@@ -15,6 +15,18 @@ use alloc::{borrow::Cow, boxed::Box, ffi::CString};
 
 use flipperzero_sys as sys;
 
+mod pattern;
+use self::pattern::Pattern;
+
+/// Source: [UnicodeSet `[:White_Space=Yes:]`][src].
+///
+/// [src]: https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=[%3AWhite_Space%3DYes%3A]
+const WHITESPACE: &[char] = &[
+    ' ', '\x09', '\x0a', '\x0b', '\x0c', '\x0d', '\u{0085}', '\u{00A0}', '\u{1680}', '\u{2000}',
+    '\u{2001}', '\u{2002}', '\u{2003}', '\u{2004}', '\u{2005}', '\u{2006}', '\u{2007}', '\u{2008}',
+    '\u{2009}', '\u{200A}', '\u{2028}', '\u{2029}', '\u{202F}', '\u{205F}', '\u{3000}',
+];
+
 /// A Furi string.
 ///
 /// This is similar to Rust's [`CString`] in that it represents an owned, C-compatible,
@@ -223,6 +235,203 @@ impl String {
     #[inline]
     pub fn clear(&mut self) {
         unsafe { sys::furi_string_reset(self.0) };
+    }
+}
+
+// Implementations matching `str` that we don't already have from `std::string::String`
+// and that are useful for a non-slice string. Some of these are altered to be mutating
+// as we can't provide string slices.
+impl String {
+    /// Returns `true` if the given pattern matches a sub-slice of this string slice.
+    ///
+    /// Returns `false` if it does not.
+    ///
+    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
+    ///
+    /// [`char`]: prim@char
+    /// [pattern]: self::pattern
+    #[inline]
+    pub fn contains<P: Pattern>(&self, pat: P) -> bool {
+        pat.is_contained_in(self)
+    }
+
+    /// Returns `true` if the given pattern matches a prefix of this string slice.
+    ///
+    /// Returns `false` if it does not.
+    ///
+    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
+    ///
+    /// [`char`]: prim@char
+    /// [pattern]: self::pattern
+    pub fn starts_with<P: Pattern>(&self, pat: P) -> bool {
+        pat.is_prefix_of(self)
+    }
+
+    /// Returns `true` if the given pattern matches a suffix of this string slice.
+    ///
+    /// Returns `false` if it does not.
+    ///
+    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
+    ///
+    /// [`char`]: prim@char
+    /// [pattern]: self::pattern
+    pub fn ends_with<P: Pattern>(&self, pat: P) -> bool {
+        pat.is_suffix_of(self)
+    }
+
+    /// Returns the byte index of the first byte of this string that matches the pattern.
+    ///
+    /// Returns [`None`] if the pattern doesn't match.
+    ///
+    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
+    ///
+    /// [`char`]: prim@char
+    /// [pattern]: self::pattern
+    #[inline]
+    pub fn find<P: Pattern>(&self, pat: P) -> Option<usize> {
+        pat.find_in(self)
+    }
+
+    /// Returns the byte index for the first byte of the last match of the pattern in this
+    /// string.
+    ///
+    /// Returns [`None`] if the pattern doesn't match.
+    ///
+    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
+    ///
+    /// [`char`]: prim@char
+    /// [pattern]: self::pattern
+    #[inline]
+    pub fn rfind<P: Pattern>(&self, pat: P) -> Option<usize> {
+        pat.rfind_in(self)
+    }
+
+    /// Removes leading and trailing whitespace from this string.
+    ///
+    /// 'Whitespace' is defined according to the terms of the Unicode Derived Core
+    /// Property `White_Space`, which includes newlines.
+    #[inline]
+    pub fn trim(&mut self) {
+        self.trim_matches(WHITESPACE)
+    }
+
+    /// Removes leading whitespace from this string.
+    ///
+    /// 'Whitespace' is defined according to the terms of the Unicode Derived Core
+    /// Property `White_Space`, which includes newlines.
+    ///
+    /// # Text directionality
+    ///
+    /// A string is a sequence of bytes. `start` in this context means the first position
+    /// of that byte string; for a left-to-right language like English or Russian, this
+    /// will be left side, and for right-to-left languages like Arabic or Hebrew, this
+    /// will be the right side.
+    #[inline]
+    pub fn trim_start(&mut self) {
+        self.trim_start_matches(WHITESPACE)
+    }
+
+    /// Removes trailing whitespace from this string.
+    ///
+    /// 'Whitespace' is defined according to the terms of the Unicode Derived Core
+    /// Property `White_Space`, which includes newlines.
+    ///
+    /// # Text directionality
+    ///
+    /// A string is a sequence of bytes. `end` in this context means the last position of
+    /// that byte string; for a left-to-right language like English or Russian, this will
+    /// be right side, and for right-to-left languages like Arabic or Hebrew, this will be
+    /// the left side.
+    #[inline]
+    pub fn trim_end(&mut self) {
+        self.trim_end_matches(WHITESPACE)
+    }
+
+    /// Repeatedly removes from this string all prefixes and suffixes that match a pattern.
+    ///
+    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
+    ///
+    /// [`char`]: prim@char
+    /// [pattern]: self::pattern
+    pub fn trim_matches<P: Pattern + Copy>(&mut self, pat: P) {
+        self.trim_start_matches(pat);
+        self.trim_end_matches(pat);
+    }
+
+    /// Repeatedly removes from this string all prefixes that match a pattern.
+    ///
+    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
+    ///
+    /// [`char`]: prim@char
+    /// [pattern]: self::pattern
+    ///
+    /// # Text directionality
+    ///
+    /// A string is a sequence of bytes. `start` in this context means the first position
+    /// of that byte string; for a left-to-right language like English or Russian, this
+    /// will be left side, and for right-to-left languages like Arabic or Hebrew, this
+    /// will be the right side.
+    pub fn trim_start_matches<P: Pattern + Copy>(&mut self, pat: P) {
+        while self.strip_prefix(pat) {}
+    }
+
+    /// Repeatedly removes from this string all suffixes that match a pattern.
+    ///
+    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
+    ///
+    /// [`char`]: prim@char
+    /// [pattern]: self::pattern
+    ///
+    /// # Text directionality
+    ///
+    /// A string is a sequence of bytes. `end` in this context means the last position of
+    /// that byte string; for a left-to-right language like English or Russian, this will
+    /// be right side, and for right-to-left languages like Arabic or Hebrew, this will be
+    /// the left side.
+    pub fn trim_end_matches<P: Pattern + Copy>(&mut self, pat: P) {
+        while self.strip_suffix(pat) {}
+    }
+
+    /// Removes the given prefix from this string.
+    ///
+    /// If the string starts with the pattern `prefix`, returns `true`. Unlike
+    /// [`Self::trim_start_matches`], this method removes the prefix exactly once.
+    ///
+    /// If the string does not start with `prefix`, returns `false`.
+    ///
+    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
+    ///
+    /// [`char`]: prim@char
+    /// [pattern]: self::pattern
+    #[must_use]
+    pub fn strip_prefix<P: Pattern>(&mut self, prefix: P) -> bool {
+        prefix.strip_prefix_of(self)
+    }
+
+    /// Removes the given suffix from this string.
+    ///
+    /// If the string ends with the pattern `suffix`, returns `true`. Unlike
+    /// [`Self::trim_end_matches`], this method removes the suffix exactly once.
+    ///
+    /// If the string does not end with `suffix`, returns `false`.
+    ///
+    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
+    ///
+    /// [`char`]: prim@char
+    /// [pattern]: self::pattern
+    #[must_use]
+    pub fn strip_suffix<P: Pattern>(&mut self, suffix: P) -> bool {
+        suffix.strip_suffix_of(self)
     }
 }
 
