@@ -467,7 +467,7 @@ impl PartialOrd<Level> for LevelFilter {
     }
 }
 
-#[cfg(test)]
+#[flipperzero_test::tests]
 mod tests {
     use super::*;
     use core::mem;

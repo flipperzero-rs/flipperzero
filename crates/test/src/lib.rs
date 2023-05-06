@@ -14,10 +14,12 @@ pub enum TestFailure {
     AssertEq {
         left: &'static str,
         right: &'static str,
+        msg: Option<&'static str>,
     },
     AssertNe {
         left: &'static str,
         right: &'static str,
+        msg: Option<&'static str>,
     },
     Str(&'static str),
 }
@@ -34,17 +36,27 @@ impl ufmt::uDisplay for TestFailure {
         W: ufmt::uWrite + ?Sized,
     {
         match self {
-            TestFailure::AssertEq { left, right } => {
+            TestFailure::AssertEq { left, right, msg } => {
                 f.write_str("assertion failed: ")?;
                 f.write_str(left)?;
                 f.write_str(" == ")?;
-                f.write_str(right)
+                f.write_str(right)?;
+                if let Some(msg) = msg {
+                    f.write_str("\n")?;
+                    f.write_str(msg)?;
+                }
+                Ok(())
             }
-            TestFailure::AssertNe { left, right } => {
+            TestFailure::AssertNe { left, right, msg } => {
                 f.write_str("assertion failed: ")?;
                 f.write_str(left)?;
                 f.write_str(" != ")?;
-                f.write_str(right)
+                f.write_str(right)?;
+                if let Some(msg) = msg {
+                    f.write_str("\n")?;
+                    f.write_str(msg)?;
+                }
+                Ok(())
             }
             TestFailure::Str(s) => f.write_str(s),
         }

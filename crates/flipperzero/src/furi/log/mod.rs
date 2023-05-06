@@ -1,6 +1,6 @@
 //! Furi Logging system.
 
-mod metadata;
+pub(crate) mod metadata;
 pub use metadata::{Level, LevelFilter};
 
 /// The standard logging macro.

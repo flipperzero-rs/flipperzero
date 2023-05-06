@@ -45,7 +45,9 @@ pub mod __macro_support {
 
 flipperzero_test::tests_runner!(
     name = "flipperzero-rs Unit Tests",
+    stack_size = 4096,
     [
+        crate::furi::log::metadata::tests,
         crate::furi::message_queue::tests,
         crate::furi::rng::tests,
         crate::furi::string::tests,
