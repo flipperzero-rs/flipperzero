@@ -26,6 +26,7 @@ flipperzero_test::tests_runner!(
     [
         crate::furi::message_queue::tests,
         crate::furi::rng::tests,
+        crate::furi::string::tests,
         crate::furi::sync::tests,
         crate::toolbox::crc32::tests,
         crate::toolbox::md5::tests,

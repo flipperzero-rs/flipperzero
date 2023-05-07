@@ -16,6 +16,9 @@ use alloc::{borrow::Cow, boxed::Box, ffi::CString};
 
 use flipperzero_sys as sys;
 
+mod iter;
+use self::iter::{Bytes, CharIndices, Chars};
+
 mod pattern;
 use self::pattern::Pattern;
 
@@ -243,6 +246,50 @@ impl FuriString {
 // and that are useful for a non-slice string. Some of these are altered to be mutating
 // as we can't provide string slices.
 impl FuriString {
+    /// Returns an iterator over the [`char`]s of a `FuriString`.
+    ///
+    /// A `FuriString` might not contain valid UTF-8 (for example, if it represents a
+    /// string obtained through the Flipper Zero SDK).Any invalid UTF-8 sequences will be
+    /// replaced with [`U+FFFD REPLACEMENT CHARACTER`][U+FFFD], which looks like this: �
+    ///
+    /// [U+FFFD]: core::char::REPLACEMENT_CHARACTER
+    ///
+    /// It's important to remember that [`char`] represents a Unicode Scalar
+    /// Value, and might not match your idea of what a 'character' is. Iteration
+    /// over grapheme clusters may be what you actually want.
+    #[inline]
+    pub fn chars_lossy(&self) -> Chars<'_> {
+        Chars {
+            iter: self.to_bytes().iter(),
+        }
+    }
+
+    /// Returns an iterator over the [`char`]s of a `FuriString`, and their positions.
+    ///
+    /// A `FuriString` might not contain valid UTF-8 (for example, if it represents a
+    /// string obtained through the Flipper Zero SDK).Any invalid UTF-8 sequences will be
+    /// replaced with [`U+FFFD REPLACEMENT CHARACTER`][U+FFFD], which looks like this: �
+    ///
+    /// [U+FFFD]: core::char::REPLACEMENT_CHARACTER
+    ///
+    /// The iterator yields tuples. The position is first, the [`char`] is second.
+    #[inline]
+    pub fn char_indices_lossy(&self) -> CharIndices<'_> {
+        CharIndices {
+            front_offset: 0,
+            iter: self.chars_lossy(),
+        }
+    }
+
+    /// An iterator over the bytes of a string slice.
+    ///
+    /// As a string consists of a sequence of bytes, we can iterate through a string by
+    /// byte. This method returns such an iterator.
+    #[inline]
+    pub fn bytes(&self) -> Bytes<'_> {
+        Bytes(self.to_bytes().iter().copied())
+    }
+
     /// Returns `true` if the given pattern matches a sub-slice of this string slice.
     ///
     /// Returns `false` if it does not.
@@ -716,8 +763,8 @@ impl fmt::Debug for FuriString {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_char('"')?;
-        for byte in self.to_bytes().escape_ascii() {
-            f.write_char(byte as char)?;
+        for c in self.chars_lossy() {
+            f.write_char(c)?;
         }
         f.write_char('"')
     }
@@ -730,8 +777,8 @@ impl ufmt::uDebug for FuriString {
         W: ufmt::uWrite + ?Sized,
     {
         f.write_char('"')?;
-        for byte in self.to_bytes().escape_ascii() {
-            f.write_char(byte as char)?;
+        for c in self.chars_lossy() {
+            f.write_char(c)?;
         }
         f.write_char('"')
     }
@@ -740,8 +787,8 @@ impl ufmt::uDebug for FuriString {
 impl fmt::Display for FuriString {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        for byte in self.to_bytes().escape_ascii() {
-            f.write_char(byte as char)?;
+        for c in self.chars_lossy() {
+            f.write_char(c)?;
         }
         Ok(())
     }
@@ -753,8 +800,8 @@ impl ufmt::uDisplay for FuriString {
     where
         W: ufmt::uWrite + ?Sized,
     {
-        for byte in self.to_bytes().escape_ascii() {
-            f.write_char(byte as char)?;
+        for c in self.chars_lossy() {
+            f.write_char(c)?;
         }
         Ok(())
     }
@@ -787,5 +834,28 @@ impl ufmt::uWrite for FuriString {
     fn write_char(&mut self, c: char) -> Result<(), Self::Error> {
         self.push(c);
         Ok(())
+    }
+}
+
+#[flipperzero_test::tests]
+mod tests {
+    use flipperzero_sys as sys;
+
+    use super::FuriString;
+
+    #[test]
+    fn invalid_utf8_is_replaced() {
+        // The German word für encoded in ISO 8859-1.
+        let d: [u8; 3] = [0x66, 0xfc, 0x72];
+
+        // Construct an invalid string using the Flipper Zero SDK.
+        let s = FuriString::new();
+        for b in d {
+            unsafe { sys::furi_string_push_back(s.0, b as i8) };
+        }
+
+        for (l, r) in s.chars_lossy().zip("f�r".chars()) {
+            assert_eq!(l, r);
+        }
     }
 }
