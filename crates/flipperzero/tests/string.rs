@@ -3,7 +3,7 @@
 
 #[flipperzero_test::tests]
 mod tests {
-    use flipperzero::furi::string::String;
+    use flipperzero::furi::string::FuriString as String;
 
     /*
     #[test]
@@ -814,7 +814,7 @@ mod tests {
 mod str_tests {
     use core::cmp::Ordering::{Equal, Greater, Less};
 
-    use flipperzero::furi::string::String;
+    use flipperzero::furi::string::FuriString as String;
 
     #[test]
     fn le() {

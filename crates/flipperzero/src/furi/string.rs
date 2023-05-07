@@ -39,24 +39,24 @@ const WHITESPACE: &[char] = &[
 /// `FuriString` struct (which is stored on the heap), while longer strings are allocated
 /// on the heap by the Flipper Zero firmware.
 #[derive(Eq)]
-pub struct String(*mut sys::FuriString);
+pub struct FuriString(*mut sys::FuriString);
 
-impl Drop for String {
+impl Drop for FuriString {
     fn drop(&mut self) {
         unsafe { sys::furi_string_free(self.0) };
     }
 }
 
 // Implementations matching `std::string::String`.
-impl String {
-    /// Creates a new empty `String`.
+impl FuriString {
+    /// Creates a new empty `FuriString`.
     #[inline]
     #[must_use]
     pub fn new() -> Self {
-        String(unsafe { sys::furi_string_alloc() })
+        FuriString(unsafe { sys::furi_string_alloc() })
     }
 
-    /// Creates a new empty `String` with at least the specified capacity.
+    /// Creates a new empty `FuriString` with at least the specified capacity.
     #[inline]
     #[must_use]
     pub fn with_capacity(capacity: usize) -> Self {
@@ -80,19 +80,19 @@ impl String {
         unsafe { CStr::from_ptr(self.as_c_ptr()) }
     }
 
-    /// Appends a given `String` onto the end of this `String`.
+    /// Appends a given `FuriString` onto the end of this `FuriString`.
     #[inline]
-    pub fn push_string(&mut self, string: &String) {
+    pub fn push_string(&mut self, string: &FuriString) {
         unsafe { sys::furi_string_cat(self.0, string.0) }
     }
 
-    /// Appends a given `str` onto the end of this `String`.
+    /// Appends a given `str` onto the end of this `FuriString`.
     #[inline]
     pub fn push_str(&mut self, string: &str) {
         self.extend(string.chars());
     }
 
-    /// Appends a given `CStr` onto the end of this `String`.
+    /// Appends a given `CStr` onto the end of this `FuriString`.
     #[inline]
     pub fn push_c_str(&mut self, string: &CStr) {
         unsafe { sys::furi_string_cat_str(self.0, string.as_ptr()) }
@@ -106,7 +106,7 @@ impl String {
         unsafe { sys::furi_string_reserve(self.0, self.len() + additional + 1) };
     }
 
-    /// Appends the given [`char`] to the end of this `String`.
+    /// Appends the given [`char`] to the end of this `FuriString`.
     #[inline]
     pub fn push(&mut self, ch: char) {
         match ch.len_utf8() {
@@ -115,7 +115,7 @@ impl String {
         }
     }
 
-    /// Returns a byte slice of this `String`'s contents.
+    /// Returns a byte slice of this `FuriString`'s contents.
     ///
     /// The returned slice will **not** contain the trailing nul terminator that the
     /// underlying C string has.
@@ -125,17 +125,17 @@ impl String {
         self.as_c_str().to_bytes()
     }
 
-    /// Returns a byte slice of this `String`'s contents with the trailing nul byte.
+    /// Returns a byte slice of this `FuriString`'s contents with the trailing nul byte.
     ///
-    /// This function is the equivalent of [`String::to_bytes`] except that it will retain
-    /// the trailing nul terminator instead of chopping it off.
+    /// This function is the equivalent of [`FuriString::to_bytes`] except that it will
+    /// retain the trailing nul terminator instead of chopping it off.
     #[inline]
     #[must_use]
     pub fn to_bytes_with_nul(&self) -> &[u8] {
         self.as_c_str().to_bytes_with_nul()
     }
 
-    /// Shortens this `String` to the specified length.
+    /// Shortens this `FuriString` to the specified length.
     ///
     /// If `new_len` is greater than the string's current length, this has no effect.
     #[inline]
@@ -143,13 +143,13 @@ impl String {
         unsafe { sys::furi_string_left(self.0, new_len) };
     }
 
-    /// Inserts a character into this `String` at a byte position.
+    /// Inserts a character into this `FuriString` at a byte position.
     ///
     /// This is an *O*(*n*) operation as it requires copying every element in the buffer.
     ///
     /// # Panics
     ///
-    /// Panics if `idx` is larger than the `String`'s length.
+    /// Panics if `idx` is larger than the `FuriString`'s length.
     #[inline]
     pub fn insert(&mut self, idx: usize, ch: char) {
         let mut buf = [0; 4];
@@ -157,13 +157,13 @@ impl String {
         self.insert_bytes(idx, encoded);
     }
 
-    /// Inserts a string slice into this `String` at a byte position.
+    /// Inserts a string slice into this `FuriString` at a byte position.
     ///
     /// This is an *O*(*n*) operation as it requires copying every element in the buffer.
     ///
     /// # Panics
     ///
-    /// Panics if `idx` is larger than the `String`'s length.
+    /// Panics if `idx` is larger than the `FuriString`'s length.
     #[inline]
     pub fn insert_str(&mut self, idx: usize, string: &str) {
         self.insert_bytes(idx, string.as_bytes());
@@ -182,7 +182,7 @@ impl String {
             unsafe { sys::furi_string_push_back(self.0, *byte as c_char) };
         }
 
-        // Now use pointer access to construct the expected `String` contents.
+        // Now use pointer access to construct the expected `FuriString` contents.
         let c_ptr = self.as_c_ptr().cast::<u8>();
         unsafe {
             ptr::copy(c_ptr.add(idx), c_ptr.cast_mut().add(idx + amt), len - idx);
@@ -190,7 +190,7 @@ impl String {
         }
     }
 
-    /// Returns the length of this `String`.
+    /// Returns the length of this `FuriString`.
     ///
     /// This length is in bytes, not [`char`]s or graphemes. In other words, it might not
     /// be what a human considers the length of the string.
@@ -200,7 +200,7 @@ impl String {
         unsafe { sys::furi_string_size(self.0) }
     }
 
-    /// Returns `true` if this `String` has a length of zero, and `false` otherwise.
+    /// Returns `true` if this `FuriString` has a length of zero, and `false` otherwise.
     #[inline]
     #[must_use]
     pub fn is_empty(&self) -> bool {
@@ -219,19 +219,19 @@ impl String {
     /// Panics if `at` is beyond the last byte of the string.
     #[inline]
     #[must_use = "use `.truncate()` if you don't need the other half"]
-    pub fn split_off(&mut self, at: usize) -> String {
+    pub fn split_off(&mut self, at: usize) -> FuriString {
         // SAFETY: Trimming the beginning of a C string results in a valid C string, as
         // long as the nul byte is not trimmed.
         assert!(at <= self.len());
-        let ret = String(unsafe { sys::furi_string_alloc_set_str(self.as_c_ptr().add(at)) });
+        let ret = FuriString(unsafe { sys::furi_string_alloc_set_str(self.as_c_ptr().add(at)) });
         self.truncate(at);
         ret
     }
 
-    /// Truncates this `String`, removing all contents.
+    /// Truncates this `FuriString`, removing all contents.
     ///
-    /// While this means the `String` will have a length of zero, it does not touch its
-    /// capacity.
+    /// While this means the `FuriString` will have a length of zero, it does not touch
+    /// its capacity.
     #[inline]
     pub fn clear(&mut self) {
         unsafe { sys::furi_string_reset(self.0) };
@@ -241,12 +241,12 @@ impl String {
 // Implementations matching `str` that we don't already have from `std::string::String`
 // and that are useful for a non-slice string. Some of these are altered to be mutating
 // as we can't provide string slices.
-impl String {
+impl FuriString {
     /// Returns `true` if the given pattern matches a sub-slice of this string slice.
     ///
     /// Returns `false` if it does not.
     ///
-    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
@@ -260,7 +260,7 @@ impl String {
     ///
     /// Returns `false` if it does not.
     ///
-    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
@@ -273,7 +273,7 @@ impl String {
     ///
     /// Returns `false` if it does not.
     ///
-    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
@@ -286,7 +286,7 @@ impl String {
     ///
     /// Returns [`None`] if the pattern doesn't match.
     ///
-    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
@@ -301,7 +301,7 @@ impl String {
     ///
     /// Returns [`None`] if the pattern doesn't match.
     ///
-    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
@@ -354,7 +354,7 @@ impl String {
 
     /// Repeatedly removes from this string all prefixes and suffixes that match a pattern.
     ///
-    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
@@ -366,7 +366,7 @@ impl String {
 
     /// Repeatedly removes from this string all prefixes that match a pattern.
     ///
-    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
@@ -384,7 +384,7 @@ impl String {
 
     /// Repeatedly removes from this string all suffixes that match a pattern.
     ///
-    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
@@ -407,7 +407,7 @@ impl String {
     ///
     /// If the string does not start with `prefix`, returns `false`.
     ///
-    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
@@ -424,7 +424,7 @@ impl String {
     ///
     /// If the string does not end with `suffix`, returns `false`.
     ///
-    /// The [pattern] can be a `&String`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
@@ -435,74 +435,74 @@ impl String {
     }
 }
 
-impl Clone for String {
+impl Clone for FuriString {
     fn clone(&self) -> Self {
         Self(unsafe { sys::furi_string_alloc_set(self.0) })
     }
 }
 
-impl Default for String {
+impl Default for FuriString {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl AsRef<CStr> for String {
+impl AsRef<CStr> for FuriString {
     #[inline]
     fn as_ref(&self) -> &CStr {
         self.as_c_str()
     }
 }
 
-impl From<char> for String {
+impl From<char> for FuriString {
     fn from(value: char) -> Self {
-        let mut buf = String::with_capacity(value.len_utf8());
+        let mut buf = FuriString::with_capacity(value.len_utf8());
         buf.push(value);
         buf
     }
 }
 
-impl From<&str> for String {
+impl From<&str> for FuriString {
     fn from(value: &str) -> Self {
-        let mut buf = String::with_capacity(value.len());
+        let mut buf = FuriString::with_capacity(value.len());
         buf.push_str(value);
         buf
     }
 }
 
-impl From<&mut str> for String {
+impl From<&mut str> for FuriString {
     fn from(value: &mut str) -> Self {
         From::<&str>::from(value)
     }
 }
 
-impl From<&CStr> for String {
+impl From<&CStr> for FuriString {
     fn from(value: &CStr) -> Self {
         Self(unsafe { sys::furi_string_alloc_set_str(value.as_ptr()) })
     }
 }
 
 #[cfg(feature = "alloc")]
-impl From<Box<str>> for String {
+impl From<Box<str>> for FuriString {
     fn from(value: Box<str>) -> Self {
-        String::from(value.as_ref())
+        FuriString::from(value.as_ref())
     }
 }
 
 #[cfg(feature = "alloc")]
-impl<'a> From<Cow<'a, str>> for String {
+impl<'a> From<Cow<'a, str>> for FuriString {
     fn from(value: Cow<'a, str>) -> Self {
-        String::from(value.as_ref())
+        FuriString::from(value.as_ref())
     }
 }
 
-impl Extend<String> for String {
-    fn extend<T: IntoIterator<Item = String>>(&mut self, iter: T) {
+impl Extend<FuriString> for FuriString {
+    fn extend<T: IntoIterator<Item = FuriString>>(&mut self, iter: T) {
         iter.into_iter().for_each(move |s| self.push_string(&s));
     }
 }
 
-impl Extend<char> for String {
+impl Extend<char> for FuriString {
     fn extend<T: IntoIterator<Item = char>>(&mut self, iter: T) {
         let iterator = iter.into_iter();
         let (lower_bound, _) = iterator.size_hint();
@@ -511,47 +511,47 @@ impl Extend<char> for String {
     }
 }
 
-impl<'a> Extend<&'a char> for String {
+impl<'a> Extend<&'a char> for FuriString {
     fn extend<T: IntoIterator<Item = &'a char>>(&mut self, iter: T) {
         self.extend(iter.into_iter().cloned());
     }
 }
 
-impl<'a> Extend<&'a str> for String {
+impl<'a> Extend<&'a str> for FuriString {
     fn extend<T: IntoIterator<Item = &'a str>>(&mut self, iter: T) {
         iter.into_iter().for_each(move |s| self.push_str(s));
     }
 }
 
-impl<'a> Extend<&'a CStr> for String {
+impl<'a> Extend<&'a CStr> for FuriString {
     fn extend<T: IntoIterator<Item = &'a CStr>>(&mut self, iter: T) {
         iter.into_iter().for_each(move |s| self.push_c_str(s));
     }
 }
 
 #[cfg(feature = "alloc")]
-impl Extend<Box<str>> for String {
+impl Extend<Box<str>> for FuriString {
     fn extend<T: IntoIterator<Item = Box<str>>>(&mut self, iter: T) {
         iter.into_iter().for_each(move |s| self.push_str(&s));
     }
 }
 
 #[cfg(feature = "alloc")]
-impl<'a> Extend<Cow<'a, str>> for String {
+impl<'a> Extend<Cow<'a, str>> for FuriString {
     fn extend<T: IntoIterator<Item = Cow<'a, str>>>(&mut self, iter: T) {
         iter.into_iter().for_each(move |s| self.push_str(&s));
     }
 }
 
-impl FromIterator<String> for String {
-    fn from_iter<T: IntoIterator<Item = String>>(iter: T) -> Self {
+impl FromIterator<FuriString> for FuriString {
+    fn from_iter<T: IntoIterator<Item = FuriString>>(iter: T) -> Self {
         let mut iterator = iter.into_iter();
 
-        // Because we're iterating over `String`s, we can avoid at least one allocation by
-        // getting the first string from the iterator and appending to it all the
-        // subsequent strings.
+        // Because we're iterating over `FuriString`s, we can avoid at least one
+        // allocation by getting the first string from the iterator and appending to it
+        // all the subsequent strings.
         match iterator.next() {
-            None => String::new(),
+            None => FuriString::new(),
             Some(mut buf) => {
                 buf.extend(iterator);
                 buf
@@ -560,58 +560,58 @@ impl FromIterator<String> for String {
     }
 }
 
-impl FromIterator<char> for String {
+impl FromIterator<char> for FuriString {
     fn from_iter<T: IntoIterator<Item = char>>(iter: T) -> Self {
-        let mut buf = String::new();
+        let mut buf = FuriString::new();
         buf.extend(iter);
         buf
     }
 }
 
-impl<'a> FromIterator<&'a char> for String {
+impl<'a> FromIterator<&'a char> for FuriString {
     fn from_iter<T: IntoIterator<Item = &'a char>>(iter: T) -> Self {
-        let mut buf = String::new();
+        let mut buf = FuriString::new();
         buf.extend(iter);
         buf
     }
 }
 
-impl<'a> FromIterator<&'a str> for String {
+impl<'a> FromIterator<&'a str> for FuriString {
     fn from_iter<T: IntoIterator<Item = &'a str>>(iter: T) -> Self {
-        let mut buf = String::new();
+        let mut buf = FuriString::new();
         buf.extend(iter);
         buf
     }
 }
 
-impl<'a> FromIterator<&'a CStr> for String {
+impl<'a> FromIterator<&'a CStr> for FuriString {
     fn from_iter<T: IntoIterator<Item = &'a CStr>>(iter: T) -> Self {
-        let mut buf = String::new();
+        let mut buf = FuriString::new();
         buf.extend(iter);
         buf
     }
 }
 
 #[cfg(feature = "alloc")]
-impl FromIterator<Box<str>> for String {
+impl FromIterator<Box<str>> for FuriString {
     fn from_iter<T: IntoIterator<Item = Box<str>>>(iter: T) -> Self {
-        let mut buf = String::new();
+        let mut buf = FuriString::new();
         buf.extend(iter);
         buf
     }
 }
 
 #[cfg(feature = "alloc")]
-impl<'a> FromIterator<Cow<'a, str>> for String {
+impl<'a> FromIterator<Cow<'a, str>> for FuriString {
     fn from_iter<T: IntoIterator<Item = Cow<'a, str>>>(iter: T) -> Self {
-        let mut buf = String::new();
+        let mut buf = FuriString::new();
         buf.extend(iter);
         buf
     }
 }
 
-impl Add<&str> for String {
-    type Output = String;
+impl Add<&str> for FuriString {
+    type Output = FuriString;
 
     #[inline]
     fn add(mut self, rhs: &str) -> Self::Output {
@@ -620,70 +620,70 @@ impl Add<&str> for String {
     }
 }
 
-impl AddAssign<&str> for String {
+impl AddAssign<&str> for FuriString {
     #[inline]
     fn add_assign(&mut self, rhs: &str) {
         self.push_str(rhs);
     }
 }
 
-impl PartialEq for String {
+impl PartialEq for FuriString {
     fn eq(&self, other: &Self) -> bool {
         unsafe { sys::furi_string_equal(self.0, other.0) }
     }
 }
 
-impl PartialEq<CStr> for String {
+impl PartialEq<CStr> for FuriString {
     fn eq(&self, other: &CStr) -> bool {
         unsafe { sys::furi_string_equal_str(self.0, other.as_ptr()) }
     }
 }
 
-impl PartialEq<String> for CStr {
-    fn eq(&self, other: &String) -> bool {
+impl PartialEq<FuriString> for CStr {
+    fn eq(&self, other: &FuriString) -> bool {
         other.eq(self)
     }
 }
 
-impl PartialEq<str> for String {
+impl PartialEq<str> for FuriString {
     fn eq(&self, other: &str) -> bool {
         self.to_bytes().eq(other.as_bytes())
     }
 }
 
-impl PartialEq<String> for str {
-    fn eq(&self, other: &String) -> bool {
+impl PartialEq<FuriString> for str {
+    fn eq(&self, other: &FuriString) -> bool {
         other.eq(self)
     }
 }
 
-impl PartialEq<&str> for String {
+impl PartialEq<&str> for FuriString {
     fn eq(&self, other: &&str) -> bool {
         self.eq(*other)
     }
 }
 
-impl PartialEq<String> for &str {
-    fn eq(&self, other: &String) -> bool {
+impl PartialEq<FuriString> for &str {
+    fn eq(&self, other: &FuriString) -> bool {
         other.eq(*self)
     }
 }
 
 #[cfg(feature = "alloc")]
-impl PartialEq<CString> for String {
+impl PartialEq<CString> for FuriString {
     fn eq(&self, other: &CString) -> bool {
         self.eq(other.as_c_str())
     }
 }
 
 #[cfg(feature = "alloc")]
-impl PartialEq<String> for CString {
-    fn eq(&self, other: &String) -> bool {
+impl PartialEq<FuriString> for CString {
+    fn eq(&self, other: &FuriString) -> bool {
         other.eq(self.as_c_str())
     }
 }
 
-impl Ord for String {
+impl Ord for FuriString {
     fn cmp(&self, other: &Self) -> Ordering {
         match unsafe { sys::furi_string_cmp(self.0, other.0) } {
             ..=-1 => Ordering::Less,
@@ -693,19 +693,19 @@ impl Ord for String {
     }
 }
 
-impl PartialOrd for String {
+impl PartialOrd for FuriString {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl hash::Hash for String {
+impl hash::Hash for FuriString {
     fn hash<H: hash::Hasher>(&self, state: &mut H) {
         self.as_c_str().hash(state);
     }
 }
 
-impl fmt::Debug for String {
+impl fmt::Debug for FuriString {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_char('"')?;
@@ -716,7 +716,7 @@ impl fmt::Debug for String {
     }
 }
 
-impl ufmt::uDebug for String {
+impl ufmt::uDebug for FuriString {
     #[inline]
     fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
     where
@@ -730,7 +730,7 @@ impl ufmt::uDebug for String {
     }
 }
 
-impl fmt::Display for String {
+impl fmt::Display for FuriString {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         for byte in self.to_bytes().escape_ascii() {
@@ -740,7 +740,7 @@ impl fmt::Display for String {
     }
 }
 
-impl ufmt::uDisplay for String {
+impl ufmt::uDisplay for FuriString {
     #[inline]
     fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
     where
@@ -753,7 +753,7 @@ impl ufmt::uDisplay for String {
     }
 }
 
-impl fmt::Write for String {
+impl fmt::Write for FuriString {
     #[inline]
     fn write_str(&mut self, s: &str) -> fmt::Result {
         self.push_str(s);
@@ -767,7 +767,7 @@ impl fmt::Write for String {
     }
 }
 
-impl ufmt::uWrite for String {
+impl ufmt::uWrite for FuriString {
     type Error = Infallible;
 
     #[inline]
