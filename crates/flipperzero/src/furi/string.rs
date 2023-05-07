@@ -1,6 +1,7 @@
 //! String primitives built around `FuriString`.
 
 use core::{
+    borrow::Borrow,
     cmp::Ordering,
     convert::Infallible,
     ffi::{c_char, CStr},
@@ -450,6 +451,12 @@ impl Default for FuriString {
 impl AsRef<CStr> for FuriString {
     #[inline]
     fn as_ref(&self) -> &CStr {
+        self.as_c_str()
+    }
+}
+
+impl Borrow<CStr> for FuriString {
+    fn borrow(&self) -> &CStr {
         self.as_c_str()
     }
 }
