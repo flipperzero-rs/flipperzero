@@ -71,13 +71,28 @@ impl Error {
             error_code => Some(Self::Uncategorized(error_code)),
         }
     }
+
+    /// Description associated with [`Error`].
+    pub fn description(&self) -> &CStr {
+        unsafe { CStr::from_ptr(sys::filesystem_api_error_get_desc(self.to_sys().unwrap())) }
+    }
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let msg =
-            unsafe { CStr::from_ptr(sys::filesystem_api_error_get_desc(self.to_sys().unwrap())) };
-        msg.to_bytes().escape_ascii().fmt(f)
+        self.description().to_bytes().escape_ascii().fmt(f)
+    }
+}
+
+impl ufmt::uDisplay for Error {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: ufmt::uWrite + ?Sized {
+        for c in self.description().to_bytes().escape_ascii() {
+            f.write_char(c as char)?;
+        }
+
+        Ok(())
     }
 }
 
