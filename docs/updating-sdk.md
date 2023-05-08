@@ -29,8 +29,15 @@ $ cargo run --bin generate-bindings ../../flipperzero-firmware/build/f7-firmware
 $ cp bindings.rs ../crates/sys/src
 ```
 
-Make sure to update the SDK details in [`README.md`] before making a new release.
+Alternatively, you can generate `binding.rs` in an isolated env using Docker and the following command:
 
+From the root of the repository, to build the binding for the branch/tag `0.82.3` of the official SDK:
+
+```shell
+docker run --rm -t $(docker build --build-arg BRANCH=0.82.3 -q -f tools/Dockerfile .) > crates/sys/src/bindings.rs
+```
+
+Make sure to update the SDK details in [`README.md`] before making a new release.
 
 [`bindings.rs`]: ../crates/sys/src/bindings.rs
 [`flipperzero-firmware`]: https://github.com/flipperdevices/flipperzero-firmware

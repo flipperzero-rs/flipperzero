@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 1310720;
+pub const API_VERSION: u32 = 1507328;
 pub type wint_t = core::ffi::c_int;
 pub type _off_t = core::ffi::c_long;
 pub type _fpos_t = core::ffi::c_long;
@@ -1936,8 +1936,8 @@ extern "C" {
     pub fn strlcpy(
         arg1: *mut core::ffi::c_char,
         arg2: *const core::ffi::c_char,
-        arg3: core::ffi::c_uint,
-    ) -> core::ffi::c_uint;
+        arg3: usize,
+    ) -> usize;
 }
 extern "C" {
     #[doc = "Get free heap size\n\nReturns:\n\n* free heap size in bytes\n\n"]
@@ -2013,7 +2013,7 @@ extern "C" {
     ) -> *mut FuriThread;
 }
 extern "C" {
-    #[doc = "Release FuriThread\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
+    #[doc = "Release FuriThread\n\n**Warning!**\n\n* see furi_thread_join\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
     pub fn furi_thread_free(thread: *mut FuriThread);
 }
 extern "C" {
@@ -2072,7 +2072,7 @@ extern "C" {
     pub fn furi_thread_start(thread: *mut FuriThread);
 }
 extern "C" {
-    #[doc = "Join FuriThread\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
+    #[doc = "Join FuriThread\n\n**Warning!**\n\n* Use this method only when CPU is not busy(Idle task receives control), otherwise it will wait forever.\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
     pub fn furi_thread_join(thread: *mut FuriThread) -> bool;
 }
 extern "C" {
@@ -4973,6 +4973,12 @@ fn bindgen_test_layout_CanvasFontParameters() {
         )
     );
 }
+pub const IconRotation_IconRotation0: IconRotation = 0;
+pub const IconRotation_IconRotation90: IconRotation = 1;
+pub const IconRotation_IconRotation180: IconRotation = 2;
+pub const IconRotation_IconRotation270: IconRotation = 3;
+#[doc = "Icon rotation\n\n"]
+pub type IconRotation = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct Canvas {
@@ -5059,6 +5065,16 @@ extern "C" {
         width: u8,
         height: u8,
         compressed_bitmap_data: *const u8,
+    );
+}
+extern "C" {
+    #[doc = "Draw icon at position defined by x,y with rotation and flip.\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `icon` - Icon instance\n* `flip` - IconFlip\n* `rotation` - IconRotation\n\n"]
+    pub fn canvas_draw_icon_ex(
+        canvas: *mut Canvas,
+        x: u8,
+        y: u8,
+        icon: *const Icon,
+        rotation: IconRotation,
     );
 }
 extern "C" {
@@ -5271,10 +5287,16 @@ extern "C" {
     pub static gpio_pins_count: usize;
 }
 extern "C" {
-    pub static vibro_gpio: GpioPin;
+    pub static gpio_swdio: GpioPin;
 }
 extern "C" {
-    pub static ibutton_gpio: GpioPin;
+    pub static gpio_swclk: GpioPin;
+}
+extern "C" {
+    pub static gpio_vibro: GpioPin;
+}
+extern "C" {
+    pub static gpio_ibutton: GpioPin;
 }
 extern "C" {
     pub static gpio_cc1101_g0: GpioPin;
@@ -5397,7 +5419,7 @@ extern "C" {
     pub static gpio_speaker: GpioPin;
 }
 extern "C" {
-    pub static periph_power: GpioPin;
+    pub static gpio_periph_power: GpioPin;
 }
 extern "C" {
     pub static gpio_usb_dm: GpioPin;
@@ -7949,6 +7971,10 @@ extern "C" {
     pub fn furi_hal_debug_disable();
 }
 extern "C" {
+    #[doc = "Check if GDB debug session is active\n\n"]
+    pub fn furi_hal_debug_is_gdb_session_active() -> bool;
+}
+extern "C" {
     pub fn furi_hal_os_tick();
 }
 #[doc = "SPI Init structures definition\n\n"]
@@ -8891,6 +8917,8 @@ pub const FuriHalRtcFlag_FuriHalRtcFlagFactoryReset: FuriHalRtcFlag = 2;
 pub const FuriHalRtcFlag_FuriHalRtcFlagLock: FuriHalRtcFlag = 4;
 pub const FuriHalRtcFlag_FuriHalRtcFlagC2Update: FuriHalRtcFlag = 8;
 pub const FuriHalRtcFlag_FuriHalRtcFlagHandOrient: FuriHalRtcFlag = 16;
+pub const FuriHalRtcFlag_FuriHalRtcFlagLegacySleep: FuriHalRtcFlag = 32;
+pub const FuriHalRtcFlag_FuriHalRtcFlagStealthMode: FuriHalRtcFlag = 64;
 pub type FuriHalRtcFlag = core::ffi::c_uchar;
 #[doc = "Normal boot mode, default value\n\n"]
 pub const FuriHalRtcBootMode_FuriHalRtcBootModeNormal: FuriHalRtcBootMode = 0;
@@ -8945,6 +8973,10 @@ pub const FuriHalRtcLocaleDateFormat_FuriHalRtcLocaleDateFormatMDY: FuriHalRtcLo
 #[doc = "Year/Month/Day\n\n"]
 pub const FuriHalRtcLocaleDateFormat_FuriHalRtcLocaleDateFormatYMD: FuriHalRtcLocaleDateFormat = 2;
 pub type FuriHalRtcLocaleDateFormat = core::ffi::c_uchar;
+extern "C" {
+    #[doc = "Force sync shadow registers\n\n"]
+    pub fn furi_hal_rtc_sync_shadow();
+}
 extern "C" {
     #[doc = "Get RTC register content\n\nReturns:\n\n* content of the register\n\n# Arguments\n\n* `reg` - [Direction: In] The register identifier\n\n"]
     pub fn furi_hal_rtc_get_register(reg: FuriHalRtcRegister) -> u32;
@@ -9222,10 +9254,6 @@ extern "C" {
 extern "C" {
     #[doc = "Check if sleep availble\n\nReturns:\n\n* true if available\n\n"]
     pub fn furi_hal_power_sleep_available() -> bool;
-}
-extern "C" {
-    #[doc = "Check if deep sleep availble\n\nReturns:\n\n* true if available\n\n"]
-    pub fn furi_hal_power_deep_sleep_available() -> bool;
 }
 extern "C" {
     #[doc = "Go to sleep\n\n"]
@@ -9545,14 +9573,14 @@ extern "C" {
 extern "C" {
     pub fn LL_TIM_Init(
         TIMx: *mut TIM_TypeDef,
-        TIM_InitStruct: *mut LL_TIM_InitTypeDef,
+        TIM_InitStruct: *const LL_TIM_InitTypeDef,
     ) -> ErrorStatus;
 }
 extern "C" {
     pub fn LL_TIM_OC_Init(
         TIMx: *mut TIM_TypeDef,
         Channel: u32,
-        TIM_OC_InitStruct: *mut LL_TIM_OC_InitTypeDef,
+        TIM_OC_InitStruct: *const LL_TIM_OC_InitTypeDef,
     ) -> ErrorStatus;
 }
 #[doc = "Timer ISR\n\n"]
@@ -13935,9 +13963,19 @@ pub type RpcSessionClosedCallback =
 #[doc = "Callback to notify transport layer that session was closed and all operations were finished\n\n"]
 pub type RpcSessionTerminatedCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
+pub const RpcOwner_RpcOwnerUnknown: RpcOwner = 0;
+pub const RpcOwner_RpcOwnerBle: RpcOwner = 1;
+pub const RpcOwner_RpcOwnerUsb: RpcOwner = 2;
+pub const RpcOwner_RpcOwnerCount: RpcOwner = 3;
+#[doc = "RPC owner\n\n"]
+pub type RpcOwner = core::ffi::c_uchar;
 extern "C" {
-    #[doc = "Open RPC session\nUSAGE: 1) rpc_session_open(); 2) rpc_session_set_context(); 3) rpc_session_set_send_bytes_callback(); 4) rpc_session_set_close_callback(); 5) while(1) { rpc_session_feed(); } 6) rpc_session_close();\n\nReturns:\n\n* pointer to RpcSession descriptor, or NULL if RPC is busy and can't open session now\n\n# Arguments\n\n* `rpc` - instance\n\n"]
-    pub fn rpc_session_open(rpc: *mut Rpc) -> *mut RpcSession;
+    #[doc = "Get RPC session owner\n\nReturns:\n\n* session owner\n\n# Arguments\n\n* `session` - pointer to RpcSession descriptor\n\n"]
+    pub fn rpc_session_get_owner(session: *mut RpcSession) -> RpcOwner;
+}
+extern "C" {
+    #[doc = "Open RPC session\nUSAGE: 1) rpc_session_open(); 2) rpc_session_set_context(); 3) rpc_session_set_send_bytes_callback(); 4) rpc_session_set_close_callback(); 5) while(1) { rpc_session_feed(); } 6) rpc_session_close();\n\nReturns:\n\n* pointer to RpcSession descriptor, or NULL if RPC is busy and can't open session now\n\n# Arguments\n\n* `rpc` - instance\n* `owner` - owner of session\n\n"]
+    pub fn rpc_session_open(rpc: *mut Rpc, owner: RpcOwner) -> *mut RpcSession;
 }
 extern "C" {
     #[doc = "Close RPC session It is guaranteed that no callbacks will be called as soon as session is closed. So no need in setting callbacks to NULL after session close.\n\n# Arguments\n\n* `session` - pointer to RpcSession descriptor\n\n"]
@@ -14670,7 +14708,7 @@ extern "C" {
 extern "C" {
     pub fn LL_LPTIM_Init(
         LPTIMx: *mut LPTIM_TypeDef,
-        LPTIM_InitStruct: *mut LL_LPTIM_InitTypeDef,
+        LPTIM_InitStruct: *const LL_LPTIM_InitTypeDef,
     ) -> ErrorStatus;
 }
 pub const FuriHalPwmOutputId_FuriHalPwmOutputIdTim1PA7: FuriHalPwmOutputId = 0;
@@ -15358,7 +15396,7 @@ fn bindgen_test_layout_LL_COMP_InitTypeDef() {
 extern "C" {
     pub fn LL_COMP_Init(
         COMPx: *mut COMP_TypeDef,
-        COMP_InitStruct: *mut LL_COMP_InitTypeDef,
+        COMP_InitStruct: *const LL_COMP_InitTypeDef,
     ) -> ErrorStatus;
 }
 #[repr(C)]
@@ -15630,7 +15668,7 @@ fn bindgen_test_layout_LL_LPUART_InitTypeDef() {
 extern "C" {
     pub fn LL_LPUART_Init(
         LPUARTx: *mut USART_TypeDef,
-        LPUART_InitStruct: *mut LL_LPUART_InitTypeDef,
+        LPUART_InitStruct: *const LL_LPUART_InitTypeDef,
     ) -> ErrorStatus;
 }
 #[doc = "RTC Init structures definition\n\n"]
@@ -15818,7 +15856,7 @@ fn bindgen_test_layout_LL_USART_InitTypeDef() {
 extern "C" {
     pub fn LL_USART_Init(
         USARTx: *mut USART_TypeDef,
-        USART_InitStruct: *mut LL_USART_InitTypeDef,
+        USART_InitStruct: *const LL_USART_InitTypeDef,
     ) -> ErrorStatus;
 }
 extern "C" {
@@ -20057,8 +20095,7 @@ pub const NfcReadMode_NfcReadModeAuto: NfcReadMode = 0;
 pub const NfcReadMode_NfcReadModeMfClassic: NfcReadMode = 1;
 pub const NfcReadMode_NfcReadModeMfUltralight: NfcReadMode = 2;
 pub const NfcReadMode_NfcReadModeMfDesfire: NfcReadMode = 3;
-pub const NfcReadMode_NfcReadModeEMV: NfcReadMode = 4;
-pub const NfcReadMode_NfcReadModeNFCA: NfcReadMode = 5;
+pub const NfcReadMode_NfcReadModeNFCA: NfcReadMode = 4;
 pub type NfcReadMode = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -22108,6 +22145,27 @@ extern "C" {
 extern "C" {
     #[doc = "Compare two floating point numbers\n\nReturns:\n\n* bool true if a equals b, false otherwise\n\n# Arguments\n\n* `a` - First number to compare\n* `b` - Second number to compare\n\n"]
     pub fn float_is_equal(a: f32, b: f32) -> bool;
+}
+extern "C" {
+    #[doc = "Convert ASCII hex value to nibble\n\nReturns:\n\n* bool conversion status\n\n# Arguments\n\n* `c` - ASCII character\n* `nibble` - nibble pointer, output\n\n"]
+    pub fn hex_char_to_hex_nibble(c: core::ffi::c_char, nibble: *mut u8) -> bool;
+}
+extern "C" {
+    #[doc = "Convert ASCII hex value to byte\n\nReturns:\n\n* bool conversion status\n\n# Arguments\n\n* `hi` - hi nibble text\n* `low` - low nibble text\n* `value` - output value\n\n"]
+    pub fn hex_char_to_uint8(hi: core::ffi::c_char, low: core::ffi::c_char, value: *mut u8)
+        -> bool;
+}
+extern "C" {
+    #[doc = "Convert ASCII hex values to uint8_t\n\nReturns:\n\n* bool conversion status\n\n# Arguments\n\n* `value_str` - ASCII data\n* `value` - output value\n\n"]
+    pub fn hex_chars_to_uint8(value_str: *const core::ffi::c_char, value: *mut u8) -> bool;
+}
+extern "C" {
+    #[doc = "Convert ASCII hex values to uint64_t\n\nReturns:\n\n* bool conversion status\n\n# Arguments\n\n* `value_str` - ASCII 64 bi data\n* `value` - output value\n\n"]
+    pub fn hex_chars_to_uint64(value_str: *const core::ffi::c_char, value: *mut u64) -> bool;
+}
+extern "C" {
+    #[doc = "Convert uint8_t to ASCII hex values\n\n# Arguments\n\n* `src` - source data\n* `target` - output value\n* `length` - data length\n\n"]
+    pub fn uint8_to_hex_chars(src: *const u8, target: *mut u8, length: core::ffi::c_int);
 }
 pub const ManchesterEvent_ManchesterEventShortLow: ManchesterEvent = 0;
 pub const ManchesterEvent_ManchesterEventShortHigh: ManchesterEvent = 2;
