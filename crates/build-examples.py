@@ -10,7 +10,7 @@ from subprocess import run
 PYTHON = 'python'
 TOOLS_PATH = '../tools'
 INSTALL_PATH = PurePosixPath('/ext/apps/Examples')
-EXAMPLES = ["dialog", "gpio", "gui", "hello-rust", "notification"]
+EXAMPLES = ["dialog", "example_images", "gpio", "gui", "hello-rust", "notification", "storage"]
 
 
 def parse_args():
