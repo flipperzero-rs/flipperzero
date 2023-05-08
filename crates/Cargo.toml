@@ -5,6 +5,7 @@ members = [
     "sys",
     "rt",
     "test",
+    "test/macros",
 ]
 resolver = "2"
 
