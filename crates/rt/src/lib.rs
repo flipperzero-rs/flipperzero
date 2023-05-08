@@ -1,5 +1,5 @@
 //! Rust Runtime for the Flipper Zero.
-//! 
+//!
 //! This must be build with `-Z no-unique-section-names` to ensure that this module
 //! is linked directly into the `.text` section.
 
@@ -33,5 +33,5 @@ macro_rules! entry {
 
             f(args)
         }
-    }
+    };
 }

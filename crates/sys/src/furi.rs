@@ -79,7 +79,8 @@ impl Display for Status {
 impl ufmt::uDisplay for Status {
     fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
     where
-        W: ufmt::uWrite + ?Sized {
+        W: ufmt::uWrite + ?Sized,
+    {
         ufmt::uwrite!(f, "{:?}: {}", self, self.description())
     }
 }

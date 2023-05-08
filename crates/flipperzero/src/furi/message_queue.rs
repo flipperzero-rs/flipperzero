@@ -2,7 +2,7 @@ use core::ffi::c_void;
 use core::time::Duration;
 
 use flipperzero_sys as sys;
-use flipperzero_sys::furi::{Status, duration_to_ticks};
+use flipperzero_sys::furi::{duration_to_ticks, Status};
 
 use crate::furi;
 
@@ -16,7 +16,9 @@ impl<M: Sized> MessageQueue<M> {
     /// Constructs a message queue with the given capacity.
     pub fn new(capacity: usize) -> Self {
         Self {
-            hnd: unsafe { sys::furi_message_queue_alloc(capacity as u32, core::mem::size_of::<M>() as u32) },
+            hnd: unsafe {
+                sys::furi_message_queue_alloc(capacity as u32, core::mem::size_of::<M>() as u32)
+            },
             _marker: core::marker::PhantomData::<M>,
         }
     }
@@ -27,7 +29,12 @@ impl<M: Sized> MessageQueue<M> {
         let timeout_ticks = sys::furi::duration_to_ticks(timeout);
 
         let status: Status = unsafe {
-            sys::furi_message_queue_put(self.hnd, &mut msg as *mut _ as *const c_void, timeout_ticks).into()
+            sys::furi_message_queue_put(
+                self.hnd,
+                &mut msg as *mut _ as *const c_void,
+                timeout_ticks,
+            )
+            .into()
         };
 
         status.err_or(())
@@ -37,8 +44,10 @@ impl<M: Sized> MessageQueue<M> {
     pub fn get(&self, timeout: Duration) -> furi::Result<M> {
         let timeout_ticks = duration_to_ticks(timeout);
         let mut out = core::mem::MaybeUninit::<M>::uninit();
-        let status: Status =
-            unsafe { sys::furi_message_queue_get(self.hnd, out.as_mut_ptr() as *mut c_void, timeout_ticks).into() };
+        let status: Status = unsafe {
+            sys::furi_message_queue_get(self.hnd, out.as_mut_ptr() as *mut c_void, timeout_ticks)
+                .into()
+        };
 
         if status.is_ok() {
             Ok(unsafe { out.assume_init() })

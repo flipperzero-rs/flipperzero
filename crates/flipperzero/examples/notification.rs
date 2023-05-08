@@ -1,7 +1,7 @@
 //! Demonstrates use of the Flipper Zero notification API.
 //! This currently uses the `flipperzero-sys` crate as it is not currently
 //! exposed in the high-level `flipperzero` crate.
-//! 
+//!
 //! See https://github.com/flipperdevices/flipperzero-firmware/blob/0.74.2/applications/services/notification/notification_messages.h#L66
 //! for possible message sequences.
 
@@ -33,11 +33,16 @@ entry!(main);
 
 // Entry point
 fn main(_args: *mut u8) -> i32 {
-    let notification_app = unsafe { sys::furi::UnsafeRecord::<sys::NotificationApp>::open(RECORD_NOTIFICATION) };
+    let notification_app =
+        unsafe { sys::furi::UnsafeRecord::<sys::NotificationApp>::open(RECORD_NOTIFICATION) };
 
     unsafe {
         // Set the notification LED to different colours
-        for sequence in [&sys::sequence_set_only_red_255, &sys::sequence_set_only_green_255, &sys::sequence_set_only_blue_255] {
+        for sequence in [
+            &sys::sequence_set_only_red_255,
+            &sys::sequence_set_only_green_255,
+            &sys::sequence_set_only_blue_255,
+        ] {
             sys::notification_message(notification_app.as_ptr(), sequence);
             sleep(Duration::from_secs(1));
         }

@@ -61,7 +61,8 @@ impl UpdateCore for Sha256Core {
                 core::ptr::copy_nonoverlapping(
                     block.as_ptr(),
                     self.state.wbuf.as_mut_ptr().cast(),
-                    Self::BlockSize::USIZE);
+                    Self::BlockSize::USIZE,
+                );
                 sys::sha256_process(&mut self.state);
             }
         }

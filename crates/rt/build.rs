@@ -10,7 +10,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:rustc-link-search={}", out_dir.display());
 
     // put linker script in build directory
-    File::create(out_dir.join("flipperzero-rt.ld"))?.write_all(include_bytes!("flipperzero-rt.ld"))?;
+    File::create(out_dir.join("flipperzero-rt.ld"))?
+        .write_all(include_bytes!("flipperzero-rt.ld"))?;
 
     Ok(())
 }

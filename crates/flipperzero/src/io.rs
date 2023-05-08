@@ -87,7 +87,8 @@ impl fmt::Display for Error {
 impl ufmt::uDisplay for Error {
     fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
     where
-        W: ufmt::uWrite + ?Sized {
+        W: ufmt::uWrite + ?Sized,
+    {
         for c in self.description().to_bytes().escape_ascii() {
             f.write_char(c as char)?;
         }
