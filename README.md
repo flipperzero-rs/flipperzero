@@ -1,7 +1,7 @@
 # Rust for Flipper Zero 🐬❤️🦀
 
 [![crates.io](https://img.shields.io/crates/v/flipperzero)](https://crates.io/crates/flipperzero)
-[![Flipper Zero API](https://img.shields.io/badge/Flipper%20Zero%20API-20.0-orange)](https://github.com/flipperdevices/flipperzero-firmware/blob/0.80.1/firmware/targets/f7/api_symbols.csv)
+[![Flipper Zero API](https://img.shields.io/badge/Flipper%20Zero%20API-23.0-orange)](https://github.com/flipperdevices/flipperzero-firmware/blob/0.82.3/firmware/targets/f7/api_symbols.csv)
 [![docs.rs](https://img.shields.io/docsrs/flipperzero)](https://docs.rs/flipperzero)
 [![MIT license](https://img.shields.io/crates/l/flipperzero)](LICENSE)
 
@@ -17,12 +17,13 @@ This means it's not possible to use anything in the [`std`](https://doc.rust-lan
 
 ## SDK version
 
-Currently supports SDK 20.0 ([flipperzero-firmware@0.80.1](https://github.com/flipperdevices/flipperzero-firmware/tree/0.80.1)).
+Currently supports SDK 23.0 ([flipperzero-firmware@0.82.3](https://github.com/flipperdevices/flipperzero-firmware/tree/0.82.3)).
 
 The crate major version number will be updated after a bump in [API version](https://github.com/flipperdevices/flipperzero-firmware/blob/release/firmware/targets/f7/api_symbols.csv) in the Flipper Zero firmware.
 
 | Crate version | API version |
 | ------------- | ----------- |
+| 0.x.x         | 23.0        |
 | 0.8.x         | 20.0        |
 | 0.7.x         | 14.0        |
 | 0.6.x         | 11.2        |
@@ -41,9 +42,9 @@ The crate major version number will be updated after a bump in [API version](htt
 
 1. Install [`rustup`](https://rust-lang.github.io/rustup/) by following the instructions on [`rustup.rs`](https://rustup.rs/).
 2. Use `rustup` to install the `thumbv7em-none-eabihf` target:
-    ```
-    rustup target add thumbv7em-none-eabihf
-    ```
+   ```
+   rustup target add thumbv7em-none-eabihf
+   ```
 
 ## Writing an application
 
