@@ -50,7 +50,7 @@ RUN cargo run --bin generate-bindings /app/firmware/build/f7-firmware-D/sdk_head
 
 RUN cp bindings.rs ../crates/sys/src
 
-RUN rustfmt ../crates/sys/src/bindings.rs
+RUN rustfmt --config newline_style=unix ../crates/sys/src/bindings.rs
 
 WORKDIR /app/flipperzero-rs/crates
 
