@@ -1,9 +1,4 @@
-//! Demonstrates use of the Flipper Zero notification API.
-//! This currently uses the `flipperzero-sys` crate as it is not currently
-//! exposed in the high-level `flipperzero` crate.
-//!
-//! See https://github.com/flipperdevices/flipperzero-firmware/blob/0.74.2/applications/services/notification/notification_messages.h#L66
-//! for possible message sequences.
+//! Notification example for Flipper Zero
 
 #![no_main]
 #![no_std]
@@ -12,18 +7,15 @@
 extern crate flipperzero_rt;
 
 // Required for allocator
-#[cfg(feature = "alloc")]
 extern crate flipperzero_alloc;
 
-use core::ffi::c_char;
 use core::time::Duration;
 
-use flipperzero::furi::thread::sleep;
+use flipperzero::{
+    furi::thread::sleep,
+    notification::{feedback, led, NotificationService},
+};
 use flipperzero_rt::{entry, manifest};
-use flipperzero_sys as sys;
-
-/// Record for the notifications app
-const RECORD_NOTIFICATION: *const c_char = sys::c_string!("notification");
 
 // Define the FAP Manifest for this application
 manifest!(name = "Rust notification example");
@@ -33,24 +25,18 @@ entry!(main);
 
 // Entry point
 fn main(_args: *mut u8) -> i32 {
-    let notification_app =
-        unsafe { sys::furi::UnsafeRecord::<sys::NotificationApp>::open(RECORD_NOTIFICATION) };
+    let mut app = NotificationService::open();
 
-    unsafe {
-        // Set the notification LED to different colours
-        for sequence in [
-            &sys::sequence_set_only_red_255,
-            &sys::sequence_set_only_green_255,
-            &sys::sequence_set_only_blue_255,
-        ] {
-            sys::notification_message(notification_app.as_ptr(), sequence);
-            sleep(Duration::from_secs(1));
-        }
-        sys::notification_message(notification_app.as_ptr(), &sys::sequence_reset_rgb);
-
-        // Success!
-        sys::notification_message(notification_app.as_ptr(), &sys::sequence_success);
+    // Set the notification LED to different colours
+    for sequences in [&led::ONLY_RED, &led::ONLY_GREEN, &led::ONLY_BLUE] {
+        app.notify(sequences);
+        sleep(Duration::from_secs(1));
     }
+
+    app.notify(&led::RESET_RGB);
+
+    // Success!
+    app.notify_blocking(&feedback::SUCCESS);
 
     0
 }

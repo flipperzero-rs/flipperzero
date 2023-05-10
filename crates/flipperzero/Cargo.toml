@@ -30,6 +30,7 @@ rand_core = "0.6"
 
 # Toolbox
 digest = "0.10"
+bitflags = "1.0"
 
 [dev-dependencies]
 flipperzero-alloc.workspace = true

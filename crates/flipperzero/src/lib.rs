@@ -12,6 +12,7 @@ pub mod furi;
 pub mod gui;
 pub mod io;
 pub mod macros;
+pub mod notification;
 pub mod storage;
 pub mod toolbox;
 
