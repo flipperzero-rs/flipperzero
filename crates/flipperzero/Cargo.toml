@@ -55,3 +55,7 @@ harness = false
 [[example]]
 name = "dialog"
 required-features = ["alloc"]
+
+[[example]]
+name = "threads"
+required-features = ["alloc"]
