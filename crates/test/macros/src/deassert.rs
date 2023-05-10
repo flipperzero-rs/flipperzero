@@ -55,9 +55,14 @@ fn expr_macro(m: ExprMacro) -> parse::Result<Expr> {
             .into(),
         )
     } else if m.mac.path.is_ident("assert_eq") {
-        let (left, right) = binary_macro(m.mac.tokens)?;
+        let (left, right, msg) = binary_macro(m.mac.tokens)?;
         let left_str = quote!(#left).to_string();
         let right_str = quote!(#right).to_string();
+        let msg_str = if let Some(msg) = msg {
+            quote!(Some(#msg))
+        } else {
+            quote!(None)
+        };
         syn::parse(
             quote!(
                 if #left != #right {
@@ -65,6 +70,7 @@ fn expr_macro(m: ExprMacro) -> parse::Result<Expr> {
                         ::flipperzero_test::TestFailure::AssertEq {
                             left: #left_str,
                             right: #right_str,
+                            msg: #msg_str,
                         }
                     );
                 }
@@ -72,9 +78,14 @@ fn expr_macro(m: ExprMacro) -> parse::Result<Expr> {
             .into(),
         )
     } else if m.mac.path.is_ident("assert_ne") {
-        let (left, right) = binary_macro(m.mac.tokens)?;
+        let (left, right, msg) = binary_macro(m.mac.tokens)?;
         let left_str = quote!(#left).to_string();
         let right_str = quote!(#right).to_string();
+        let msg_str = if let Some(msg) = msg {
+            quote!(Some(#msg))
+        } else {
+            quote!(None)
+        };
         syn::parse(
             quote!(
                 if #left == #right {
@@ -82,6 +93,7 @@ fn expr_macro(m: ExprMacro) -> parse::Result<Expr> {
                         ::flipperzero_test::TestFailure::AssertNe {
                             left: #left_str,
                             right: #right_str,
+                            msg: #msg_str,
                         }
                     );
                 }
@@ -93,9 +105,9 @@ fn expr_macro(m: ExprMacro) -> parse::Result<Expr> {
     }
 }
 
-fn binary_macro(tokens: proc_macro2::TokenStream) -> parse::Result<(Expr, Expr)> {
+fn binary_macro(tokens: proc_macro2::TokenStream) -> parse::Result<(Expr, Expr, Option<Expr>)> {
     let parts: ExprTuple = syn::parse(quote!((#tokens)).into())?;
-    assert_eq!(parts.elems.len(), 2);
+    assert!(parts.elems.len() >= 2);
     let mut elems = parts.elems.into_iter();
-    Ok((elems.next().unwrap(), elems.next().unwrap()))
+    Ok((elems.next().unwrap(), elems.next().unwrap(), elems.next()))
 }
