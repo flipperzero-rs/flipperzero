@@ -6,6 +6,7 @@
 use core::{cmp, fmt, str::FromStr};
 
 use flipperzero_sys as sys;
+use ufmt::derive::uDebug;
 
 /// Describes the level of verbosity of a log message.
 ///
@@ -68,7 +69,7 @@ use flipperzero_sys as sys;
 /// [`TRACE`]: Level::TRACE
 /// [`log`]: crate::log
 /// [`warn`]: crate::warn
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[derive(Copy, Clone, Debug, uDebug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Level(LevelInner);
 
 /// A filter comparable to a verbosity [`Level`].
@@ -91,7 +92,7 @@ pub struct Level(LevelInner);
 pub struct LevelFilter(LevelFilterInner);
 
 /// Indicates that a string could not be parsed to a valid level.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, uDebug)]
 pub struct ParseLevelFilterError(());
 
 // ===== impl Level =====
@@ -148,6 +149,15 @@ impl fmt::Display for Level {
     }
 }
 
+impl ufmt::uDisplay for Level {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: ufmt::uWrite + ?Sized,
+    {
+        f.write_str(self.as_str())
+    }
+}
+
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 impl std::error::Error for ParseLevelError {}
@@ -167,7 +177,7 @@ impl FromStr for Level {
 }
 
 #[repr(usize)]
-#[derive(Copy, Clone, Debug, Hash, Eq, PartialEq, PartialOrd, Ord)]
+#[derive(Copy, Clone, Debug, uDebug, Hash, Eq, PartialEq, PartialOrd, Ord)]
 enum LevelInner {
     /// The "trace" level.
     ///
@@ -364,6 +374,38 @@ impl fmt::Debug for LevelFilter {
     }
 }
 
+impl ufmt::uDisplay for LevelFilter {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: ufmt::uWrite + ?Sized,
+    {
+        match *self {
+            LevelFilter::OFF => f.write_str("off"),
+            LevelFilter::ERROR => f.write_str("error"),
+            LevelFilter::WARN => f.write_str("warn"),
+            LevelFilter::INFO => f.write_str("info"),
+            LevelFilter::DEBUG => f.write_str("debug"),
+            LevelFilter::TRACE => f.write_str("trace"),
+        }
+    }
+}
+
+impl ufmt::uDebug for LevelFilter {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: ufmt::uWrite + ?Sized,
+    {
+        match *self {
+            LevelFilter::OFF => f.write_str("LevelFilter::OFF"),
+            LevelFilter::ERROR => f.write_str("LevelFilter::ERROR"),
+            LevelFilter::WARN => f.write_str("LevelFilter::WARN"),
+            LevelFilter::INFO => f.write_str("LevelFilter::INFO"),
+            LevelFilter::DEBUG => f.write_str("LevelFilter::DEBUG"),
+            LevelFilter::TRACE => f.write_str("LevelFilter::TRACE"),
+        }
+    }
+}
+
 impl FromStr for LevelFilter {
     type Err = ParseLevelFilterError;
     fn from_str(from: &str) -> Result<Self, Self::Err> {
@@ -396,9 +438,33 @@ impl fmt::Display for ParseLevelError {
     }
 }
 
+impl ufmt::uDisplay for ParseLevelError {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: ufmt::uWrite + ?Sized,
+    {
+        f.write_str(
+            "error parsing level: expected one of \"error\", \"warn\", \
+             \"info\", \"debug\", \"trace\"",
+        )
+    }
+}
+
 impl fmt::Display for ParseLevelFilterError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.pad(
+            "error parsing level filter: expected one of \"off\", \"error\", \
+            \"warn\", \"info\", \"debug\", \"trace\"",
+        )
+    }
+}
+
+impl ufmt::uDisplay for ParseLevelFilterError {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: ufmt::uWrite + ?Sized,
+    {
+        f.write_str(
             "error parsing level filter: expected one of \"off\", \"error\", \
             \"warn\", \"info\", \"debug\", \"trace\"",
         )
@@ -409,7 +475,7 @@ impl fmt::Display for ParseLevelFilterError {
 impl std::error::Error for ParseLevelFilterError {}
 
 #[repr(usize)]
-#[derive(Copy, Clone, Debug, Hash, Eq, PartialEq, PartialOrd, Ord)]
+#[derive(Copy, Clone, Debug, uDebug, Hash, Eq, PartialEq, PartialOrd, Ord)]
 enum LevelFilterInner {
     /// The "trace" level.
     ///
