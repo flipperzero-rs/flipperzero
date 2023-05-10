@@ -99,7 +99,7 @@ impl NotificationMessage {
 
     pub const fn sound_off() -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeSoundOn,
+            type_: sys::NotificationMessageType_NotificationMessageTypeSoundOff,
             data: sys::NotificationMessageData {
                 sound: sys::NotificationMessageDataSound {
                     frequency: 0.0,

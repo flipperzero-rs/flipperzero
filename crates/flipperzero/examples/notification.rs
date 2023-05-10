@@ -13,7 +13,7 @@ use core::time::Duration;
 
 use flipperzero::{
     furi::thread::sleep,
-    notification::{sequences, NotificationApp, NotificationMessage},
+    notification::{feedback, led, NotificationService},
 };
 use flipperzero_rt::{entry, manifest};
 
@@ -25,22 +25,18 @@ entry!(main);
 
 // Entry point
 fn main(_args: *mut u8) -> i32 {
-    let mut app = NotificationApp::open();
+    let mut app = NotificationService::open();
 
     // Set the notification LED to different colours
-    for sequences in [
-        &sequences::ONLY_RED,
-        &sequences::ONLY_GREEN,
-        &sequences::ONLY_BLUE,
-    ] {
+    for sequences in [&led::ONLY_RED, &led::ONLY_GREEN, &led::ONLY_BLUE] {
         app.notify(sequences);
         sleep(Duration::from_secs(1));
     }
 
-    app.notify(&sequences::RESET_RGB);
+    app.notify(&led::RESET_RGB);
 
     // Success!
-    app.notify_blocking(&sequences::SUCCESS);
+    app.notify_blocking(&feedback::SUCCESS);
 
     0
 }
