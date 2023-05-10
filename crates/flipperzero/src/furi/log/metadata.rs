@@ -340,12 +340,6 @@ impl LevelFilter {
             },
         }
     }
-
-    pub(crate) fn set_max(LevelFilter(level): LevelFilter) {
-        let val = level as u8;
-
-        unsafe { sys::furi_log_set_level(val) };
-    }
 }
 
 impl fmt::Display for LevelFilter {
