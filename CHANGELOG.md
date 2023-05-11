@@ -5,6 +5,8 @@ file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
+
+## [0.9.0]
 ### Added
 - `flipperzero::{log, error, warn, info, debug, trace}` logging macros.
 - `flipperzero::furi::log`, providing the `Level` and `LevelFilter` types for
