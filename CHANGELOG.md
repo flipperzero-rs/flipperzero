@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 - Migrated to SDK API 23.0 (firmware 0.82.3).
+- MSRV is now 1.70.
 - Bumped pinned nightly Rust version to `nightly-2023-05-03`.
 - `flipperzero_rt::entry!` now waits for threads with the same app ID to finish.
   This prevents crashes when a `JoinHandle` is dropped instead of joined, and
