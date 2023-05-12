@@ -10,19 +10,19 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "0.8.0"
+version = "0.9.0"
 description = "Rust for Flipper Zero"
 edition = "2021"
-rust-version = "1.68.0"
+rust-version = "1.70.0"
 repository = "https://github.com/dcoles/flipperzero-rs"
 readme = "../README.md"
 license = "MIT"
 
 [workspace.dependencies]
-flipperzero-sys = { path = "sys", version = "0.8.0" }
-flipperzero-rt = { path = "rt", version = "0.8.0" }
-flipperzero-alloc = { path = "alloc", version = "0.8.0" }
-flipperzero-test = { path = "test", version = "0.1.0" }
+flipperzero-sys = { path = "sys", version = "0.9.0" }
+flipperzero-rt = { path = "rt", version = "0.9.0" }
+flipperzero-alloc = { path = "alloc", version = "0.9.0" }
+flipperzero-test = { path = "test", version = "0.9.0" }
 ufmt = "0.2.0"
 
 [profile.dev]
