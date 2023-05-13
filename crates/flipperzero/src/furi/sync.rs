@@ -3,6 +3,7 @@
 use core::cell::UnsafeCell;
 use core::marker::PhantomData;
 use core::ops::{Deref, DerefMut};
+use core::ptr::NonNull;
 
 use flipperzero_sys as sys;
 use sys::furi::Status;
@@ -17,16 +18,13 @@ type UnsendUnsync = PhantomData<*const ()>;
 
 /// A mutual exclusion primitive useful for protecting shared data.
 pub struct Mutex<T: ?Sized> {
-    mutex: *mut sys::FuriMutex,
+    mutex: NonNull<sys::FuriMutex>,
     data: UnsafeCell<T>,
 }
 
 impl<T> Mutex<T> {
     pub fn new(data: T) -> Self {
-        let mutex = unsafe { sys::furi_mutex_alloc(MUTEX_TYPE) };
-        if mutex.is_null() {
-            panic!("furi_mutex_alloc failed");
-        }
+        let mutex = unsafe { NonNull::new_unchecked(sys::furi_mutex_alloc(MUTEX_TYPE)) };
 
         Mutex {
             mutex,
@@ -36,7 +34,8 @@ impl<T> Mutex<T> {
 
     /// Acquires a mutex, blocking the current thread until it is able to do so.
     pub fn lock(&self) -> furi::Result<MutexGuard<'_, T>> {
-        let status: Status = unsafe { sys::furi_mutex_acquire(self.mutex, u32::MAX).into() };
+        let status: Status =
+            unsafe { sys::furi_mutex_acquire(self.mutex.as_ptr(), u32::MAX).into() };
         if status.is_err() {
             return Err(status);
         }
@@ -68,7 +67,7 @@ impl<T> DerefMut for MutexGuard<'_, T> {
 
 impl<T: ?Sized> Drop for MutexGuard<'_, T> {
     fn drop(&mut self) {
-        let status: Status = unsafe { sys::furi_mutex_release(self.0.mutex).into() };
+        let status: Status = unsafe { sys::furi_mutex_release(self.0.mutex.as_ptr()).into() };
         if status.is_err() {
             panic!("furi_mutex_release failed: {}", status);
         }

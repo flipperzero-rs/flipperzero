@@ -65,17 +65,17 @@ pub trait Pattern: Sized {
 impl Pattern for &FuriString {
     #[inline]
     fn is_prefix_of(self, haystack: &FuriString) -> bool {
-        unsafe { sys::furi_string_start_with(haystack.0, self.0) }
+        unsafe { sys::furi_string_start_with(haystack.0.as_ptr(), self.0.as_ptr()) }
     }
 
     #[inline]
     fn is_suffix_of(self, haystack: &FuriString) -> bool {
-        unsafe { sys::furi_string_end_with(haystack.0, self.0) }
+        unsafe { sys::furi_string_end_with(haystack.0.as_ptr(), self.0.as_ptr()) }
     }
 
     #[inline]
     fn find_in(self, haystack: &FuriString) -> Option<usize> {
-        match unsafe { sys::furi_string_search(haystack.0, self.0, 0) } {
+        match unsafe { sys::furi_string_search(haystack.0.as_ptr(), self.0.as_ptr(), 0) } {
             FURI_STRING_FAILURE => None,
             i => Some(i),
         }
@@ -100,7 +100,7 @@ impl Pattern for &FuriString {
     fn strip_prefix_of(self, haystack: &mut FuriString) -> bool {
         let is_prefix = self.is_prefix_of(haystack);
         if is_prefix {
-            unsafe { sys::furi_string_right(haystack.0, self.len()) };
+            unsafe { sys::furi_string_right(haystack.0.as_ptr(), self.len()) };
         }
         is_prefix
     }
@@ -124,17 +124,17 @@ impl Pattern for c_char {
 
     #[inline]
     fn is_prefix_of(self, haystack: &FuriString) -> bool {
-        unsafe { sys::furi_string_start_with_str(haystack.0, [self, 0].as_ptr()) }
+        unsafe { sys::furi_string_start_with_str(haystack.0.as_ptr(), [self, 0].as_ptr()) }
     }
 
     #[inline]
     fn is_suffix_of(self, haystack: &FuriString) -> bool {
-        unsafe { sys::furi_string_end_with_str(haystack.0, [self, 0].as_ptr()) }
+        unsafe { sys::furi_string_end_with_str(haystack.0.as_ptr(), [self, 0].as_ptr()) }
     }
 
     #[inline]
     fn find_in(self, haystack: &FuriString) -> Option<usize> {
-        match unsafe { sys::furi_string_search_char(haystack.0, self, 0) } {
+        match unsafe { sys::furi_string_search_char(haystack.0.as_ptr(), self, 0) } {
             FURI_STRING_FAILURE => None,
             i => Some(i),
         }
@@ -142,7 +142,7 @@ impl Pattern for c_char {
 
     #[inline]
     fn rfind_in(self, haystack: &FuriString) -> Option<usize> {
-        match unsafe { sys::furi_string_search_rchar(haystack.0, self, 0) } {
+        match unsafe { sys::furi_string_search_rchar(haystack.0.as_ptr(), self, 0) } {
             FURI_STRING_FAILURE => None,
             i => Some(i),
         }
@@ -152,7 +152,7 @@ impl Pattern for c_char {
     fn strip_prefix_of(self, haystack: &mut FuriString) -> bool {
         let is_prefix = self.is_prefix_of(haystack);
         if is_prefix {
-            unsafe { sys::furi_string_right(haystack.0, 1) };
+            unsafe { sys::furi_string_right(haystack.0.as_ptr(), 1) };
         }
         is_prefix
     }
@@ -171,17 +171,17 @@ impl Pattern for c_char {
 impl Pattern for &CStr {
     #[inline]
     fn is_prefix_of(self, haystack: &FuriString) -> bool {
-        unsafe { sys::furi_string_start_with_str(haystack.0, self.as_ptr()) }
+        unsafe { sys::furi_string_start_with_str(haystack.0.as_ptr(), self.as_ptr()) }
     }
 
     #[inline]
     fn is_suffix_of(self, haystack: &FuriString) -> bool {
-        unsafe { sys::furi_string_end_with_str(haystack.0, self.as_ptr()) }
+        unsafe { sys::furi_string_end_with_str(haystack.0.as_ptr(), self.as_ptr()) }
     }
 
     #[inline]
     fn find_in(self, haystack: &FuriString) -> Option<usize> {
-        match unsafe { sys::furi_string_search_str(haystack.0, self.as_ptr(), 0) } {
+        match unsafe { sys::furi_string_search_str(haystack.0.as_ptr(), self.as_ptr(), 0) } {
             FURI_STRING_FAILURE => None,
             i => Some(i),
         }
@@ -206,7 +206,7 @@ impl Pattern for &CStr {
     fn strip_prefix_of(self, haystack: &mut FuriString) -> bool {
         let is_prefix = self.is_prefix_of(haystack);
         if is_prefix {
-            unsafe { sys::furi_string_right(haystack.0, self.to_bytes().len()) };
+            unsafe { sys::furi_string_right(haystack.0.as_ptr(), self.to_bytes().len()) };
         }
         is_prefix
     }

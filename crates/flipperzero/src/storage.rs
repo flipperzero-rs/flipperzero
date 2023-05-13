@@ -1,4 +1,5 @@
 use core::ffi::{c_char, c_void, CStr};
+use core::ptr::NonNull;
 
 use flipperzero_sys as sys;
 use flipperzero_sys::furi::UnsafeRecord;
@@ -131,7 +132,7 @@ impl OpenOptions {
         let f = File::new();
         if unsafe {
             sys::storage_file_open(
-                f.0,
+                f.0.as_ptr(),
                 path.as_ptr() as *const c_char,
                 self.access_mode,
                 canonicalized_open_mode,
@@ -141,19 +142,22 @@ impl OpenOptions {
         } else {
             // Per docs, "you need to close the file even if the open operation
             // failed," but this is handled by `Drop`.
-            Err(Error::from_sys(unsafe { sys::storage_file_get_error(f.0) }).unwrap())
+            Err(Error::from_sys(unsafe { sys::storage_file_get_error(f.0.as_ptr()) }).unwrap())
         }
     }
 }
 
 /// Basic, unbuffered file handle
-pub struct File(*mut sys::File, UnsafeRecord<sys::Storage>);
+pub struct File(NonNull<sys::File>, UnsafeRecord<sys::Storage>);
 
 impl File {
     pub fn new() -> Self {
         unsafe {
             let record = UnsafeRecord::open(RECORD_STORAGE);
-            File(sys::storage_file_alloc(record.as_ptr()), record)
+            File(
+                NonNull::new_unchecked(sys::storage_file_alloc(record.as_ptr())),
+                record,
+            )
         }
     }
 }
@@ -163,7 +167,7 @@ impl Drop for File {
         unsafe {
             // `storage_file_close` calls `storage_file_sync`
             // internally, so it's not necesssary to call it here.
-            sys::storage_file_close(self.0);
+            sys::storage_file_close(self.0.as_ptr());
         }
     }
 }
@@ -171,9 +175,10 @@ impl Drop for File {
 impl Read for File {
     fn read(&mut self, buf: &mut [u8]) -> Result<usize, Error> {
         let to_read = buf.len().try_into().map_err(|_| Error::InvalidParameter)?;
-        let bytes_read =
-            unsafe { sys::storage_file_read(self.0, buf.as_mut_ptr() as *mut c_void, to_read) };
-        let error = unsafe { sys::storage_file_get_error(self.0) };
+        let bytes_read = unsafe {
+            sys::storage_file_read(self.0.as_ptr(), buf.as_mut_ptr() as *mut c_void, to_read)
+        };
+        let error = unsafe { sys::storage_file_get_error(self.0.as_ptr()) };
 
         if error == sys::FS_Error_FSE_OK {
             Ok(bytes_read as usize)
@@ -204,12 +209,12 @@ impl Seek for File {
             }
         };
         unsafe {
-            if sys::storage_file_seek(self.0, offset, from_start) {
-                Ok(sys::storage_file_tell(self.0)
+            if sys::storage_file_seek(self.0.as_ptr(), offset, from_start) {
+                Ok(sys::storage_file_tell(self.0.as_ptr())
                     .try_into()
                     .map_err(|_| Error::InvalidParameter)?)
             } else {
-                Err(Error::from_sys(sys::storage_file_get_error(self.0)).unwrap())
+                Err(Error::from_sys(sys::storage_file_get_error(self.0.as_ptr())).unwrap())
             }
         }
     }
@@ -220,7 +225,7 @@ impl Seek for File {
 
     fn stream_len(&mut self) -> Result<usize, Error> {
         Ok(unsafe {
-            sys::storage_file_size(self.0)
+            sys::storage_file_size(self.0.as_ptr())
                 .try_into()
                 .map_err(|_| Error::InvalidParameter)?
         })
@@ -228,7 +233,7 @@ impl Seek for File {
 
     fn stream_position(&mut self) -> Result<usize, Error> {
         Ok(unsafe {
-            sys::storage_file_tell(self.0)
+            sys::storage_file_tell(self.0.as_ptr())
                 .try_into()
                 .map_err(|_| Error::InvalidParameter)?
         })
@@ -238,9 +243,10 @@ impl Seek for File {
 impl Write for File {
     fn write(&mut self, buf: &[u8]) -> Result<usize, Error> {
         let to_write = buf.len().try_into().map_err(|_| Error::InvalidParameter)?;
-        let bytes_written =
-            unsafe { sys::storage_file_write(self.0, buf.as_ptr() as *mut c_void, to_write) };
-        let error = unsafe { sys::storage_file_get_error(self.0) };
+        let bytes_written = unsafe {
+            sys::storage_file_write(self.0.as_ptr(), buf.as_ptr() as *mut c_void, to_write)
+        };
+        let error = unsafe { sys::storage_file_get_error(self.0.as_ptr()) };
 
         if error == sys::FS_Error_FSE_OK {
             Ok(bytes_written as usize)

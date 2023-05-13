@@ -1,4 +1,5 @@
 use core::ffi::c_void;
+use core::ptr::NonNull;
 use core::time::Duration;
 
 use flipperzero_sys as sys;
@@ -8,7 +9,7 @@ use crate::furi;
 
 /// MessageQueue provides a safe wrapper around the furi message queue primitive.
 pub struct MessageQueue<M: Sized> {
-    hnd: *mut sys::FuriMessageQueue,
+    hnd: NonNull<sys::FuriMessageQueue>,
     _marker: core::marker::PhantomData<M>,
 }
 
@@ -17,7 +18,10 @@ impl<M: Sized> MessageQueue<M> {
     pub fn new(capacity: usize) -> Self {
         Self {
             hnd: unsafe {
-                sys::furi_message_queue_alloc(capacity as u32, core::mem::size_of::<M>() as u32)
+                NonNull::new_unchecked(sys::furi_message_queue_alloc(
+                    capacity as u32,
+                    core::mem::size_of::<M>() as u32,
+                ))
             },
             _marker: core::marker::PhantomData::<M>,
         }
@@ -30,7 +34,7 @@ impl<M: Sized> MessageQueue<M> {
 
         let status: Status = unsafe {
             sys::furi_message_queue_put(
-                self.hnd,
+                self.hnd.as_ptr(),
                 &mut msg as *mut _ as *const c_void,
                 timeout_ticks,
             )
@@ -45,8 +49,12 @@ impl<M: Sized> MessageQueue<M> {
         let timeout_ticks = duration_to_ticks(timeout);
         let mut out = core::mem::MaybeUninit::<M>::uninit();
         let status: Status = unsafe {
-            sys::furi_message_queue_get(self.hnd, out.as_mut_ptr() as *mut c_void, timeout_ticks)
-                .into()
+            sys::furi_message_queue_get(
+                self.hnd.as_ptr(),
+                out.as_mut_ptr() as *mut c_void,
+                timeout_ticks,
+            )
+            .into()
         };
 
         if status.is_ok() {
@@ -58,12 +66,12 @@ impl<M: Sized> MessageQueue<M> {
 
     /// Returns the capacity of the queue.
     pub fn capacity(&self) -> usize {
-        unsafe { sys::furi_message_queue_get_capacity(self.hnd) as usize }
+        unsafe { sys::furi_message_queue_get_capacity(self.hnd.as_ptr()) as usize }
     }
 
     /// Returns the number of elements in the queue.
     pub fn len(&self) -> usize {
-        unsafe { sys::furi_message_queue_get_count(self.hnd) as usize }
+        unsafe { sys::furi_message_queue_get_count(self.hnd.as_ptr()) as usize }
     }
 
     /// Is the message queue empty?
@@ -73,7 +81,7 @@ impl<M: Sized> MessageQueue<M> {
 
     /// Returns the number of free slots in the queue.
     pub fn space(&self) -> usize {
-        unsafe { sys::furi_message_queue_get_space(self.hnd) as usize }
+        unsafe { sys::furi_message_queue_get_space(self.hnd.as_ptr()) as usize }
     }
 }
 
@@ -88,7 +96,7 @@ impl<M: Sized> Drop for MessageQueue<M> {
             }
         }
 
-        unsafe { sys::furi_message_queue_free(self.hnd) }
+        unsafe { sys::furi_message_queue_free(self.hnd.as_ptr()) }
     }
 }
 
