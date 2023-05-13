@@ -46,27 +46,50 @@ macro_rules! entry {
                     sys::c_string!("Waiting for FAP threads to complete..."),
                 );
             }
+
             const MAX_THREADS: usize = 32;
             let cur_thread_id = unsafe { sys::furi_thread_get_current_id() };
             let app_id = unsafe { CStr::from_ptr(sys::furi_thread_get_appid(cur_thread_id)) };
             let mut thread_ids: [sys::FuriThreadId; MAX_THREADS] = [ptr::null_mut(); MAX_THREADS];
-            loop {
+
+            'outer: loop {
                 let thread_count = unsafe {
                     sys::furi_thread_enumerate(thread_ids.as_mut_ptr(), MAX_THREADS as u32)
                 } as usize;
 
-                let running = thread_ids[..thread_count].into_iter().any(|&thread_id| {
+                for &thread_id in thread_ids[..thread_count].into_iter() {
                     let thread_app_id =
                         unsafe { CStr::from_ptr(sys::furi_thread_get_appid(thread_id)) };
-                    thread_id != cur_thread_id && thread_app_id == app_id
-                });
 
-                if running {
-                    unsafe { sys::furi_delay_ms(10) };
-                } else {
-                    break;
+                    if thread_id == cur_thread_id || thread_app_id != app_id {
+                        // Ignore this thread or the threads of other apps
+                        continue;
+                    }
+
+                    let thread_name =
+                        unsafe { CStr::from_ptr(sys::furi_thread_get_name(thread_id)) };
+
+                    if thread_name.to_bytes().ends_with(b"Srv") {
+                        // This is a workaround for an issue where the current appid matches
+                        // one of the built-in service names (e.g. "gui"). Otherwise we will
+                        // see the service thread (e.g. "GuiSrv") and assume that it's one of
+                        // our threads that still needs to exit, thus causing the app to hang
+                        // at exit.
+                        continue;
+                    }
+
+                    // There is a thread that is still running, so wait for it to exit...
+
+                    unsafe {
+                        sys::furi_delay_ms(10);
+                    }
+
+                    continue 'outer;
                 }
+
+                break;
             }
+
             unsafe {
                 sys::furi_log_print_format(
                     sys::FuriLogLevel_FuriLogLevelDebug,
