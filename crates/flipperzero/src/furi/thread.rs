@@ -3,7 +3,9 @@
 #[cfg(feature = "alloc")]
 use core::{
     ffi::{c_void, CStr},
-    fmt, str,
+    fmt,
+    ptr::NonNull,
+    str,
 };
 
 #[cfg(feature = "alloc")]
@@ -110,7 +112,7 @@ impl Builder {
                     // after this callback exits:
                     // - The one inside `furi_thread_body`.
                     // - The one inside the thread's local storage.
-                    unsafe { sys::furi_thread_free(thread.thread) };
+                    unsafe { sys::furi_thread_free(thread.thread.as_ptr()) };
                 }
             }
         }
@@ -118,11 +120,14 @@ impl Builder {
         let state_context = Arc::into_raw(thread.clone());
 
         unsafe {
-            sys::furi_thread_set_callback(thread.thread, callback);
-            sys::furi_thread_set_context(thread.thread, context as *mut c_void);
-            sys::furi_thread_set_state_callback(thread.thread, state_callback);
-            sys::furi_thread_set_state_context(thread.thread, state_context as *mut c_void);
-            sys::furi_thread_start(thread.thread);
+            sys::furi_thread_set_callback(thread.thread.as_ptr(), callback);
+            sys::furi_thread_set_context(thread.thread.as_ptr(), context as *mut c_void);
+            sys::furi_thread_set_state_callback(thread.thread.as_ptr(), state_callback);
+            sys::furi_thread_set_state_context(
+                thread.thread.as_ptr(),
+                state_context as *mut c_void,
+            );
+            sys::furi_thread_start(thread.thread.as_ptr());
         }
 
         JoinHandle {
@@ -149,7 +154,7 @@ where
 pub fn current() -> Thread {
     use alloc::borrow::ToOwned;
 
-    let thread = unsafe { sys::furi_thread_get_current() };
+    let thread = unsafe { NonNull::new_unchecked(sys::furi_thread_get_current()) };
 
     let name = {
         let name = unsafe { sys::furi_thread_get_name(sys::furi_thread_get_current_id()) };
@@ -195,7 +200,7 @@ pub struct ThreadId(sys::FuriThreadId);
 pub struct Thread {
     /// Guaranteed to be UTF-8.
     name: Option<CString>,
-    thread: *mut sys::FuriThread,
+    thread: NonNull<sys::FuriThread>,
 }
 
 #[cfg(feature = "alloc")]
@@ -218,7 +223,10 @@ impl Thread {
                     sys::furi_thread_enable_heap_trace(thread);
                 }
             }
-            Thread { name, thread }
+            Thread {
+                name,
+                thread: NonNull::new_unchecked(thread),
+            }
         }
     }
 
@@ -228,7 +236,7 @@ impl Thread {
     pub fn id(&self) -> Option<ThreadId> {
         // TODO: The Rust stdlib generates its own unique IDs for threads that are valid
         // even after a thread terminates.
-        let id = unsafe { sys::furi_thread_get_id(self.thread) };
+        let id = unsafe { sys::furi_thread_get_id(self.thread.as_ptr()) };
         if id.is_null() {
             None
         } else {
@@ -288,7 +296,7 @@ impl Drop for JoinHandle {
             // We were able to successfully extract the `Thread` from the `Arc`. This
             // means there are no other references, so the thread is stopped and we can
             // free its memory.
-            unsafe { sys::furi_thread_free(thread.thread) };
+            unsafe { sys::furi_thread_free(thread.thread.as_ptr()) };
         }
     }
 }
@@ -307,8 +315,8 @@ impl JoinHandle {
     pub fn join(self) -> i32 {
         let thread = self.thread();
         unsafe {
-            sys::furi_thread_join(thread.thread);
-            sys::furi_thread_get_return_code(thread.thread)
+            sys::furi_thread_join(thread.thread.as_ptr());
+            sys::furi_thread_get_return_code(thread.thread.as_ptr())
         }
     }
 

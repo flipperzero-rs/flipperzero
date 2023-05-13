@@ -1,7 +1,7 @@
 //! Furi API.
 
-pub mod log;
 pub mod io;
+pub mod log;
 pub mod message_queue;
 pub mod rng;
 pub mod string;

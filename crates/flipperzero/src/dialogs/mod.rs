@@ -5,7 +5,7 @@ use alloc::ffi::CString;
 
 use core::ffi::{c_char, CStr};
 use core::marker::PhantomData;
-use core::ptr;
+use core::ptr::{self, NonNull};
 
 use flipperzero_sys as sys;
 use flipperzero_sys::furi::UnsafeRecord;
@@ -24,7 +24,7 @@ pub struct DialogsApp {
 
 /// A dialog message.
 pub struct DialogMessage<'a> {
-    data: *mut sys::DialogMessage,
+    data: NonNull<sys::DialogMessage>,
     _phantom: PhantomData<&'a CStr>,
 }
 
@@ -46,7 +46,8 @@ impl DialogsApp {
 
     /// Displays a message.
     pub fn show(&mut self, message: &DialogMessage) -> DialogMessageButton {
-        let button_sys = unsafe { sys::dialog_message_show(self.data.as_ptr(), message.data) };
+        let button_sys =
+            unsafe { sys::dialog_message_show(self.data.as_ptr(), message.data.as_ptr()) };
 
         DialogMessageButton::from_sys(button_sys).expect("Invalid button")
     }
@@ -55,8 +56,7 @@ impl DialogsApp {
 impl<'a> DialogMessage<'a> {
     /// Allocates a new dialog message.
     pub fn new() -> Self {
-        let data = unsafe { sys::dialog_message_alloc() };
-        assert!(!data.is_null());
+        let data = unsafe { NonNull::new_unchecked(sys::dialog_message_alloc()) };
 
         Self {
             data,
@@ -76,7 +76,7 @@ impl<'a> DialogMessage<'a> {
         let right = right.map_or(ptr::null(), |l| l.as_ptr());
 
         unsafe {
-            sys::dialog_message_set_buttons(self.data, left, center, right);
+            sys::dialog_message_set_buttons(self.data.as_ptr(), left, center, right);
         }
     }
 
@@ -91,7 +91,7 @@ impl<'a> DialogMessage<'a> {
     ) {
         unsafe {
             sys::dialog_message_set_header(
-                self.data,
+                self.data.as_ptr(),
                 header.as_ptr(),
                 x,
                 y,
@@ -105,7 +105,7 @@ impl<'a> DialogMessage<'a> {
     pub fn set_text(&mut self, text: &'a CStr, x: u8, y: u8, horizontal: Align, vertical: Align) {
         unsafe {
             sys::dialog_message_set_text(
-                self.data,
+                self.data.as_ptr(),
                 text.as_ptr(),
                 x,
                 y,
@@ -119,7 +119,7 @@ impl<'a> DialogMessage<'a> {
     pub fn clear_header(&mut self) {
         unsafe {
             sys::dialog_message_set_header(
-                self.data,
+                self.data.as_ptr(),
                 ptr::null(),
                 0,
                 0,
@@ -133,7 +133,7 @@ impl<'a> DialogMessage<'a> {
     pub fn clear_text(&mut self) {
         unsafe {
             sys::dialog_message_set_text(
-                self.data,
+                self.data.as_ptr(),
                 ptr::null(),
                 0,
                 0,
@@ -147,7 +147,7 @@ impl<'a> DialogMessage<'a> {
 impl<'a> Drop for DialogMessage<'a> {
     fn drop(&mut self) {
         unsafe {
-            sys::dialog_message_free(self.data);
+            sys::dialog_message_free(self.data.as_ptr());
         }
     }
 }

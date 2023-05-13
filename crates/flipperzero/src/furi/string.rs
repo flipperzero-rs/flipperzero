@@ -8,7 +8,7 @@ use core::{
     fmt::{self, Write},
     hash,
     ops::{Add, AddAssign},
-    ptr,
+    ptr::{self, NonNull},
 };
 
 #[cfg(feature = "alloc")]
@@ -43,11 +43,11 @@ const WHITESPACE: &[char] = &[
 /// `FuriString` struct (which is stored on the heap), while longer strings are allocated
 /// on the heap by the Flipper Zero firmware.
 #[derive(Eq)]
-pub struct FuriString(*mut sys::FuriString);
+pub struct FuriString(NonNull<sys::FuriString>);
 
 impl Drop for FuriString {
     fn drop(&mut self) {
-        unsafe { sys::furi_string_free(self.0) };
+        unsafe { sys::furi_string_free(self.0.as_ptr()) };
     }
 }
 
@@ -57,7 +57,7 @@ impl FuriString {
     #[inline]
     #[must_use]
     pub fn new() -> Self {
-        FuriString(unsafe { sys::furi_string_alloc() })
+        FuriString(unsafe { NonNull::new_unchecked(sys::furi_string_alloc()) })
     }
 
     /// Creates a new empty `FuriString` with at least the specified capacity.
@@ -67,14 +67,14 @@ impl FuriString {
         let s = Self::new();
         // The size passed to `sys::furi_string_reserve` needs to include the nul
         // terminator.
-        unsafe { sys::furi_string_reserve(s.0, capacity + 1) };
+        unsafe { sys::furi_string_reserve(s.0.as_ptr(), capacity + 1) };
         s
     }
 
     #[inline]
     #[must_use]
     fn as_c_ptr(&self) -> *const c_char {
-        unsafe { sys::furi_string_get_cstr(self.0) }
+        unsafe { sys::furi_string_get_cstr(self.0.as_ptr()) }
     }
 
     /// Extracts a `CStr` containing the entire string slice, with nul termination.
@@ -87,7 +87,7 @@ impl FuriString {
     /// Appends a given `FuriString` onto the end of this `FuriString`.
     #[inline]
     pub fn push_string(&mut self, string: &FuriString) {
-        unsafe { sys::furi_string_cat(self.0, string.0) }
+        unsafe { sys::furi_string_cat(self.0.as_ptr(), string.0.as_ptr()) }
     }
 
     /// Appends a given `str` onto the end of this `FuriString`.
@@ -99,7 +99,7 @@ impl FuriString {
     /// Appends a given `CStr` onto the end of this `FuriString`.
     #[inline]
     pub fn push_c_str(&mut self, string: &CStr) {
-        unsafe { sys::furi_string_cat_str(self.0, string.as_ptr()) }
+        unsafe { sys::furi_string_cat_str(self.0.as_ptr(), string.as_ptr()) }
     }
 
     /// Reserves capacity for at least `additional` bytes more than the current length.
@@ -107,15 +107,15 @@ impl FuriString {
     pub fn reserve(&mut self, additional: usize) {
         // `self.len()` counts the number of bytes excluding the terminating nul, but the
         // size passed to `sys::furi_string_reserve` needs to include the nul terminator.
-        unsafe { sys::furi_string_reserve(self.0, self.len() + additional + 1) };
+        unsafe { sys::furi_string_reserve(self.0.as_ptr(), self.len() + additional + 1) };
     }
 
     /// Appends the given [`char`] to the end of this `FuriString`.
     #[inline]
     pub fn push(&mut self, ch: char) {
         match ch.len_utf8() {
-            1 => unsafe { sys::furi_string_push_back(self.0, ch as c_char) },
-            _ => unsafe { sys::furi_string_utf8_push(self.0, ch as u32) },
+            1 => unsafe { sys::furi_string_push_back(self.0.as_ptr(), ch as c_char) },
+            _ => unsafe { sys::furi_string_utf8_push(self.0.as_ptr(), ch as u32) },
         }
     }
 
@@ -144,7 +144,7 @@ impl FuriString {
     /// If `new_len` is greater than the string's current length, this has no effect.
     #[inline]
     pub fn truncate(&mut self, new_len: usize) {
-        unsafe { sys::furi_string_left(self.0, new_len) };
+        unsafe { sys::furi_string_left(self.0.as_ptr(), new_len) };
     }
 
     /// Inserts a character into this `FuriString` at a byte position.
@@ -183,7 +183,7 @@ impl FuriString {
 
         // Append `bytes` to force the underlying `FuriString` to be the correct length.
         for byte in bytes.iter() {
-            unsafe { sys::furi_string_push_back(self.0, *byte as c_char) };
+            unsafe { sys::furi_string_push_back(self.0.as_ptr(), *byte as c_char) };
         }
 
         // Now use pointer access to construct the expected `FuriString` contents.
@@ -201,14 +201,14 @@ impl FuriString {
     #[inline]
     #[must_use]
     pub fn len(&self) -> usize {
-        unsafe { sys::furi_string_size(self.0) }
+        unsafe { sys::furi_string_size(self.0.as_ptr()) }
     }
 
     /// Returns `true` if this `FuriString` has a length of zero, and `false` otherwise.
     #[inline]
     #[must_use]
     pub fn is_empty(&self) -> bool {
-        unsafe { sys::furi_string_empty(self.0) }
+        unsafe { sys::furi_string_empty(self.0.as_ptr()) }
     }
 
     /// Splits the string into two at the given byte index.
@@ -227,7 +227,9 @@ impl FuriString {
         // SAFETY: Trimming the beginning of a C string results in a valid C string, as
         // long as the nul byte is not trimmed.
         assert!(at <= self.len());
-        let ret = FuriString(unsafe { sys::furi_string_alloc_set_str(self.as_c_ptr().add(at)) });
+        let ret = FuriString(unsafe {
+            NonNull::new_unchecked(sys::furi_string_alloc_set_str(self.as_c_ptr().add(at)))
+        });
         self.truncate(at);
         ret
     }
@@ -238,7 +240,7 @@ impl FuriString {
     /// its capacity.
     #[inline]
     pub fn clear(&mut self) {
-        unsafe { sys::furi_string_reset(self.0) };
+        unsafe { sys::furi_string_reset(self.0.as_ptr()) };
     }
 }
 
@@ -485,7 +487,7 @@ impl FuriString {
 
 impl Clone for FuriString {
     fn clone(&self) -> Self {
-        Self(unsafe { sys::furi_string_alloc_set(self.0) })
+        Self(unsafe { NonNull::new_unchecked(sys::furi_string_alloc_set(self.0.as_ptr())) })
     }
 }
 
@@ -532,7 +534,7 @@ impl From<&mut str> for FuriString {
 
 impl From<&CStr> for FuriString {
     fn from(value: &CStr) -> Self {
-        Self(unsafe { sys::furi_string_alloc_set_str(value.as_ptr()) })
+        Self(unsafe { NonNull::new_unchecked(sys::furi_string_alloc_set_str(value.as_ptr())) })
     }
 }
 
@@ -683,13 +685,13 @@ impl AddAssign<&str> for FuriString {
 
 impl PartialEq for FuriString {
     fn eq(&self, other: &Self) -> bool {
-        unsafe { sys::furi_string_equal(self.0, other.0) }
+        unsafe { sys::furi_string_equal(self.0.as_ptr(), other.0.as_ptr()) }
     }
 }
 
 impl PartialEq<CStr> for FuriString {
     fn eq(&self, other: &CStr) -> bool {
-        unsafe { sys::furi_string_equal_str(self.0, other.as_ptr()) }
+        unsafe { sys::furi_string_equal_str(self.0.as_ptr(), other.as_ptr()) }
     }
 }
 
@@ -739,7 +741,7 @@ impl PartialEq<FuriString> for CString {
 
 impl Ord for FuriString {
     fn cmp(&self, other: &Self) -> Ordering {
-        match unsafe { sys::furi_string_cmp(self.0, other.0) } {
+        match unsafe { sys::furi_string_cmp(self.0.as_ptr(), other.0.as_ptr()) } {
             ..=-1 => Ordering::Less,
             0 => Ordering::Equal,
             1.. => Ordering::Greater,
@@ -851,7 +853,7 @@ mod tests {
         // Construct an invalid string using the Flipper Zero SDK.
         let s = FuriString::new();
         for b in d {
-            unsafe { sys::furi_string_push_back(s.0, b as i8) };
+            unsafe { sys::furi_string_push_back(s.0.as_ptr(), b as i8) };
         }
 
         for (l, r) in s.chars_lossy().zip("f�r".chars()) {
