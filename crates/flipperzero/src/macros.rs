@@ -7,7 +7,7 @@ macro_rules! format {
         // The `uwrite!` macro expects `ufmt` in scope
         use $crate::__macro_support::ufmt;
         let mut buf = $crate::furi::string::FuriString::new();
-        ufmt::uwrite!(buf, $($args)*).ok();
+        ufmt::uwrite!(buf, $($args)*).expect("unable to format string");
         buf
     }}
 }
@@ -17,7 +17,7 @@ macro_rules! print {
     ($($args:tt)*) => {{
         // The `uwrite!` macro expects `ufmt` in scope
         use $crate::__macro_support::ufmt;
-        ufmt::uwrite!($crate::furi::io::Stdout, $($args)*).ok();
+        ufmt::uwrite!($crate::furi::io::Stdout, $($args)*).expect("unable to write to stdout");
     }};
 }
 
@@ -26,6 +26,6 @@ macro_rules! println {
     ($($args:tt)*) => {{
         // The `uwrite!` macro expects `ufmt` in scope
         use $crate::__macro_support::ufmt;
-        ufmt::uwriteln!($crate::furi::io::Stdout, $($args)*).ok();
+        ufmt::uwriteln!($crate::furi::io::Stdout, $($args)*).expect("unable to write to stdout");
     }};
 }
