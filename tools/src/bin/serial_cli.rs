@@ -81,7 +81,8 @@ fn run(port: &mut dyn serialport::SerialPort) -> io::Result<()> {
                     }
 
                     match (modifiers, code) {
-                        (KeyModifiers::CONTROL, KeyCode::Char(']')) => {
+                        // MacOS converts Ctrl+] to Ctrl+5
+                        (KeyModifiers::CONTROL, KeyCode::Char(']') | KeyCode::Char('5')) => {
                             eprintln!("Exiting...");
                             return Ok(());
                         }
