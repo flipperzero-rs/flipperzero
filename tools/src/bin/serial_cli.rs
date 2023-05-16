@@ -4,7 +4,7 @@ use std::io::{self, Write};
 use std::time::Duration;
 
 use clap::Parser;
-use crossterm::event::{Event, KeyEvent, KeyModifiers, KeyCode, KeyEventKind};
+use crossterm::event::{Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use flipperzero_tools::serial;
 
 const ETXT: char = '\x03'; // ^C
@@ -16,7 +16,7 @@ const DEL: char = '\x7f';
 struct Cli {
     /// Serial port (e.g. `COM3` on Windows or `/dev/ttyUSB0` on Linux)
     #[arg(short, long)]
-    port: Option<String>
+    port: Option<String>,
 }
 
 fn main() -> io::Result<()> {
@@ -26,12 +26,13 @@ fn main() -> io::Result<()> {
 
     let cli = Cli::parse();
 
-    let port_info = serial::find_flipperzero(cli.port.as_deref()).expect("unable to find Flipper Zero");
+    let port_info =
+        serial::find_flipperzero(cli.port.as_deref()).expect("unable to find Flipper Zero");
     let mut port = serialport::new(&port_info.port_name, serial::BAUD_115200)
         .timeout(Duration::from_millis(10))
         .open()
         .expect("unable to open serial port");
-    
+
     port.clear(serialport::ClearBuffer::All).unwrap();
 
     eprintln!("⭐ Press `Ctrl+]` to exit");
@@ -59,7 +60,7 @@ fn run(port: &mut dyn serialport::SerialPort) -> io::Result<()> {
                 if err.kind() != io::ErrorKind::TimedOut {
                     return Err(err.into());
                 }
-            },
+            }
             Ok(count) => {
                 print!("{}", String::from_utf8_lossy(&buf[..count]));
                 stdout.flush()?;
@@ -69,34 +70,38 @@ fn run(port: &mut dyn serialport::SerialPort) -> io::Result<()> {
         while crossterm::event::poll(Duration::ZERO)? {
             let event = crossterm::event::read()?;
             match event {
-                Event::Key(KeyEvent { code, modifiers, kind, .. }) => {
+                Event::Key(KeyEvent {
+                    code,
+                    modifiers,
+                    kind,
+                    ..
+                }) => {
                     if kind == KeyEventKind::Release {
                         continue;
                     }
 
                     match (modifiers, code) {
-                        (KeyModifiers::CONTROL, KeyCode::Char(']')) => {
+                        // MacOS converts Ctrl+] to Ctrl+5
+                        (KeyModifiers::CONTROL, KeyCode::Char(']') | KeyCode::Char('5')) => {
                             eprintln!("Exiting...");
                             return Ok(());
-                        },
-                        (KeyModifiers::CONTROL, KeyCode::Char('c')) => {
-                            write!(port, "{ETXT}")?
-                        },
+                        }
+                        (KeyModifiers::CONTROL, KeyCode::Char('c')) => write!(port, "{ETXT}")?,
                         (KeyModifiers::SHIFT, KeyCode::Char(c)) => {
                             write!(port, "{c}")?;
-                        },
+                        }
                         (KeyModifiers::NONE, KeyCode::Char(c)) => {
                             write!(port, "{c}")?;
                         }
                         (KeyModifiers::NONE, KeyCode::Backspace) => {
                             write!(port, "{DEL}")?;
-                        },
+                        }
                         (KeyModifiers::NONE, KeyCode::Enter) => {
                             write!(port, "\r\n")?;
-                        },
+                        }
                         _ => (),
                     }
-                },
+                }
                 _ => (),
             };
 
