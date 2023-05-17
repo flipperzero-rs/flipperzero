@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 1507328;
+pub const API_VERSION: u32 = 1703939;
 pub type wint_t = core::ffi::c_int;
 pub type _off_t = core::ffi::c_long;
 pub type _fpos_t = core::ffi::c_long;
@@ -1778,7 +1778,8 @@ extern "C" {
     #[doc = "Delay in microseconds\nImplemented using Cortex DWT counter. Blocking and non aliased.\n\n# Arguments\n\n* `microseconds` - [Direction: In] microseconds to wait\n\n"]
     pub fn furi_delay_us(microseconds: u32);
 }
-pub type va_list = u32;
+pub type __gnuc_va_list = u32;
+pub type va_list = __gnuc_va_list;
 pub type FILE = __FILE;
 extern "C" {
     pub fn sscanf(
@@ -1936,8 +1937,8 @@ extern "C" {
     pub fn strlcpy(
         arg1: *mut core::ffi::c_char,
         arg2: *const core::ffi::c_char,
-        arg3: usize,
-    ) -> usize;
+        arg3: core::ffi::c_uint,
+    ) -> core::ffi::c_uint;
 }
 extern "C" {
     #[doc = "Get free heap size\n\nReturns:\n\n* free heap size in bytes\n\n"]
@@ -2096,7 +2097,7 @@ extern "C" {
     pub fn furi_thread_get_current_id() -> FuriThreadId;
 }
 extern "C" {
-    #[doc = "Get FuriThread instance for current thread\n\nReturns:\n\n* FuriThread*\n\n"]
+    #[doc = "Get FuriThread instance for current thread\n\nReturns:\n\n* pointer to FuriThread or NULL if this thread doesn't belongs to Furi\n\n"]
     pub fn furi_thread_get_current() -> *mut FuriThread;
 }
 extern "C" {
@@ -2136,8 +2137,8 @@ extern "C" {
     pub fn furi_thread_get_stdout_callback() -> FuriThreadStdoutWriteCallback;
 }
 extern "C" {
-    #[doc = "Set STDOUT callback for thread\n\nReturns:\n\n* true on success, otherwise fail\n\n# Arguments\n\n* `callback` - callback or NULL to clear\n\n"]
-    pub fn furi_thread_set_stdout_callback(callback: FuriThreadStdoutWriteCallback) -> bool;
+    #[doc = "Set STDOUT callback for thread\n\n# Arguments\n\n* `callback` - callback or NULL to clear\n\n"]
+    pub fn furi_thread_set_stdout_callback(callback: FuriThreadStdoutWriteCallback);
 }
 extern "C" {
     #[doc = "Write data to buffered STDOUT\n\nReturns:\n\n* size_t written data size\n\n# Arguments\n\n* `data` - input data\n* `size` - input data size\n\n"]
@@ -2353,6 +2354,15 @@ extern "C" {
 extern "C" {
     #[doc = "Is timer running\n\nReturns:\n\n* 0: not running, 1: running\n\n# Arguments\n\n* `instance` - The pointer to FuriTimer instance\n\n"]
     pub fn furi_timer_is_running(instance: *mut FuriTimer) -> u32;
+}
+pub type FuriTimerPendigCallback =
+    ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void, arg: u32)>;
+extern "C" {
+    pub fn furi_timer_pending_callback(
+        callback: FuriTimerPendigCallback,
+        context: *mut core::ffi::c_void,
+        arg: u32,
+    );
 }
 extern "C" {
     pub static _ctype_: [core::ffi::c_char; 0usize];
@@ -7726,15 +7736,11 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Get loader lock status\n\n"]
-    pub fn loader_is_locked(instance: *const Loader) -> bool;
+    pub fn loader_is_locked(instance: *mut Loader) -> bool;
 }
 extern "C" {
     #[doc = "Show primary loader\n\n"]
-    pub fn loader_show_menu();
-}
-extern "C" {
-    #[doc = "Show primary loader\n\n"]
-    pub fn loader_update_menu();
+    pub fn loader_show_menu(instance: *mut Loader);
 }
 extern "C" {
     #[doc = "Show primary loader\n\n"]
@@ -7801,6 +7807,35 @@ extern "C" {
 extern "C" {
     #[doc = "Wait for timer expire\n\n# Arguments\n\n* `cortex_timer` - [Direction: In] The FuriHalCortexTimer\n\n"]
     pub fn furi_hal_cortex_timer_wait(cortex_timer: FuriHalCortexTimer);
+}
+pub const FuriHalCortexComp_FuriHalCortexComp0: FuriHalCortexComp = 0;
+pub const FuriHalCortexComp_FuriHalCortexComp1: FuriHalCortexComp = 1;
+pub const FuriHalCortexComp_FuriHalCortexComp2: FuriHalCortexComp = 2;
+pub const FuriHalCortexComp_FuriHalCortexComp3: FuriHalCortexComp = 3;
+pub type FuriHalCortexComp = core::ffi::c_uchar;
+pub const FuriHalCortexCompSize_FuriHalCortexCompSizeWord: FuriHalCortexCompSize = 2;
+pub const FuriHalCortexCompSize_FuriHalCortexCompSizeHalfWord: FuriHalCortexCompSize = 1;
+pub const FuriHalCortexCompSize_FuriHalCortexCompSizeByte: FuriHalCortexCompSize = 0;
+pub type FuriHalCortexCompSize = core::ffi::c_uchar;
+pub const FuriHalCortexCompFunction_FuriHalCortexCompFunctionPC: FuriHalCortexCompFunction = 4;
+pub const FuriHalCortexCompFunction_FuriHalCortexCompFunctionRead: FuriHalCortexCompFunction = 5;
+pub const FuriHalCortexCompFunction_FuriHalCortexCompFunctionWrite: FuriHalCortexCompFunction = 6;
+pub const FuriHalCortexCompFunction_FuriHalCortexCompFunctionReadWrite: FuriHalCortexCompFunction =
+    6;
+pub type FuriHalCortexCompFunction = core::ffi::c_uchar;
+extern "C" {
+    #[doc = "Enable DWT comparator\nAllows to programmatically set instruction/data breakpoints.\nMore details on how it works can be found in armv7m official documentation: <https://developer.arm.com/documentation/ddi0403/d/Debug-Architecture/ARMv7-M-Debug/The-Data-Watchpoint-and-Trace-unit/The-DWT-comparators> <https://developer.arm.com/documentation/ddi0403/d/Debug-Architecture/ARMv7-M-Debug/The-Data-Watchpoint-and-Trace-unit/Comparator-Function-registers--DWT-FUNCTIONn>\n\n# Arguments\n\n* `comp` - [Direction: In] The Comparator\n* `function` - [Direction: In] The Comparator Function to use\n* `value` - [Direction: In] The value\n* `mask` - [Direction: In] The mask\n* `size` - [Direction: In] The size\n\n"]
+    pub fn furi_hal_cortex_comp_enable(
+        comp: FuriHalCortexComp,
+        function: FuriHalCortexCompFunction,
+        value: u32,
+        mask: u32,
+        size: FuriHalCortexCompSize,
+    );
+}
+extern "C" {
+    #[doc = "Reset DWT comparator\n\n# Arguments\n\n* `comp` - [Direction: In] The Comparator\n\n"]
+    pub fn furi_hal_cortex_comp_reset(comp: FuriHalCortexComp);
 }
 extern "C" {
     pub fn LL_RCC_GetUSARTClockFreq(USARTxSource: u32) -> u32;
@@ -8417,7 +8452,7 @@ fn bindgen_test_layout_LL_I2C_InitTypeDef() {
 extern "C" {
     pub fn LL_I2C_Init(
         I2Cx: *mut I2C_TypeDef,
-        I2C_InitStruct: *mut LL_I2C_InitTypeDef,
+        I2C_InitStruct: *const LL_I2C_InitTypeDef,
     ) -> ErrorStatus;
 }
 #[doc = "Bus initialization event, called on system start\n\n"]
@@ -11565,6 +11600,9 @@ extern "C" {
     );
 }
 extern "C" {
+    pub fn furi_hal_info_get_api_version(major: *mut u16, minor: *mut u16);
+}
+extern "C" {
     #[doc = "Get device information\n\n# Arguments\n\n* `callback` - [Direction: In] callback to provide with new data\n* `sep` - [Direction: In] category separator character\n* `context` - [Direction: In] context to pass to callback\n\n"]
     pub fn furi_hal_info_get(
         callback: PropertyValueCallback,
@@ -11966,12 +12004,18 @@ extern "C" {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+pub struct DigitalSignalInternals {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct DigitalSignal {
     pub start_level: bool,
     pub edge_cnt: u32,
     pub edges_max_cnt: u32,
     pub edge_timings: *mut u32,
     pub reload_reg_buff: *mut u32,
+    pub internals: *mut DigitalSignalInternals,
 }
 #[test]
 fn bindgen_test_layout_DigitalSignal() {
@@ -11979,7 +12023,7 @@ fn bindgen_test_layout_DigitalSignal() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<DigitalSignal>(),
-        20usize,
+        24usize,
         concat!("Size of: ", stringify!(DigitalSignal))
     );
     assert_eq!(
@@ -12035,6 +12079,16 @@ fn bindgen_test_layout_DigitalSignal() {
             stringify!(DigitalSignal),
             "::",
             stringify!(reload_reg_buff)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).internals) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(DigitalSignal),
+            "::",
+            stringify!(internals)
         )
     );
 }
@@ -15300,568 +15354,6 @@ extern "C" {
     #[doc = "Send U2F HID response packet\n\n# Arguments\n\n* `data` - response data\n* `len` - packet length\n\n"]
     pub fn furi_hal_hid_u2f_send_response(data: *mut u8, len: u8);
 }
-#[doc = "Structure definition of some features of COMP instance.\n\n"]
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct LL_COMP_InitTypeDef {
-    #[doc = "Set comparator operating mode to adjust power and speed.\nThis parameter can be a value of  [`COMP_LL_EC_POWERMODE`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetPowerMode()`]\n\n"]
-    pub PowerMode: u32,
-    #[doc = "Set comparator input plus (non-inverting input).\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_PLUS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputPlus()`]\n\n"]
-    pub InputPlus: u32,
-    #[doc = "Set comparator input minus (inverting input).\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_MINUS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputMinus()`]\n\n"]
-    pub InputMinus: u32,
-    #[doc = "Set comparator hysteresis mode of the input minus.\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_HYSTERESIS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputHysteresis()`]\n\n"]
-    pub InputHysteresis: u32,
-    #[doc = "Set comparator output polarity.\nThis parameter can be a value of  [`COMP_LL_EC_OUTPUT_POLARITY`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetOutputPolarity()`]\n\n"]
-    pub OutputPolarity: u32,
-    #[doc = "Set comparator blanking source.\nThis parameter can be a value of  [`COMP_LL_EC_OUTPUT_BLANKING_SOURCE`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetOutputBlankingSource()`]\n\n"]
-    pub OutputBlankingSource: u32,
-}
-#[test]
-fn bindgen_test_layout_LL_COMP_InitTypeDef() {
-    const UNINIT: ::core::mem::MaybeUninit<LL_COMP_InitTypeDef> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<LL_COMP_InitTypeDef>(),
-        24usize,
-        concat!("Size of: ", stringify!(LL_COMP_InitTypeDef))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<LL_COMP_InitTypeDef>(),
-        4usize,
-        concat!("Alignment of ", stringify!(LL_COMP_InitTypeDef))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).PowerMode) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_COMP_InitTypeDef),
-            "::",
-            stringify!(PowerMode)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).InputPlus) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_COMP_InitTypeDef),
-            "::",
-            stringify!(InputPlus)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).InputMinus) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_COMP_InitTypeDef),
-            "::",
-            stringify!(InputMinus)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).InputHysteresis) as usize - ptr as usize },
-        12usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_COMP_InitTypeDef),
-            "::",
-            stringify!(InputHysteresis)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).OutputPolarity) as usize - ptr as usize },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_COMP_InitTypeDef),
-            "::",
-            stringify!(OutputPolarity)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).OutputBlankingSource) as usize - ptr as usize },
-        20usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_COMP_InitTypeDef),
-            "::",
-            stringify!(OutputBlankingSource)
-        )
-    );
-}
-extern "C" {
-    pub fn LL_COMP_Init(
-        COMPx: *mut COMP_TypeDef,
-        COMP_InitStruct: *const LL_COMP_InitTypeDef,
-    ) -> ErrorStatus;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct LL_DMA_InitTypeDef {
-    #[doc = "Specifies the peripheral base address for DMA transfer\nor as Source base address in case of memory to memory transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF.\n\n"]
-    pub PeriphOrM2MSrcAddress: u32,
-    #[doc = "Specifies the memory base address for DMA transfer\nor as Destination base address in case of memory to memory transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF.\n\n"]
-    pub MemoryOrM2MDstAddress: u32,
-    #[doc = "Specifies if the data will be transferred from memory to peripheral,\nfrom memory to memory or from peripheral to memory.\nThis parameter can be a value of  [`DMA_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetDataTransferDirection()`]\n\n"]
-    pub Direction: u32,
-    #[doc = "Specifies the normal or circular operation mode.\nThis parameter can be a value of  [`DMA_LL_EC_MODE`]\ndata transfer direction is configured on the selected Channel\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMode()`]\n\n# Notes\n\n* The circular buffer mode cannot be used if the memory to memory\n\n"]
-    pub Mode: u32,
-    #[doc = "Specifies whether the Peripheral address or Source address in case of memory to memory transfer direction\nis incremented or not.\nThis parameter can be a value of  [`DMA_LL_EC_PERIPH`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphIncMode()`]\n\n"]
-    pub PeriphOrM2MSrcIncMode: u32,
-    #[doc = "Specifies whether the Memory address or Destination address in case of memory to memory transfer direction\nis incremented or not.\nThis parameter can be a value of  [`DMA_LL_EC_MEMORY`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMemoryIncMode()`]\n\n"]
-    pub MemoryOrM2MDstIncMode: u32,
-    #[doc = "Specifies the Peripheral data size alignment or Source data size alignment (byte, half word, word)\nin case of memory to memory transfer direction.\nThis parameter can be a value of  [`DMA_LL_EC_PDATAALIGN`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphSize()`]\n\n"]
-    pub PeriphOrM2MSrcDataSize: u32,
-    #[doc = "Specifies the Memory data size alignment or Destination data size alignment (byte, half word, word)\nin case of memory to memory transfer direction.\nThis parameter can be a value of  [`DMA_LL_EC_MDATAALIGN`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMemorySize()`]\n\n"]
-    pub MemoryOrM2MDstDataSize: u32,
-    #[doc = "Specifies the number of data to transfer, in data unit.\nThe data unit is equal to the source buffer configuration set in PeripheralSize\nor MemorySize parameters depending in the transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0x0000FFFF\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetDataLength()`]\n\n"]
-    pub NbData: u32,
-    #[doc = "Specifies the peripheral request.\nThis parameter can be a value of  [`DMAMUX_LL_EC_REQUEST`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphRequest()`]\n\n"]
-    pub PeriphRequest: u32,
-    #[doc = "Specifies the channel priority level.\nThis parameter can be a value of  [`DMA_LL_EC_PRIORITY`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetChannelPriorityLevel()`]\n\n"]
-    pub Priority: u32,
-}
-#[test]
-fn bindgen_test_layout_LL_DMA_InitTypeDef() {
-    const UNINIT: ::core::mem::MaybeUninit<LL_DMA_InitTypeDef> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<LL_DMA_InitTypeDef>(),
-        44usize,
-        concat!("Size of: ", stringify!(LL_DMA_InitTypeDef))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<LL_DMA_InitTypeDef>(),
-        4usize,
-        concat!("Alignment of ", stringify!(LL_DMA_InitTypeDef))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).PeriphOrM2MSrcAddress) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(PeriphOrM2MSrcAddress)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).MemoryOrM2MDstAddress) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(MemoryOrM2MDstAddress)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).Direction) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(Direction)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).Mode) as usize - ptr as usize },
-        12usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(Mode)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).PeriphOrM2MSrcIncMode) as usize - ptr as usize },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(PeriphOrM2MSrcIncMode)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).MemoryOrM2MDstIncMode) as usize - ptr as usize },
-        20usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(MemoryOrM2MDstIncMode)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).PeriphOrM2MSrcDataSize) as usize - ptr as usize },
-        24usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(PeriphOrM2MSrcDataSize)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).MemoryOrM2MDstDataSize) as usize - ptr as usize },
-        28usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(MemoryOrM2MDstDataSize)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).NbData) as usize - ptr as usize },
-        32usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(NbData)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).PeriphRequest) as usize - ptr as usize },
-        36usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(PeriphRequest)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).Priority) as usize - ptr as usize },
-        40usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(Priority)
-        )
-    );
-}
-extern "C" {
-    pub fn LL_DMA_Init(
-        DMAx: *mut DMA_TypeDef,
-        Channel: u32,
-        DMA_InitStruct: *mut LL_DMA_InitTypeDef,
-    ) -> ErrorStatus;
-}
-extern "C" {
-    pub fn LL_DMA_DeInit(DMAx: *mut DMA_TypeDef, Channel: u32) -> ErrorStatus;
-}
-#[doc = "LL LPUART Init Structure definition\n\n"]
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct LL_LPUART_InitTypeDef {
-    #[doc = "Specifies the Prescaler to compute the communication baud rate.\nThis parameter can be a value of  [`LPUART_LL_EC_PRESCALER`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetPrescaler()`]\n\n"]
-    pub PrescalerValue: u32,
-    #[doc = "This field defines expected LPUART communication baud rate.\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetBaudRate()`]\n\n"]
-    pub BaudRate: u32,
-    #[doc = "Specifies the number of data bits transmitted or received in a frame.\nThis parameter can be a value of  [`LPUART_LL_EC_DATAWIDTH`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetDataWidth()`]\n\n"]
-    pub DataWidth: u32,
-    #[doc = "Specifies the number of stop bits transmitted.\nThis parameter can be a value of  [`LPUART_LL_EC_STOPBITS`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetStopBitsLength()`]\n\n"]
-    pub StopBits: u32,
-    #[doc = "Specifies the parity mode.\nThis parameter can be a value of  [`LPUART_LL_EC_PARITY`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetParity()`]\n\n"]
-    pub Parity: u32,
-    #[doc = "Specifies whether the Receive and/or Transmit mode is enabled or disabled.\nThis parameter can be a value of  [`LPUART_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetTransferDirection()`]\n\n"]
-    pub TransferDirection: u32,
-    #[doc = "Specifies whether the hardware flow control mode is enabled or disabled.\nThis parameter can be a value of  [`LPUART_LL_EC_HWCONTROL`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetHWFlowCtrl()`]\n\n"]
-    pub HardwareFlowControl: u32,
-}
-#[test]
-fn bindgen_test_layout_LL_LPUART_InitTypeDef() {
-    const UNINIT: ::core::mem::MaybeUninit<LL_LPUART_InitTypeDef> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<LL_LPUART_InitTypeDef>(),
-        28usize,
-        concat!("Size of: ", stringify!(LL_LPUART_InitTypeDef))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<LL_LPUART_InitTypeDef>(),
-        4usize,
-        concat!("Alignment of ", stringify!(LL_LPUART_InitTypeDef))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).PrescalerValue) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_LPUART_InitTypeDef),
-            "::",
-            stringify!(PrescalerValue)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).BaudRate) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_LPUART_InitTypeDef),
-            "::",
-            stringify!(BaudRate)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).DataWidth) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_LPUART_InitTypeDef),
-            "::",
-            stringify!(DataWidth)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).StopBits) as usize - ptr as usize },
-        12usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_LPUART_InitTypeDef),
-            "::",
-            stringify!(StopBits)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).Parity) as usize - ptr as usize },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_LPUART_InitTypeDef),
-            "::",
-            stringify!(Parity)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).TransferDirection) as usize - ptr as usize },
-        20usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_LPUART_InitTypeDef),
-            "::",
-            stringify!(TransferDirection)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).HardwareFlowControl) as usize - ptr as usize },
-        24usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_LPUART_InitTypeDef),
-            "::",
-            stringify!(HardwareFlowControl)
-        )
-    );
-}
-extern "C" {
-    pub fn LL_LPUART_Init(
-        LPUARTx: *mut USART_TypeDef,
-        LPUART_InitStruct: *const LL_LPUART_InitTypeDef,
-    ) -> ErrorStatus;
-}
-#[doc = "RTC Init structures definition\n\n"]
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct LL_RTC_InitTypeDef {
-    #[doc = "Specifies the RTC Hours Format.\nThis parameter can be a value of  [`RTC_LL_EC_HOURFORMAT`]\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetHourFormat()`]\n\n"]
-    pub HourFormat: u32,
-    #[doc = "Specifies the RTC Asynchronous Predivider value.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0x7F\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetAsynchPrescaler()`]\n\n"]
-    pub AsynchPrescaler: u32,
-    #[doc = "Specifies the RTC Synchronous Predivider value.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0x7FFF\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetSynchPrescaler()`]\n\n"]
-    pub SynchPrescaler: u32,
-}
-#[test]
-fn bindgen_test_layout_LL_RTC_InitTypeDef() {
-    const UNINIT: ::core::mem::MaybeUninit<LL_RTC_InitTypeDef> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<LL_RTC_InitTypeDef>(),
-        12usize,
-        concat!("Size of: ", stringify!(LL_RTC_InitTypeDef))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<LL_RTC_InitTypeDef>(),
-        4usize,
-        concat!("Alignment of ", stringify!(LL_RTC_InitTypeDef))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).HourFormat) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_RTC_InitTypeDef),
-            "::",
-            stringify!(HourFormat)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).AsynchPrescaler) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_RTC_InitTypeDef),
-            "::",
-            stringify!(AsynchPrescaler)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).SynchPrescaler) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_RTC_InitTypeDef),
-            "::",
-            stringify!(SynchPrescaler)
-        )
-    );
-}
-extern "C" {
-    pub fn LL_RTC_Init(
-        RTCx: *mut RTC_TypeDef,
-        RTC_InitStruct: *mut LL_RTC_InitTypeDef,
-    ) -> ErrorStatus;
-}
-extern "C" {
-    pub fn LL_RTC_EnterInitMode(RTCx: *mut RTC_TypeDef) -> ErrorStatus;
-}
-#[doc = "LL USART Init Structure definition\n\n"]
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct LL_USART_InitTypeDef {
-    #[doc = "Specifies the Prescaler to compute the communication baud rate.\nThis parameter can be a value of  [`USART_LL_EC_PRESCALER`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetPrescaler()`]\n\n"]
-    pub PrescalerValue: u32,
-    #[doc = "This field defines expected Usart communication baud rate.\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetBaudRate()`]\n\n"]
-    pub BaudRate: u32,
-    #[doc = "Specifies the number of data bits transmitted or received in a frame.\nThis parameter can be a value of  [`USART_LL_EC_DATAWIDTH`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetDataWidth()`]\n\n"]
-    pub DataWidth: u32,
-    #[doc = "Specifies the number of stop bits transmitted.\nThis parameter can be a value of  [`USART_LL_EC_STOPBITS`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetStopBitsLength()`]\n\n"]
-    pub StopBits: u32,
-    #[doc = "Specifies the parity mode.\nThis parameter can be a value of  [`USART_LL_EC_PARITY`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetParity()`]\n\n"]
-    pub Parity: u32,
-    #[doc = "Specifies whether the Receive and/or Transmit mode is enabled or disabled.\nThis parameter can be a value of  [`USART_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetTransferDirection()`]\n\n"]
-    pub TransferDirection: u32,
-    #[doc = "Specifies whether the hardware flow control mode is enabled or disabled.\nThis parameter can be a value of  [`USART_LL_EC_HWCONTROL`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetHWFlowCtrl()`]\n\n"]
-    pub HardwareFlowControl: u32,
-    #[doc = "Specifies whether USART oversampling mode is 16 or 8.\nThis parameter can be a value of  [`USART_LL_EC_OVERSAMPLING`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetOverSampling()`]\n\n"]
-    pub OverSampling: u32,
-}
-#[test]
-fn bindgen_test_layout_LL_USART_InitTypeDef() {
-    const UNINIT: ::core::mem::MaybeUninit<LL_USART_InitTypeDef> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<LL_USART_InitTypeDef>(),
-        32usize,
-        concat!("Size of: ", stringify!(LL_USART_InitTypeDef))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<LL_USART_InitTypeDef>(),
-        4usize,
-        concat!("Alignment of ", stringify!(LL_USART_InitTypeDef))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).PrescalerValue) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(PrescalerValue)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).BaudRate) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(BaudRate)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).DataWidth) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(DataWidth)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).StopBits) as usize - ptr as usize },
-        12usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(StopBits)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).Parity) as usize - ptr as usize },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(Parity)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).TransferDirection) as usize - ptr as usize },
-        20usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(TransferDirection)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).HardwareFlowControl) as usize - ptr as usize },
-        24usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(HardwareFlowControl)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).OverSampling) as usize - ptr as usize },
-        28usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(OverSampling)
-        )
-    );
-}
-extern "C" {
-    pub fn LL_USART_Init(
-        USARTx: *mut USART_TypeDef,
-        USART_InitStruct: *const LL_USART_InitTypeDef,
-    ) -> ErrorStatus;
-}
-extern "C" {
-    pub fn LL_SetSystemCoreClock(HCLKFrequency: u32);
-}
 extern "C" {
     #[doc = "Resolver for API entries using a pre-sorted table with hashes\n\nReturns:\n\n* true if the table contains a function\n\n# Arguments\n\n* `interface` - pointer to HashtableApiInterface\n* `name` - function name\n* `address` - output for function address\n\n"]
     pub fn elf_resolve_from_hashtable(
@@ -16963,6 +16455,121 @@ extern "C" {
 extern "C" {
     #[doc = "Returns the underlying stream instance. Use only if you know what you are doing.\n\nReturns:\n\n* Stream*\n\n# Arguments\n\n* `flipper_format` - \n\n"]
     pub fn flipper_format_get_raw_stream(flipper_format: *mut FlipperFormat) -> *mut Stream;
+}
+pub const FlipperStreamValue_FlipperStreamValueIgnore: FlipperStreamValue = 0;
+pub const FlipperStreamValue_FlipperStreamValueStr: FlipperStreamValue = 1;
+pub const FlipperStreamValue_FlipperStreamValueHex: FlipperStreamValue = 2;
+pub const FlipperStreamValue_FlipperStreamValueFloat: FlipperStreamValue = 3;
+pub const FlipperStreamValue_FlipperStreamValueInt32: FlipperStreamValue = 4;
+pub const FlipperStreamValue_FlipperStreamValueUint32: FlipperStreamValue = 5;
+pub const FlipperStreamValue_FlipperStreamValueHexUint64: FlipperStreamValue = 6;
+pub const FlipperStreamValue_FlipperStreamValueBool: FlipperStreamValue = 7;
+pub type FlipperStreamValue = core::ffi::c_uchar;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FlipperStreamWriteData {
+    pub key: *const core::ffi::c_char,
+    pub type_: FlipperStreamValue,
+    pub data: *const core::ffi::c_void,
+    pub data_size: usize,
+}
+#[test]
+fn bindgen_test_layout_FlipperStreamWriteData() {
+    const UNINIT: ::core::mem::MaybeUninit<FlipperStreamWriteData> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FlipperStreamWriteData>(),
+        16usize,
+        concat!("Size of: ", stringify!(FlipperStreamWriteData))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FlipperStreamWriteData>(),
+        4usize,
+        concat!("Alignment of ", stringify!(FlipperStreamWriteData))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FlipperStreamWriteData),
+            "::",
+            stringify!(key)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FlipperStreamWriteData),
+            "::",
+            stringify!(type_)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FlipperStreamWriteData),
+            "::",
+            stringify!(data)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data_size) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FlipperStreamWriteData),
+            "::",
+            stringify!(data_size)
+        )
+    );
+}
+extern "C" {
+    #[doc = "Writes a key/value pair to the stream.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `stream` - \n* `write_data` - \n\n"]
+    pub fn flipper_format_stream_write_value_line(
+        stream: *mut Stream,
+        write_data: *mut FlipperStreamWriteData,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Reads a value by key from a stream.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `stream` - \n* `key` - \n* `type` - \n* `_data` - \n* `data_size` - \n* `strict_mode` - \n\n"]
+    pub fn flipper_format_stream_read_value_line(
+        stream: *mut Stream,
+        key: *const core::ffi::c_char,
+        type_: FlipperStreamValue,
+        _data: *mut core::ffi::c_void,
+        data_size: usize,
+        strict_mode: bool,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Get the count of values by key from a stream.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `stream` - \n* `key` - \n* `count` - \n* `strict_mode` - \n\n"]
+    pub fn flipper_format_stream_get_value_count(
+        stream: *mut Stream,
+        key: *const core::ffi::c_char,
+        count: *mut u32,
+        strict_mode: bool,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Removes a key and the corresponding value string from the stream and inserts a new key/value pair.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `stream` - \n* `write_data` - \n* `strict_mode` - \n\n"]
+    pub fn flipper_format_stream_delete_key_and_write(
+        stream: *mut Stream,
+        write_data: *mut FlipperStreamWriteData,
+        strict_mode: bool,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Writes a comment string to the stream.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `stream` - \n* `data` - \n\n"]
+    pub fn flipper_format_stream_write_comment_cstr(
+        stream: *mut Stream,
+        data: *const core::ffi::c_char,
+    ) -> bool;
 }
 pub type iButtonProtocolId = i32;
 #[repr(C)]
@@ -20458,6 +20065,21 @@ extern "C" {
     );
 }
 extern "C" {
+    pub fn nfc_util_num2bytes(src: u64, len: u8, dest: *mut u8);
+}
+extern "C" {
+    pub fn nfc_util_bytes2num(src: *const u8, len: u8) -> u64;
+}
+extern "C" {
+    pub fn nfc_util_even_parity32(data: u32) -> u8;
+}
+extern "C" {
+    pub fn nfc_util_odd_parity8(data: u8) -> u8;
+}
+extern "C" {
+    pub fn nfc_util_odd_parity(src: *const u8, dst: *mut u8, len: u8);
+}
+extern "C" {
     pub fn maxim_crc8(data: *const u8, data_size: u8, crc_init: u8) -> u8;
 }
 #[doc = "Search for alarmed device\n\n"]
@@ -20652,6 +20274,568 @@ extern "C" {
         func: *const core::ffi::c_char,
         e: *const core::ffi::c_char,
     ) -> !;
+}
+#[doc = "Structure definition of some features of COMP instance.\n\n"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct LL_COMP_InitTypeDef {
+    #[doc = "Set comparator operating mode to adjust power and speed.\nThis parameter can be a value of  [`COMP_LL_EC_POWERMODE`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetPowerMode()`]\n\n"]
+    pub PowerMode: u32,
+    #[doc = "Set comparator input plus (non-inverting input).\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_PLUS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputPlus()`]\n\n"]
+    pub InputPlus: u32,
+    #[doc = "Set comparator input minus (inverting input).\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_MINUS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputMinus()`]\n\n"]
+    pub InputMinus: u32,
+    #[doc = "Set comparator hysteresis mode of the input minus.\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_HYSTERESIS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputHysteresis()`]\n\n"]
+    pub InputHysteresis: u32,
+    #[doc = "Set comparator output polarity.\nThis parameter can be a value of  [`COMP_LL_EC_OUTPUT_POLARITY`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetOutputPolarity()`]\n\n"]
+    pub OutputPolarity: u32,
+    #[doc = "Set comparator blanking source.\nThis parameter can be a value of  [`COMP_LL_EC_OUTPUT_BLANKING_SOURCE`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetOutputBlankingSource()`]\n\n"]
+    pub OutputBlankingSource: u32,
+}
+#[test]
+fn bindgen_test_layout_LL_COMP_InitTypeDef() {
+    const UNINIT: ::core::mem::MaybeUninit<LL_COMP_InitTypeDef> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<LL_COMP_InitTypeDef>(),
+        24usize,
+        concat!("Size of: ", stringify!(LL_COMP_InitTypeDef))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<LL_COMP_InitTypeDef>(),
+        4usize,
+        concat!("Alignment of ", stringify!(LL_COMP_InitTypeDef))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).PowerMode) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_COMP_InitTypeDef),
+            "::",
+            stringify!(PowerMode)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).InputPlus) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_COMP_InitTypeDef),
+            "::",
+            stringify!(InputPlus)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).InputMinus) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_COMP_InitTypeDef),
+            "::",
+            stringify!(InputMinus)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).InputHysteresis) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_COMP_InitTypeDef),
+            "::",
+            stringify!(InputHysteresis)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).OutputPolarity) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_COMP_InitTypeDef),
+            "::",
+            stringify!(OutputPolarity)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).OutputBlankingSource) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_COMP_InitTypeDef),
+            "::",
+            stringify!(OutputBlankingSource)
+        )
+    );
+}
+extern "C" {
+    pub fn LL_COMP_Init(
+        COMPx: *mut COMP_TypeDef,
+        COMP_InitStruct: *const LL_COMP_InitTypeDef,
+    ) -> ErrorStatus;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct LL_DMA_InitTypeDef {
+    #[doc = "Specifies the peripheral base address for DMA transfer\nor as Source base address in case of memory to memory transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF.\n\n"]
+    pub PeriphOrM2MSrcAddress: u32,
+    #[doc = "Specifies the memory base address for DMA transfer\nor as Destination base address in case of memory to memory transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF.\n\n"]
+    pub MemoryOrM2MDstAddress: u32,
+    #[doc = "Specifies if the data will be transferred from memory to peripheral,\nfrom memory to memory or from peripheral to memory.\nThis parameter can be a value of  [`DMA_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetDataTransferDirection()`]\n\n"]
+    pub Direction: u32,
+    #[doc = "Specifies the normal or circular operation mode.\nThis parameter can be a value of  [`DMA_LL_EC_MODE`]\ndata transfer direction is configured on the selected Channel\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMode()`]\n\n# Notes\n\n* The circular buffer mode cannot be used if the memory to memory\n\n"]
+    pub Mode: u32,
+    #[doc = "Specifies whether the Peripheral address or Source address in case of memory to memory transfer direction\nis incremented or not.\nThis parameter can be a value of  [`DMA_LL_EC_PERIPH`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphIncMode()`]\n\n"]
+    pub PeriphOrM2MSrcIncMode: u32,
+    #[doc = "Specifies whether the Memory address or Destination address in case of memory to memory transfer direction\nis incremented or not.\nThis parameter can be a value of  [`DMA_LL_EC_MEMORY`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMemoryIncMode()`]\n\n"]
+    pub MemoryOrM2MDstIncMode: u32,
+    #[doc = "Specifies the Peripheral data size alignment or Source data size alignment (byte, half word, word)\nin case of memory to memory transfer direction.\nThis parameter can be a value of  [`DMA_LL_EC_PDATAALIGN`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphSize()`]\n\n"]
+    pub PeriphOrM2MSrcDataSize: u32,
+    #[doc = "Specifies the Memory data size alignment or Destination data size alignment (byte, half word, word)\nin case of memory to memory transfer direction.\nThis parameter can be a value of  [`DMA_LL_EC_MDATAALIGN`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMemorySize()`]\n\n"]
+    pub MemoryOrM2MDstDataSize: u32,
+    #[doc = "Specifies the number of data to transfer, in data unit.\nThe data unit is equal to the source buffer configuration set in PeripheralSize\nor MemorySize parameters depending in the transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0x0000FFFF\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetDataLength()`]\n\n"]
+    pub NbData: u32,
+    #[doc = "Specifies the peripheral request.\nThis parameter can be a value of  [`DMAMUX_LL_EC_REQUEST`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphRequest()`]\n\n"]
+    pub PeriphRequest: u32,
+    #[doc = "Specifies the channel priority level.\nThis parameter can be a value of  [`DMA_LL_EC_PRIORITY`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetChannelPriorityLevel()`]\n\n"]
+    pub Priority: u32,
+}
+#[test]
+fn bindgen_test_layout_LL_DMA_InitTypeDef() {
+    const UNINIT: ::core::mem::MaybeUninit<LL_DMA_InitTypeDef> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<LL_DMA_InitTypeDef>(),
+        44usize,
+        concat!("Size of: ", stringify!(LL_DMA_InitTypeDef))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<LL_DMA_InitTypeDef>(),
+        4usize,
+        concat!("Alignment of ", stringify!(LL_DMA_InitTypeDef))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).PeriphOrM2MSrcAddress) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(PeriphOrM2MSrcAddress)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).MemoryOrM2MDstAddress) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(MemoryOrM2MDstAddress)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Direction) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(Direction)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Mode) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(Mode)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).PeriphOrM2MSrcIncMode) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(PeriphOrM2MSrcIncMode)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).MemoryOrM2MDstIncMode) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(MemoryOrM2MDstIncMode)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).PeriphOrM2MSrcDataSize) as usize - ptr as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(PeriphOrM2MSrcDataSize)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).MemoryOrM2MDstDataSize) as usize - ptr as usize },
+        28usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(MemoryOrM2MDstDataSize)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).NbData) as usize - ptr as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(NbData)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).PeriphRequest) as usize - ptr as usize },
+        36usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(PeriphRequest)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Priority) as usize - ptr as usize },
+        40usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(Priority)
+        )
+    );
+}
+extern "C" {
+    pub fn LL_DMA_Init(
+        DMAx: *mut DMA_TypeDef,
+        Channel: u32,
+        DMA_InitStruct: *mut LL_DMA_InitTypeDef,
+    ) -> ErrorStatus;
+}
+extern "C" {
+    pub fn LL_DMA_DeInit(DMAx: *mut DMA_TypeDef, Channel: u32) -> ErrorStatus;
+}
+#[doc = "LL LPUART Init Structure definition\n\n"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct LL_LPUART_InitTypeDef {
+    #[doc = "Specifies the Prescaler to compute the communication baud rate.\nThis parameter can be a value of  [`LPUART_LL_EC_PRESCALER`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetPrescaler()`]\n\n"]
+    pub PrescalerValue: u32,
+    #[doc = "This field defines expected LPUART communication baud rate.\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetBaudRate()`]\n\n"]
+    pub BaudRate: u32,
+    #[doc = "Specifies the number of data bits transmitted or received in a frame.\nThis parameter can be a value of  [`LPUART_LL_EC_DATAWIDTH`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetDataWidth()`]\n\n"]
+    pub DataWidth: u32,
+    #[doc = "Specifies the number of stop bits transmitted.\nThis parameter can be a value of  [`LPUART_LL_EC_STOPBITS`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetStopBitsLength()`]\n\n"]
+    pub StopBits: u32,
+    #[doc = "Specifies the parity mode.\nThis parameter can be a value of  [`LPUART_LL_EC_PARITY`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetParity()`]\n\n"]
+    pub Parity: u32,
+    #[doc = "Specifies whether the Receive and/or Transmit mode is enabled or disabled.\nThis parameter can be a value of  [`LPUART_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetTransferDirection()`]\n\n"]
+    pub TransferDirection: u32,
+    #[doc = "Specifies whether the hardware flow control mode is enabled or disabled.\nThis parameter can be a value of  [`LPUART_LL_EC_HWCONTROL`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetHWFlowCtrl()`]\n\n"]
+    pub HardwareFlowControl: u32,
+}
+#[test]
+fn bindgen_test_layout_LL_LPUART_InitTypeDef() {
+    const UNINIT: ::core::mem::MaybeUninit<LL_LPUART_InitTypeDef> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<LL_LPUART_InitTypeDef>(),
+        28usize,
+        concat!("Size of: ", stringify!(LL_LPUART_InitTypeDef))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<LL_LPUART_InitTypeDef>(),
+        4usize,
+        concat!("Alignment of ", stringify!(LL_LPUART_InitTypeDef))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).PrescalerValue) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_LPUART_InitTypeDef),
+            "::",
+            stringify!(PrescalerValue)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).BaudRate) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_LPUART_InitTypeDef),
+            "::",
+            stringify!(BaudRate)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).DataWidth) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_LPUART_InitTypeDef),
+            "::",
+            stringify!(DataWidth)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).StopBits) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_LPUART_InitTypeDef),
+            "::",
+            stringify!(StopBits)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Parity) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_LPUART_InitTypeDef),
+            "::",
+            stringify!(Parity)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).TransferDirection) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_LPUART_InitTypeDef),
+            "::",
+            stringify!(TransferDirection)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).HardwareFlowControl) as usize - ptr as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_LPUART_InitTypeDef),
+            "::",
+            stringify!(HardwareFlowControl)
+        )
+    );
+}
+extern "C" {
+    pub fn LL_LPUART_Init(
+        LPUARTx: *mut USART_TypeDef,
+        LPUART_InitStruct: *const LL_LPUART_InitTypeDef,
+    ) -> ErrorStatus;
+}
+#[doc = "RTC Init structures definition\n\n"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct LL_RTC_InitTypeDef {
+    #[doc = "Specifies the RTC Hours Format.\nThis parameter can be a value of  [`RTC_LL_EC_HOURFORMAT`]\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetHourFormat()`]\n\n"]
+    pub HourFormat: u32,
+    #[doc = "Specifies the RTC Asynchronous Predivider value.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0x7F\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetAsynchPrescaler()`]\n\n"]
+    pub AsynchPrescaler: u32,
+    #[doc = "Specifies the RTC Synchronous Predivider value.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0x7FFF\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetSynchPrescaler()`]\n\n"]
+    pub SynchPrescaler: u32,
+}
+#[test]
+fn bindgen_test_layout_LL_RTC_InitTypeDef() {
+    const UNINIT: ::core::mem::MaybeUninit<LL_RTC_InitTypeDef> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<LL_RTC_InitTypeDef>(),
+        12usize,
+        concat!("Size of: ", stringify!(LL_RTC_InitTypeDef))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<LL_RTC_InitTypeDef>(),
+        4usize,
+        concat!("Alignment of ", stringify!(LL_RTC_InitTypeDef))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).HourFormat) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_RTC_InitTypeDef),
+            "::",
+            stringify!(HourFormat)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).AsynchPrescaler) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_RTC_InitTypeDef),
+            "::",
+            stringify!(AsynchPrescaler)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).SynchPrescaler) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_RTC_InitTypeDef),
+            "::",
+            stringify!(SynchPrescaler)
+        )
+    );
+}
+extern "C" {
+    pub fn LL_RTC_Init(
+        RTCx: *mut RTC_TypeDef,
+        RTC_InitStruct: *mut LL_RTC_InitTypeDef,
+    ) -> ErrorStatus;
+}
+extern "C" {
+    pub fn LL_RTC_EnterInitMode(RTCx: *mut RTC_TypeDef) -> ErrorStatus;
+}
+#[doc = "LL USART Init Structure definition\n\n"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct LL_USART_InitTypeDef {
+    #[doc = "Specifies the Prescaler to compute the communication baud rate.\nThis parameter can be a value of  [`USART_LL_EC_PRESCALER`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetPrescaler()`]\n\n"]
+    pub PrescalerValue: u32,
+    #[doc = "This field defines expected Usart communication baud rate.\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetBaudRate()`]\n\n"]
+    pub BaudRate: u32,
+    #[doc = "Specifies the number of data bits transmitted or received in a frame.\nThis parameter can be a value of  [`USART_LL_EC_DATAWIDTH`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetDataWidth()`]\n\n"]
+    pub DataWidth: u32,
+    #[doc = "Specifies the number of stop bits transmitted.\nThis parameter can be a value of  [`USART_LL_EC_STOPBITS`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetStopBitsLength()`]\n\n"]
+    pub StopBits: u32,
+    #[doc = "Specifies the parity mode.\nThis parameter can be a value of  [`USART_LL_EC_PARITY`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetParity()`]\n\n"]
+    pub Parity: u32,
+    #[doc = "Specifies whether the Receive and/or Transmit mode is enabled or disabled.\nThis parameter can be a value of  [`USART_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetTransferDirection()`]\n\n"]
+    pub TransferDirection: u32,
+    #[doc = "Specifies whether the hardware flow control mode is enabled or disabled.\nThis parameter can be a value of  [`USART_LL_EC_HWCONTROL`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetHWFlowCtrl()`]\n\n"]
+    pub HardwareFlowControl: u32,
+    #[doc = "Specifies whether USART oversampling mode is 16 or 8.\nThis parameter can be a value of  [`USART_LL_EC_OVERSAMPLING`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetOverSampling()`]\n\n"]
+    pub OverSampling: u32,
+}
+#[test]
+fn bindgen_test_layout_LL_USART_InitTypeDef() {
+    const UNINIT: ::core::mem::MaybeUninit<LL_USART_InitTypeDef> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<LL_USART_InitTypeDef>(),
+        32usize,
+        concat!("Size of: ", stringify!(LL_USART_InitTypeDef))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<LL_USART_InitTypeDef>(),
+        4usize,
+        concat!("Alignment of ", stringify!(LL_USART_InitTypeDef))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).PrescalerValue) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(PrescalerValue)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).BaudRate) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(BaudRate)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).DataWidth) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(DataWidth)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).StopBits) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(StopBits)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Parity) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(Parity)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).TransferDirection) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(TransferDirection)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).HardwareFlowControl) as usize - ptr as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(HardwareFlowControl)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).OverSampling) as usize - ptr as usize },
+        28usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(OverSampling)
+        )
+    );
+}
+extern "C" {
+    pub fn LL_USART_Init(
+        USARTx: *mut USART_TypeDef,
+        USART_InitStruct: *const LL_USART_InitTypeDef,
+    ) -> ErrorStatus;
+}
+extern "C" {
+    pub fn LL_SetSystemCoreClock(HCLKFrequency: u32);
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
