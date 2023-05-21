@@ -33,10 +33,10 @@ Make sure to update the SDK details in [`README.md`] before making a new release
 
 Alternatively, you can generate `binding.rs` in an isolated env using Docker and the following command:
 
-From the root of the repository, to build the binding for the branch/tag `0.82.3` of the official SDK:
+From the root of the repository, to build the binding for the branch/tag `0.83.1` of the official SDK:
 
 ```shell
-docker run --rm -t $(docker build --build-arg BRANCH=0.82.3 -q -f tools/Dockerfile .) > crates/sys/src/bindings.rs
+docker run --rm $(docker build --build-arg BRANCH=0.83.1 -q -f tools/Dockerfile .) > crates/sys/src/bindings.rs
 ```
 
 [`bindings.rs`]: ../crates/sys/src/bindings.rs
