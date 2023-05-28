@@ -1,82 +1,105 @@
 //! Furi syncronization primitives.
 
-use core::cell::UnsafeCell;
-use core::marker::PhantomData;
-use core::ops::{Deref, DerefMut};
-use core::ptr::NonNull;
+use core::ptr;
+use core::sync::atomic::{AtomicPtr, Ordering};
 
 use flipperzero_sys as sys;
+use lock_api::{GuardNoSend, RawMutex, RawMutexTimed};
 use sys::furi::Status;
 
-use crate::furi;
+use super::time::{Duration, Instant};
 
 const MUTEX_TYPE: u8 = sys::FuriMutexType_FuriMutexTypeNormal;
 
-/// Negative trait bounds are not implemented (see rust-lang/rust#68318).
-/// As a workaround we can force `!Send`/`!Sync` by pretending we own a raw pointer.
-type UnsendUnsync = PhantomData<*const ()>;
+/// A [`RawMutex`] implementation backed by Furi. You probably want to use [`Mutex`]
+/// instead.
+pub struct FuriMutex(AtomicPtr<sys::FuriMutex>);
 
-/// A mutual exclusion primitive useful for protecting shared data.
-pub struct Mutex<T: ?Sized> {
-    mutex: NonNull<sys::FuriMutex>,
-    data: UnsafeCell<T>,
-}
+impl FuriMutex {
+    const fn new() -> Self {
+        Self(AtomicPtr::new(ptr::null_mut()))
+    }
 
-impl<T> Mutex<T> {
-    pub fn new(data: T) -> Self {
-        let mutex = unsafe { NonNull::new_unchecked(sys::furi_mutex_alloc(MUTEX_TYPE)) };
-
-        Mutex {
-            mutex,
-            data: UnsafeCell::new(data),
+    unsafe fn get(&self) -> *mut sys::FuriMutex {
+        let mutex = self.0.load(Ordering::Acquire);
+        if !mutex.is_null() {
+            mutex
+        } else {
+            self.create()
         }
     }
 
-    /// Acquires a mutex, blocking the current thread until it is able to do so.
-    pub fn lock(&self) -> furi::Result<MutexGuard<'_, T>> {
-        let status: Status =
-            unsafe { sys::furi_mutex_acquire(self.mutex.as_ptr(), u32::MAX).into() };
-        if status.is_err() {
-            return Err(status);
+    unsafe fn create(&self) -> *mut sys::FuriMutex {
+        let mutex = unsafe { sys::furi_mutex_alloc(MUTEX_TYPE) };
+
+        match self
+            .0
+            .compare_exchange(ptr::null_mut(), mutex, Ordering::Release, Ordering::Relaxed)
+        {
+            Ok(_) => mutex,
+            Err(global_ptr) => {
+                unsafe { sys::furi_mutex_free(mutex) };
+                global_ptr
+            }
         }
+    }
 
-        Ok(MutexGuard(self, PhantomData))
+    /// Attempts to acquire the mutex within `timeout` ticks, or without blocking if
+    /// `timeout` is zero.
+    fn try_acquire(&self, timeout: u32) -> bool {
+        let status: Status = unsafe { sys::furi_mutex_acquire(self.get(), timeout).into() };
+        status.is_ok()
     }
 }
 
-unsafe impl<T: ?Sized + Send> Send for Mutex<T> {}
-unsafe impl<T: ?Sized + Send> Sync for Mutex<T> {}
-
-/// An RAII implementation of a "scoped lock" of a mutex.
-/// When this structure is dropped (falls out of scope), the lock will be unlocked.
-pub struct MutexGuard<'a, T: ?Sized + 'a>(&'a Mutex<T>, UnsendUnsync);
-
-impl<T> Deref for MutexGuard<'_, T> {
-    type Target = T;
-
-    fn deref(&self) -> &Self::Target {
-        unsafe { &*self.0.data.get() }
-    }
-}
-
-impl<T> DerefMut for MutexGuard<'_, T> {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        unsafe { &mut *self.0.data.get() }
-    }
-}
-
-impl<T: ?Sized> Drop for MutexGuard<'_, T> {
+impl Drop for FuriMutex {
     fn drop(&mut self) {
-        let status: Status = unsafe { sys::furi_mutex_release(self.0.mutex.as_ptr()).into() };
+        let mutex = self.0.load(Ordering::Acquire);
+        if !mutex.is_null() {
+            unsafe { sys::furi_mutex_free(mutex) };
+        }
+    }
+}
+
+unsafe impl RawMutex for FuriMutex {
+    const INIT: Self = FuriMutex::new();
+    type GuardMarker = GuardNoSend;
+
+    fn lock(&self) {
+        // `INCLUDE_vTaskSuspend` is set to 1 in the Flipper Zero's FreeRTOS config, so as
+        // long as this timeout value matches `portMAX_DELAY` in the FreeRTOS config, this
+        // will block indefinitely as intended.
+        assert!(self.try_acquire(u32::MAX));
+    }
+
+    fn try_lock(&self) -> bool {
+        self.try_acquire(0)
+    }
+
+    unsafe fn unlock(&self) {
+        let status: Status = unsafe { sys::furi_mutex_release(self.get()).into() };
         if status.is_err() {
             panic!("furi_mutex_release failed: {}", status);
         }
     }
 }
 
-// `UnsendUnsync` is actually a bit too strong.
-// As long as `T` implements `Sync`, it's fine to access it from another thread.
-unsafe impl<T: ?Sized + Sync> Sync for MutexGuard<'_, T> {}
+unsafe impl RawMutexTimed for FuriMutex {
+    type Duration = Duration;
+    type Instant = Instant;
+
+    fn try_lock_for(&self, timeout: Self::Duration) -> bool {
+        self.try_acquire(timeout.0)
+    }
+
+    fn try_lock_until(&self, timeout: Self::Instant) -> bool {
+        let now = unsafe { sys::furi_get_tick() };
+        self.try_lock_for(Duration(timeout.0.wrapping_sub(now)))
+    }
+}
+
+pub type Mutex<T> = lock_api::Mutex<FuriMutex, T>;
+pub type MutexGuard<'a, T> = lock_api::MutexGuard<'a, FuriMutex, T>;
 
 #[flipperzero_test::tests]
 mod tests {
@@ -87,13 +110,13 @@ mod tests {
         let mutex = Mutex::new(7u64);
 
         {
-            let mut value = mutex.lock().expect("should not fail");
+            let mut value = mutex.lock();
             assert_eq!(*value, 7);
             *value = 42;
         }
 
         {
-            let value = mutex.lock().expect("should not fail");
+            let value = mutex.lock();
             assert_eq!(*value, 42);
         }
     }

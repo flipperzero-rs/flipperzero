@@ -7,6 +7,7 @@ pub mod rng;
 pub mod string;
 pub mod sync;
 pub mod thread;
+pub mod time;
 
 use flipperzero_sys as sys;
 
