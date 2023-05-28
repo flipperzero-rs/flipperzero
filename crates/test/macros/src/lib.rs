@@ -87,7 +87,7 @@ fn tests_runner_impl(args: TokenStream) -> parse::Result<TokenStream> {
 
             (
                 quote!(#attr::__test_list().len()),
-                quote!(#attr::__test_list().map(|(name, test_fn)| (#module, name, test_fn))),
+                quote!(#attr::__test_list().iter().copied().map(|(name, test_fn)| (#module, name, test_fn))),
             )
         })
         .collect::<Vec<_>>();
@@ -170,18 +170,23 @@ fn tests_impl(args: TokenStream, input: TokenStream) -> parse::Result<TokenStrea
     };
 
     let mut tests = vec![];
+    let mut test_cfgs = vec![];
     let mut untouched_tokens = vec![];
     for item in items {
         match item {
             Item::Fn(mut f) => {
                 let mut is_test = false;
+                let mut cfg = vec![];
 
-                // Find and extract the `#[test]` attribute, if present.
+                // Find and extract the `#[test]` and `#[cfg(..)] attributes, if present.
                 f.attrs.retain(|attr| {
                     if attr.path.is_ident("test") {
                         is_test = true;
                         false
                     } else {
+                        if attr.path.is_ident("cfg") {
+                            cfg.push(attr.clone());
+                        }
                         true
                     }
                 });
@@ -220,6 +225,7 @@ fn tests_impl(args: TokenStream, input: TokenStream) -> parse::Result<TokenStrea
                     )?));
 
                     tests.push(f);
+                    test_cfgs.push(cfg);
                 } else {
                     untouched_tokens.push(Item::Fn(f));
                 }
@@ -231,11 +237,13 @@ fn tests_impl(args: TokenStream, input: TokenStream) -> parse::Result<TokenStrea
     }
 
     let ident = module.ident;
-    let test_count = tests.len();
-    let test_names = tests.iter().map(|test| {
+    let test_names = tests.iter().zip(test_cfgs).map(|(test, cfg)| {
         let ident = &test.sig.ident;
         let name = ident.to_string();
-        quote!((#name, #ident))
+        quote! {
+            #(#cfg)*
+            (#name, #ident)
+        }
     });
 
     Ok(quote!(
@@ -245,8 +253,8 @@ fn tests_impl(args: TokenStream, input: TokenStream) -> parse::Result<TokenStrea
 
             #(#tests)*
 
-            pub(crate) const fn __test_list() -> [(&'static str, ::flipperzero_test::TestFn); #test_count] {
-                [#(#test_names), *]
+            pub(crate) const fn __test_list() -> &'static [(&'static str, ::flipperzero_test::TestFn)] {
+                &[#(#test_names), *]
             }
         }
     )
