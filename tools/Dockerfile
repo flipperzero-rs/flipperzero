@@ -2,7 +2,7 @@ FROM --platform=x86_64 debian:bookworm AS firmware-builder
 
 # FIRMWARE_GIT should be a git repo with the firmware source code
 ARG FIRMWARE_GIT=https://github.com/flipperdevices/flipperzero-firmware.git
-ARG BRANCH=0.82.3
+ARG BRANCH=0.83.1
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -10,7 +10,6 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     git \
     curl \
-    clang \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -30,13 +29,13 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     ca-certificates \
     libudev-dev \
-    libclang-dev \
-    clang \
     && rm -rf /var/lib/apt/lists/*
 
 RUN rustup component add rustfmt
 
 WORKDIR /app
+
+RUN curl -L https://github.com/llvm/llvm-project/releases/download/llvmorg-16.0.4/clang+llvm-16.0.4-x86_64-linux-gnu-ubuntu-22.04.tar.xz | tar -x --xz
 
 COPY --from=firmware-builder /app/firmware /app/firmware
 
@@ -46,11 +45,10 @@ COPY . .
 
 WORKDIR /app/flipperzero-rs/tools
 
-RUN cargo run --bin generate-bindings /app/firmware/build/f7-firmware-D/sdk_headers/
+# We don't use debian's libclang. For details see https://github.com/flipperzero-rs/flipperzero/pull/70#discussion_r1199723419
+RUN env LIBCLANG_PATH=/app/clang+llvm-16.0.4-x86_64-linux-gnu-ubuntu-22.04/lib cargo run --bin generate-bindings /app/firmware/build/f7-firmware-D/sdk_headers/
 
 RUN cp bindings.rs ../crates/sys/src
-
-RUN rustfmt --config newline_style=unix ../crates/sys/src/bindings.rs
 
 WORKDIR /app/flipperzero-rs/crates
 

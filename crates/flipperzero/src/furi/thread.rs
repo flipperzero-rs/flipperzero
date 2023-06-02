@@ -154,7 +154,8 @@ where
 pub fn current() -> Thread {
     use alloc::borrow::ToOwned;
 
-    let thread = unsafe { NonNull::new_unchecked(sys::furi_thread_get_current()) };
+    let thread = NonNull::new(unsafe { sys::furi_thread_get_current() })
+        .expect("furi_thread_get_current shouldn't return null");
 
     let name = {
         let name = unsafe { sys::furi_thread_get_name(sys::furi_thread_get_current_id()) };
