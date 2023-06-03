@@ -50,6 +50,7 @@ impl<D> XbmImage<D> {
         }
     }
 
+    // FIXME: XBM trails on line ends
     #[inline]
     const fn offsets(&self, x: u8, y: u8) -> Option<(u8, u8)> {
         if let Some(offset) = self.offset(x, y) {
@@ -189,8 +190,7 @@ impl XbmImage<&'static [u8]> {
     /// Basic usage:
     ///
     /// ```rust
-    /// use flipperzero::gui::xbm::XbmImage;
-    ///
+    /// # use flipperzero::gui::xbm::XbmImage;
     /// const IMAGE: XbmImage<&'static [u8]> = XbmImage::new_from_static(4, 4, &[0xFE, 0x12]);
     /// ```
     pub const fn new_from_static(width: u8, height: u8, data: &'static [u8]) -> Self {
@@ -217,9 +217,8 @@ impl<const SIZE: usize> XbmImage<ByteArray<SIZE>> {
     /// Basic usage:
     ///
     /// ```rust
-    /// use flipperzero::gui::xbm::XbmImage;
-    ///
-    /// const IMAGE: XbmImage<[u8; 2]> = XbmImage::new_from_array::<4, 4>([0xFE, 0x12]);
+    /// # use flipperzero::gui::xbm::{XbmImage, ByteArray};
+    /// const IMAGE: XbmImage<ByteArray<2>> = XbmImage::new_from_array::<4, 4>([0xFE, 0x12]);
     /// ```
     pub const fn new_from_array<const WIDTH: u8, const HEIGHT: u8>(data: [u8; SIZE]) -> Self {
         let bytes = Self::dimension_bytes(WIDTH, HEIGHT);
@@ -251,20 +250,120 @@ impl<const N: usize> DerefMut for ByteArray<N> {
     }
 }
 
+/// Creates
 #[macro_export]
 macro_rules! xbm {
     (
-        #define $_width_ident:ident $width:literal
-        #define $_height_ident:ident $height:literal
+        unsafe {
+            #define $_width_ident:ident $width:literal
+            #define $_height_ident:ident $height:literal
+            $(
+                #define $_x_hotspot_ident:ident $_hotspot_x:literal
+                #define $_y_hotspot_ident:ident $_hotspot_y:literal
+            )?
+            static char $_bits_ident:ident[] = {
+                $($byte:literal),* $(,)?
+            };
+        }
+    ) => {{
+        $crate::gui::xbm::XbmImage::new_from_array::<$width, $height>([$($byte,)*])
+    }};
+    (
+        #define $width_ident:ident $width:literal
+        #define $height_ident:ident $height:literal
         $(
-            #define $_hotspot_x_ident:ident $_hotspot_x:literal
-            #define $_hotspot_y_ident:ident $_hotspot_y:literal
+            #define $x_hotspot_ident:ident $_hotspot_x:literal
+            #define $y_hotspot_ident:ident $_hotspot_y:literal
         )?
-        static char $_bits_ident:ident[] = {
+        static char $bits_ident:ident[] = {
             $($byte:literal),* $(,)?
         };
     ) => {{
-        $crate::gui::xbm::XbmImage::new_from_array::<$width, $height>([$($byte,)*])
+        { // name assertions
+            let bits_ident = stringify!($bits_ident).as_bytes();
+            assert!(
+                matches!(bits_ident, [.., b'_', b'b', b'i', b't', b's']),
+                "width identifier should end with `_bits`",
+            );
+            let significant_len = bits_ident.len() - b"_bits".len();
+
+            const fn str_eq(left: &[u8], right: &[u8], limit: usize) -> bool {
+                match (left.split_first(), right.split_first()) {
+                    (
+                        Some((&left_first, left_remaining)),
+                        Some((&right_first, right_remaining)),
+                    ) => {
+                        left_first == right_first
+                            && (limit == 1 || str_eq(left_remaining, right_remaining, limit - 1))
+                    }
+                    (None, None) => true,
+                    _ => false,
+                }
+            }
+
+            let width_ident = stringify!($width_ident).as_bytes();
+            assert!(
+                matches!(width_ident, [.., b'_', b'w', b'i', b'd', b't', b'h']),
+                "width identifier should end with `_width`",
+            );
+            assert!(
+                str_eq(bits_ident, width_ident, significant_len),
+                "bits identifier and width identifier should have the same prefix"
+            );
+
+            let height_ident = stringify!($height_ident).as_bytes();
+            assert!(
+                matches!(height_ident, [.., b'_', b'h', b'e', b'i', b'g', b'h', b't']),
+                "width identifier should end with `_height`",
+            );
+            assert!(
+                str_eq(bits_ident, height_ident, significant_len),
+                "bits identifier and height identifier should have the same prefix"
+            );
+
+            $(
+            let x_hotspot_ident = stringify!($x_hotspot_ident).as_bytes();
+            assert!(
+                matches!(bits_ident, [.., b'_', b'x', b'_', b'h', b'o', b't']),
+                "x-hotspot identifier should end with `_x_hot`",
+            );
+            assert!(
+                str_eq(bits_ident, x_hotspot_ident, significant_len),
+                "bits identifier and x-hotspot identifier should have the same prefix"
+            );
+
+            let y_hotspot_ident = stringify!($y_hotspot_ident).as_bytes();
+            assert!(
+                matches!(bits_ident, [.., b'_', b'y', b'_', b'h', b'o', b't']),
+                "y-hotspot identifier should end with `_y_hot`",
+            );
+            assert!(
+                str_eq(bits_ident, y_hotspot_ident, significant_len),
+                "bits identifier and y-hotspot identifier should have the same prefix"
+            );
+            )?
+
+            // assert!(::core::matches!(
+            //     width_ident.get(width_ident.len() - 5),
+            //     ::core::option::Option::Some(b'w')
+            // ), "sad");
+            // match width_ident.get(width_ident.len() - 5..) {
+            //     ::core::option::Option::Some(b"width") => {},
+            //     _ => panic!("the first identifier should end with `_width")
+            // };
+        }
+
+        $crate::xbm!(unsafe {
+            #define $width_ident $width
+            #define $height_ident $height
+            $(
+                #define $x_hotspot_ident $_hotspot_x
+                #define $y_hotspot_ident $_hotspot_y
+            )?
+            static char $bits_ident[] = {
+                $($byte),*
+            };
+        })
     }};
 }
 
