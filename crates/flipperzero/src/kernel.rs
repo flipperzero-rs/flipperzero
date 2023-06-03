@@ -36,8 +36,8 @@ pub fn lock() -> Result<LockGuard, LockError> {
 #[cfg_attr(
     feature = "unstable_lints",
     must_not_suspend = "holding a MutexGuard across suspend \
-                      points can cause deadlocks, delays, \
-                      and cause Futures to not implement `Send`"
+    points can cause deadlocks, delays, \
+    and cause Futures to not implement `Send`"
 )]
 pub struct LockGuard {
     was_locked: bool,
