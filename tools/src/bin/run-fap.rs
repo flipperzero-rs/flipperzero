@@ -22,7 +22,9 @@ struct Cli {
 
     /// Arguments to provide to the FAP binary.
     ///
-    /// Ignored until https://github.com/flipperdevices/flipperzero-firmware/issues/2505 is resolved.
+    /// Ignored until [flipperdevices/flipperzero-firmware#2505][1] is resolved.
+    ///
+    /// [1]: https://github.com/flipperdevices/flipperzero-firmware/issues/2505
     args: Vec<String>,
 }
 

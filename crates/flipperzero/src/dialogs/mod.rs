@@ -37,14 +37,14 @@ impl DialogsApp {
     /// Obtains a handle to the Dialogs app.
     pub fn open() -> Self {
         Self {
-            data: unsafe { UnsafeRecord::open(RECORD_DIALOGS) },
+            data: unsafe { UnsafeRecord::open(Self::RECORD_DIALOGS) },
         }
     }
 
     /// Displays a message.
     pub fn show(&mut self, message: &DialogMessage) -> DialogMessageButton {
         let button_sys =
-            unsafe { sys::dialog_message_show(self.data.as_ptr(), message.data.as_ptr()) };
+            unsafe { sys::dialog_message_show(self.data.as_raw(), message.data.as_ptr()) };
 
         DialogMessageButton::from_sys(button_sys).expect("Invalid button")
     }
@@ -96,8 +96,8 @@ impl<'a> DialogMessage<'a> {
                 header.as_ptr(),
                 x,
                 y,
-                horizontal.to_sys(),
-                vertical.to_sys(),
+                horizontal.into(),
+                vertical.into(),
             );
         }
     }
@@ -110,8 +110,8 @@ impl<'a> DialogMessage<'a> {
                 text.as_ptr(),
                 x,
                 y,
-                horizontal.to_sys(),
-                vertical.to_sys(),
+                horizontal.into(),
+                vertical.into(),
             );
         }
     }

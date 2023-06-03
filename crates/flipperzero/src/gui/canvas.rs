@@ -436,12 +436,12 @@ pub enum Color {
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum FromSysColor {
+pub enum FromSysColorError {
     Invalid(SysColor),
 }
 
 impl TryFrom<SysColor> for Color {
-    type Error = FromSysColor;
+    type Error = FromSysColorError;
 
     fn try_from(value: SysColor) -> Result<Self, Self::Error> {
         use sys::{
@@ -484,13 +484,13 @@ pub enum Font {
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum FromSysFont {
+pub enum FromSysFontError {
     TotalNumber,
     Invalid(SysFont),
 }
 
 impl TryFrom<SysFont> for Font {
-    type Error = FromSysFont;
+    type Error = FromSysFontError;
 
     fn try_from(value: SysFont) -> Result<Self, Self::Error> {
         use sys::{
@@ -588,12 +588,12 @@ pub enum Align {
 }
 
 #[derive(Clone, Copy, Debug)]
-pub enum FromSysAlign {
+pub enum FromSysAlignError {
     Invalid(SysAlign),
 }
 
 impl TryFrom<SysAlign> for Align {
-    type Error = FromSysAlign;
+    type Error = FromSysAlignError;
 
     fn try_from(value: SysAlign) -> Result<Self, Self::Error> {
         use sys::{
