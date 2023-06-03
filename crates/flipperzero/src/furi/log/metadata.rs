@@ -159,7 +159,7 @@ impl ufmt::uDisplay for Level {
 }
 
 #[cfg(feature = "std")]
-#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "std")))]
 impl std::error::Error for ParseLevelError {}
 
 impl FromStr for Level {
@@ -466,6 +466,7 @@ impl ufmt::uDisplay for ParseLevelFilterError {
 }
 
 #[cfg(feature = "std")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "std")))]
 impl std::error::Error for ParseLevelFilterError {}
 
 #[repr(usize)]

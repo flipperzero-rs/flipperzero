@@ -12,8 +12,7 @@ mod xbms;
 extern crate flipperzero_rt;
 
 // Required for allocator
-extern crate alloc;
-extern crate flipperzero_alloc;
+extern crate flipperzero_alloc as alloc;
 
 use alloc::{ffi::CString, string::ToString};
 use core::{ffi::CStr, time::Duration};

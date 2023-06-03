@@ -1,26 +1,39 @@
 //! High-level bindings for the Flipper Zero.
-
+#![cfg_attr(feature = "document-features", doc = document_features::document_features!())]
 #![no_std]
+#![cfg_attr(test, no_main)]
 #![cfg_attr(feature = "unstable_intrinsics", feature(int_roundings))]
 #![cfg_attr(feature = "unstable_lints", feature(must_not_suspend))]
-#![cfg_attr(test, no_main)]
+#![cfg_attr(feature = "unstable_docs", feature(doc_cfg))]
 
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
 #[cfg(feature = "service-dialogs")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "service-dialogs")))]
 pub mod dialogs;
+#[cfg(feature = "service-dolphin")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "service-dolphin")))]
 pub mod dolphin;
 pub mod furi;
 #[cfg(feature = "service-gui")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "service-gui")))]
 pub mod gui;
+#[cfg(feature = "service-input")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "service-input")))]
 pub mod input;
 pub(crate) mod internals;
 pub mod io;
 pub mod kernel;
 pub mod macros;
+#[cfg(feature = "service-notification")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "service-notification")))]
 pub mod notification;
+#[cfg(feature = "service-storage")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "service-storage")))]
 pub mod storage;
+#[cfg(feature = "service-toolbox")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "service-toolbox")))]
 pub mod toolbox;
 
 #[doc(hidden)]

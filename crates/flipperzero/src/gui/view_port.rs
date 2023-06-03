@@ -96,7 +96,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
         view_port
     }
 
-    /// Creates a copy of the raw pointer to the [`SysViewPort`].
+    /// Creates a copy of the raw pointer to the [`sys::ViewPort`].
     pub fn as_raw(&self) -> *mut SysViewPort {
         self.raw.as_ptr()
     }

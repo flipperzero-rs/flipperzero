@@ -18,7 +18,7 @@ impl<C: ViewCallbacks> View<C> {
         Self { raw, callbacks }
     }
 
-    /// Creates a copy of raw pointer to the [`SysView`].
+    /// Creates a copy of raw pointer to the [`sys::View`].
     pub fn as_raw(&self) -> *mut SysView {
         self.raw.as_ptr()
     }

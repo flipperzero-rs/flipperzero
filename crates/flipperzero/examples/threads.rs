@@ -7,9 +7,7 @@
 extern crate flipperzero_rt;
 
 // Required for allocator
-extern crate flipperzero_alloc;
-
-extern crate alloc;
+extern crate flipperzero_alloc as alloc;
 
 use alloc::borrow::ToOwned;
 use core::time::Duration;

@@ -5,8 +5,7 @@
 #![no_main]
 #![no_std]
 
-extern crate alloc;
-extern crate flipperzero_alloc;
+extern crate flipperzero_alloc as alloc;
 extern crate flipperzero_rt;
 
 use alloc::boxed::Box;

@@ -14,6 +14,7 @@ autobenches = false
 default-target = "thumbv7em-none-eabihf"
 targets = []
 all-features = true
+cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples"]
 
 [lib]
 bench = false
@@ -34,6 +35,9 @@ lock_api = "0.4"
 digest = "0.10"
 bitflags = "1.0"
 
+# Docs
+document-features = { workspace = true, optional = true }
+
 [dev-dependencies]
 flipperzero-alloc.workspace = true
 flipperzero-rt.workspace = true
@@ -44,22 +48,71 @@ md-5 = { version = "0.10", default-features = false }
 sha2 = { version = "0.10", default-features = false }
 
 [features]
-default = ["unstable_lints", "unstable_intrinsics"]
-# enables all optional services
-all-services = ["service-gui", "service-dialogs"]
-# enables features requiring an allocator
+
+## Default features.
+default = []
+
+## Enables features requiring an allocator.
+##
+## This will require you to set up an allocator such as by the following:
+##
+## ```
+## extern crate flipperzero_alloc as alloc;
+## ```
+##
+## Note that the `as alloc` part is optional but is helpful
+## if you want to reference items from `alloc` crate all of which are re-exported by `flipperzero_alloc`
+## such as `alloc::string::ToString` instead of `flipperzero_alloc::string::ToString`.
 alloc = []
-# enables unstable Rust intrinsics
-unstable_intrinsics = []
-# enables unstable Rust lints on types provided by this crate
-unstable_lints = []
-# enables GUI APIs of Flipper
+
+#! ## Service features.
+#!
+#! These enables specific Flipper Service APIs.
+
+## enables all Service APIs
+all-services = [
+    "service-storage",
+    "service-notification",
+    "service-input",
+    "service-toolbox",
+    "service-gui",
+    "service-dialogs",
+    "service-dolphin",
+]
+## Enables Storage Service APIs.
+service-storage = []
+## Enables Notification Service APIs.
+service-notification = []
+## Enables Input Service APIs.
+service-input = []
+## Enables Toolbox APIs.
+service-toolbox = []
+## Enables GUI APIs of Flipper.
 service-gui = ["alloc"]
-# enables Dialogs APIs of Flipper
+## Enables Dialogs APIs of Flipper.
 service-dialogs = ["service-gui"]
+## Enables Dolphin APIs of Flipper.
+service-dolphin = []
+
+##! ## Unstable features
+##!
+##! This features are unstable and are yet a subject to dramatic changes.
+##! They may provide experimental APIs, nightly-only features and optimizations etc.
+
+## Enables unstable Rust intrinsics. This requires `nightly` compiler version.
+unstable_intrinsics = []
+## Enables unstable Rust lints on types provided by this crate.
+## This requires `nightly` compiler version.
+unstable_lints = []
+
+# Internal features
+
+# Enables unstable doc
+unstable_docs = []
 
 [[test]]
 name = "dolphin"
+required-features = ["service-dolphin"]
 harness = false
 
 [[test]]
@@ -68,7 +121,7 @@ harness = false
 
 [[example]]
 name = "dialog"
-required-features = ["service-dialogs"]
+required-features = ["service-dialogs", "service-input"]
 
 [[example]]
 name = "gui"

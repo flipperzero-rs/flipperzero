@@ -11,7 +11,7 @@ impl Icon {
     ///
     /// # Safety
     ///
-    /// `raw` should be a valid non-null pointer to [`SysCanvas`].
+    /// `raw` should be a valid non-null pointer to [`sys::Canvas`].
     ///
     /// # Examples
     ///

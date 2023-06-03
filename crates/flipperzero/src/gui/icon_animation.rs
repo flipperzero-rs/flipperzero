@@ -121,7 +121,7 @@ impl IconAnimationView<'_> {
     ///
     /// # Safety
     ///
-    /// `raw` should be a valid non-null pointer to [`SysCanvas`]
+    /// `raw` should be a valid non-null pointer to [`sys::Canvas`]
     /// and the lifetime should be outlived by `raw` validity scope.
     ///
     /// # Examples

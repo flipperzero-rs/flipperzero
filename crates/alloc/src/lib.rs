@@ -6,6 +6,10 @@
 use core::alloc::{GlobalAlloc, Layout};
 use core::ffi::c_void;
 
+extern crate alloc;
+// re-export all items from `alloc` so that the API user can only extern this crate
+pub use alloc::*;
+
 use flipperzero_sys as sys;
 
 pub struct FuriAlloc;
