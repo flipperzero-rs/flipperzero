@@ -30,7 +30,12 @@ pub fn panic(panic_info: &PanicInfo<'_>) -> ! {
             let file = location.file();
             let line = location.line();
 
-            sys::__wrap_printf(c_string!(", %*s:%u"), file.len(), file.as_ptr() as *const c_char, line);
+            sys::__wrap_printf(
+                c_string!(", %*s:%u"),
+                file.len(),
+                file.as_ptr() as *const c_char,
+                line,
+            );
         }
 
         sys::__wrap_printf(c_string!("\x1b[0m\r\n"));

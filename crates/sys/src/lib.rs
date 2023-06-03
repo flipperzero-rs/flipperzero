@@ -2,6 +2,18 @@
 
 #![no_std]
 
+// Features that identify thumbv7em-none-eabihf.
+// Until target_abi is stable, this also permits thumbv7em-none-eabi.
+#[cfg(not(all(
+    target_arch = "arm",
+    target_feature = "thumb2",
+    target_feature = "v7",
+    target_feature = "dsp",
+    target_os = "none",
+    //target_abi = "eabihf",
+)))]
+core::compile_error!("This crate requires `--target thumbv7em-none-eabihf`");
+
 pub mod furi;
 mod inlines;
 

@@ -31,6 +31,13 @@ $ cp bindings.rs ../crates/sys/src
 
 Make sure to update the SDK details in [`README.md`] before making a new release.
 
+Alternatively, you can generate `binding.rs` in an isolated env using Docker and the following command:
+
+From the root of the repository, to build the binding for the branch/tag `0.84.1` of the official SDK:
+
+```shell
+docker run --rm $(docker build --build-arg BRANCH=0.84.1 -q -f tools/Dockerfile .) > crates/sys/src/bindings.rs
+```
 
 [`bindings.rs`]: ../crates/sys/src/bindings.rs
 [`flipperzero-firmware`]: https://github.com/flipperdevices/flipperzero-firmware

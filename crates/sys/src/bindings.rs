@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 917504;
+pub const API_VERSION: u32 = 1835010;
 pub type wint_t = core::ffi::c_int;
 pub type _off_t = core::ffi::c_long;
 pub type _fpos_t = core::ffi::c_long;
@@ -1778,7 +1778,8 @@ extern "C" {
     #[doc = "Delay in microseconds\nImplemented using Cortex DWT counter. Blocking and non aliased.\n\n# Arguments\n\n* `microseconds` - [Direction: In] microseconds to wait\n\n"]
     pub fn furi_delay_us(microseconds: u32);
 }
-pub type va_list = u32;
+pub type __gnuc_va_list = u32;
+pub type va_list = __gnuc_va_list;
 pub type FILE = __FILE;
 extern "C" {
     pub fn sscanf(
@@ -2013,12 +2014,16 @@ extern "C" {
     ) -> *mut FuriThread;
 }
 extern "C" {
-    #[doc = "Release FuriThread\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
+    #[doc = "Release FuriThread\n\n**Warning!**\n\n* see furi_thread_join\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
     pub fn furi_thread_free(thread: *mut FuriThread);
 }
 extern "C" {
     #[doc = "Set FuriThread name\n\n# Arguments\n\n* `thread` - FuriThread instance\n* `name` - string\n\n"]
     pub fn furi_thread_set_name(thread: *mut FuriThread, name: *const core::ffi::c_char);
+}
+extern "C" {
+    #[doc = "Set FuriThread appid Technically, it is like a \"process id\", but it is not a system-wide unique identifier. All threads spawned by the same app will have the same appid.\n\n# Arguments\n\n* `thread` - \n* `appid` - \n\n"]
+    pub fn furi_thread_set_appid(thread: *mut FuriThread, appid: *const core::ffi::c_char);
 }
 extern "C" {
     #[doc = "Mark thread as service The service cannot be stopped or removed, and cannot exit from the thread body\n\n# Arguments\n\n* `thread` - \n\n"]
@@ -2068,7 +2073,7 @@ extern "C" {
     pub fn furi_thread_start(thread: *mut FuriThread);
 }
 extern "C" {
-    #[doc = "Join FuriThread\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
+    #[doc = "Join FuriThread\n\n**Warning!**\n\n* Use this method only when CPU is not busy(Idle task receives control), otherwise it will wait forever.\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `thread` - FuriThread instance\n\n"]
     pub fn furi_thread_join(thread: *mut FuriThread) -> bool;
 }
 extern "C" {
@@ -2092,7 +2097,7 @@ extern "C" {
     pub fn furi_thread_get_current_id() -> FuriThreadId;
 }
 extern "C" {
-    #[doc = "Get FuriThread instance for current thread\n\nReturns:\n\n* FuriThread*\n\n"]
+    #[doc = "Get FuriThread instance for current thread\n\nReturns:\n\n* pointer to FuriThread or NULL if this thread doesn't belongs to Furi\n\n"]
     pub fn furi_thread_get_current() -> *mut FuriThread;
 }
 extern "C" {
@@ -2112,12 +2117,19 @@ extern "C" {
     pub fn furi_thread_flags_wait(flags: u32, options: u32, timeout: u32) -> u32;
 }
 extern "C" {
+    #[doc = "Enumerate threads\n\nReturns:\n\n* uint32_t threads count\n\n# Arguments\n\n* `thread_array` - array of FuriThreadId, where thread ids will be stored\n* `array_items` - array size\n\n"]
     pub fn furi_thread_enumerate(thread_array: *mut FuriThreadId, array_items: u32) -> u32;
 }
 extern "C" {
+    #[doc = "Get thread name\n\nReturns:\n\n* const char* name or NULL\n\n# Arguments\n\n* `thread_id` - \n\n"]
     pub fn furi_thread_get_name(thread_id: FuriThreadId) -> *const core::ffi::c_char;
 }
 extern "C" {
+    #[doc = "Get thread appid\n\nReturns:\n\n* const char* appid\n\n# Arguments\n\n* `thread_id` - \n\n"]
+    pub fn furi_thread_get_appid(thread_id: FuriThreadId) -> *const core::ffi::c_char;
+}
+extern "C" {
+    #[doc = "Get thread stack watermark\n\nReturns:\n\n* uint32_t\n\n# Arguments\n\n* `thread_id` - \n\n"]
     pub fn furi_thread_get_stack_space(thread_id: FuriThreadId) -> u32;
 }
 extern "C" {
@@ -2125,8 +2137,8 @@ extern "C" {
     pub fn furi_thread_get_stdout_callback() -> FuriThreadStdoutWriteCallback;
 }
 extern "C" {
-    #[doc = "Set STDOUT callback for thread\n\nReturns:\n\n* true on success, otherwise fail\n\n# Arguments\n\n* `callback` - callback or NULL to clear\n\n"]
-    pub fn furi_thread_set_stdout_callback(callback: FuriThreadStdoutWriteCallback) -> bool;
+    #[doc = "Set STDOUT callback for thread\n\n# Arguments\n\n* `callback` - callback or NULL to clear\n\n"]
+    pub fn furi_thread_set_stdout_callback(callback: FuriThreadStdoutWriteCallback);
 }
 extern "C" {
     #[doc = "Write data to buffered STDOUT\n\nReturns:\n\n* size_t written data size\n\n# Arguments\n\n* `data` - input data\n* `size` - input data size\n\n"]
@@ -2343,78 +2355,14 @@ extern "C" {
     #[doc = "Is timer running\n\nReturns:\n\n* 0: not running, 1: running\n\n# Arguments\n\n* `instance` - The pointer to FuriTimer instance\n\n"]
     pub fn furi_timer_is_running(instance: *mut FuriTimer) -> u32;
 }
-#[doc = "== ValueMutex ==\nThe most simple concept is ValueMutex. It is wrapper around mutex and value pointer. You can take and give mutex to work with value and read and write value.\n\n"]
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct ValueMutex {
-    pub value: *mut core::ffi::c_void,
-    pub size: usize,
-    pub mutex: *mut FuriMutex,
-}
-#[test]
-fn bindgen_test_layout_ValueMutex() {
-    const UNINIT: ::core::mem::MaybeUninit<ValueMutex> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<ValueMutex>(),
-        12usize,
-        concat!("Size of: ", stringify!(ValueMutex))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<ValueMutex>(),
-        4usize,
-        concat!("Alignment of ", stringify!(ValueMutex))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).value) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ValueMutex),
-            "::",
-            stringify!(value)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ValueMutex),
-            "::",
-            stringify!(size)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).mutex) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ValueMutex),
-            "::",
-            stringify!(mutex)
-        )
-    );
-}
+pub type FuriTimerPendigCallback =
+    ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void, arg: u32)>;
 extern "C" {
-    #[doc = "Creates ValueMutex.\n\n"]
-    pub fn init_mutex(
-        valuemutex: *mut ValueMutex,
-        value: *mut core::ffi::c_void,
-        size: usize,
-    ) -> bool;
-}
-extern "C" {
-    #[doc = "Free resources allocated by `init_mutex`. This function doesn't free the memory occupied by `ValueMutex` itself.\n\n"]
-    pub fn delete_mutex(valuemutex: *mut ValueMutex) -> bool;
-}
-extern "C" {
-    #[doc = "Call for work with data stored in mutex.\n\nReturns:\n\n* pointer to data if success, NULL otherwise.\n\n"]
-    pub fn acquire_mutex(valuemutex: *mut ValueMutex, timeout: u32) -> *mut core::ffi::c_void;
-}
-extern "C" {
-    #[doc = "Release mutex after end of work with data. Call `release_mutex` and pass ValueData instance and pointer to data.\n\n"]
-    pub fn release_mutex(valuemutex: *mut ValueMutex, value: *const core::ffi::c_void) -> bool;
+    pub fn furi_timer_pending_callback(
+        callback: FuriTimerPendigCallback,
+        context: *mut core::ffi::c_void,
+        arg: u32,
+    );
 }
 extern "C" {
     pub static _ctype_: [core::ffi::c_char; 0usize];
@@ -4958,6 +4906,12 @@ pub const Align_AlignBottom: Align = 3;
 pub const Align_AlignCenter: Align = 4;
 #[doc = "Alignment enumeration\n\n"]
 pub type Align = core::ffi::c_uchar;
+pub const CanvasOrientation_CanvasOrientationHorizontal: CanvasOrientation = 0;
+pub const CanvasOrientation_CanvasOrientationHorizontalFlip: CanvasOrientation = 1;
+pub const CanvasOrientation_CanvasOrientationVertical: CanvasOrientation = 2;
+pub const CanvasOrientation_CanvasOrientationVerticalFlip: CanvasOrientation = 3;
+#[doc = "Canvas Orientation\n\n"]
+pub type CanvasOrientation = core::ffi::c_uchar;
 pub const CanvasDirection_CanvasDirectionLeftToRight: CanvasDirection = 0;
 pub const CanvasDirection_CanvasDirectionTopToBottom: CanvasDirection = 1;
 pub const CanvasDirection_CanvasDirectionRightToLeft: CanvasDirection = 2;
@@ -5029,6 +4983,12 @@ fn bindgen_test_layout_CanvasFontParameters() {
         )
     );
 }
+pub const IconRotation_IconRotation0: IconRotation = 0;
+pub const IconRotation_IconRotation90: IconRotation = 1;
+pub const IconRotation_IconRotation180: IconRotation = 2;
+pub const IconRotation_IconRotation270: IconRotation = 3;
+#[doc = "Icon rotation\n\n"]
+pub type IconRotation = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct Canvas {
@@ -5115,6 +5075,16 @@ extern "C" {
         width: u8,
         height: u8,
         compressed_bitmap_data: *const u8,
+    );
+}
+extern "C" {
+    #[doc = "Draw icon at position defined by x,y with rotation and flip.\n\n# Arguments\n\n* `canvas` - Canvas instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `icon` - Icon instance\n* `flip` - IconFlip\n* `rotation` - IconRotation\n\n"]
+    pub fn canvas_draw_icon_ex(
+        canvas: *mut Canvas,
+        x: u8,
+        y: u8,
+        icon: *const Icon,
+        rotation: IconRotation,
     );
 }
 extern "C" {
@@ -5327,10 +5297,16 @@ extern "C" {
     pub static gpio_pins_count: usize;
 }
 extern "C" {
-    pub static vibro_gpio: GpioPin;
+    pub static gpio_swdio: GpioPin;
 }
 extern "C" {
-    pub static ibutton_gpio: GpioPin;
+    pub static gpio_swclk: GpioPin;
+}
+extern "C" {
+    pub static gpio_vibro: GpioPin;
+}
+extern "C" {
+    pub static gpio_ibutton: GpioPin;
 }
 extern "C" {
     pub static gpio_cc1101_g0: GpioPin;
@@ -5453,7 +5429,7 @@ extern "C" {
     pub static gpio_speaker: GpioPin;
 }
 extern "C" {
-    pub static periph_power: GpioPin;
+    pub static gpio_periph_power: GpioPin;
 }
 extern "C" {
     pub static gpio_usb_dm: GpioPin;
@@ -5481,11 +5457,109 @@ pub const InputType_InputTypeMAX: InputType = 5;
 pub type InputType = core::ffi::c_uchar;
 #[doc = "Input Event, dispatches with FuriPubSub\n\n"]
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Copy, Clone)]
 pub struct InputEvent {
-    pub sequence: u32,
+    pub __bindgen_anon_1: InputEvent__bindgen_ty_1,
     pub key: InputKey,
     pub type_: InputType,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union InputEvent__bindgen_ty_1 {
+    pub sequence: u32,
+    pub __bindgen_anon_1: InputEvent__bindgen_ty_1__bindgen_ty_1,
+}
+#[repr(C)]
+#[repr(align(4))]
+#[derive(Debug, Copy, Clone)]
+pub struct InputEvent__bindgen_ty_1__bindgen_ty_1 {
+    pub _bitfield_align_1: [u32; 0],
+    pub _bitfield_1: __BindgenBitfieldUnit<[u8; 4usize]>,
+}
+#[test]
+fn bindgen_test_layout_InputEvent__bindgen_ty_1__bindgen_ty_1() {
+    assert_eq!(
+        ::core::mem::size_of::<InputEvent__bindgen_ty_1__bindgen_ty_1>(),
+        4usize,
+        concat!(
+            "Size of: ",
+            stringify!(InputEvent__bindgen_ty_1__bindgen_ty_1)
+        )
+    );
+    assert_eq!(
+        ::core::mem::align_of::<InputEvent__bindgen_ty_1__bindgen_ty_1>(),
+        4usize,
+        concat!(
+            "Alignment of ",
+            stringify!(InputEvent__bindgen_ty_1__bindgen_ty_1)
+        )
+    );
+}
+impl InputEvent__bindgen_ty_1__bindgen_ty_1 {
+    #[inline]
+    pub fn sequence_source(&self) -> u8 {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 2u8) as u8) }
+    }
+    #[inline]
+    pub fn set_sequence_source(&mut self, val: u8) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(0usize, 2u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn sequence_counter(&self) -> u32 {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(2usize, 30u8) as u32) }
+    }
+    #[inline]
+    pub fn set_sequence_counter(&mut self, val: u32) {
+        unsafe {
+            let val: u32 = ::core::mem::transmute(val);
+            self._bitfield_1.set(2usize, 30u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn new_bitfield_1(
+        sequence_source: u8,
+        sequence_counter: u32,
+    ) -> __BindgenBitfieldUnit<[u8; 4usize]> {
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 4usize]> = Default::default();
+        __bindgen_bitfield_unit.set(0usize, 2u8, {
+            let sequence_source: u8 = unsafe { ::core::mem::transmute(sequence_source) };
+            sequence_source as u64
+        });
+        __bindgen_bitfield_unit.set(2usize, 30u8, {
+            let sequence_counter: u32 = unsafe { ::core::mem::transmute(sequence_counter) };
+            sequence_counter as u64
+        });
+        __bindgen_bitfield_unit
+    }
+}
+#[test]
+fn bindgen_test_layout_InputEvent__bindgen_ty_1() {
+    const UNINIT: ::core::mem::MaybeUninit<InputEvent__bindgen_ty_1> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<InputEvent__bindgen_ty_1>(),
+        4usize,
+        concat!("Size of: ", stringify!(InputEvent__bindgen_ty_1))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<InputEvent__bindgen_ty_1>(),
+        4usize,
+        concat!("Alignment of ", stringify!(InputEvent__bindgen_ty_1))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).sequence) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(InputEvent__bindgen_ty_1),
+            "::",
+            stringify!(sequence)
+        )
+    );
 }
 #[test]
 fn bindgen_test_layout_InputEvent() {
@@ -5500,16 +5574,6 @@ fn bindgen_test_layout_InputEvent() {
         ::core::mem::align_of::<InputEvent>(),
         4usize,
         concat!("Alignment of ", stringify!(InputEvent))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).sequence) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(InputEvent),
-            "::",
-            stringify!(sequence)
-        )
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
@@ -6282,7 +6346,12 @@ pub const GuiLayer_GuiLayerMAX: GuiLayer = 5;
 pub type GuiLayer = core::ffi::c_uchar;
 #[doc = "Gui Canvas Commit Callback\n\n"]
 pub type GuiCanvasCommitCallback = ::core::option::Option<
-    unsafe extern "C" fn(data: *mut u8, size: usize, context: *mut core::ffi::c_void),
+    unsafe extern "C" fn(
+        data: *mut u8,
+        size: usize,
+        orientation: CanvasOrientation,
+        context: *mut core::ffi::c_void,
+    ),
 >;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -7202,7 +7271,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Add Text Scroll Element\n\n# Arguments\n\n* `widget` - Widget instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `width` - width to fit text\n* `height` - height to fit text\n* `text` - [Direction: In] Formatted text. Default format: align left, Secondary font. The following formats are available:\n  * \n    * text\"* - sets bold font before until next '\\n' symbol\n    * text\"* - sets center horizontal align until the next '\\n' symbol\n    * text\"* - sets right horizontal align until the next '\\n' symbol\n\n"]
+    #[doc = "Add Text Scroll Element\n\n# Arguments\n\n* `widget` - Widget instance\n* `x` - x coordinate\n* `y` - y coordinate\n* `width` - width to fit text\n* `height` - height to fit text\n* `text` - [Direction: In] Formatted text. Default format: align left, Secondary font. The following formats are available:\n  * \n    * text\"* - sets bold font before until next '\\n' symbol\n    * text\\e*\"* - sets monospaced font before until next '\\n' symbol\n    * text\"* - sets center horizontal align until the next '\\n' symbol\n    * text\"* - sets right horizontal align until the next '\\n' symbol\n\n"]
     pub fn widget_add_text_scroll_element(
         widget: *mut Widget,
         x: u8,
@@ -7576,6 +7645,69 @@ extern "C" {
     #[doc = "Remove any View in ViewStack. If no View to remove found - ignore.\n\n# Arguments\n\n* `view_stack` - instance\n\n"]
     pub fn view_stack_remove_view(view_stack: *mut ViewStack, view: *mut View);
 }
+pub type Elf32_Addr = u32;
+#[doc = "Interface for ELF loader to resolve symbols\n\n"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct ElfApiInterface {
+    pub api_version_major: u16,
+    pub api_version_minor: u16,
+    pub resolver_callback: ::core::option::Option<
+        unsafe extern "C" fn(
+            interface: *const ElfApiInterface,
+            name: *const core::ffi::c_char,
+            address: *mut Elf32_Addr,
+        ) -> bool,
+    >,
+}
+#[test]
+fn bindgen_test_layout_ElfApiInterface() {
+    const UNINIT: ::core::mem::MaybeUninit<ElfApiInterface> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<ElfApiInterface>(),
+        8usize,
+        concat!("Size of: ", stringify!(ElfApiInterface))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<ElfApiInterface>(),
+        4usize,
+        concat!("Alignment of ", stringify!(ElfApiInterface))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).api_version_major) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(ElfApiInterface),
+            "::",
+            stringify!(api_version_major)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).api_version_minor) as usize - ptr as usize },
+        2usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(ElfApiInterface),
+            "::",
+            stringify!(api_version_minor)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).resolver_callback) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(ElfApiInterface),
+            "::",
+            stringify!(resolver_callback)
+        )
+    );
+}
+extern "C" {
+    pub static firmware_api_interface: *const ElfApiInterface;
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct Loader {
@@ -7604,15 +7736,11 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Get loader lock status\n\n"]
-    pub fn loader_is_locked(instance: *const Loader) -> bool;
+    pub fn loader_is_locked(instance: *mut Loader) -> bool;
 }
 extern "C" {
     #[doc = "Show primary loader\n\n"]
-    pub fn loader_show_menu();
-}
-extern "C" {
-    #[doc = "Show primary loader\n\n"]
-    pub fn loader_update_menu();
+    pub fn loader_show_menu(instance: *mut Loader);
 }
 extern "C" {
     #[doc = "Show primary loader\n\n"]
@@ -7680,6 +7808,35 @@ extern "C" {
     #[doc = "Wait for timer expire\n\n# Arguments\n\n* `cortex_timer` - [Direction: In] The FuriHalCortexTimer\n\n"]
     pub fn furi_hal_cortex_timer_wait(cortex_timer: FuriHalCortexTimer);
 }
+pub const FuriHalCortexComp_FuriHalCortexComp0: FuriHalCortexComp = 0;
+pub const FuriHalCortexComp_FuriHalCortexComp1: FuriHalCortexComp = 1;
+pub const FuriHalCortexComp_FuriHalCortexComp2: FuriHalCortexComp = 2;
+pub const FuriHalCortexComp_FuriHalCortexComp3: FuriHalCortexComp = 3;
+pub type FuriHalCortexComp = core::ffi::c_uchar;
+pub const FuriHalCortexCompSize_FuriHalCortexCompSizeWord: FuriHalCortexCompSize = 2;
+pub const FuriHalCortexCompSize_FuriHalCortexCompSizeHalfWord: FuriHalCortexCompSize = 1;
+pub const FuriHalCortexCompSize_FuriHalCortexCompSizeByte: FuriHalCortexCompSize = 0;
+pub type FuriHalCortexCompSize = core::ffi::c_uchar;
+pub const FuriHalCortexCompFunction_FuriHalCortexCompFunctionPC: FuriHalCortexCompFunction = 4;
+pub const FuriHalCortexCompFunction_FuriHalCortexCompFunctionRead: FuriHalCortexCompFunction = 5;
+pub const FuriHalCortexCompFunction_FuriHalCortexCompFunctionWrite: FuriHalCortexCompFunction = 6;
+pub const FuriHalCortexCompFunction_FuriHalCortexCompFunctionReadWrite: FuriHalCortexCompFunction =
+    6;
+pub type FuriHalCortexCompFunction = core::ffi::c_uchar;
+extern "C" {
+    #[doc = "Enable DWT comparator\nAllows to programmatically set instruction/data breakpoints.\nMore details on how it works can be found in armv7m official documentation: <https://developer.arm.com/documentation/ddi0403/d/Debug-Architecture/ARMv7-M-Debug/The-Data-Watchpoint-and-Trace-unit/The-DWT-comparators> <https://developer.arm.com/documentation/ddi0403/d/Debug-Architecture/ARMv7-M-Debug/The-Data-Watchpoint-and-Trace-unit/Comparator-Function-registers--DWT-FUNCTIONn>\n\n# Arguments\n\n* `comp` - [Direction: In] The Comparator\n* `function` - [Direction: In] The Comparator Function to use\n* `value` - [Direction: In] The value\n* `mask` - [Direction: In] The mask\n* `size` - [Direction: In] The size\n\n"]
+    pub fn furi_hal_cortex_comp_enable(
+        comp: FuriHalCortexComp,
+        function: FuriHalCortexCompFunction,
+        value: u32,
+        mask: u32,
+        size: FuriHalCortexCompSize,
+    );
+}
+extern "C" {
+    #[doc = "Reset DWT comparator\n\n# Arguments\n\n* `comp` - [Direction: In] The Comparator\n\n"]
+    pub fn furi_hal_cortex_comp_reset(comp: FuriHalCortexComp);
+}
 extern "C" {
     pub fn LL_RCC_GetUSARTClockFreq(USARTxSource: u32) -> u32;
 }
@@ -7717,6 +7874,76 @@ extern "C" {
 extern "C" {
     #[doc = "Disable clock output on MCO pin\n\n"]
     pub fn furi_hal_clock_mco_disable();
+}
+pub const FuriHalBus_FuriHalBusAHB1_GRP1: FuriHalBus = 0;
+pub const FuriHalBus_FuriHalBusDMA1: FuriHalBus = 1;
+pub const FuriHalBus_FuriHalBusDMA2: FuriHalBus = 2;
+pub const FuriHalBus_FuriHalBusDMAMUX1: FuriHalBus = 3;
+pub const FuriHalBus_FuriHalBusCRC: FuriHalBus = 4;
+pub const FuriHalBus_FuriHalBusTSC: FuriHalBus = 5;
+pub const FuriHalBus_FuriHalBusAHB2_GRP1: FuriHalBus = 6;
+pub const FuriHalBus_FuriHalBusGPIOA: FuriHalBus = 7;
+pub const FuriHalBus_FuriHalBusGPIOB: FuriHalBus = 8;
+pub const FuriHalBus_FuriHalBusGPIOC: FuriHalBus = 9;
+pub const FuriHalBus_FuriHalBusGPIOD: FuriHalBus = 10;
+pub const FuriHalBus_FuriHalBusGPIOE: FuriHalBus = 11;
+pub const FuriHalBus_FuriHalBusGPIOH: FuriHalBus = 12;
+pub const FuriHalBus_FuriHalBusADC: FuriHalBus = 13;
+pub const FuriHalBus_FuriHalBusAES1: FuriHalBus = 14;
+pub const FuriHalBus_FuriHalBusAHB3_GRP1: FuriHalBus = 15;
+pub const FuriHalBus_FuriHalBusQUADSPI: FuriHalBus = 16;
+pub const FuriHalBus_FuriHalBusPKA: FuriHalBus = 17;
+pub const FuriHalBus_FuriHalBusAES2: FuriHalBus = 18;
+pub const FuriHalBus_FuriHalBusRNG: FuriHalBus = 19;
+pub const FuriHalBus_FuriHalBusHSEM: FuriHalBus = 20;
+pub const FuriHalBus_FuriHalBusIPCC: FuriHalBus = 21;
+pub const FuriHalBus_FuriHalBusFLASH: FuriHalBus = 22;
+pub const FuriHalBus_FuriHalBusAPB1_GRP1: FuriHalBus = 23;
+pub const FuriHalBus_FuriHalBusTIM2: FuriHalBus = 24;
+pub const FuriHalBus_FuriHalBusLCD: FuriHalBus = 25;
+pub const FuriHalBus_FuriHalBusSPI2: FuriHalBus = 26;
+pub const FuriHalBus_FuriHalBusI2C1: FuriHalBus = 27;
+pub const FuriHalBus_FuriHalBusI2C3: FuriHalBus = 28;
+pub const FuriHalBus_FuriHalBusCRS: FuriHalBus = 29;
+pub const FuriHalBus_FuriHalBusUSB: FuriHalBus = 30;
+pub const FuriHalBus_FuriHalBusLPTIM1: FuriHalBus = 31;
+pub const FuriHalBus_FuriHalBusAPB1_GRP2: FuriHalBus = 32;
+pub const FuriHalBus_FuriHalBusLPUART1: FuriHalBus = 33;
+pub const FuriHalBus_FuriHalBusLPTIM2: FuriHalBus = 34;
+pub const FuriHalBus_FuriHalBusAPB2_GRP1: FuriHalBus = 35;
+pub const FuriHalBus_FuriHalBusTIM1: FuriHalBus = 36;
+pub const FuriHalBus_FuriHalBusSPI1: FuriHalBus = 37;
+pub const FuriHalBus_FuriHalBusUSART1: FuriHalBus = 38;
+pub const FuriHalBus_FuriHalBusTIM16: FuriHalBus = 39;
+pub const FuriHalBus_FuriHalBusTIM17: FuriHalBus = 40;
+pub const FuriHalBus_FuriHalBusSAI1: FuriHalBus = 41;
+pub const FuriHalBus_FuriHalBusAPB3_GRP1: FuriHalBus = 42;
+pub const FuriHalBus_FuriHalBusRF: FuriHalBus = 43;
+pub const FuriHalBus_FuriHalBusMAX: FuriHalBus = 44;
+pub type FuriHalBus = core::ffi::c_uchar;
+extern "C" {
+    #[doc = "Early initialization\n\n"]
+    pub fn furi_hal_bus_init_early();
+}
+extern "C" {
+    #[doc = "Early de-initialization\n\n"]
+    pub fn furi_hal_bus_deinit_early();
+}
+extern "C" {
+    #[doc = "Enable a peripheral by turning the clocking on and deasserting the reset.\n\n**Warning!**\n\n* Peripheral must be in disabled state in order to be enabled.\n\n# Arguments\n\n* `[in]` - bus Peripheral to be enabled.\n\n"]
+    pub fn furi_hal_bus_enable(bus: FuriHalBus);
+}
+extern "C" {
+    #[doc = "Reset a peripheral by sequentially asserting and deasserting the reset.\n\n**Warning!**\n\n* Peripheral must be in enabled state in order to be reset.\n\n# Arguments\n\n* `[in]` - bus Peripheral to be reset.\n\n"]
+    pub fn furi_hal_bus_reset(bus: FuriHalBus);
+}
+extern "C" {
+    #[doc = "Disable a peripheral by turning the clocking off and asserting the reset.\n\n**Warning!**\n\n* Peripheral must be in enabled state in order to be disabled.\n\n# Arguments\n\n* `[in]` - bus Peripheral to be disabled.\n\n"]
+    pub fn furi_hal_bus_disable(bus: FuriHalBus);
+}
+extern "C" {
+    #[doc = "Check if peripheral is enabled\n\n**Warning!**\n\n* FuriHalBusAPB3_GRP1 is a special group of shared peripherals, for core1 its clock is always on and the only status we can report is peripheral reset status. Check code and Reference Manual for details.\n\nReturns:\n\n* true if enabled or always enabled, false otherwise\n\n# Arguments\n\n* `bus` - [Direction: In] The peripheral to check\n\n"]
+    pub fn furi_hal_bus_is_enabled(bus: FuriHalBus) -> bool;
 }
 #[doc = "Master key\n\n"]
 pub const FuriHalCryptoKeyType_FuriHalCryptoKeyTypeMaster: FuriHalCryptoKeyType = 0;
@@ -7847,6 +8074,18 @@ extern "C" {
 extern "C" {
     #[doc = "Disable MCU debug\n\n"]
     pub fn furi_hal_debug_disable();
+}
+extern "C" {
+    #[doc = "Check if GDB debug session is active\n\n"]
+    pub fn furi_hal_debug_is_gdb_session_active() -> bool;
+}
+extern "C" {
+    #[doc = "Early initialization\n\n"]
+    pub fn furi_hal_dma_init_early();
+}
+extern "C" {
+    #[doc = "Early de-initialization\n\n"]
+    pub fn furi_hal_dma_deinit_early();
 }
 extern "C" {
     pub fn furi_hal_os_tick();
@@ -8291,7 +8530,7 @@ fn bindgen_test_layout_LL_I2C_InitTypeDef() {
 extern "C" {
     pub fn LL_I2C_Init(
         I2Cx: *mut I2C_TypeDef,
-        I2C_InitStruct: *mut LL_I2C_InitTypeDef,
+        I2C_InitStruct: *const LL_I2C_InitTypeDef,
     ) -> ErrorStatus;
 }
 #[doc = "Bus initialization event, called on system start\n\n"]
@@ -8790,6 +9029,9 @@ pub const FuriHalRtcFlag_FuriHalRtcFlagDebug: FuriHalRtcFlag = 1;
 pub const FuriHalRtcFlag_FuriHalRtcFlagFactoryReset: FuriHalRtcFlag = 2;
 pub const FuriHalRtcFlag_FuriHalRtcFlagLock: FuriHalRtcFlag = 4;
 pub const FuriHalRtcFlag_FuriHalRtcFlagC2Update: FuriHalRtcFlag = 8;
+pub const FuriHalRtcFlag_FuriHalRtcFlagHandOrient: FuriHalRtcFlag = 16;
+pub const FuriHalRtcFlag_FuriHalRtcFlagLegacySleep: FuriHalRtcFlag = 32;
+pub const FuriHalRtcFlag_FuriHalRtcFlagStealthMode: FuriHalRtcFlag = 64;
 pub type FuriHalRtcFlag = core::ffi::c_uchar;
 #[doc = "Normal boot mode, default value\n\n"]
 pub const FuriHalRtcBootMode_FuriHalRtcBootModeNormal: FuriHalRtcBootMode = 0;
@@ -8844,6 +9086,10 @@ pub const FuriHalRtcLocaleDateFormat_FuriHalRtcLocaleDateFormatMDY: FuriHalRtcLo
 #[doc = "Year/Month/Day\n\n"]
 pub const FuriHalRtcLocaleDateFormat_FuriHalRtcLocaleDateFormatYMD: FuriHalRtcLocaleDateFormat = 2;
 pub type FuriHalRtcLocaleDateFormat = core::ffi::c_uchar;
+extern "C" {
+    #[doc = "Force sync shadow registers\n\n"]
+    pub fn furi_hal_rtc_sync_shadow();
+}
 extern "C" {
     #[doc = "Get RTC register content\n\nReturns:\n\n* content of the register\n\n# Arguments\n\n* `reg` - [Direction: In] The register identifier\n\n"]
     pub fn furi_hal_rtc_get_register(reg: FuriHalRtcRegister) -> u32;
@@ -8947,6 +9193,18 @@ extern "C" {
 extern "C" {
     #[doc = "Convert DateTime to UNIX timestamp\n\nReturns:\n\n* UNIX Timestamp in seconds from UNIX epoch start\n\n# Arguments\n\n* `datetime` - The datetime\n\n"]
     pub fn furi_hal_rtc_datetime_to_timestamp(datetime: *mut FuriHalRtcDateTime) -> u32;
+}
+extern "C" {
+    #[doc = "Gets the number of days in the year according to the Gregorian calendar.\n\nReturns:\n\n* number of days in `year`.\n\n# Arguments\n\n* `year` - Input year.\n\n"]
+    pub fn furi_hal_rtc_get_days_per_year(year: u16) -> u16;
+}
+extern "C" {
+    #[doc = "Check if a year a leap year in the Gregorian calendar.\n\nReturns:\n\n* true if `year` is a leap year.\n\n# Arguments\n\n* `year` - Input year.\n\n"]
+    pub fn furi_hal_rtc_is_leap_year(year: u16) -> bool;
+}
+extern "C" {
+    #[doc = "Get the number of days in the month.\n\nReturns:\n\n* the number of days in the month\n\n# Arguments\n\n* `leap_year` - true to calculate based on leap years\n* `month` - month to check, where 1 = January\n\n"]
+    pub fn furi_hal_rtc_get_days_per_month(leap_year: bool, month: u8) -> u8;
 }
 extern "C" {
     #[doc = "Acquire speaker ownership\n\n**Warning!**\n\n* You must acquire speaker ownership before use\n\nReturns:\n\n* bool returns true on success\n\n# Arguments\n\n* `timeout` - Timeout during which speaker ownership must be acquired\n\n"]
@@ -9123,10 +9381,6 @@ extern "C" {
     pub fn furi_hal_power_sleep_available() -> bool;
 }
 extern "C" {
-    #[doc = "Check if deep sleep availble\n\nReturns:\n\n* true if available\n\n"]
-    pub fn furi_hal_power_deep_sleep_available() -> bool;
-}
-extern "C" {
     #[doc = "Go to sleep\n\n"]
     pub fn furi_hal_power_sleep();
 }
@@ -9175,12 +9429,12 @@ extern "C" {
     pub fn furi_hal_power_is_otg_enabled() -> bool;
 }
 extern "C" {
-    #[doc = "Get battery charging voltage in V\n\nReturns:\n\n* voltage in V\n\n"]
-    pub fn furi_hal_power_get_battery_charging_voltage() -> f32;
+    #[doc = "Get battery charge voltage limit in V\n\nReturns:\n\n* voltage in V\n\n"]
+    pub fn furi_hal_power_get_battery_charge_voltage_limit() -> f32;
 }
 extern "C" {
-    #[doc = "Set battery charging voltage in V\nInvalid values will be clamped to the nearest valid value.\n\nReturns:\n\n* voltage in V\n\n# Arguments\n\n* `voltage[in]` - voltage in V\n\n"]
-    pub fn furi_hal_power_set_battery_charging_voltage(voltage: f32);
+    #[doc = "Set battery charge voltage limit in V\nInvalid values will be clamped downward to the nearest valid value.\n\nReturns:\n\n* voltage in V\n\n# Arguments\n\n* `voltage[in]` - voltage in V\n\n"]
+    pub fn furi_hal_power_set_battery_charge_voltage_limit(voltage: f32);
 }
 extern "C" {
     #[doc = "Get remaining battery battery capacity in mAh\n\nReturns:\n\n* capacity in mAh\n\n"]
@@ -9444,14 +9698,14 @@ extern "C" {
 extern "C" {
     pub fn LL_TIM_Init(
         TIMx: *mut TIM_TypeDef,
-        TIM_InitStruct: *mut LL_TIM_InitTypeDef,
+        TIM_InitStruct: *const LL_TIM_InitTypeDef,
     ) -> ErrorStatus;
 }
 extern "C" {
     pub fn LL_TIM_OC_Init(
         TIMx: *mut TIM_TypeDef,
         Channel: u32,
-        TIM_OC_InitStruct: *mut LL_TIM_OC_InitTypeDef,
+        TIM_OC_InitStruct: *const LL_TIM_OC_InitTypeDef,
     ) -> ErrorStatus;
 }
 #[doc = "Timer ISR\n\n"]
@@ -9535,6 +9789,14 @@ extern "C" {
 extern "C" {
     #[doc = "Get flag indicating if this build is \"dirty\" (source code had uncommited changes)\n\nReturns:\n\n* build date\n\n# Arguments\n\n* `v` - pointer to Version data. NULL for currently running software.\n\n"]
     pub fn version_get_dirty_flag(v: *const Version) -> bool;
+}
+extern "C" {
+    #[doc = "Get firmware origin. \"Official\" for mainline firmware, fork name for forks. Set by FIRMWARE_ORIGIN fbt argument.\n\n"]
+    pub fn version_get_firmware_origin(v: *const Version) -> *const core::ffi::c_char;
+}
+extern "C" {
+    #[doc = "Get git repo origin\n\n"]
+    pub fn version_get_git_origin(v: *const Version) -> *const core::ffi::c_char;
 }
 pub const FuriHalVersionOtpVersion_FuriHalVersionOtpVersion0: FuriHalVersionOtpVersion = 0;
 pub const FuriHalVersionOtpVersion_FuriHalVersionOtpVersion1: FuriHalVersionOtpVersion = 1;
@@ -11436,12 +11698,19 @@ extern "C" {
     );
 }
 extern "C" {
+    pub fn furi_hal_info_get_api_version(major: *mut u16, minor: *mut u16);
+}
+extern "C" {
     #[doc = "Get device information\n\n# Arguments\n\n* `callback` - [Direction: In] callback to provide with new data\n* `sep` - [Direction: In] category separator character\n* `context` - [Direction: In] context to pass to callback\n\n"]
     pub fn furi_hal_info_get(
         callback: PropertyValueCallback,
         sep: core::ffi::c_char,
         context: *mut core::ffi::c_void,
     );
+}
+extern "C" {
+    #[doc = "Initialize random subsystem\n\n"]
+    pub fn furi_hal_random_init();
 }
 extern "C" {
     #[doc = "Get random value\n\nReturns:\n\n* random value\n\n"]
@@ -11690,14 +11959,6 @@ extern "C" {
     pub fn furi_hal_rfid_pins_reset();
 }
 extern "C" {
-    #[doc = "Config rfid pins to emulate state\n\n"]
-    pub fn furi_hal_rfid_pins_emulate();
-}
-extern "C" {
-    #[doc = "Config rfid pins to read state\n\n"]
-    pub fn furi_hal_rfid_pins_read();
-}
-extern "C" {
     #[doc = "Release rfid pull pin\n\n"]
     pub fn furi_hal_rfid_pin_pull_release();
 }
@@ -11706,29 +11967,20 @@ extern "C" {
     pub fn furi_hal_rfid_pin_pull_pulldown();
 }
 extern "C" {
-    #[doc = "Config rfid timer to read state\n\n# Arguments\n\n* `freq` - timer frequency\n* `duty_cycle` - timer duty cycle, 0.0-1.0\n\n"]
-    pub fn furi_hal_rfid_tim_read(freq: f32, duty_cycle: f32);
+    #[doc = "Start read timer\n\n# Arguments\n\n* `freq` - timer frequency\n* `duty_cycle` - timer duty cycle, 0.0-1.0\n\n"]
+    pub fn furi_hal_rfid_tim_read_start(freq: f32, duty_cycle: f32);
 }
 extern "C" {
-    #[doc = "Start read timer\n\n"]
-    pub fn furi_hal_rfid_tim_read_start();
+    #[doc = "Pause read timer, to be able to continue later\n\n"]
+    pub fn furi_hal_rfid_tim_read_pause();
+}
+extern "C" {
+    #[doc = "Continue read timer\n\n"]
+    pub fn furi_hal_rfid_tim_read_continue();
 }
 extern "C" {
     #[doc = "Stop read timer\n\n"]
     pub fn furi_hal_rfid_tim_read_stop();
-}
-extern "C" {
-    #[doc = "Config rfid timer to emulate state\n\n# Arguments\n\n* `freq` - timer frequency\n\n"]
-    pub fn furi_hal_rfid_tim_emulate(freq: f32);
-}
-pub type FuriHalRfidEmulateCallback =
-    ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
-extern "C" {
-    #[doc = "Start emulation timer\n\n"]
-    pub fn furi_hal_rfid_tim_emulate_start(
-        callback: FuriHalRfidEmulateCallback,
-        context: *mut core::ffi::c_void,
-    );
 }
 pub type FuriHalRfidReadCaptureCallback = ::core::option::Option<
     unsafe extern "C" fn(level: bool, duration: u32, context: *mut core::ffi::c_void),
@@ -11757,32 +12009,12 @@ extern "C" {
     pub fn furi_hal_rfid_tim_emulate_dma_stop();
 }
 extern "C" {
-    #[doc = "Stop emulation timer\n\n"]
-    pub fn furi_hal_rfid_tim_emulate_stop();
-}
-extern "C" {
-    #[doc = "Config rfid timers to reset state\n\n"]
-    pub fn furi_hal_rfid_tim_reset();
-}
-extern "C" {
-    #[doc = "Set emulation timer period\n\n# Arguments\n\n* `period` - overall duration\n\n"]
-    pub fn furi_hal_rfid_set_emulate_period(period: u32);
-}
-extern "C" {
-    #[doc = "Set emulation timer pulse\n\n# Arguments\n\n* `pulse` - duration of high level\n\n"]
-    pub fn furi_hal_rfid_set_emulate_pulse(pulse: u32);
-}
-extern "C" {
     #[doc = "Set read timer period\n\n# Arguments\n\n* `period` - overall duration\n\n"]
     pub fn furi_hal_rfid_set_read_period(period: u32);
 }
 extern "C" {
     #[doc = "Set read timer pulse\n\n# Arguments\n\n* `pulse` - duration of high level\n\n"]
     pub fn furi_hal_rfid_set_read_pulse(pulse: u32);
-}
-extern "C" {
-    #[doc = "Сhanges the configuration of the RFID timer \"on a fly\"\n\n# Arguments\n\n* `freq` - new frequency\n* `duty_cycle` - new duty cycle\n\n"]
-    pub fn furi_hal_rfid_change_read_config(freq: f32, duty_cycle: f32);
 }
 extern "C" {
     #[doc = "Start/Enable comparator\n\n"]
@@ -11837,12 +12069,18 @@ extern "C" {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+pub struct DigitalSignalInternals {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct DigitalSignal {
     pub start_level: bool,
     pub edge_cnt: u32,
     pub edges_max_cnt: u32,
     pub edge_timings: *mut u32,
     pub reload_reg_buff: *mut u32,
+    pub internals: *mut DigitalSignalInternals,
 }
 #[test]
 fn bindgen_test_layout_DigitalSignal() {
@@ -11850,7 +12088,7 @@ fn bindgen_test_layout_DigitalSignal() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<DigitalSignal>(),
-        20usize,
+        24usize,
         concat!("Size of: ", stringify!(DigitalSignal))
     );
     assert_eq!(
@@ -11906,6 +12144,16 @@ fn bindgen_test_layout_DigitalSignal() {
             stringify!(DigitalSignal),
             "::",
             stringify!(reload_reg_buff)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).internals) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(DigitalSignal),
+            "::",
+            stringify!(internals)
         )
     );
 }
@@ -13619,7 +13867,7 @@ pub struct PowerInfo {
     pub is_charging: bool,
     pub current_charger: f32,
     pub current_gauge: f32,
-    pub voltage_battery_charging: f32,
+    pub voltage_battery_charge_limit: f32,
     pub voltage_charger: f32,
     pub voltage_gauge: f32,
     pub voltage_vbus: f32,
@@ -13685,13 +13933,15 @@ fn bindgen_test_layout_PowerInfo() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).voltage_battery_charging) as usize - ptr as usize },
+        unsafe {
+            ::core::ptr::addr_of!((*ptr).voltage_battery_charge_limit) as usize - ptr as usize
+        },
         12usize,
         concat!(
             "Offset of field: ",
             stringify!(PowerInfo),
             "::",
-            stringify!(voltage_battery_charging)
+            stringify!(voltage_battery_charge_limit)
         )
     );
     assert_eq!(
@@ -13832,9 +14082,19 @@ pub type RpcSessionClosedCallback =
 #[doc = "Callback to notify transport layer that session was closed and all operations were finished\n\n"]
 pub type RpcSessionTerminatedCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
+pub const RpcOwner_RpcOwnerUnknown: RpcOwner = 0;
+pub const RpcOwner_RpcOwnerBle: RpcOwner = 1;
+pub const RpcOwner_RpcOwnerUsb: RpcOwner = 2;
+pub const RpcOwner_RpcOwnerCount: RpcOwner = 3;
+#[doc = "RPC owner\n\n"]
+pub type RpcOwner = core::ffi::c_uchar;
 extern "C" {
-    #[doc = "Open RPC session\nUSAGE: 1) rpc_session_open(); 2) rpc_session_set_context(); 3) rpc_session_set_send_bytes_callback(); 4) rpc_session_set_close_callback(); 5) while(1) { rpc_session_feed(); } 6) rpc_session_close();\n\nReturns:\n\n* pointer to RpcSession descriptor, or NULL if RPC is busy and can't open session now\n\n# Arguments\n\n* `rpc` - instance\n\n"]
-    pub fn rpc_session_open(rpc: *mut Rpc) -> *mut RpcSession;
+    #[doc = "Get RPC session owner\n\nReturns:\n\n* session owner\n\n# Arguments\n\n* `session` - pointer to RpcSession descriptor\n\n"]
+    pub fn rpc_session_get_owner(session: *mut RpcSession) -> RpcOwner;
+}
+extern "C" {
+    #[doc = "Open RPC session\nUSAGE: 1) rpc_session_open(); 2) rpc_session_set_context(); 3) rpc_session_set_send_bytes_callback(); 4) rpc_session_set_close_callback(); 5) while(1) { rpc_session_feed(); } 6) rpc_session_close();\n\nReturns:\n\n* pointer to RpcSession descriptor, or NULL if RPC is busy and can't open session now\n\n# Arguments\n\n* `rpc` - instance\n* `owner` - owner of session\n\n"]
+    pub fn rpc_session_open(rpc: *mut Rpc, owner: RpcOwner) -> *mut RpcSession;
 }
 extern "C" {
     #[doc = "Close RPC session It is guaranteed that no callbacks will be called as soon as session is closed. So no need in setting callbacks to NULL after session close.\n\n# Arguments\n\n* `session` - pointer to RpcSession descriptor\n\n"]
@@ -14045,6 +14305,10 @@ fn bindgen_test_layout_FileInfo() {
 extern "C" {
     #[doc = "Gets the error text from FS_Error\n\nReturns:\n\n* const char* error text\n\n# Arguments\n\n* `error_id` - error id\n\n"]
     pub fn filesystem_api_error_get_desc(error_id: FS_Error) -> *const core::ffi::c_char;
+}
+extern "C" {
+    #[doc = "Checks if file info is directory\n\nReturns:\n\n* bool is directory\n\n# Arguments\n\n* `file_info` - file info pointer\n\n"]
+    pub fn file_info_is_dir(file_info: *const FileInfo) -> bool;
 }
 pub const SDFsType_FST_UNKNOWN: SDFsType = 0;
 pub const SDFsType_FST_FAT12: SDFsType = 1;
@@ -14318,6 +14582,10 @@ extern "C" {
     pub fn storage_file_exists(storage: *mut Storage, path: *const core::ffi::c_char) -> bool;
 }
 extern "C" {
+    #[doc = "Copy data from one opened file to another opened file Size bytes will be copied from current position of source file to current position of destination file\n\nReturns:\n\n* bool success flag\n\n# Arguments\n\n* `source` - source file\n* `destination` - destination file\n* `size` - size of data to copy\n\n"]
+    pub fn storage_file_copy_to_file(source: *mut File, destination: *mut File, size: u32) -> bool;
+}
+extern "C" {
     #[doc = "Opens a directory to get objects from it\n\nReturns:\n\n* bool success flag. You need to close the directory even if the open operation failed.\n\n# Arguments\n\n* `app` - pointer to the api\n* `file` - pointer to file object.\n* `path` - path to directory\n\n"]
     pub fn storage_dir_open(file: *mut File, path: *const core::ffi::c_char) -> bool;
 }
@@ -14333,6 +14601,10 @@ extern "C" {
         name: *mut core::ffi::c_char,
         name_length: u16,
     ) -> bool;
+}
+extern "C" {
+    #[doc = "Check that dir exists\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `storage` - \n* `path` - \n\n"]
+    pub fn storage_dir_exists(storage: *mut Storage, path: *const core::ffi::c_char) -> bool;
 }
 extern "C" {
     #[doc = "Retrieves unix timestamp of last access\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `storage` - The storage instance\n* `path` - path to file/directory\n* `timestamp` - the timestamp pointer\n\n"]
@@ -14356,7 +14628,7 @@ extern "C" {
         -> FS_Error;
 }
 extern "C" {
-    #[doc = "Renames file/directory, file/directory must not be open\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `app` - pointer to the api\n* `old_path` - old path\n* `new_path` - new path\n\n"]
+    #[doc = "Renames file/directory, file/directory must not be open. Will overwrite existing file.\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `app` - pointer to the api\n* `old_path` - old path\n* `new_path` - new path\n\n"]
     pub fn storage_common_rename(
         storage: *mut Storage,
         old_path: *const core::ffi::c_char,
@@ -14391,6 +14663,25 @@ extern "C" {
         total_space: *mut u64,
         free_space: *mut u64,
     ) -> FS_Error;
+}
+extern "C" {
+    #[doc = "Parse aliases in path and replace them with real path Also will create special folders if they are not exist\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `storage` - \n* `path` - \n\n"]
+    pub fn storage_common_resolve_path_and_ensure_app_directory(
+        storage: *mut Storage,
+        path: *mut FuriString,
+    );
+}
+extern "C" {
+    #[doc = "Move content of one folder to another, with rename of all conflicting files. Source folder will be deleted if the migration is successful.\n\nReturns:\n\n* FS_Error\n\n# Arguments\n\n* `storage` - \n* `source` - \n* `dest` - \n\n"]
+    pub fn storage_common_migrate(
+        storage: *mut Storage,
+        source: *const core::ffi::c_char,
+        dest: *const core::ffi::c_char,
+    ) -> FS_Error;
+}
+extern "C" {
+    #[doc = "Check that file or dir exists\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `storage` - \n* `path` - \n\n"]
+    pub fn storage_common_exists(storage: *mut Storage, path: *const core::ffi::c_char) -> bool;
 }
 extern "C" {
     #[doc = "Retrieves the error text from the error id\n\nReturns:\n\n* const char* error text\n\n# Arguments\n\n* `error_id` - error id\n\n"]
@@ -14536,7 +14827,7 @@ extern "C" {
 extern "C" {
     pub fn LL_LPTIM_Init(
         LPTIMx: *mut LPTIM_TypeDef,
-        LPTIM_InitStruct: *mut LL_LPTIM_InitTypeDef,
+        LPTIM_InitStruct: *const LL_LPTIM_InitTypeDef,
     ) -> ErrorStatus;
 }
 pub const FuriHalPwmOutputId_FuriHalPwmOutputIdTim1PA7: FuriHalPwmOutputId = 0;
@@ -15128,622 +15419,13 @@ extern "C" {
     #[doc = "Send U2F HID response packet\n\n# Arguments\n\n* `data` - response data\n* `len` - packet length\n\n"]
     pub fn furi_hal_hid_u2f_send_response(data: *mut u8, len: u8);
 }
-#[doc = "Structure definition of some features of COMP instance.\n\n"]
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct LL_COMP_InitTypeDef {
-    #[doc = "Set comparator operating mode to adjust power and speed.\nThis parameter can be a value of  [`COMP_LL_EC_POWERMODE`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetPowerMode()`]\n\n"]
-    pub PowerMode: u32,
-    #[doc = "Set comparator input plus (non-inverting input).\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_PLUS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputPlus()`]\n\n"]
-    pub InputPlus: u32,
-    #[doc = "Set comparator input minus (inverting input).\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_MINUS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputMinus()`]\n\n"]
-    pub InputMinus: u32,
-    #[doc = "Set comparator hysteresis mode of the input minus.\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_HYSTERESIS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputHysteresis()`]\n\n"]
-    pub InputHysteresis: u32,
-    #[doc = "Set comparator output polarity.\nThis parameter can be a value of  [`COMP_LL_EC_OUTPUT_POLARITY`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetOutputPolarity()`]\n\n"]
-    pub OutputPolarity: u32,
-    #[doc = "Set comparator blanking source.\nThis parameter can be a value of  [`COMP_LL_EC_OUTPUT_BLANKING_SOURCE`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetOutputBlankingSource()`]\n\n"]
-    pub OutputBlankingSource: u32,
-}
-#[test]
-fn bindgen_test_layout_LL_COMP_InitTypeDef() {
-    const UNINIT: ::core::mem::MaybeUninit<LL_COMP_InitTypeDef> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<LL_COMP_InitTypeDef>(),
-        24usize,
-        concat!("Size of: ", stringify!(LL_COMP_InitTypeDef))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<LL_COMP_InitTypeDef>(),
-        4usize,
-        concat!("Alignment of ", stringify!(LL_COMP_InitTypeDef))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).PowerMode) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_COMP_InitTypeDef),
-            "::",
-            stringify!(PowerMode)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).InputPlus) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_COMP_InitTypeDef),
-            "::",
-            stringify!(InputPlus)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).InputMinus) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_COMP_InitTypeDef),
-            "::",
-            stringify!(InputMinus)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).InputHysteresis) as usize - ptr as usize },
-        12usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_COMP_InitTypeDef),
-            "::",
-            stringify!(InputHysteresis)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).OutputPolarity) as usize - ptr as usize },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_COMP_InitTypeDef),
-            "::",
-            stringify!(OutputPolarity)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).OutputBlankingSource) as usize - ptr as usize },
-        20usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_COMP_InitTypeDef),
-            "::",
-            stringify!(OutputBlankingSource)
-        )
-    );
-}
 extern "C" {
-    pub fn LL_COMP_Init(
-        COMPx: *mut COMP_TypeDef,
-        COMP_InitStruct: *mut LL_COMP_InitTypeDef,
-    ) -> ErrorStatus;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct LL_DMA_InitTypeDef {
-    #[doc = "Specifies the peripheral base address for DMA transfer\nor as Source base address in case of memory to memory transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF.\n\n"]
-    pub PeriphOrM2MSrcAddress: u32,
-    #[doc = "Specifies the memory base address for DMA transfer\nor as Destination base address in case of memory to memory transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF.\n\n"]
-    pub MemoryOrM2MDstAddress: u32,
-    #[doc = "Specifies if the data will be transferred from memory to peripheral,\nfrom memory to memory or from peripheral to memory.\nThis parameter can be a value of  [`DMA_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetDataTransferDirection()`]\n\n"]
-    pub Direction: u32,
-    #[doc = "Specifies the normal or circular operation mode.\nThis parameter can be a value of  [`DMA_LL_EC_MODE`]\ndata transfer direction is configured on the selected Channel\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMode()`]\n\n# Notes\n\n* The circular buffer mode cannot be used if the memory to memory\n\n"]
-    pub Mode: u32,
-    #[doc = "Specifies whether the Peripheral address or Source address in case of memory to memory transfer direction\nis incremented or not.\nThis parameter can be a value of  [`DMA_LL_EC_PERIPH`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphIncMode()`]\n\n"]
-    pub PeriphOrM2MSrcIncMode: u32,
-    #[doc = "Specifies whether the Memory address or Destination address in case of memory to memory transfer direction\nis incremented or not.\nThis parameter can be a value of  [`DMA_LL_EC_MEMORY`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMemoryIncMode()`]\n\n"]
-    pub MemoryOrM2MDstIncMode: u32,
-    #[doc = "Specifies the Peripheral data size alignment or Source data size alignment (byte, half word, word)\nin case of memory to memory transfer direction.\nThis parameter can be a value of  [`DMA_LL_EC_PDATAALIGN`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphSize()`]\n\n"]
-    pub PeriphOrM2MSrcDataSize: u32,
-    #[doc = "Specifies the Memory data size alignment or Destination data size alignment (byte, half word, word)\nin case of memory to memory transfer direction.\nThis parameter can be a value of  [`DMA_LL_EC_MDATAALIGN`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMemorySize()`]\n\n"]
-    pub MemoryOrM2MDstDataSize: u32,
-    #[doc = "Specifies the number of data to transfer, in data unit.\nThe data unit is equal to the source buffer configuration set in PeripheralSize\nor MemorySize parameters depending in the transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0x0000FFFF\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetDataLength()`]\n\n"]
-    pub NbData: u32,
-    #[doc = "Specifies the peripheral request.\nThis parameter can be a value of  [`DMAMUX_LL_EC_REQUEST`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphRequest()`]\n\n"]
-    pub PeriphRequest: u32,
-    #[doc = "Specifies the channel priority level.\nThis parameter can be a value of  [`DMA_LL_EC_PRIORITY`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetChannelPriorityLevel()`]\n\n"]
-    pub Priority: u32,
-}
-#[test]
-fn bindgen_test_layout_LL_DMA_InitTypeDef() {
-    const UNINIT: ::core::mem::MaybeUninit<LL_DMA_InitTypeDef> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<LL_DMA_InitTypeDef>(),
-        44usize,
-        concat!("Size of: ", stringify!(LL_DMA_InitTypeDef))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<LL_DMA_InitTypeDef>(),
-        4usize,
-        concat!("Alignment of ", stringify!(LL_DMA_InitTypeDef))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).PeriphOrM2MSrcAddress) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(PeriphOrM2MSrcAddress)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).MemoryOrM2MDstAddress) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(MemoryOrM2MDstAddress)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).Direction) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(Direction)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).Mode) as usize - ptr as usize },
-        12usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(Mode)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).PeriphOrM2MSrcIncMode) as usize - ptr as usize },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(PeriphOrM2MSrcIncMode)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).MemoryOrM2MDstIncMode) as usize - ptr as usize },
-        20usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(MemoryOrM2MDstIncMode)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).PeriphOrM2MSrcDataSize) as usize - ptr as usize },
-        24usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(PeriphOrM2MSrcDataSize)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).MemoryOrM2MDstDataSize) as usize - ptr as usize },
-        28usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(MemoryOrM2MDstDataSize)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).NbData) as usize - ptr as usize },
-        32usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(NbData)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).PeriphRequest) as usize - ptr as usize },
-        36usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(PeriphRequest)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).Priority) as usize - ptr as usize },
-        40usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_DMA_InitTypeDef),
-            "::",
-            stringify!(Priority)
-        )
-    );
-}
-extern "C" {
-    pub fn LL_DMA_Init(
-        DMAx: *mut DMA_TypeDef,
-        Channel: u32,
-        DMA_InitStruct: *mut LL_DMA_InitTypeDef,
-    ) -> ErrorStatus;
-}
-extern "C" {
-    pub fn LL_DMA_DeInit(DMAx: *mut DMA_TypeDef, Channel: u32) -> ErrorStatus;
-}
-#[doc = "LL LPUART Init Structure definition\n\n"]
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct LL_LPUART_InitTypeDef {
-    #[doc = "Specifies the Prescaler to compute the communication baud rate.\nThis parameter can be a value of  [`LPUART_LL_EC_PRESCALER`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetPrescaler()`]\n\n"]
-    pub PrescalerValue: u32,
-    #[doc = "This field defines expected LPUART communication baud rate.\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetBaudRate()`]\n\n"]
-    pub BaudRate: u32,
-    #[doc = "Specifies the number of data bits transmitted or received in a frame.\nThis parameter can be a value of  [`LPUART_LL_EC_DATAWIDTH`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetDataWidth()`]\n\n"]
-    pub DataWidth: u32,
-    #[doc = "Specifies the number of stop bits transmitted.\nThis parameter can be a value of  [`LPUART_LL_EC_STOPBITS`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetStopBitsLength()`]\n\n"]
-    pub StopBits: u32,
-    #[doc = "Specifies the parity mode.\nThis parameter can be a value of  [`LPUART_LL_EC_PARITY`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetParity()`]\n\n"]
-    pub Parity: u32,
-    #[doc = "Specifies whether the Receive and/or Transmit mode is enabled or disabled.\nThis parameter can be a value of  [`LPUART_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetTransferDirection()`]\n\n"]
-    pub TransferDirection: u32,
-    #[doc = "Specifies whether the hardware flow control mode is enabled or disabled.\nThis parameter can be a value of  [`LPUART_LL_EC_HWCONTROL`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetHWFlowCtrl()`]\n\n"]
-    pub HardwareFlowControl: u32,
-}
-#[test]
-fn bindgen_test_layout_LL_LPUART_InitTypeDef() {
-    const UNINIT: ::core::mem::MaybeUninit<LL_LPUART_InitTypeDef> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<LL_LPUART_InitTypeDef>(),
-        28usize,
-        concat!("Size of: ", stringify!(LL_LPUART_InitTypeDef))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<LL_LPUART_InitTypeDef>(),
-        4usize,
-        concat!("Alignment of ", stringify!(LL_LPUART_InitTypeDef))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).PrescalerValue) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_LPUART_InitTypeDef),
-            "::",
-            stringify!(PrescalerValue)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).BaudRate) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_LPUART_InitTypeDef),
-            "::",
-            stringify!(BaudRate)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).DataWidth) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_LPUART_InitTypeDef),
-            "::",
-            stringify!(DataWidth)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).StopBits) as usize - ptr as usize },
-        12usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_LPUART_InitTypeDef),
-            "::",
-            stringify!(StopBits)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).Parity) as usize - ptr as usize },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_LPUART_InitTypeDef),
-            "::",
-            stringify!(Parity)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).TransferDirection) as usize - ptr as usize },
-        20usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_LPUART_InitTypeDef),
-            "::",
-            stringify!(TransferDirection)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).HardwareFlowControl) as usize - ptr as usize },
-        24usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_LPUART_InitTypeDef),
-            "::",
-            stringify!(HardwareFlowControl)
-        )
-    );
-}
-extern "C" {
-    pub fn LL_LPUART_Init(
-        LPUARTx: *mut USART_TypeDef,
-        LPUART_InitStruct: *mut LL_LPUART_InitTypeDef,
-    ) -> ErrorStatus;
-}
-#[doc = "RTC Init structures definition\n\n"]
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct LL_RTC_InitTypeDef {
-    #[doc = "Specifies the RTC Hours Format.\nThis parameter can be a value of  [`RTC_LL_EC_HOURFORMAT`]\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetHourFormat()`]\n\n"]
-    pub HourFormat: u32,
-    #[doc = "Specifies the RTC Asynchronous Predivider value.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0x7F\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetAsynchPrescaler()`]\n\n"]
-    pub AsynchPrescaler: u32,
-    #[doc = "Specifies the RTC Synchronous Predivider value.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0x7FFF\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetSynchPrescaler()`]\n\n"]
-    pub SynchPrescaler: u32,
-}
-#[test]
-fn bindgen_test_layout_LL_RTC_InitTypeDef() {
-    const UNINIT: ::core::mem::MaybeUninit<LL_RTC_InitTypeDef> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<LL_RTC_InitTypeDef>(),
-        12usize,
-        concat!("Size of: ", stringify!(LL_RTC_InitTypeDef))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<LL_RTC_InitTypeDef>(),
-        4usize,
-        concat!("Alignment of ", stringify!(LL_RTC_InitTypeDef))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).HourFormat) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_RTC_InitTypeDef),
-            "::",
-            stringify!(HourFormat)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).AsynchPrescaler) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_RTC_InitTypeDef),
-            "::",
-            stringify!(AsynchPrescaler)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).SynchPrescaler) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_RTC_InitTypeDef),
-            "::",
-            stringify!(SynchPrescaler)
-        )
-    );
-}
-extern "C" {
-    pub fn LL_RTC_Init(
-        RTCx: *mut RTC_TypeDef,
-        RTC_InitStruct: *mut LL_RTC_InitTypeDef,
-    ) -> ErrorStatus;
-}
-extern "C" {
-    pub fn LL_RTC_EnterInitMode(RTCx: *mut RTC_TypeDef) -> ErrorStatus;
-}
-#[doc = "LL USART Init Structure definition\n\n"]
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct LL_USART_InitTypeDef {
-    #[doc = "Specifies the Prescaler to compute the communication baud rate.\nThis parameter can be a value of  [`USART_LL_EC_PRESCALER`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetPrescaler()`]\n\n"]
-    pub PrescalerValue: u32,
-    #[doc = "This field defines expected Usart communication baud rate.\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetBaudRate()`]\n\n"]
-    pub BaudRate: u32,
-    #[doc = "Specifies the number of data bits transmitted or received in a frame.\nThis parameter can be a value of  [`USART_LL_EC_DATAWIDTH`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetDataWidth()`]\n\n"]
-    pub DataWidth: u32,
-    #[doc = "Specifies the number of stop bits transmitted.\nThis parameter can be a value of  [`USART_LL_EC_STOPBITS`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetStopBitsLength()`]\n\n"]
-    pub StopBits: u32,
-    #[doc = "Specifies the parity mode.\nThis parameter can be a value of  [`USART_LL_EC_PARITY`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetParity()`]\n\n"]
-    pub Parity: u32,
-    #[doc = "Specifies whether the Receive and/or Transmit mode is enabled or disabled.\nThis parameter can be a value of  [`USART_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetTransferDirection()`]\n\n"]
-    pub TransferDirection: u32,
-    #[doc = "Specifies whether the hardware flow control mode is enabled or disabled.\nThis parameter can be a value of  [`USART_LL_EC_HWCONTROL`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetHWFlowCtrl()`]\n\n"]
-    pub HardwareFlowControl: u32,
-    #[doc = "Specifies whether USART oversampling mode is 16 or 8.\nThis parameter can be a value of  [`USART_LL_EC_OVERSAMPLING`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetOverSampling()`]\n\n"]
-    pub OverSampling: u32,
-}
-#[test]
-fn bindgen_test_layout_LL_USART_InitTypeDef() {
-    const UNINIT: ::core::mem::MaybeUninit<LL_USART_InitTypeDef> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<LL_USART_InitTypeDef>(),
-        32usize,
-        concat!("Size of: ", stringify!(LL_USART_InitTypeDef))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<LL_USART_InitTypeDef>(),
-        4usize,
-        concat!("Alignment of ", stringify!(LL_USART_InitTypeDef))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).PrescalerValue) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(PrescalerValue)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).BaudRate) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(BaudRate)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).DataWidth) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(DataWidth)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).StopBits) as usize - ptr as usize },
-        12usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(StopBits)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).Parity) as usize - ptr as usize },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(Parity)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).TransferDirection) as usize - ptr as usize },
-        20usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(TransferDirection)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).HardwareFlowControl) as usize - ptr as usize },
-        24usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(HardwareFlowControl)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).OverSampling) as usize - ptr as usize },
-        28usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_USART_InitTypeDef),
-            "::",
-            stringify!(OverSampling)
-        )
-    );
-}
-extern "C" {
-    pub fn LL_USART_Init(
-        USARTx: *mut USART_TypeDef,
-        USART_InitStruct: *mut LL_USART_InitTypeDef,
-    ) -> ErrorStatus;
-}
-extern "C" {
-    pub fn LL_SetSystemCoreClock(HCLKFrequency: u32);
-}
-pub type Elf32_Addr = u32;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct ElfApiInterface {
-    pub api_version_major: u16,
-    pub api_version_minor: u16,
-    pub resolver_callback: ::core::option::Option<
-        unsafe extern "C" fn(name: *const core::ffi::c_char, address: *mut Elf32_Addr) -> bool,
-    >,
-}
-#[test]
-fn bindgen_test_layout_ElfApiInterface() {
-    const UNINIT: ::core::mem::MaybeUninit<ElfApiInterface> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<ElfApiInterface>(),
-        8usize,
-        concat!("Size of: ", stringify!(ElfApiInterface))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<ElfApiInterface>(),
-        4usize,
-        concat!("Alignment of ", stringify!(ElfApiInterface))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).api_version_major) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ElfApiInterface),
-            "::",
-            stringify!(api_version_major)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).api_version_minor) as usize - ptr as usize },
-        2usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ElfApiInterface),
-            "::",
-            stringify!(api_version_minor)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).resolver_callback) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ElfApiInterface),
-            "::",
-            stringify!(resolver_callback)
-        )
-    );
+    #[doc = "Resolver for API entries using a pre-sorted table with hashes\n\nReturns:\n\n* true if the table contains a function\n\n# Arguments\n\n* `interface` - pointer to HashtableApiInterface\n* `name` - function name\n* `address` - output for function address\n\n"]
+    pub fn elf_resolve_from_hashtable(
+        interface: *const ElfApiInterface,
+        name: *const core::ffi::c_char,
+        address: *mut Elf32_Addr,
+    ) -> bool;
 }
 #[repr(C, packed)]
 #[derive(Copy, Clone)]
@@ -16025,6 +15707,12 @@ pub const FlipperApplicationLoadStatus_FlipperApplicationLoadStatusMissingImport
     FlipperApplicationLoadStatus = 3;
 pub type FlipperApplicationLoadStatus = core::ffi::c_uchar;
 extern "C" {
+    #[doc = "Get text description of preload status\n\nReturns:\n\n* String pointer to description\n\n# Arguments\n\n* `status` - Status code\n\n"]
+    pub fn flipper_application_preload_status_to_string(
+        status: FlipperApplicationPreloadStatus,
+    ) -> *const core::ffi::c_char;
+}
+extern "C" {
     #[doc = "Get text description of load status\n\nReturns:\n\n* String pointer to description\n\n# Arguments\n\n* `status` - Status code\n\n"]
     pub fn flipper_application_load_status_to_string(
         status: FlipperApplicationLoadStatus,
@@ -16079,6 +15767,150 @@ extern "C" {
         args: *mut core::ffi::c_void,
     ) -> *mut FuriThread;
 }
+extern "C" {
+    #[doc = "Check if application is a plugin (not a runnable standalone app)\n\nReturns:\n\n* true if application is a plugin, false otherwise\n\n# Arguments\n\n* `app` - Application pointer\n\n"]
+    pub fn flipper_application_is_plugin(app: *mut FlipperApplication) -> bool;
+}
+#[doc = "An object that describes a plugin - must be returned by plugin's entry point\n\n"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FlipperAppPluginDescriptor {
+    pub appid: *const core::ffi::c_char,
+    pub ep_api_version: u32,
+    pub entry_point: *const core::ffi::c_void,
+}
+#[test]
+fn bindgen_test_layout_FlipperAppPluginDescriptor() {
+    const UNINIT: ::core::mem::MaybeUninit<FlipperAppPluginDescriptor> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FlipperAppPluginDescriptor>(),
+        12usize,
+        concat!("Size of: ", stringify!(FlipperAppPluginDescriptor))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FlipperAppPluginDescriptor>(),
+        4usize,
+        concat!("Alignment of ", stringify!(FlipperAppPluginDescriptor))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).appid) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FlipperAppPluginDescriptor),
+            "::",
+            stringify!(appid)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).ep_api_version) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FlipperAppPluginDescriptor),
+            "::",
+            stringify!(ep_api_version)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).entry_point) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FlipperAppPluginDescriptor),
+            "::",
+            stringify!(entry_point)
+        )
+    );
+}
+extern "C" {
+    #[doc = "Get plugin descriptor for preloaded plugin\n\nReturns:\n\n* Pointer to plugin descriptor\n\n# Arguments\n\n* `app` - Application pointer\n\n"]
+    pub fn flipper_application_plugin_get_descriptor(
+        app: *mut FlipperApplication,
+    ) -> *const FlipperAppPluginDescriptor;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct CompositeApiResolver {
+    _unused: [u8; 0],
+}
+extern "C" {
+    #[doc = "Allocate composite API resolver\n\nReturns:\n\n* CompositeApiResolver* instance\n\n"]
+    pub fn composite_api_resolver_alloc() -> *mut CompositeApiResolver;
+}
+extern "C" {
+    #[doc = "Free composite API resolver\n\n# Arguments\n\n* `resolver` - Instance\n\n"]
+    pub fn composite_api_resolver_free(resolver: *mut CompositeApiResolver);
+}
+extern "C" {
+    #[doc = "Add API resolver to composite resolver\n\n# Arguments\n\n* `resolver` - Instance\n* `interface` - API resolver\n\n"]
+    pub fn composite_api_resolver_add(
+        resolver: *mut CompositeApiResolver,
+        interface: *const ElfApiInterface,
+    );
+}
+extern "C" {
+    #[doc = "Get API interface from composite resolver\n\nReturns:\n\n* API interface\n\n# Arguments\n\n* `resolver` - Instance\n\n"]
+    pub fn composite_api_resolver_get(
+        resolver: *mut CompositeApiResolver,
+    ) -> *const ElfApiInterface;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct PluginManager {
+    _unused: [u8; 0],
+}
+pub const PluginManagerError_PluginManagerErrorNone: PluginManagerError = 0;
+pub const PluginManagerError_PluginManagerErrorLoaderError: PluginManagerError = 1;
+pub const PluginManagerError_PluginManagerErrorApplicationIdMismatch: PluginManagerError = 2;
+pub const PluginManagerError_PluginManagerErrorAPIVersionMismatch: PluginManagerError = 3;
+pub type PluginManagerError = core::ffi::c_uchar;
+extern "C" {
+    #[doc = "Allocates new PluginManager\n\nReturns:\n\n* new PluginManager instance\n\n# Arguments\n\n* `application_id` - Application ID filter - only plugins with matching ID will be loaded\n* `api_version` - Application API version filter - only plugins with matching API version\n* `api_interface` - Application API interface - used to resolve plugins' API imports If plugin uses private application's API, use CompoundApiInterface\n\n"]
+    pub fn plugin_manager_alloc(
+        application_id: *const core::ffi::c_char,
+        api_version: u32,
+        api_interface: *const ElfApiInterface,
+    ) -> *mut PluginManager;
+}
+extern "C" {
+    #[doc = "Frees PluginManager\n\n# Arguments\n\n* `manager` - PluginManager instance\n\n"]
+    pub fn plugin_manager_free(manager: *mut PluginManager);
+}
+extern "C" {
+    #[doc = "Loads single plugin by full path\n\nReturns:\n\n* Error code\n\n# Arguments\n\n* `manager` - PluginManager instance\n* `path` - Path to plugin\n\n"]
+    pub fn plugin_manager_load_single(
+        manager: *mut PluginManager,
+        path: *const core::ffi::c_char,
+    ) -> PluginManagerError;
+}
+extern "C" {
+    #[doc = "Loads all plugins from specified directory\n\nReturns:\n\n* Error code\n\n# Arguments\n\n* `manager` - PluginManager instance\n* `path` - Path to directory\n\n"]
+    pub fn plugin_manager_load_all(
+        manager: *mut PluginManager,
+        path: *const core::ffi::c_char,
+    ) -> PluginManagerError;
+}
+extern "C" {
+    #[doc = "Returns number of loaded plugins\n\nReturns:\n\n* Number of loaded plugins\n\n# Arguments\n\n* `manager` - PluginManager instance\n\n"]
+    pub fn plugin_manager_get_count(manager: *mut PluginManager) -> u32;
+}
+extern "C" {
+    #[doc = "Returns plugin descriptor by index\n\nReturns:\n\n* Plugin descriptor\n\n# Arguments\n\n* `manager` - PluginManager instance\n* `index` - Plugin index\n\n"]
+    pub fn plugin_manager_get(
+        manager: *mut PluginManager,
+        index: u32,
+    ) -> *const FlipperAppPluginDescriptor;
+}
+extern "C" {
+    #[doc = "Returns plugin entry point by index\n\nReturns:\n\n* Plugin entry point\n\n# Arguments\n\n* `manager` - PluginManager instance\n* `index` - Plugin index\n\n"]
+    pub fn plugin_manager_get_ep(
+        manager: *mut PluginManager,
+        index: u32,
+    ) -> *const core::ffi::c_void;
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FlipperFormat {
@@ -16104,7 +15936,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Open existing file, buffered mode. Use only if FlipperFormat allocated as a file.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `path` - File path\n\n"]
+    #[doc = "Open existing file, buffered mode. Use only if FlipperFormat allocated as a buffered file.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `path` - File path\n\n"]
     pub fn flipper_format_buffered_file_open_existing(
         flipper_format: *mut FlipperFormat,
         path: *const core::ffi::c_char,
@@ -16120,6 +15952,13 @@ extern "C" {
 extern "C" {
     #[doc = "Open file. Creates a new file, or deletes the contents of the file if it already exists. Use only if FlipperFormat allocated as a file.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `path` - File path\n\n"]
     pub fn flipper_format_file_open_always(
+        flipper_format: *mut FlipperFormat,
+        path: *const core::ffi::c_char,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Open file. Creates a new file, or deletes the contents of the file if it already exists, buffered mode. Use only if FlipperFormat allocated as a buffered file.\n\nReturns:\n\n* True on success\n\n# Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `path` - File path\n\n"]
+    pub fn flipper_format_buffered_file_open_always(
         flipper_format: *mut FlipperFormat,
         path: *const core::ffi::c_char,
     ) -> bool;
@@ -16682,6 +16521,400 @@ extern "C" {
     #[doc = "Returns the underlying stream instance. Use only if you know what you are doing.\n\nReturns:\n\n* Stream*\n\n# Arguments\n\n* `flipper_format` - \n\n"]
     pub fn flipper_format_get_raw_stream(flipper_format: *mut FlipperFormat) -> *mut Stream;
 }
+pub const FlipperStreamValue_FlipperStreamValueIgnore: FlipperStreamValue = 0;
+pub const FlipperStreamValue_FlipperStreamValueStr: FlipperStreamValue = 1;
+pub const FlipperStreamValue_FlipperStreamValueHex: FlipperStreamValue = 2;
+pub const FlipperStreamValue_FlipperStreamValueFloat: FlipperStreamValue = 3;
+pub const FlipperStreamValue_FlipperStreamValueInt32: FlipperStreamValue = 4;
+pub const FlipperStreamValue_FlipperStreamValueUint32: FlipperStreamValue = 5;
+pub const FlipperStreamValue_FlipperStreamValueHexUint64: FlipperStreamValue = 6;
+pub const FlipperStreamValue_FlipperStreamValueBool: FlipperStreamValue = 7;
+pub type FlipperStreamValue = core::ffi::c_uchar;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FlipperStreamWriteData {
+    pub key: *const core::ffi::c_char,
+    pub type_: FlipperStreamValue,
+    pub data: *const core::ffi::c_void,
+    pub data_size: usize,
+}
+#[test]
+fn bindgen_test_layout_FlipperStreamWriteData() {
+    const UNINIT: ::core::mem::MaybeUninit<FlipperStreamWriteData> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FlipperStreamWriteData>(),
+        16usize,
+        concat!("Size of: ", stringify!(FlipperStreamWriteData))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FlipperStreamWriteData>(),
+        4usize,
+        concat!("Alignment of ", stringify!(FlipperStreamWriteData))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FlipperStreamWriteData),
+            "::",
+            stringify!(key)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FlipperStreamWriteData),
+            "::",
+            stringify!(type_)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FlipperStreamWriteData),
+            "::",
+            stringify!(data)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data_size) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FlipperStreamWriteData),
+            "::",
+            stringify!(data_size)
+        )
+    );
+}
+extern "C" {
+    #[doc = "Writes a key/value pair to the stream.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `stream` - \n* `write_data` - \n\n"]
+    pub fn flipper_format_stream_write_value_line(
+        stream: *mut Stream,
+        write_data: *mut FlipperStreamWriteData,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Reads a value by key from a stream.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `stream` - \n* `key` - \n* `type` - \n* `_data` - \n* `data_size` - \n* `strict_mode` - \n\n"]
+    pub fn flipper_format_stream_read_value_line(
+        stream: *mut Stream,
+        key: *const core::ffi::c_char,
+        type_: FlipperStreamValue,
+        _data: *mut core::ffi::c_void,
+        data_size: usize,
+        strict_mode: bool,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Get the count of values by key from a stream.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `stream` - \n* `key` - \n* `count` - \n* `strict_mode` - \n\n"]
+    pub fn flipper_format_stream_get_value_count(
+        stream: *mut Stream,
+        key: *const core::ffi::c_char,
+        count: *mut u32,
+        strict_mode: bool,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Removes a key and the corresponding value string from the stream and inserts a new key/value pair.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `stream` - \n* `write_data` - \n* `strict_mode` - \n\n"]
+    pub fn flipper_format_stream_delete_key_and_write(
+        stream: *mut Stream,
+        write_data: *mut FlipperStreamWriteData,
+        strict_mode: bool,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Writes a comment string to the stream.\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `stream` - \n* `data` - \n\n"]
+    pub fn flipper_format_stream_write_comment_cstr(
+        stream: *mut Stream,
+        data: *const core::ffi::c_char,
+    ) -> bool;
+}
+pub type iButtonProtocolId = i32;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct iButtonEditableData {
+    pub ptr: *mut u8,
+    pub size: usize,
+}
+#[test]
+fn bindgen_test_layout_iButtonEditableData() {
+    const UNINIT: ::core::mem::MaybeUninit<iButtonEditableData> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<iButtonEditableData>(),
+        8usize,
+        concat!("Size of: ", stringify!(iButtonEditableData))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<iButtonEditableData>(),
+        4usize,
+        concat!("Alignment of ", stringify!(iButtonEditableData))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(iButtonEditableData),
+            "::",
+            stringify!(ptr)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(iButtonEditableData),
+            "::",
+            stringify!(size)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct iButtonKey {
+    _unused: [u8; 0],
+}
+extern "C" {
+    #[doc = "Allocate a key object\n\nReturns:\n\n* pointer to the key object\n\n# Arguments\n\n* `[in]` - data_size maximum data size held by the key\n\n"]
+    pub fn ibutton_key_alloc(data_size: usize) -> *mut iButtonKey;
+}
+extern "C" {
+    #[doc = "Destroy the key object, free resources\n\n# Arguments\n\n* `[in]` - key pointer to the key object\n\n"]
+    pub fn ibutton_key_free(key: *mut iButtonKey);
+}
+extern "C" {
+    #[doc = "Get the protocol id held by the key\n\nReturns:\n\n* protocol id held by the key\n\n# Arguments\n\n* `[in]` - key pointer to the key object\n\n"]
+    pub fn ibutton_key_get_protocol_id(key: *const iButtonKey) -> iButtonProtocolId;
+}
+extern "C" {
+    #[doc = "Set the protocol id held by the key\n\n# Arguments\n\n* `[in]` - key pointer to the key object\n* `[in]` - protocol_id new protocol id\n\n"]
+    pub fn ibutton_key_set_protocol_id(key: *mut iButtonKey, protocol_id: iButtonProtocolId);
+}
+extern "C" {
+    #[doc = "Reset the protocol id and data held by the key\n\n# Arguments\n\n* `[in]` - key pointer to the key object\n\n"]
+    pub fn ibutton_key_reset(key: *mut iButtonKey);
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct iButtonProtocols {
+    _unused: [u8; 0],
+}
+extern "C" {
+    #[doc = "Allocate an iButtonProtocols object\n\nReturns:\n\n* pointer to an iButtonProtocols object\n\n"]
+    pub fn ibutton_protocols_alloc() -> *mut iButtonProtocols;
+}
+extern "C" {
+    #[doc = "Destroy an iButtonProtocols object, free resources\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n\n"]
+    pub fn ibutton_protocols_free(protocols: *mut iButtonProtocols);
+}
+extern "C" {
+    #[doc = "Get the total number of available protocols\n\n"]
+    pub fn ibutton_protocols_get_protocol_count() -> u32;
+}
+extern "C" {
+    #[doc = "Get maximum data size out of all protocols available\n\nReturns:\n\n* maximum data size in bytes\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n\n"]
+    pub fn ibutton_protocols_get_max_data_size(protocols: *mut iButtonProtocols) -> usize;
+}
+extern "C" {
+    #[doc = "Get the protocol id based on its name\n\nReturns:\n\n* protocol id on success on iButtonProtocolIdInvalid on failure\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in]` - name pointer to a string containing the name\n\n"]
+    pub fn ibutton_protocols_get_id_by_name(
+        protocols: *mut iButtonProtocols,
+        name: *const core::ffi::c_char,
+    ) -> iButtonProtocolId;
+}
+extern "C" {
+    #[doc = "Get the manufacturer name based on the protocol id\n\nReturns:\n\n* pointer to a statically allocated string with manufacturer name\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in]` - id id of the protocol in question\n\n"]
+    pub fn ibutton_protocols_get_manufacturer(
+        protocols: *mut iButtonProtocols,
+        id: iButtonProtocolId,
+    ) -> *const core::ffi::c_char;
+}
+extern "C" {
+    #[doc = "Get the protocol name based on the protocol id\n\nReturns:\n\n* pointer to a statically allocated string with protocol name\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in]` - id id of the protocol in question\n\n"]
+    pub fn ibutton_protocols_get_name(
+        protocols: *mut iButtonProtocols,
+        id: iButtonProtocolId,
+    ) -> *const core::ffi::c_char;
+}
+extern "C" {
+    #[doc = "Get protocol features bitmask by protocol id\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in]` - id id of the protocol in question\n\n"]
+    pub fn ibutton_protocols_get_features(
+        protocols: *mut iButtonProtocols,
+        id: iButtonProtocolId,
+    ) -> u32;
+}
+extern "C" {
+    #[doc = "Read a physical device (a key or an emulator)\n\nReturns:\n\n* true on success, false on failure\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[out]` - key pointer to the key to read into (must be allocated before)\n\n"]
+    pub fn ibutton_protocols_read(protocols: *mut iButtonProtocols, key: *mut iButtonKey) -> bool;
+}
+extern "C" {
+    #[doc = "Write the key to a blank\n\nReturns:\n\n* true on success, false on failure\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in]` - key pointer to the key to be written\n\n"]
+    pub fn ibutton_protocols_write_blank(
+        protocols: *mut iButtonProtocols,
+        key: *mut iButtonKey,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Write the key to another one of the same type\n\nReturns:\n\n* true on success, false on failure\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in]` - key pointer to the key to be written\n\n"]
+    pub fn ibutton_protocols_write_copy(
+        protocols: *mut iButtonProtocols,
+        key: *mut iButtonKey,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Start emulating the key\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in]` - key pointer to the key to be emulated\n\n"]
+    pub fn ibutton_protocols_emulate_start(protocols: *mut iButtonProtocols, key: *mut iButtonKey);
+}
+extern "C" {
+    #[doc = "Stop emulating the key\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in]` - key pointer to the key to be emulated\n\n"]
+    pub fn ibutton_protocols_emulate_stop(protocols: *mut iButtonProtocols, key: *mut iButtonKey);
+}
+extern "C" {
+    #[doc = "Save the key data to a file.\n\nReturns:\n\n* true on success, false on failure\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in]` - key pointer to the key to be saved\n* `[in]` - file_name full absolute path to the file name\n\n"]
+    pub fn ibutton_protocols_save(
+        protocols: *mut iButtonProtocols,
+        key: *const iButtonKey,
+        file_name: *const core::ffi::c_char,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Load the key from a file.\n\nReturns:\n\n* true on success, false on failure\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[out]` - key pointer to the key to load into (must be allocated before)\n* `[in]` - file_name full absolute path to the file name\n\n"]
+    pub fn ibutton_protocols_load(
+        protocols: *mut iButtonProtocols,
+        key: *mut iButtonKey,
+        file_name: *const core::ffi::c_char,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Format a string containing device full data\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in]` - key pointer to the key to be rendered\n* `[out]` - result pointer to the FuriString instance (must be initialized)\n\n"]
+    pub fn ibutton_protocols_render_data(
+        protocols: *mut iButtonProtocols,
+        key: *const iButtonKey,
+        result: *mut FuriString,
+    );
+}
+extern "C" {
+    #[doc = "Format a string containing device brief data\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in]` - key pointer to the key to be rendered\n* `[out]` - result pointer to the FuriString instance (must be initialized)\n\n"]
+    pub fn ibutton_protocols_render_brief_data(
+        protocols: *mut iButtonProtocols,
+        key: *const iButtonKey,
+        result: *mut FuriString,
+    );
+}
+extern "C" {
+    #[doc = "Format a string containing error message (for invalid keys)\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in]` - key pointer to the key to be rendered\n* `[out]` - result pointer to the FuriString instance (must be initialized)\n\n"]
+    pub fn ibutton_protocols_render_error(
+        protocols: *mut iButtonProtocols,
+        key: *const iButtonKey,
+        result: *mut FuriString,
+    );
+}
+extern "C" {
+    #[doc = "Check whether the key data is valid\n\nReturns:\n\n* true if data is valid, false otherwise\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in]` - key pointer to the key to be checked\n\n"]
+    pub fn ibutton_protocols_is_valid(
+        protocols: *mut iButtonProtocols,
+        key: *const iButtonKey,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Get a pointer to the key's editable data (for in-place editing)\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in]` - key pointer to the key to be checked\n* `[out]` - editable pointer to a structure to contain the editable data\n\n"]
+    pub fn ibutton_protocols_get_editable_data(
+        protocols: *mut iButtonProtocols,
+        key: *const iButtonKey,
+        editable: *mut iButtonEditableData,
+    );
+}
+extern "C" {
+    #[doc = "Make all necessary internal adjustments after editing the key\n\n# Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n* `[in,out]` - key pointer to the key to be adjusted\n\n"]
+    pub fn ibutton_protocols_apply_edits(protocols: *mut iButtonProtocols, key: *const iButtonKey);
+}
+pub const iButtonWorkerWriteResult_iButtonWorkerWriteOK: iButtonWorkerWriteResult = 0;
+pub const iButtonWorkerWriteResult_iButtonWorkerWriteSameKey: iButtonWorkerWriteResult = 1;
+pub const iButtonWorkerWriteResult_iButtonWorkerWriteNoDetect: iButtonWorkerWriteResult = 2;
+pub const iButtonWorkerWriteResult_iButtonWorkerWriteCannotWrite: iButtonWorkerWriteResult = 3;
+pub type iButtonWorkerWriteResult = core::ffi::c_uchar;
+pub type iButtonWorkerReadCallback =
+    ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
+pub type iButtonWorkerWriteCallback = ::core::option::Option<
+    unsafe extern "C" fn(context: *mut core::ffi::c_void, result: iButtonWorkerWriteResult),
+>;
+pub type iButtonWorkerEmulateCallback =
+    ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void, emulated: bool)>;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct iButtonWorker {
+    _unused: [u8; 0],
+}
+extern "C" {
+    #[doc = "Allocate ibutton worker\n\nReturns:\n\n* iButtonWorker*\n\n"]
+    pub fn ibutton_worker_alloc(protocols: *mut iButtonProtocols) -> *mut iButtonWorker;
+}
+extern "C" {
+    #[doc = "Free ibutton worker\n\n# Arguments\n\n* `worker` - \n\n"]
+    pub fn ibutton_worker_free(worker: *mut iButtonWorker);
+}
+extern "C" {
+    #[doc = "Start ibutton worker thread\n\n# Arguments\n\n* `worker` - \n\n"]
+    pub fn ibutton_worker_start_thread(worker: *mut iButtonWorker);
+}
+extern "C" {
+    #[doc = "Stop ibutton worker thread\n\n# Arguments\n\n* `worker` - \n\n"]
+    pub fn ibutton_worker_stop_thread(worker: *mut iButtonWorker);
+}
+extern "C" {
+    #[doc = "Set \"read success\" callback\n\n# Arguments\n\n* `worker` - \n* `callback` - \n* `context` - \n\n"]
+    pub fn ibutton_worker_read_set_callback(
+        worker: *mut iButtonWorker,
+        callback: iButtonWorkerReadCallback,
+        context: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = "Start read mode\n\n# Arguments\n\n* `worker` - \n* `key` - \n\n"]
+    pub fn ibutton_worker_read_start(worker: *mut iButtonWorker, key: *mut iButtonKey);
+}
+extern "C" {
+    #[doc = "Set \"write event\" callback\n\n# Arguments\n\n* `worker` - \n* `callback` - \n* `context` - \n\n"]
+    pub fn ibutton_worker_write_set_callback(
+        worker: *mut iButtonWorker,
+        callback: iButtonWorkerWriteCallback,
+        context: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = "Start write blank mode\n\n# Arguments\n\n* `worker` - \n* `key` - \n\n"]
+    pub fn ibutton_worker_write_blank_start(worker: *mut iButtonWorker, key: *mut iButtonKey);
+}
+extern "C" {
+    #[doc = "Start write copy mode\n\n# Arguments\n\n* `worker` - \n* `key` - \n\n"]
+    pub fn ibutton_worker_write_copy_start(worker: *mut iButtonWorker, key: *mut iButtonKey);
+}
+extern "C" {
+    #[doc = "Set \"emulate success\" callback\n\n# Arguments\n\n* `worker` - \n* `callback` - \n* `context` - \n\n"]
+    pub fn ibutton_worker_emulate_set_callback(
+        worker: *mut iButtonWorker,
+        callback: iButtonWorkerEmulateCallback,
+        context: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = "Start emulate mode\n\n# Arguments\n\n* `worker` - \n* `key` - \n\n"]
+    pub fn ibutton_worker_emulate_start(worker: *mut iButtonWorker, key: *mut iButtonKey);
+}
+extern "C" {
+    #[doc = "Stop all modes\n\n# Arguments\n\n* `worker` - \n\n"]
+    pub fn ibutton_worker_stop(worker: *mut iButtonWorker);
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct InfraredDecoderHandler {
@@ -16976,7 +17209,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Callback to pass to infrared_worker_tx_set_get_signal_callback() if signal is steady and will not be changed between infrared_worker start and stop. Before starting transmission, desired steady signal must be set with infrared_worker_make_decoded_signal() or infrared_worker_make_raw_signal().\nThis function should not be implicitly called.\n\n# Arguments\n\n* `context` - [Direction: In] - context\n* `instance` - [Direction: In, Out] - InfraredWorker instance\n\n"]
+    #[doc = "Callback to pass to infrared_worker_tx_set_get_signal_callback() if signal is steady and will not be changed between infrared_worker start and stop. Before starting transmission, desired steady signal must be set with infrared_worker_set_decoded_signal() or infrared_worker_set_raw_signal().\nThis function should not be called directly.\n\n# Arguments\n\n* `context` - [Direction: In] - context\n* `instance` - [Direction: In, Out] - InfraredWorker instance\n\n"]
     pub fn infrared_worker_tx_get_signal_steady_callback(
         context: *mut core::ffi::c_void,
         instance: *mut InfraredWorker,
@@ -17004,11 +17237,13 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Set current raw signal for InfraredWorker instance\n\n# Arguments\n\n* `instance` - [Direction: In, Out] - InfraredWorker instance\n* `timings` - [Direction: In] - array of raw timings\n* `timings_cnt` - [Direction: In] - size of array of raw timings\n\n"]
+    #[doc = "Set current raw signal for InfraredWorker instance\n\n# Arguments\n\n* `instance` - [Direction: In, Out] - InfraredWorker instance\n* `timings` - [Direction: In] - array of raw timings\n* `timings_cnt` - [Direction: In] - size of array of raw timings\n* `frequency` - [Direction: In] - carrier frequency in Hertz\n* `duty_cycle` - [Direction: In] - carrier duty cycle (0.0 - 1.0)\n\n"]
     pub fn infrared_worker_set_raw_signal(
         instance: *mut InfraredWorker,
         timings: *const u32,
         timings_cnt: usize,
+        frequency: u32,
+        duty_cycle: f32,
     );
 }
 pub type ProtocolAlloc = ::core::option::Option<unsafe extern "C" fn() -> *mut core::ffi::c_void>;
@@ -17454,7 +17689,8 @@ pub const LFRFIDProtocol_LFRFIDProtocolParadox: LFRFIDProtocol = 13;
 pub const LFRFIDProtocol_LFRFIDProtocolPACStanley: LFRFIDProtocol = 14;
 pub const LFRFIDProtocol_LFRFIDProtocolKeri: LFRFIDProtocol = 15;
 pub const LFRFIDProtocol_LFRFIDProtocolGallagher: LFRFIDProtocol = 16;
-pub const LFRFIDProtocol_LFRFIDProtocolMax: LFRFIDProtocol = 17;
+pub const LFRFIDProtocol_LFRFIDProtocolNexwatch: LFRFIDProtocol = 17;
+pub const LFRFIDProtocol_LFRFIDProtocolMax: LFRFIDProtocol = 18;
 pub type LFRFIDProtocol = core::ffi::c_uchar;
 extern "C" {
     pub static mut lfrfid_protocols: [*const ProtocolBase; 0usize];
@@ -18066,16 +18302,17 @@ pub const MfUltralightAuthMethod_MfUltralightAuthMethodAuto: MfUltralightAuthMet
 pub type MfUltralightAuthMethod = core::ffi::c_uchar;
 pub const MfUltralightType_MfUltralightTypeUnknown: MfUltralightType = 0;
 pub const MfUltralightType_MfUltralightTypeNTAG203: MfUltralightType = 1;
-pub const MfUltralightType_MfUltralightTypeUL11: MfUltralightType = 2;
-pub const MfUltralightType_MfUltralightTypeUL21: MfUltralightType = 3;
-pub const MfUltralightType_MfUltralightTypeNTAG213: MfUltralightType = 4;
-pub const MfUltralightType_MfUltralightTypeNTAG215: MfUltralightType = 5;
-pub const MfUltralightType_MfUltralightTypeNTAG216: MfUltralightType = 6;
-pub const MfUltralightType_MfUltralightTypeNTAGI2C1K: MfUltralightType = 7;
-pub const MfUltralightType_MfUltralightTypeNTAGI2C2K: MfUltralightType = 8;
-pub const MfUltralightType_MfUltralightTypeNTAGI2CPlus1K: MfUltralightType = 9;
-pub const MfUltralightType_MfUltralightTypeNTAGI2CPlus2K: MfUltralightType = 10;
-pub const MfUltralightType_MfUltralightTypeNum: MfUltralightType = 11;
+pub const MfUltralightType_MfUltralightTypeULC: MfUltralightType = 2;
+pub const MfUltralightType_MfUltralightTypeUL11: MfUltralightType = 3;
+pub const MfUltralightType_MfUltralightTypeUL21: MfUltralightType = 4;
+pub const MfUltralightType_MfUltralightTypeNTAG213: MfUltralightType = 5;
+pub const MfUltralightType_MfUltralightTypeNTAG215: MfUltralightType = 6;
+pub const MfUltralightType_MfUltralightTypeNTAG216: MfUltralightType = 7;
+pub const MfUltralightType_MfUltralightTypeNTAGI2C1K: MfUltralightType = 8;
+pub const MfUltralightType_MfUltralightTypeNTAGI2C2K: MfUltralightType = 9;
+pub const MfUltralightType_MfUltralightTypeNTAGI2CPlus1K: MfUltralightType = 10;
+pub const MfUltralightType_MfUltralightTypeNTAGI2CPlus2K: MfUltralightType = 11;
+pub const MfUltralightType_MfUltralightTypeNum: MfUltralightType = 12;
 pub type MfUltralightType = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -19534,8 +19771,7 @@ pub const NfcReadMode_NfcReadModeAuto: NfcReadMode = 0;
 pub const NfcReadMode_NfcReadModeMfClassic: NfcReadMode = 1;
 pub const NfcReadMode_NfcReadModeMfUltralight: NfcReadMode = 2;
 pub const NfcReadMode_NfcReadModeMfDesfire: NfcReadMode = 3;
-pub const NfcReadMode_NfcReadModeEMV: NfcReadMode = 4;
-pub const NfcReadMode_NfcReadModeNFCA: NfcReadMode = 5;
+pub const NfcReadMode_NfcReadModeNFCA: NfcReadMode = 4;
 pub type NfcReadMode = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -19897,201 +20133,28 @@ extern "C" {
         context: *mut core::ffi::c_void,
     );
 }
-pub const iButtonKeyType_iButtonKeyDS1990: iButtonKeyType = 0;
-pub const iButtonKeyType_iButtonKeyCyfral: iButtonKeyType = 1;
-pub const iButtonKeyType_iButtonKeyMetakom: iButtonKeyType = 2;
-pub type iButtonKeyType = core::ffi::c_uchar;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct iButtonKey {
-    _unused: [u8; 0],
+extern "C" {
+    pub fn nfc_util_num2bytes(src: u64, len: u8, dest: *mut u8);
 }
 extern "C" {
-    #[doc = "Allocate key\n\nReturns:\n\n* iButtonKey*\n\n"]
-    pub fn ibutton_key_alloc() -> *mut iButtonKey;
+    pub fn nfc_util_bytes2num(src: *const u8, len: u8) -> u64;
 }
 extern "C" {
-    #[doc = "Free key\n\n# Arguments\n\n* `key` - \n\n"]
-    pub fn ibutton_key_free(key: *mut iButtonKey);
+    pub fn nfc_util_even_parity32(data: u32) -> u8;
 }
 extern "C" {
-    #[doc = "Copy key\n\n# Arguments\n\n* `to` - \n* `from` - \n\n"]
-    pub fn ibutton_key_set(to: *mut iButtonKey, from: *const iButtonKey);
+    pub fn nfc_util_odd_parity8(data: u8) -> u8;
 }
 extern "C" {
-    #[doc = "Set key data\n\n# Arguments\n\n* `key` - \n* `data` - \n* `data_count` - \n\n"]
-    pub fn ibutton_key_set_data(key: *mut iButtonKey, data: *mut u8, data_count: u8);
-}
-extern "C" {
-    #[doc = "Clear key data\n\n# Arguments\n\n* `key` - \n\n"]
-    pub fn ibutton_key_clear_data(key: *mut iButtonKey);
-}
-extern "C" {
-    #[doc = "Get pointer to key data\n\nReturns:\n\n* const uint8_t*\n\n# Arguments\n\n* `key` - \n\n"]
-    pub fn ibutton_key_get_data_p(key: *mut iButtonKey) -> *const u8;
-}
-extern "C" {
-    #[doc = "Get key data size\n\nReturns:\n\n* uint8_t\n\n# Arguments\n\n* `key` - \n\n"]
-    pub fn ibutton_key_get_data_size(key: *mut iButtonKey) -> u8;
-}
-extern "C" {
-    #[doc = "Set key type\n\n# Arguments\n\n* `key` - \n* `key_type` - \n\n"]
-    pub fn ibutton_key_set_type(key: *mut iButtonKey, key_type: iButtonKeyType);
-}
-extern "C" {
-    #[doc = "Get key type\n\nReturns:\n\n* iButtonKeyType\n\n# Arguments\n\n* `key` - \n\n"]
-    pub fn ibutton_key_get_type(key: *mut iButtonKey) -> iButtonKeyType;
-}
-extern "C" {
-    #[doc = "Get type string from key type\n\nReturns:\n\n* const char*\n\n# Arguments\n\n* `key_type` - \n\n"]
-    pub fn ibutton_key_get_string_by_type(key_type: iButtonKeyType) -> *const core::ffi::c_char;
-}
-extern "C" {
-    #[doc = "Get key type from string\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `type_string` - \n* `key_type` - \n\n"]
-    pub fn ibutton_key_get_type_by_string(
-        type_string: *const core::ffi::c_char,
-        key_type: *mut iButtonKeyType,
-    ) -> bool;
-}
-extern "C" {
-    #[doc = "Get key data size from type\n\nReturns:\n\n* uint8_t\n\n# Arguments\n\n* `key_type` - \n\n"]
-    pub fn ibutton_key_get_size_by_type(key_type: iButtonKeyType) -> u8;
-}
-extern "C" {
-    #[doc = "Get max key size\n\nReturns:\n\n* uint8_t\n\n"]
-    pub fn ibutton_key_get_max_size() -> u8;
-}
-extern "C" {
-    #[doc = "Check if CRC for onewire key is valid\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `key` - \n\n"]
-    pub fn ibutton_key_dallas_crc_is_valid(key: *mut iButtonKey) -> bool;
-}
-extern "C" {
-    #[doc = "Check if onewire key is a DS1990 key\n\nReturns:\n\n* true\n* false\n\n# Arguments\n\n* `key` - \n\n"]
-    pub fn ibutton_key_dallas_is_1990_key(key: *mut iButtonKey) -> bool;
-}
-pub const iButtonWorkerWriteResult_iButtonWorkerWriteOK: iButtonWorkerWriteResult = 0;
-pub const iButtonWorkerWriteResult_iButtonWorkerWriteSameKey: iButtonWorkerWriteResult = 1;
-pub const iButtonWorkerWriteResult_iButtonWorkerWriteNoDetect: iButtonWorkerWriteResult = 2;
-pub const iButtonWorkerWriteResult_iButtonWorkerWriteCannotWrite: iButtonWorkerWriteResult = 3;
-pub type iButtonWorkerWriteResult = core::ffi::c_uchar;
-pub type iButtonWorkerReadCallback =
-    ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
-pub type iButtonWorkerWriteCallback = ::core::option::Option<
-    unsafe extern "C" fn(context: *mut core::ffi::c_void, result: iButtonWorkerWriteResult),
->;
-pub type iButtonWorkerEmulateCallback =
-    ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void, emulated: bool)>;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct iButtonWorker {
-    _unused: [u8; 0],
-}
-extern "C" {
-    #[doc = "Allocate ibutton worker\n\nReturns:\n\n* iButtonWorker*\n\n"]
-    pub fn ibutton_worker_alloc() -> *mut iButtonWorker;
-}
-extern "C" {
-    #[doc = "Free ibutton worker\n\n# Arguments\n\n* `worker` - \n\n"]
-    pub fn ibutton_worker_free(worker: *mut iButtonWorker);
-}
-extern "C" {
-    #[doc = "Start ibutton worker thread\n\n# Arguments\n\n* `worker` - \n\n"]
-    pub fn ibutton_worker_start_thread(worker: *mut iButtonWorker);
-}
-extern "C" {
-    #[doc = "Stop ibutton worker thread\n\n# Arguments\n\n* `worker` - \n\n"]
-    pub fn ibutton_worker_stop_thread(worker: *mut iButtonWorker);
-}
-extern "C" {
-    #[doc = "Set \"read success\" callback\n\n# Arguments\n\n* `worker` - \n* `callback` - \n* `context` - \n\n"]
-    pub fn ibutton_worker_read_set_callback(
-        worker: *mut iButtonWorker,
-        callback: iButtonWorkerReadCallback,
-        context: *mut core::ffi::c_void,
-    );
-}
-extern "C" {
-    #[doc = "Start read mode\n\n# Arguments\n\n* `worker` - \n* `key` - \n\n"]
-    pub fn ibutton_worker_read_start(worker: *mut iButtonWorker, key: *mut iButtonKey);
-}
-extern "C" {
-    #[doc = "Set \"write event\" callback\n\n# Arguments\n\n* `worker` - \n* `callback` - \n* `context` - \n\n"]
-    pub fn ibutton_worker_write_set_callback(
-        worker: *mut iButtonWorker,
-        callback: iButtonWorkerWriteCallback,
-        context: *mut core::ffi::c_void,
-    );
-}
-extern "C" {
-    #[doc = "Start write mode\n\n# Arguments\n\n* `worker` - \n* `key` - \n\n"]
-    pub fn ibutton_worker_write_start(worker: *mut iButtonWorker, key: *mut iButtonKey);
-}
-extern "C" {
-    #[doc = "Set \"emulate success\" callback\n\n# Arguments\n\n* `worker` - \n* `callback` - \n* `context` - \n\n"]
-    pub fn ibutton_worker_emulate_set_callback(
-        worker: *mut iButtonWorker,
-        callback: iButtonWorkerEmulateCallback,
-        context: *mut core::ffi::c_void,
-    );
-}
-extern "C" {
-    #[doc = "Start emulate mode\n\n# Arguments\n\n* `worker` - \n* `key` - \n\n"]
-    pub fn ibutton_worker_emulate_start(worker: *mut iButtonWorker, key: *mut iButtonKey);
-}
-extern "C" {
-    #[doc = "Stop all modes\n\n# Arguments\n\n* `worker` - \n\n"]
-    pub fn ibutton_worker_stop(worker: *mut iButtonWorker);
+    pub fn nfc_util_odd_parity(src: *const u8, dst: *mut u8, len: u8);
 }
 extern "C" {
     pub fn maxim_crc8(data: *const u8, data_size: u8, crc_init: u8) -> u8;
 }
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct OneWireSlave {
-    _unused: [u8; 0],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct OneWireDevice {
-    _unused: [u8; 0],
-}
-extern "C" {
-    #[doc = "Allocate onewire device with ID\n\nReturns:\n\n* OneWireDevice*\n\n# Arguments\n\n* `id_1` - \n* `id_2` - \n* `id_3` - \n* `id_4` - \n* `id_5` - \n* `id_6` - \n* `id_7` - \n* `id_8` - \n\n"]
-    pub fn onewire_device_alloc(
-        id_1: u8,
-        id_2: u8,
-        id_3: u8,
-        id_4: u8,
-        id_5: u8,
-        id_6: u8,
-        id_7: u8,
-        id_8: u8,
-    ) -> *mut OneWireDevice;
-}
-extern "C" {
-    #[doc = "Deallocate onewire device\n\n# Arguments\n\n* `device` - \n\n"]
-    pub fn onewire_device_free(device: *mut OneWireDevice);
-}
-extern "C" {
-    #[doc = "Send ID report, called from onewire slave\n\n# Arguments\n\n* `device` - \n\n"]
-    pub fn onewire_device_send_id(device: *mut OneWireDevice);
-}
-extern "C" {
-    #[doc = "Attach device to onewire slave bus\n\n# Arguments\n\n* `device` - \n* `bus` - \n\n"]
-    pub fn onewire_device_attach(device: *mut OneWireDevice, bus: *mut OneWireSlave);
-}
-extern "C" {
-    #[doc = "Attach device from onewire slave bus\n\n# Arguments\n\n* `device` - \n\n"]
-    pub fn onewire_device_detach(device: *mut OneWireDevice);
-}
-extern "C" {
-    #[doc = "Get pointer to device id array\n\nReturns:\n\n* uint8_t*\n\n# Arguments\n\n* `device` - \n\n"]
-    pub fn onewire_device_get_id_p(device: *mut OneWireDevice) -> *mut u8;
-}
 #[doc = "Search for alarmed device\n\n"]
-pub const OneWireHostSearchMode_CONDITIONAL_SEARCH: OneWireHostSearchMode = 0;
-#[doc = "Search all devices\n\n"]
-pub const OneWireHostSearchMode_NORMAL_SEARCH: OneWireHostSearchMode = 1;
+pub const OneWireHostSearchMode_OneWireHostSearchModeConditional: OneWireHostSearchMode = 0;
+#[doc = "Search for all devices\n\n"]
+pub const OneWireHostSearchMode_OneWireHostSearchModeNormal: OneWireHostSearchMode = 1;
 pub type OneWireHostSearchMode = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -20099,93 +20162,136 @@ pub struct OneWireHost {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = "Allocate onewire host bus\n\nReturns:\n\n* OneWireHost*\n\n# Arguments\n\n* `pin` - \n\n"]
+    #[doc = "Allocate OneWireHost instance\n\nReturns:\n\n* pointer to OneWireHost instance\n\n# Arguments\n\n* `[in]` - gpio_pin connection pin\n\n"]
     pub fn onewire_host_alloc(gpio_pin: *const GpioPin) -> *mut OneWireHost;
 }
 extern "C" {
-    #[doc = "Deallocate onewire host bus\n\n# Arguments\n\n* `host` - \n\n"]
+    #[doc = "Destroy OneWireHost instance, free resources\n\n# Arguments\n\n* `[in]` - host pointer to OneWireHost instance\n\n"]
     pub fn onewire_host_free(host: *mut OneWireHost);
 }
 extern "C" {
-    #[doc = "Reset bus\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `host` - \n\n"]
+    #[doc = "Reset the 1-Wire bus\n\nReturns:\n\n* true if presence was detected, false otherwise\n\n# Arguments\n\n* `[in]` - host pointer to OneWireHost instance\n\n"]
     pub fn onewire_host_reset(host: *mut OneWireHost) -> bool;
 }
 extern "C" {
-    #[doc = "Read one bit\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `host` - \n\n"]
+    #[doc = "Read one bit\n\nReturns:\n\n* received bit value\n\n# Arguments\n\n* `[in]` - host pointer to OneWireHost instance\n\n"]
     pub fn onewire_host_read_bit(host: *mut OneWireHost) -> bool;
 }
 extern "C" {
-    #[doc = "Read one byte\n\nReturns:\n\n* uint8_t\n\n# Arguments\n\n* `host` - \n\n"]
+    #[doc = "Read one byte\n\nReturns:\n\n* received byte value\n\n# Arguments\n\n* `[in]` - host pointer to OneWireHost instance\n\n"]
     pub fn onewire_host_read(host: *mut OneWireHost) -> u8;
 }
 extern "C" {
-    #[doc = "Read many bytes\n\n# Arguments\n\n* `host` - \n* `buffer` - \n* `count` - \n\n"]
+    #[doc = "Read one or more bytes\n\n# Arguments\n\n* `[in]` - host pointer to OneWireHost instance\n* `[out]` - buffer received data buffer\n* `[in]` - count number of bytes to read\n\n"]
     pub fn onewire_host_read_bytes(host: *mut OneWireHost, buffer: *mut u8, count: u16);
 }
 extern "C" {
-    #[doc = "Write one bit\n\n# Arguments\n\n* `host` - \n* `value` - \n\n"]
+    #[doc = "Write one bit\n\n# Arguments\n\n* `[in]` - host pointer to OneWireHost instance\n* `value` - bit value to write\n\n"]
     pub fn onewire_host_write_bit(host: *mut OneWireHost, value: bool);
 }
 extern "C" {
-    #[doc = "Write one byte\n\n# Arguments\n\n* `host` - \n* `value` - \n\n"]
+    #[doc = "Write one byte\n\n# Arguments\n\n* `[in]` - host pointer to OneWireHost instance\n* `value` - byte value to write\n\n"]
     pub fn onewire_host_write(host: *mut OneWireHost, value: u8);
 }
 extern "C" {
-    #[doc = "Skip ROM command\n\n# Arguments\n\n* `host` - \n\n"]
-    pub fn onewire_host_skip(host: *mut OneWireHost);
+    #[doc = "Write one or more bytes\n\n# Arguments\n\n* `[in]` - host pointer to OneWireHost instance\n* `[in]` - buffer pointer to the data to write\n* `[in]` - count size of the data to write\n\n"]
+    pub fn onewire_host_write_bytes(host: *mut OneWireHost, buffer: *const u8, count: u16);
 }
 extern "C" {
-    #[doc = "Start working with the bus\n\n# Arguments\n\n* `host` - \n\n"]
+    #[doc = "Start working with the bus\n\n# Arguments\n\n* `[in]` - host pointer to OneWireHost instance\n\n"]
     pub fn onewire_host_start(host: *mut OneWireHost);
 }
 extern "C" {
-    #[doc = "Stop working with the bus\n\n# Arguments\n\n* `host` - \n\n"]
+    #[doc = "Stop working with the bus\n\n# Arguments\n\n* `[in]` - host pointer to OneWireHost instance\n\n"]
     pub fn onewire_host_stop(host: *mut OneWireHost);
 }
 extern "C" {
-    #[doc = "# Arguments\n\n* `host` - \n\n"]
+    #[doc = "Reset previous search results\n\n# Arguments\n\n* `[in]` - host pointer to OneWireHost instance\n\n"]
     pub fn onewire_host_reset_search(host: *mut OneWireHost);
 }
 extern "C" {
-    #[doc = "# Arguments\n\n* `host` - \n* `family_code` - \n\n"]
+    #[doc = "Set the family code to search for\n\n# Arguments\n\n* `[in]` - host pointer to OneWireHost instance\n* `[in]` - family_code device family code\n\n"]
     pub fn onewire_host_target_search(host: *mut OneWireHost, family_code: u8);
 }
 extern "C" {
-    #[doc = "Returns:\n\n* uint8_t\n\n# Arguments\n\n* `host` - \n* `newAddr` - \n* `mode` - \n\n"]
+    #[doc = "Search for devices on the 1-Wire bus\n\nReturns:\n\n* true on success, false otherwise\n\n# Arguments\n\n* `[in]` - host pointer to OneWireHost instance\n* `[out]` - new_addr pointer to the buffer to contain the unique ROM of the found device\n* `[in]` - mode search mode\n\n"]
     pub fn onewire_host_search(
         host: *mut OneWireHost,
         new_addr: *mut u8,
         mode: OneWireHostSearchMode,
-    ) -> u8;
+    ) -> bool;
 }
+extern "C" {
+    #[doc = "Enable overdrive mode\n\n# Arguments\n\n* `[in]` - host pointer to OneWireHost instance\n* `[in]` - set true to turn overdrive on, false to turn it off\n\n"]
+    pub fn onewire_host_set_overdrive(host: *mut OneWireHost, set: bool);
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct OneWireSlave {
+    _unused: [u8; 0],
+}
+pub type OneWireSlaveResetCallback = ::core::option::Option<
+    unsafe extern "C" fn(is_short: bool, context: *mut core::ffi::c_void) -> bool,
+>;
+pub type OneWireSlaveCommandCallback = ::core::option::Option<
+    unsafe extern "C" fn(command: u8, context: *mut core::ffi::c_void) -> bool,
+>;
 pub type OneWireSlaveResultCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
 extern "C" {
-    #[doc = "Allocate onewire slave\n\nReturns:\n\n* OneWireSlave*\n\n# Arguments\n\n* `gpio_pin` - \n\n"]
+    #[doc = "Allocate OneWireSlave instance\n\nReturns:\n\n* pointer to OneWireSlave instance\n\n# Arguments\n\n* `[in]` - gpio_pin connection pin\n\n"]
     pub fn onewire_slave_alloc(gpio_pin: *const GpioPin) -> *mut OneWireSlave;
 }
 extern "C" {
-    #[doc = "Free onewire slave\n\n# Arguments\n\n* `bus` - \n\n"]
+    #[doc = "Destroy OneWireSlave instance, free resources\n\n# Arguments\n\n* `[in]` - bus pointer to OneWireSlave instance\n\n"]
     pub fn onewire_slave_free(bus: *mut OneWireSlave);
 }
 extern "C" {
-    #[doc = "Start working with the bus\n\n# Arguments\n\n* `bus` - \n\n"]
+    #[doc = "Start working with the bus\n\n# Arguments\n\n* `[in]` - bus pointer to OneWireSlave instance\n\n"]
     pub fn onewire_slave_start(bus: *mut OneWireSlave);
 }
 extern "C" {
-    #[doc = "Stop working with the bus\n\n# Arguments\n\n* `bus` - \n\n"]
+    #[doc = "Stop working with the bus\n\n# Arguments\n\n* `[in]` - bus pointer to OneWireSlave instance\n\n"]
     pub fn onewire_slave_stop(bus: *mut OneWireSlave);
 }
 extern "C" {
-    #[doc = "Attach device for emulation\n\n# Arguments\n\n* `bus` - \n* `device` - \n\n"]
-    pub fn onewire_slave_attach(bus: *mut OneWireSlave, device: *mut OneWireDevice);
+    #[doc = "Receive one bit\n\nReturns:\n\n* received bit value\n\n# Arguments\n\n* `[in]` - bus pointer to OneWireSlave instance\n\n"]
+    pub fn onewire_slave_receive_bit(bus: *mut OneWireSlave) -> bool;
 }
 extern "C" {
-    #[doc = "Detach device from bus\n\n# Arguments\n\n* `bus` - \n\n"]
-    pub fn onewire_slave_detach(bus: *mut OneWireSlave);
+    #[doc = "Send one bit\n\nReturns:\n\n* true on success, false on failure\n\n# Arguments\n\n* `[in]` - bus pointer to OneWireSlave instance\n* `[in]` - value bit value to send\n\n"]
+    pub fn onewire_slave_send_bit(bus: *mut OneWireSlave, value: bool) -> bool;
 }
 extern "C" {
-    #[doc = "Set a callback to report emulation success\n\n# Arguments\n\n* `bus` - \n* `result_cb` - \n* `context` - \n\n"]
+    #[doc = "Send one or more bytes of data\n\nReturns:\n\n* true on success, false on failure\n\n# Arguments\n\n* `[in]` - bus pointer to OneWireSlave instance\n* `[in]` - data pointer to the data to send\n* `[in]` - data_size size of the data to send\n\n"]
+    pub fn onewire_slave_send(bus: *mut OneWireSlave, data: *const u8, data_size: usize) -> bool;
+}
+extern "C" {
+    #[doc = "Receive one or more bytes of data\n\nReturns:\n\n* true on success, false on failure\n\n# Arguments\n\n* `[in]` - bus pointer to OneWireSlave instance\n* `[out]` - data pointer to the receive buffer\n* `[in]` - data_size number of bytes to receive\n\n"]
+    pub fn onewire_slave_receive(bus: *mut OneWireSlave, data: *mut u8, data_size: usize) -> bool;
+}
+extern "C" {
+    #[doc = "Enable overdrive mode\n\n# Arguments\n\n* `[in]` - bus pointer to OneWireSlave instance\n* `[in]` - set true to turn overdrive on, false to turn it off\n\n"]
+    pub fn onewire_slave_set_overdrive(bus: *mut OneWireSlave, set: bool);
+}
+extern "C" {
+    #[doc = "Set a callback function to be called on each reset. The return value of the callback determines whether the emulated device supports the short reset (passed as the is_short parameter). In most applications, it should also call onewire_slave_set_overdrive() to set the appropriate speed mode.\n\n# Arguments\n\n* `[in]` - bus pointer to OneWireSlave instance\n* `[in]` - callback pointer to a callback function\n* `[in]` - context additional parameter to be passed to the callback\n\n"]
+    pub fn onewire_slave_set_reset_callback(
+        bus: *mut OneWireSlave,
+        callback: OneWireSlaveResetCallback,
+        context: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = "Set a callback function to be called on each command. The return value of the callback determines whether further operation is possible. As a rule of thumb, return true unless a critical error happened.\n\n# Arguments\n\n* `[in]` - bus pointer to OneWireSlave instance\n* `[in]` - callback pointer to a callback function\n* `[in]` - context additional parameter to be passed to the callback\n\n"]
+    pub fn onewire_slave_set_command_callback(
+        bus: *mut OneWireSlave,
+        callback: OneWireSlaveCommandCallback,
+        context: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = "Set a callback to report emulation success\n\n# Arguments\n\n* `[in]` - bus pointer to OneWireSlave instance\n* `[in]` - result_cb pointer to a callback function\n* `[in]` - context additional parameter to be passed to the callback\n\n"]
     pub fn onewire_slave_set_result_callback(
         bus: *mut OneWireSlave,
         result_cb: OneWireSlaveResultCallback,
@@ -20237,6 +20343,568 @@ extern "C" {
         func: *const core::ffi::c_char,
         e: *const core::ffi::c_char,
     ) -> !;
+}
+#[doc = "Structure definition of some features of COMP instance.\n\n"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct LL_COMP_InitTypeDef {
+    #[doc = "Set comparator operating mode to adjust power and speed.\nThis parameter can be a value of  [`COMP_LL_EC_POWERMODE`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetPowerMode()`]\n\n"]
+    pub PowerMode: u32,
+    #[doc = "Set comparator input plus (non-inverting input).\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_PLUS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputPlus()`]\n\n"]
+    pub InputPlus: u32,
+    #[doc = "Set comparator input minus (inverting input).\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_MINUS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputMinus()`]\n\n"]
+    pub InputMinus: u32,
+    #[doc = "Set comparator hysteresis mode of the input minus.\nThis parameter can be a value of  [`COMP_LL_EC_INPUT_HYSTERESIS`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetInputHysteresis()`]\n\n"]
+    pub InputHysteresis: u32,
+    #[doc = "Set comparator output polarity.\nThis parameter can be a value of  [`COMP_LL_EC_OUTPUT_POLARITY`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetOutputPolarity()`]\n\n"]
+    pub OutputPolarity: u32,
+    #[doc = "Set comparator blanking source.\nThis parameter can be a value of  [`COMP_LL_EC_OUTPUT_BLANKING_SOURCE`]\nThis feature can be modified afterwards using unitary function  [`LL_COMP_SetOutputBlankingSource()`]\n\n"]
+    pub OutputBlankingSource: u32,
+}
+#[test]
+fn bindgen_test_layout_LL_COMP_InitTypeDef() {
+    const UNINIT: ::core::mem::MaybeUninit<LL_COMP_InitTypeDef> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<LL_COMP_InitTypeDef>(),
+        24usize,
+        concat!("Size of: ", stringify!(LL_COMP_InitTypeDef))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<LL_COMP_InitTypeDef>(),
+        4usize,
+        concat!("Alignment of ", stringify!(LL_COMP_InitTypeDef))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).PowerMode) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_COMP_InitTypeDef),
+            "::",
+            stringify!(PowerMode)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).InputPlus) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_COMP_InitTypeDef),
+            "::",
+            stringify!(InputPlus)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).InputMinus) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_COMP_InitTypeDef),
+            "::",
+            stringify!(InputMinus)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).InputHysteresis) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_COMP_InitTypeDef),
+            "::",
+            stringify!(InputHysteresis)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).OutputPolarity) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_COMP_InitTypeDef),
+            "::",
+            stringify!(OutputPolarity)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).OutputBlankingSource) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_COMP_InitTypeDef),
+            "::",
+            stringify!(OutputBlankingSource)
+        )
+    );
+}
+extern "C" {
+    pub fn LL_COMP_Init(
+        COMPx: *mut COMP_TypeDef,
+        COMP_InitStruct: *const LL_COMP_InitTypeDef,
+    ) -> ErrorStatus;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct LL_DMA_InitTypeDef {
+    #[doc = "Specifies the peripheral base address for DMA transfer\nor as Source base address in case of memory to memory transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF.\n\n"]
+    pub PeriphOrM2MSrcAddress: u32,
+    #[doc = "Specifies the memory base address for DMA transfer\nor as Destination base address in case of memory to memory transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF.\n\n"]
+    pub MemoryOrM2MDstAddress: u32,
+    #[doc = "Specifies if the data will be transferred from memory to peripheral,\nfrom memory to memory or from peripheral to memory.\nThis parameter can be a value of  [`DMA_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetDataTransferDirection()`]\n\n"]
+    pub Direction: u32,
+    #[doc = "Specifies the normal or circular operation mode.\nThis parameter can be a value of  [`DMA_LL_EC_MODE`]\ndata transfer direction is configured on the selected Channel\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMode()`]\n\n# Notes\n\n* The circular buffer mode cannot be used if the memory to memory\n\n"]
+    pub Mode: u32,
+    #[doc = "Specifies whether the Peripheral address or Source address in case of memory to memory transfer direction\nis incremented or not.\nThis parameter can be a value of  [`DMA_LL_EC_PERIPH`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphIncMode()`]\n\n"]
+    pub PeriphOrM2MSrcIncMode: u32,
+    #[doc = "Specifies whether the Memory address or Destination address in case of memory to memory transfer direction\nis incremented or not.\nThis parameter can be a value of  [`DMA_LL_EC_MEMORY`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMemoryIncMode()`]\n\n"]
+    pub MemoryOrM2MDstIncMode: u32,
+    #[doc = "Specifies the Peripheral data size alignment or Source data size alignment (byte, half word, word)\nin case of memory to memory transfer direction.\nThis parameter can be a value of  [`DMA_LL_EC_PDATAALIGN`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphSize()`]\n\n"]
+    pub PeriphOrM2MSrcDataSize: u32,
+    #[doc = "Specifies the Memory data size alignment or Destination data size alignment (byte, half word, word)\nin case of memory to memory transfer direction.\nThis parameter can be a value of  [`DMA_LL_EC_MDATAALIGN`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetMemorySize()`]\n\n"]
+    pub MemoryOrM2MDstDataSize: u32,
+    #[doc = "Specifies the number of data to transfer, in data unit.\nThe data unit is equal to the source buffer configuration set in PeripheralSize\nor MemorySize parameters depending in the transfer direction.\nThis parameter must be a value between Min_Data = 0 and Max_Data = 0x0000FFFF\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetDataLength()`]\n\n"]
+    pub NbData: u32,
+    #[doc = "Specifies the peripheral request.\nThis parameter can be a value of  [`DMAMUX_LL_EC_REQUEST`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetPeriphRequest()`]\n\n"]
+    pub PeriphRequest: u32,
+    #[doc = "Specifies the channel priority level.\nThis parameter can be a value of  [`DMA_LL_EC_PRIORITY`]\nThis feature can be modified afterwards using unitary function  [`LL_DMA_SetChannelPriorityLevel()`]\n\n"]
+    pub Priority: u32,
+}
+#[test]
+fn bindgen_test_layout_LL_DMA_InitTypeDef() {
+    const UNINIT: ::core::mem::MaybeUninit<LL_DMA_InitTypeDef> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<LL_DMA_InitTypeDef>(),
+        44usize,
+        concat!("Size of: ", stringify!(LL_DMA_InitTypeDef))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<LL_DMA_InitTypeDef>(),
+        4usize,
+        concat!("Alignment of ", stringify!(LL_DMA_InitTypeDef))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).PeriphOrM2MSrcAddress) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(PeriphOrM2MSrcAddress)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).MemoryOrM2MDstAddress) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(MemoryOrM2MDstAddress)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Direction) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(Direction)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Mode) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(Mode)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).PeriphOrM2MSrcIncMode) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(PeriphOrM2MSrcIncMode)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).MemoryOrM2MDstIncMode) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(MemoryOrM2MDstIncMode)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).PeriphOrM2MSrcDataSize) as usize - ptr as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(PeriphOrM2MSrcDataSize)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).MemoryOrM2MDstDataSize) as usize - ptr as usize },
+        28usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(MemoryOrM2MDstDataSize)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).NbData) as usize - ptr as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(NbData)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).PeriphRequest) as usize - ptr as usize },
+        36usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(PeriphRequest)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Priority) as usize - ptr as usize },
+        40usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_DMA_InitTypeDef),
+            "::",
+            stringify!(Priority)
+        )
+    );
+}
+extern "C" {
+    pub fn LL_DMA_Init(
+        DMAx: *mut DMA_TypeDef,
+        Channel: u32,
+        DMA_InitStruct: *mut LL_DMA_InitTypeDef,
+    ) -> ErrorStatus;
+}
+extern "C" {
+    pub fn LL_DMA_DeInit(DMAx: *mut DMA_TypeDef, Channel: u32) -> ErrorStatus;
+}
+#[doc = "LL LPUART Init Structure definition\n\n"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct LL_LPUART_InitTypeDef {
+    #[doc = "Specifies the Prescaler to compute the communication baud rate.\nThis parameter can be a value of  [`LPUART_LL_EC_PRESCALER`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetPrescaler()`]\n\n"]
+    pub PrescalerValue: u32,
+    #[doc = "This field defines expected LPUART communication baud rate.\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetBaudRate()`]\n\n"]
+    pub BaudRate: u32,
+    #[doc = "Specifies the number of data bits transmitted or received in a frame.\nThis parameter can be a value of  [`LPUART_LL_EC_DATAWIDTH`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetDataWidth()`]\n\n"]
+    pub DataWidth: u32,
+    #[doc = "Specifies the number of stop bits transmitted.\nThis parameter can be a value of  [`LPUART_LL_EC_STOPBITS`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetStopBitsLength()`]\n\n"]
+    pub StopBits: u32,
+    #[doc = "Specifies the parity mode.\nThis parameter can be a value of  [`LPUART_LL_EC_PARITY`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetParity()`]\n\n"]
+    pub Parity: u32,
+    #[doc = "Specifies whether the Receive and/or Transmit mode is enabled or disabled.\nThis parameter can be a value of  [`LPUART_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetTransferDirection()`]\n\n"]
+    pub TransferDirection: u32,
+    #[doc = "Specifies whether the hardware flow control mode is enabled or disabled.\nThis parameter can be a value of  [`LPUART_LL_EC_HWCONTROL`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_LPUART_SetHWFlowCtrl()`]\n\n"]
+    pub HardwareFlowControl: u32,
+}
+#[test]
+fn bindgen_test_layout_LL_LPUART_InitTypeDef() {
+    const UNINIT: ::core::mem::MaybeUninit<LL_LPUART_InitTypeDef> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<LL_LPUART_InitTypeDef>(),
+        28usize,
+        concat!("Size of: ", stringify!(LL_LPUART_InitTypeDef))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<LL_LPUART_InitTypeDef>(),
+        4usize,
+        concat!("Alignment of ", stringify!(LL_LPUART_InitTypeDef))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).PrescalerValue) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_LPUART_InitTypeDef),
+            "::",
+            stringify!(PrescalerValue)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).BaudRate) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_LPUART_InitTypeDef),
+            "::",
+            stringify!(BaudRate)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).DataWidth) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_LPUART_InitTypeDef),
+            "::",
+            stringify!(DataWidth)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).StopBits) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_LPUART_InitTypeDef),
+            "::",
+            stringify!(StopBits)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Parity) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_LPUART_InitTypeDef),
+            "::",
+            stringify!(Parity)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).TransferDirection) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_LPUART_InitTypeDef),
+            "::",
+            stringify!(TransferDirection)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).HardwareFlowControl) as usize - ptr as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_LPUART_InitTypeDef),
+            "::",
+            stringify!(HardwareFlowControl)
+        )
+    );
+}
+extern "C" {
+    pub fn LL_LPUART_Init(
+        LPUARTx: *mut USART_TypeDef,
+        LPUART_InitStruct: *const LL_LPUART_InitTypeDef,
+    ) -> ErrorStatus;
+}
+#[doc = "RTC Init structures definition\n\n"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct LL_RTC_InitTypeDef {
+    #[doc = "Specifies the RTC Hours Format.\nThis parameter can be a value of  [`RTC_LL_EC_HOURFORMAT`]\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetHourFormat()`]\n\n"]
+    pub HourFormat: u32,
+    #[doc = "Specifies the RTC Asynchronous Predivider value.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0x7F\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetAsynchPrescaler()`]\n\n"]
+    pub AsynchPrescaler: u32,
+    #[doc = "Specifies the RTC Synchronous Predivider value.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0x7FFF\nThis feature can be modified afterwards using unitary function [`LL_RTC_SetSynchPrescaler()`]\n\n"]
+    pub SynchPrescaler: u32,
+}
+#[test]
+fn bindgen_test_layout_LL_RTC_InitTypeDef() {
+    const UNINIT: ::core::mem::MaybeUninit<LL_RTC_InitTypeDef> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<LL_RTC_InitTypeDef>(),
+        12usize,
+        concat!("Size of: ", stringify!(LL_RTC_InitTypeDef))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<LL_RTC_InitTypeDef>(),
+        4usize,
+        concat!("Alignment of ", stringify!(LL_RTC_InitTypeDef))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).HourFormat) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_RTC_InitTypeDef),
+            "::",
+            stringify!(HourFormat)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).AsynchPrescaler) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_RTC_InitTypeDef),
+            "::",
+            stringify!(AsynchPrescaler)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).SynchPrescaler) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_RTC_InitTypeDef),
+            "::",
+            stringify!(SynchPrescaler)
+        )
+    );
+}
+extern "C" {
+    pub fn LL_RTC_Init(
+        RTCx: *mut RTC_TypeDef,
+        RTC_InitStruct: *mut LL_RTC_InitTypeDef,
+    ) -> ErrorStatus;
+}
+extern "C" {
+    pub fn LL_RTC_EnterInitMode(RTCx: *mut RTC_TypeDef) -> ErrorStatus;
+}
+#[doc = "LL USART Init Structure definition\n\n"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct LL_USART_InitTypeDef {
+    #[doc = "Specifies the Prescaler to compute the communication baud rate.\nThis parameter can be a value of  [`USART_LL_EC_PRESCALER`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetPrescaler()`]\n\n"]
+    pub PrescalerValue: u32,
+    #[doc = "This field defines expected Usart communication baud rate.\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetBaudRate()`]\n\n"]
+    pub BaudRate: u32,
+    #[doc = "Specifies the number of data bits transmitted or received in a frame.\nThis parameter can be a value of  [`USART_LL_EC_DATAWIDTH`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetDataWidth()`]\n\n"]
+    pub DataWidth: u32,
+    #[doc = "Specifies the number of stop bits transmitted.\nThis parameter can be a value of  [`USART_LL_EC_STOPBITS`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetStopBitsLength()`]\n\n"]
+    pub StopBits: u32,
+    #[doc = "Specifies the parity mode.\nThis parameter can be a value of  [`USART_LL_EC_PARITY`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetParity()`]\n\n"]
+    pub Parity: u32,
+    #[doc = "Specifies whether the Receive and/or Transmit mode is enabled or disabled.\nThis parameter can be a value of  [`USART_LL_EC_DIRECTION`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetTransferDirection()`]\n\n"]
+    pub TransferDirection: u32,
+    #[doc = "Specifies whether the hardware flow control mode is enabled or disabled.\nThis parameter can be a value of  [`USART_LL_EC_HWCONTROL`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetHWFlowCtrl()`]\n\n"]
+    pub HardwareFlowControl: u32,
+    #[doc = "Specifies whether USART oversampling mode is 16 or 8.\nThis parameter can be a value of  [`USART_LL_EC_OVERSAMPLING`]\nThis feature can be modified afterwards using unitary\nfunction  [`LL_USART_SetOverSampling()`]\n\n"]
+    pub OverSampling: u32,
+}
+#[test]
+fn bindgen_test_layout_LL_USART_InitTypeDef() {
+    const UNINIT: ::core::mem::MaybeUninit<LL_USART_InitTypeDef> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<LL_USART_InitTypeDef>(),
+        32usize,
+        concat!("Size of: ", stringify!(LL_USART_InitTypeDef))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<LL_USART_InitTypeDef>(),
+        4usize,
+        concat!("Alignment of ", stringify!(LL_USART_InitTypeDef))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).PrescalerValue) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(PrescalerValue)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).BaudRate) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(BaudRate)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).DataWidth) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(DataWidth)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).StopBits) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(StopBits)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Parity) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(Parity)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).TransferDirection) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(TransferDirection)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).HardwareFlowControl) as usize - ptr as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(HardwareFlowControl)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).OverSampling) as usize - ptr as usize },
+        28usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_USART_InitTypeDef),
+            "::",
+            stringify!(OverSampling)
+        )
+    );
+}
+extern "C" {
+    pub fn LL_USART_Init(
+        USARTx: *mut USART_TypeDef,
+        USART_InitStruct: *const LL_USART_InitTypeDef,
+    ) -> ErrorStatus;
+}
+extern "C" {
+    pub fn LL_SetSystemCoreClock(HCLKFrequency: u32);
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -20500,6 +21168,37 @@ fn bindgen_test_layout_SubGhzRadioPreset() {
         )
     );
 }
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusOk: SubGhzProtocolStatus = 0;
+#[doc = "General unclassified error\n\n"]
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusError: SubGhzProtocolStatus = -1;
+#[doc = "Missing or invalid file header\n\n"]
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusErrorParserHeader: SubGhzProtocolStatus = -2;
+#[doc = "Missing `Frequency`\n\n"]
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusErrorParserFrequency: SubGhzProtocolStatus = -3;
+#[doc = "Missing `Preset`\n\n"]
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusErrorParserPreset: SubGhzProtocolStatus = -4;
+#[doc = "Missing `Custom_preset_module`\n\n"]
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusErrorParserCustomPreset: SubGhzProtocolStatus =
+    -5;
+#[doc = "Missing `Protocol` name\n\n"]
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusErrorParserProtocolName: SubGhzProtocolStatus =
+    -6;
+#[doc = "Missing `Bit`\n\n"]
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusErrorParserBitCount: SubGhzProtocolStatus = -7;
+#[doc = "Missing `Key`\n\n"]
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusErrorParserKey: SubGhzProtocolStatus = -8;
+#[doc = "Missing `Te`\n\n"]
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusErrorParserTe: SubGhzProtocolStatus = -9;
+#[doc = "Missing some other mandatory keys\n\n"]
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusErrorParserOthers: SubGhzProtocolStatus = -10;
+#[doc = "Invalid bit count value\n\n"]
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusErrorValueBitCount: SubGhzProtocolStatus = -11;
+#[doc = "Payload encoder failure\n\n"]
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusErrorEncoderGetUpload: SubGhzProtocolStatus =
+    -12;
+#[doc = "Prevents enum down-size compiler optimization.\n\n"]
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusReserved: SubGhzProtocolStatus = 2147483647;
+pub type SubGhzProtocolStatus = core::ffi::c_int;
 pub type SubGhzAlloc = ::core::option::Option<
     unsafe extern "C" fn(environment: *mut SubGhzEnvironment) -> *mut core::ffi::c_void,
 >;
@@ -20509,13 +21208,13 @@ pub type SubGhzSerialize = ::core::option::Option<
         context: *mut core::ffi::c_void,
         flipper_format: *mut FlipperFormat,
         preset: *mut SubGhzRadioPreset,
-    ) -> bool,
+    ) -> SubGhzProtocolStatus,
 >;
 pub type SubGhzDeserialize = ::core::option::Option<
     unsafe extern "C" fn(
         context: *mut core::ffi::c_void,
         flipper_format: *mut FlipperFormat,
-    ) -> bool,
+    ) -> SubGhzProtocolStatus,
 >;
 pub type SubGhzDecoderFeed = ::core::option::Option<
     unsafe extern "C" fn(decoder: *mut core::ffi::c_void, level: bool, duration: u32),
@@ -20900,19 +21599,27 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Serialize data SubGhzBlockGeneric.\n\nReturns:\n\n* true On success\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzBlockGeneric instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `preset` - The modulation on which the signal was received, SubGhzRadioPreset\n\n"]
+    #[doc = "Serialize data SubGhzBlockGeneric.\n\nReturns:\n\n* Status Error\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzBlockGeneric instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `preset` - The modulation on which the signal was received, SubGhzRadioPreset\n\n"]
     pub fn subghz_block_generic_serialize(
         instance: *mut SubGhzBlockGeneric,
         flipper_format: *mut FlipperFormat,
         preset: *mut SubGhzRadioPreset,
-    ) -> bool;
+    ) -> SubGhzProtocolStatus;
 }
 extern "C" {
-    #[doc = "Deserialize data SubGhzBlockGeneric.\n\nReturns:\n\n* true On success\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzBlockGeneric instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
+    #[doc = "Deserialize data SubGhzBlockGeneric.\n\nReturns:\n\n* Status Error\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzBlockGeneric instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
     pub fn subghz_block_generic_deserialize(
         instance: *mut SubGhzBlockGeneric,
         flipper_format: *mut FlipperFormat,
-    ) -> bool;
+    ) -> SubGhzProtocolStatus;
+}
+extern "C" {
+    #[doc = "Deserialize data SubGhzBlockGeneric.\n\nReturns:\n\n* Status Error\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzBlockGeneric instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `count_bit` - Count bit protocol\n\n"]
+    pub fn subghz_block_generic_deserialize_check_count_bit(
+        instance: *mut SubGhzBlockGeneric,
+        flipper_format: *mut FlipperFormat,
+        count_bit: u16,
+    ) -> SubGhzProtocolStatus;
 }
 extern "C" {
     #[doc = "Flip the data bitwise\n\nReturns:\n\n* Reverse data\n\n# Arguments\n\n* `key` - In data\n* `bit_count` - number of data bits\n\n"]
@@ -21083,12 +21790,19 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Serialize data SubGhzProtocolDecoderBase.\n\nReturns:\n\n* true On success\n\n# Arguments\n\n* `decoder_base` - Pointer to a SubGhzProtocolDecoderBase instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `preset` - The modulation on which the signal was received, SubGhzRadioPreset\n\n"]
+    #[doc = "Serialize data SubGhzProtocolDecoderBase.\n\nReturns:\n\n* Status Error\n\n# Arguments\n\n* `decoder_base` - Pointer to a SubGhzProtocolDecoderBase instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n* `preset` - The modulation on which the signal was received, SubGhzRadioPreset\n\n"]
     pub fn subghz_protocol_decoder_base_serialize(
         decoder_base: *mut SubGhzProtocolDecoderBase,
         flipper_format: *mut FlipperFormat,
         preset: *mut SubGhzRadioPreset,
-    ) -> bool;
+    ) -> SubGhzProtocolStatus;
+}
+extern "C" {
+    #[doc = "Deserialize data SubGhzProtocolDecoderBase.\n\nReturns:\n\n* Status Error\n\n# Arguments\n\n* `decoder_base` - Pointer to a SubGhzProtocolDecoderBase instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
+    pub fn subghz_protocol_decoder_base_deserialize(
+        decoder_base: *mut SubGhzProtocolDecoderBase,
+        flipper_format: *mut FlipperFormat,
+    ) -> SubGhzProtocolStatus;
 }
 extern "C" {
     #[doc = "Getting the hash sum of the last randomly received parcel.\n\nReturns:\n\n* hash Hash sum\n\n# Arguments\n\n* `decoder_base` - Pointer to a SubGhzProtocolDecoderBase instance\n\n"]
@@ -21187,11 +21901,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Deserialize data SubGhzProtocolDecoderRAW.\n\nReturns:\n\n* true On success\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolDecoderRAW instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
+    #[doc = "Deserialize data SubGhzProtocolDecoderRAW.\n\nReturns:\n\n* status\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolDecoderRAW instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
     pub fn subghz_protocol_decoder_raw_deserialize(
         context: *mut core::ffi::c_void,
         flipper_format: *mut FlipperFormat,
-    ) -> bool;
+    ) -> SubGhzProtocolStatus;
 }
 extern "C" {
     #[doc = "Getting a textual representation of the received data.\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolDecoderRAW instance\n* `output` - Resulting text\n\n"]
@@ -21237,11 +21951,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Deserialize and generating an upload to send.\n\nReturns:\n\n* true On success\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolEncoderRAW instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
+    #[doc = "Deserialize and generating an upload to send.\n\nReturns:\n\n* status\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolEncoderRAW instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
     pub fn subghz_protocol_encoder_raw_deserialize(
         context: *mut core::ffi::c_void,
         flipper_format: *mut FlipperFormat,
-    ) -> bool;
+    ) -> SubGhzProtocolStatus;
 }
 extern "C" {
     #[doc = "Getting the level and duration of the upload to be loaded into DMA.\n\nReturns:\n\n* LevelDuration\n\n# Arguments\n\n* `context` - Pointer to a SubGhzProtocolEncoderRAW instance\n\n"]
@@ -21565,11 +22279,11 @@ extern "C" {
     pub fn subghz_transmitter_stop(instance: *mut SubGhzTransmitter) -> bool;
 }
 extern "C" {
-    #[doc = "Deserialize and generating an upload to send.\n\nReturns:\n\n* true On success\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzTransmitter instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
+    #[doc = "Deserialize and generating an upload to send.\n\nReturns:\n\n* status\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzTransmitter instance\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n"]
     pub fn subghz_transmitter_deserialize(
         instance: *mut SubGhzTransmitter,
         flipper_format: *mut FlipperFormat,
-    ) -> bool;
+    ) -> SubGhzProtocolStatus;
 }
 extern "C" {
     #[doc = "Getting the level and duration of the upload to be loaded into DMA.\n\nReturns:\n\n* LevelDuration\n\n# Arguments\n\n* `context` - Pointer to a SubGhzTransmitter instance\n\n"]
@@ -21685,239 +22399,26 @@ extern "C" {
     #[doc = "Compare two floating point numbers\n\nReturns:\n\n* bool true if a equals b, false otherwise\n\n# Arguments\n\n* `a` - First number to compare\n* `b` - Second number to compare\n\n"]
     pub fn float_is_equal(a: f32, b: f32) -> bool;
 }
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct sha256_context {
-    pub total: [u32; 2usize],
-    pub state: [u32; 8usize],
-    pub wbuf: [u32; 16usize],
-}
-#[test]
-fn bindgen_test_layout_sha256_context() {
-    const UNINIT: ::core::mem::MaybeUninit<sha256_context> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<sha256_context>(),
-        104usize,
-        concat!("Size of: ", stringify!(sha256_context))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<sha256_context>(),
-        4usize,
-        concat!("Alignment of ", stringify!(sha256_context))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).total) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sha256_context),
-            "::",
-            stringify!(total)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).state) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sha256_context),
-            "::",
-            stringify!(state)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).wbuf) as usize - ptr as usize },
-        40usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sha256_context),
-            "::",
-            stringify!(wbuf)
-        )
-    );
+extern "C" {
+    #[doc = "Convert ASCII hex value to nibble\n\nReturns:\n\n* bool conversion status\n\n# Arguments\n\n* `c` - ASCII character\n* `nibble` - nibble pointer, output\n\n"]
+    pub fn hex_char_to_hex_nibble(c: core::ffi::c_char, nibble: *mut u8) -> bool;
 }
 extern "C" {
-    pub fn sha256(
-        input: *const core::ffi::c_uchar,
-        ilen: core::ffi::c_uint,
-        output: *mut core::ffi::c_uchar,
-    );
+    #[doc = "Convert ASCII hex value to byte\n\nReturns:\n\n* bool conversion status\n\n# Arguments\n\n* `hi` - hi nibble text\n* `low` - low nibble text\n* `value` - output value\n\n"]
+    pub fn hex_char_to_uint8(hi: core::ffi::c_char, low: core::ffi::c_char, value: *mut u8)
+        -> bool;
 }
 extern "C" {
-    pub fn sha256_start(ctx: *mut sha256_context);
+    #[doc = "Convert ASCII hex values to uint8_t\n\nReturns:\n\n* bool conversion status\n\n# Arguments\n\n* `value_str` - ASCII data\n* `value` - output value\n\n"]
+    pub fn hex_chars_to_uint8(value_str: *const core::ffi::c_char, value: *mut u8) -> bool;
 }
 extern "C" {
-    pub fn sha256_finish(ctx: *mut sha256_context, output: *mut core::ffi::c_uchar);
+    #[doc = "Convert ASCII hex values to uint64_t\n\nReturns:\n\n* bool conversion status\n\n# Arguments\n\n* `value_str` - ASCII 64 bi data\n* `value` - output value\n\n"]
+    pub fn hex_chars_to_uint64(value_str: *const core::ffi::c_char, value: *mut u64) -> bool;
 }
 extern "C" {
-    pub fn sha256_update(
-        ctx: *mut sha256_context,
-        input: *const core::ffi::c_uchar,
-        ilen: core::ffi::c_uint,
-    );
-}
-extern "C" {
-    pub fn sha256_process(ctx: *mut sha256_context);
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct hmac_context {
-    pub init_hash: ::core::option::Option<unsafe extern "C" fn(context: *const hmac_context)>,
-    pub update_hash: ::core::option::Option<
-        unsafe extern "C" fn(
-            context: *const hmac_context,
-            message: *const u8,
-            message_size: core::ffi::c_uint,
-        ),
-    >,
-    pub finish_hash: ::core::option::Option<
-        unsafe extern "C" fn(context: *const hmac_context, hash_result: *mut u8),
-    >,
-    pub block_size: core::ffi::c_uint,
-    pub result_size: core::ffi::c_uint,
-    pub tmp: *mut u8,
-}
-#[test]
-fn bindgen_test_layout_hmac_context() {
-    const UNINIT: ::core::mem::MaybeUninit<hmac_context> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<hmac_context>(),
-        24usize,
-        concat!("Size of: ", stringify!(hmac_context))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<hmac_context>(),
-        4usize,
-        concat!("Alignment of ", stringify!(hmac_context))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).init_hash) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(hmac_context),
-            "::",
-            stringify!(init_hash)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).update_hash) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(hmac_context),
-            "::",
-            stringify!(update_hash)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).finish_hash) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(hmac_context),
-            "::",
-            stringify!(finish_hash)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).block_size) as usize - ptr as usize },
-        12usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(hmac_context),
-            "::",
-            stringify!(block_size)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).result_size) as usize - ptr as usize },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(hmac_context),
-            "::",
-            stringify!(result_size)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).tmp) as usize - ptr as usize },
-        20usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(hmac_context),
-            "::",
-            stringify!(tmp)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct hmac_sha256_context {
-    pub hmac_ctx: hmac_context,
-    pub sha_ctx: sha256_context,
-    pub tmp: [u8; 128usize],
-}
-#[test]
-fn bindgen_test_layout_hmac_sha256_context() {
-    const UNINIT: ::core::mem::MaybeUninit<hmac_sha256_context> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<hmac_sha256_context>(),
-        256usize,
-        concat!("Size of: ", stringify!(hmac_sha256_context))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<hmac_sha256_context>(),
-        4usize,
-        concat!("Alignment of ", stringify!(hmac_sha256_context))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).hmac_ctx) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(hmac_sha256_context),
-            "::",
-            stringify!(hmac_ctx)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).sha_ctx) as usize - ptr as usize },
-        24usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(hmac_sha256_context),
-            "::",
-            stringify!(sha_ctx)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).tmp) as usize - ptr as usize },
-        128usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(hmac_sha256_context),
-            "::",
-            stringify!(tmp)
-        )
-    );
-}
-extern "C" {
-    pub fn hmac_sha256_init(ctx: *mut hmac_sha256_context, K: *const u8);
-}
-extern "C" {
-    pub fn hmac_sha256_update(
-        ctx: *const hmac_sha256_context,
-        message: *const u8,
-        message_size: core::ffi::c_uint,
-    );
-}
-extern "C" {
-    pub fn hmac_sha256_finish(ctx: *const hmac_sha256_context, K: *const u8, hash_result: *mut u8);
+    #[doc = "Convert uint8_t to ASCII hex values\n\n# Arguments\n\n* `src` - source data\n* `target` - output value\n* `length` - data length\n\n"]
+    pub fn uint8_to_hex_chars(src: *const u8, target: *mut u8, length: core::ffi::c_int);
 }
 pub const ManchesterEvent_ManchesterEventShortLow: ManchesterEvent = 0;
 pub const ManchesterEvent_ManchesterEventShortHigh: ManchesterEvent = 2;
@@ -22115,6 +22616,16 @@ extern "C" {
     pub fn path_contains_only_ascii(path: *const core::ffi::c_char) -> bool;
 }
 extern "C" {
+    #[doc = "Format a data buffer as a canonical HEX dump\n\n# Arguments\n\n* `[out]` - result pointer to the output string (must be initialised)\n* `[in]` - num_places the number of bytes on one line (both as HEX and ASCII)\n* `[in]` - line_prefix if not NULL, prepend this string to each line\n* `[in]` - data pointer to the input data buffer\n* `[in]` - data_size input data size\n\n"]
+    pub fn pretty_format_bytes_hex_canonical(
+        result: *mut FuriString,
+        num_places: usize,
+        line_prefix: *const core::ffi::c_char,
+        data: *const u8,
+        data_size: usize,
+    );
+}
+extern "C" {
     #[doc = "Generates random name\n\n# Arguments\n\n* `name` - buffer to write random name\n* `max_name_size` - length of given buffer\n\n"]
     pub fn set_random_name(name: *mut core::ffi::c_char, max_name_size: u8);
 }
@@ -22143,6 +22654,81 @@ extern "C" {
         version: u8,
         payload_size: *mut usize,
     ) -> bool;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct sha256_context {
+    pub total: [u32; 2usize],
+    pub state: [u32; 8usize],
+    pub wbuf: [u32; 16usize],
+}
+#[test]
+fn bindgen_test_layout_sha256_context() {
+    const UNINIT: ::core::mem::MaybeUninit<sha256_context> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<sha256_context>(),
+        104usize,
+        concat!("Size of: ", stringify!(sha256_context))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<sha256_context>(),
+        4usize,
+        concat!("Alignment of ", stringify!(sha256_context))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).total) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sha256_context),
+            "::",
+            stringify!(total)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).state) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sha256_context),
+            "::",
+            stringify!(state)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).wbuf) as usize - ptr as usize },
+        40usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sha256_context),
+            "::",
+            stringify!(wbuf)
+        )
+    );
+}
+extern "C" {
+    pub fn sha256(
+        input: *const core::ffi::c_uchar,
+        ilen: core::ffi::c_uint,
+        output: *mut core::ffi::c_uchar,
+    );
+}
+extern "C" {
+    pub fn sha256_start(ctx: *mut sha256_context);
+}
+extern "C" {
+    pub fn sha256_finish(ctx: *mut sha256_context, output: *mut core::ffi::c_uchar);
+}
+extern "C" {
+    pub fn sha256_update(
+        ctx: *mut sha256_context,
+        input: *const core::ffi::c_uchar,
+        ilen: core::ffi::c_uint,
+    );
+}
+extern "C" {
+    pub fn sha256_process(ctx: *mut sha256_context);
 }
 extern "C" {
     #[doc = "Allocate string stream\n\nReturns:\n\n* Stream*\n\n"]

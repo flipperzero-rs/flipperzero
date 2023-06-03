@@ -2,9 +2,9 @@
 
 use std::fmt::Display;
 use std::io::{Read, Write};
-use std::{io, fs};
 use std::ops::Add;
 use std::path::Path;
+use std::{fs, io};
 
 use bytes::BytesMut;
 use regex::Regex;
@@ -13,7 +13,6 @@ use serialport::SerialPort;
 use crate::serial::{SerialCli, CLI_EOL};
 
 const BUF_SIZE: usize = 1024;
-
 
 /// Interface to Flipper device storage.
 pub struct FlipperStorage {
@@ -37,19 +36,28 @@ impl FlipperStorage {
     pub fn port(&self) -> &dyn SerialPort {
         self.cli.port()
     }
-    
+
     /// Get mutable reference to underlying [`SerialPort`].
     pub fn port_mut(&mut self) -> &mut dyn SerialPort {
         self.cli.port_mut()
     }
 
+    /// Get mutable reference to underlying [`SerialCli`].
+    pub fn cli_mut(&mut self) -> &mut SerialCli {
+        &mut self.cli
+    }
+
     /// List files and directories on the device.
     pub fn list_tree(&mut self, path: &FlipperPath) -> io::Result<()> {
         // Note: The `storage list` command expects that paths do not end with a slash.
-        self.cli.send_and_wait_eol(&format!("storage list {}", path))?;
+        self.cli
+            .send_and_wait_eol(&format!("storage list {}", path))?;
 
         let data = self.cli.read_until_prompt()?;
-        for line in CLI_EOL.split(&data).map(|line| String::from_utf8_lossy(line)) {
+        for line in CLI_EOL
+            .split(&data)
+            .map(|line| String::from_utf8_lossy(line))
+        {
             let line = line.trim();
             if line.is_empty() {
                 continue;
@@ -72,7 +80,7 @@ impl FlipperStorage {
 
                         eprintln!("{path}");
                         self.list_tree(&path)?;
-                    },
+                    }
                     // File
                     "[F]" => {
                         if let Some((name, size)) = info.rsplit_once(" ") {
@@ -80,7 +88,7 @@ impl FlipperStorage {
 
                             eprintln!("{path}, size {size}");
                         }
-                    },
+                    }
                     // We got something unexpected, ignore it
                     _ => (),
                 }
@@ -92,6 +100,10 @@ impl FlipperStorage {
 
     /// Send local file to the device.
     pub fn send_file(&mut self, from: impl AsRef<Path>, to: &FlipperPath) -> io::Result<()> {
+        // Try to create directory on Flipper
+        if let Some(dir) = to.0.rsplit_once("/") {
+            self.mkdir(&FlipperPath::from(dir.0)).ok();
+        }
         self.remove(to).ok();
 
         let mut file = fs::File::open(from.as_ref())?;
@@ -103,7 +115,8 @@ impl FlipperStorage {
                 break;
             }
 
-            self.cli.send_and_wait_eol(&format!("storage write_chunk \"{to}\" {n}"))?;
+            self.cli
+                .send_and_wait_eol(&format!("storage write_chunk \"{to}\" {n}"))?;
             let line = self.cli.read_until_eol()?;
             let line = String::from_utf8_lossy(&line);
 
@@ -135,7 +148,8 @@ impl FlipperStorage {
 
     /// Read file data from the device.
     pub fn read_file(&mut self, path: &FlipperPath) -> io::Result<BytesMut> {
-        self.cli.send_and_wait_eol(&format!("storage read_chunks \"{path}\" {}", BUF_SIZE))?;
+        self.cli
+            .send_and_wait_eol(&format!("storage read_chunks \"{path}\" {}", BUF_SIZE))?;
         let line = self.cli.read_until_eol()?;
         let line = String::from_utf8_lossy(&line);
 
@@ -145,9 +159,15 @@ impl FlipperStorage {
             return Err(io::Error::new(io::ErrorKind::Other, error));
         }
 
-        let (_, size) = line.split_once(": ")
+        let (_, size) = line
+            .split_once(": ")
             .ok_or_else(|| io::Error::new(io::ErrorKind::Other, "failed to read chunk size"))?;
-        let size: usize = size.parse().or_else(|_| Err(io::Error::new(io::ErrorKind::Other, "failed to parse chunk size")))?;
+        let size: usize = size.parse().or_else(|_| {
+            Err(io::Error::new(
+                io::ErrorKind::Other,
+                "failed to parse chunk size",
+            ))
+        })?;
 
         let mut data = BytesMut::with_capacity(BUF_SIZE);
 
@@ -167,9 +187,7 @@ impl FlipperStorage {
     /// Does the file or directory exist on the device?
     pub fn exist(&mut self, path: &FlipperPath) -> io::Result<bool> {
         let exist = match self.stat(path) {
-            Err(_err) => {
-                false
-            },
+            Err(_err) => false,
             Ok(_) => true,
         };
 
@@ -179,9 +197,7 @@ impl FlipperStorage {
     /// Does the directory exist on the device?
     pub fn exist_dir(&mut self, path: &FlipperPath) -> io::Result<bool> {
         let exist = match self.stat(path) {
-            Err(_err) => {
-                false
-            },
+            Err(_err) => false,
             Ok(stat) => stat.contains("Directory") || stat.contains("Storage"),
         };
 
@@ -191,9 +207,7 @@ impl FlipperStorage {
     /// Does the file exist on the device?
     pub fn exist_file(&mut self, path: &FlipperPath) -> io::Result<bool> {
         let exist = match self.stat(path) {
-            Err(_err) => {
-                false
-            },
+            Err(_err) => false,
             Ok(stat) => stat.contains("File, size:"),
         };
 
@@ -204,7 +218,8 @@ impl FlipperStorage {
     pub fn size(&mut self, path: &FlipperPath) -> io::Result<usize> {
         let line = self.stat(path)?;
 
-        let size = Regex::new(r"File, size: (.+)b").unwrap()
+        let size = Regex::new(r"File, size: (.+)b")
+            .unwrap()
             .captures(&line)
             .and_then(|m| m[1].parse::<usize>().ok())
             .ok_or_else(|| io::Error::new(io::ErrorKind::Other, "failed to parse size"))?;
@@ -214,7 +229,8 @@ impl FlipperStorage {
 
     /// Stat a file or directory.
     fn stat(&mut self, path: &FlipperPath) -> io::Result<String> {
-        self.cli.send_and_wait_eol(&format!("storage stat {path}"))?;
+        self.cli
+            .send_and_wait_eol(&format!("storage stat {path}"))?;
         let line = self.cli.consume_response()?;
 
         Ok(line)
@@ -222,7 +238,8 @@ impl FlipperStorage {
 
     /// Make directory on the device.
     pub fn mkdir(&mut self, path: &FlipperPath) -> io::Result<()> {
-        self.cli.send_and_wait_eol(&format!("storage mkdir {path}"))?;
+        self.cli
+            .send_and_wait_eol(&format!("storage mkdir {path}"))?;
         self.cli.consume_response()?;
 
         Ok(())
@@ -239,14 +256,15 @@ impl FlipperStorage {
 
     /// Remove file or directory.
     pub fn remove(&mut self, path: &FlipperPath) -> io::Result<()> {
-        self.cli.send_and_wait_eol(&format!("storage remove {path}"))?;
+        self.cli
+            .send_and_wait_eol(&format!("storage remove {path}"))?;
         self.cli.consume_response()?;
 
         Ok(())
     }
 
     /// Calculate MD5 hash of file.
-    pub fn md5sum(&mut self, path: &FlipperPath)  -> io::Result<String> {
+    pub fn md5sum(&mut self, path: &FlipperPath) -> io::Result<String> {
         self.cli.send_and_wait_eol(&format!("storage md5 {path}"))?;
         let line = self.cli.consume_response()?;
 
@@ -255,7 +273,7 @@ impl FlipperStorage {
 }
 
 /// A path on the Flipper device.
-/// 
+///
 /// [`FlipperPath`] maintains certain invariants:
 /// - Paths are valid UTF-8
 /// - Paths are always absolute (start with `/`)

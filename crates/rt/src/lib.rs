@@ -1,5 +1,5 @@
 //! Rust Runtime for the Flipper Zero.
-//! 
+//!
 //! This must be build with `-Z no-unique-section-names` to ensure that this module
 //! is linked directly into the `.text` section.
 
@@ -7,6 +7,7 @@
 
 pub mod manifest;
 pub mod panic_handler;
+mod thread;
 
 /// The C entry point.
 /// This just delegates to the user's Rust entry point.
@@ -31,7 +32,24 @@ macro_rules! entry {
             // type check the entry function
             let f: fn(*mut u8) -> i32 = $path;
 
-            f(args)
+            let ret = f(args);
+
+            // Clean up app state.
+            $crate::__macro_support::__wait_for_thread_completion();
+
+            ret
         }
-    }
+    };
+}
+
+#[doc(hidden)]
+pub mod __macro_support {
+    /// ⚠️ WARNING: This is *not* a stable API! ⚠️
+    ///
+    /// This function, and all code contained in the `__macro_support` module, is a
+    /// *private* API of `flipperzero-rt`. It is exposed publicly because it is used by
+    /// the `flipperzero-rt` macros, but it is not part of the stable versioned API.
+    /// Breaking changes to this module may occur in small-numbered versions without
+    /// warning.
+    pub use crate::thread::wait_for_completion as __wait_for_thread_completion;
 }

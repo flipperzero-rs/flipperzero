@@ -18,15 +18,31 @@ all-features = true
 
 [lib]
 bench = false
-test = false
+harness = false
 
 [dependencies]
 flipperzero-sys.workspace = true
+flipperzero-test.workspace = true
 ufmt.workspace = true
+
+# HAL wrappers
+rand_core = "0.6"
+
+# Furi wrappers
+lock_api = "0.4"
+
+# Toolbox
+digest = "0.10"
+bitflags = "1.0"
 
 [dev-dependencies]
 flipperzero-alloc.workspace = true
 flipperzero-rt.workspace = true
+
+# Toolbox
+crc32fast = { version = "1", default-features = false }
+md-5 = { version = "0.10", default-features = false }
+sha2 = { version = "0.10", default-features = false }
 
 [features]
 default = ["unstable_lints", "unstable_intrinsics"]
@@ -43,6 +59,14 @@ service-gui = ["alloc"]
 # enables Dialogs APIs of Flipper
 service-dialogs = ["service-gui"]
 
+[[test]]
+name = "dolphin"
+harness = false
+
+[[test]]
+name = "string"
+harness = false
+
 [[example]]
 name = "dialog"
 required-features = ["service-dialogs"]
@@ -50,3 +74,7 @@ required-features = ["service-dialogs"]
 [[example]]
 name = "gui"
 required-features = ["service-gui"]
+
+[[example]]
+name = "threads"
+required-features = ["alloc"]

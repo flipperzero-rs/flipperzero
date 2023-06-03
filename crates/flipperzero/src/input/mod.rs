@@ -2,12 +2,75 @@ use core::ffi::CStr;
 use flipperzero_sys::{
     self as sys, InputEvent as SysInputEvent, InputKey as SysInputKey, InputType as SysInputType,
 };
+pub use sys::InputEvent__bindgen_ty_1 as SysInputEventSequence;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub struct InputEvent {
-    pub sequence: u32,
+    pub sequence: InputEventSequence,
     pub key: InputKey,
     pub r#type: InputType,
+}
+
+impl<'a> TryFrom<&'a SysInputEvent> for InputEvent {
+    type Error = FromSysInputEventError;
+
+    fn try_from(value: &'a SysInputEvent) -> Result<Self, Self::Error> {
+        Ok(Self {
+            sequence: value.__bindgen_anon_1.into(),
+            key: value.key.try_into()?,
+            r#type: value.type_.try_into()?,
+        })
+    }
+}
+
+impl From<InputEvent> for SysInputEvent {
+    fn from(value: InputEvent) -> Self {
+        Self {
+            __bindgen_anon_1: value.sequence.into(),
+            key: value.key.into(),
+            type_: value.r#type.into(),
+        }
+    }
+}
+
+#[repr(transparent)]
+#[derive(Copy, Clone, Debug, Hash, Eq, PartialEq, PartialOrd, Ord)]
+pub struct InputEventSequence(u32);
+
+impl InputEventSequence {
+    const fn source(&self) -> u8 {
+        ((self.0 >> 30) & 0b11) as u8
+    }
+
+    const fn counter(&self) -> u32 {
+        self.0 & !(0b11 << 30)
+    }
+}
+
+impl From<u32> for InputEventSequence {
+    fn from(value: u32) -> Self {
+        Self(value)
+    }
+}
+
+impl From<InputEventSequence> for u32 {
+    fn from(value: InputEventSequence) -> Self {
+        value.0
+    }
+}
+
+impl From<SysInputEventSequence> for InputEventSequence {
+    fn from(value: SysInputEventSequence) -> Self {
+        // SAFETY: both union variants are always valid
+        // and the bit-field one is just a typed view over the plain one
+        Self(unsafe { value.sequence })
+    }
+}
+
+impl From<InputEventSequence> for SysInputEventSequence {
+    fn from(value: InputEventSequence) -> Self {
+        Self { sequence: value.0 }
+    }
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
@@ -28,28 +91,6 @@ impl From<FromSysInputTypeError> for FromSysInputEventError {
     }
 }
 
-impl<'a> TryFrom<&'a SysInputEvent> for InputEvent {
-    type Error = FromSysInputEventError;
-
-    fn try_from(value: &'a SysInputEvent) -> Result<Self, Self::Error> {
-        Ok(Self {
-            sequence: value.sequence,
-            key: value.key.try_into()?,
-            r#type: value.type_.try_into()?,
-        })
-    }
-}
-
-impl From<InputEvent> for SysInputEvent {
-    fn from(value: InputEvent) -> Self {
-        Self {
-            sequence: value.sequence,
-            key: value.key.into(),
-            type_: value.r#type.into(),
-        }
-    }
-}
-
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum InputType {
     Press,
@@ -66,12 +107,6 @@ impl InputType {
         // and the returned string is a static string
         unsafe { CStr::from_ptr(sys::input_get_type_name(this)) }
     }
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum FromSysInputTypeError {
-    Max,
-    Invalid(SysInputType),
 }
 
 impl TryFrom<SysInputType> for InputType {
@@ -120,6 +155,12 @@ impl From<InputType> for SysInputType {
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
+pub enum FromSysInputTypeError {
+    Max,
+    Invalid(SysInputType),
+}
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum InputKey {
     Up,
     Down,
@@ -136,12 +177,6 @@ impl InputKey {
         // and the returned string is a static string
         unsafe { CStr::from_ptr(sys::input_get_key_name(this)) }
     }
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum FromSysInputKeyError {
-    Max,
-    Invalid(SysInputKey),
 }
 
 impl TryFrom<SysInputKey> for InputKey {
@@ -187,4 +222,10 @@ impl From<InputKey> for SysInputKey {
             InputKey::Back => SYS_INPUT_KEY_BACK,
         }
     }
+}
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
+pub enum FromSysInputKeyError {
+    Max,
+    Invalid(SysInputKey),
 }

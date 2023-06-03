@@ -3,14 +3,14 @@
 #[cfg(feature = "alloc")]
 use alloc::ffi::CString;
 
+use core::ffi::{c_char, CStr};
+use core::marker::PhantomData;
+use core::ptr::{self, NonNull};
+
+use flipperzero_sys as sys;
+use flipperzero_sys::furi::UnsafeRecord;
+
 use crate::gui::canvas::Align;
-use core::{
-    ffi::{c_char, CStr},
-    marker::PhantomData,
-    ptr,
-    ptr::NonNull,
-};
-use flipperzero_sys::{self as sys, furi::UnsafeRecord};
 
 /// A handle to the Dialogs app.
 pub struct DialogsApp {
@@ -19,7 +19,7 @@ pub struct DialogsApp {
 
 /// A dialog message.
 pub struct DialogMessage<'a> {
-    raw: NonNull<sys::DialogMessage>,
+    data: NonNull<sys::DialogMessage>,
     _phantom: PhantomData<&'a CStr>,
 }
 
@@ -36,16 +36,15 @@ impl DialogsApp {
 
     /// Obtains a handle to the Dialogs app.
     pub fn open() -> Self {
-        // SAFETY: `RECORD_DIALOGS` is a constant
-        let data = unsafe { UnsafeRecord::open(Self::RECORD_DIALOGS) };
-        Self { data }
+        Self {
+            data: unsafe { UnsafeRecord::open(RECORD_DIALOGS) },
+        }
     }
 
     /// Displays a message.
     pub fn show(&mut self, message: &DialogMessage) -> DialogMessageButton {
-        let data = self.data.as_raw();
-        let message = message.as_raw();
-        let button_sys = unsafe { sys::dialog_message_show(data, message) };
+        let button_sys =
+            unsafe { sys::dialog_message_show(self.data.as_ptr(), message.data.as_ptr()) };
 
         DialogMessageButton::from_sys(button_sys).expect("Invalid button")
     }
@@ -54,17 +53,16 @@ impl DialogsApp {
 impl<'a> DialogMessage<'a> {
     /// Allocates a new dialog message.
     pub fn new() -> Self {
-        // SAFETY: allocation either suceeds producing a valid pointer or terminates execution
         let data = unsafe { NonNull::new_unchecked(sys::dialog_message_alloc()) };
 
         Self {
-            raw: data,
+            data,
             _phantom: PhantomData,
         }
     }
 
     pub fn as_raw(&self) -> *mut sys::DialogMessage {
-        self.raw.as_ptr()
+        self.data.as_ptr()
     }
 
     /// Sets the labels of the buttons.
@@ -74,15 +72,12 @@ impl<'a> DialogMessage<'a> {
         center: Option<&'a CStr>,
         right: Option<&'a CStr>,
     ) {
-        let data = self.raw.as_ptr();
-        let left = left.map_or(ptr::null(), |c_str| c_str.as_ptr());
-        let center = center.map_or(ptr::null(), |c_str| c_str.as_ptr());
-        let right = right.map_or(ptr::null(), |c_str| c_str.as_ptr());
+        let left = left.map_or(ptr::null(), |l| l.as_ptr());
+        let center = center.map_or(ptr::null(), |l| l.as_ptr());
+        let right = right.map_or(ptr::null(), |l| l.as_ptr());
 
-        // SAFTY: `data` is always a valid pointer
-        // and all other pointers are valid or null
         unsafe {
-            sys::dialog_message_set_buttons(data, left, center, right);
+            sys::dialog_message_set_buttons(self.data.as_ptr(), left, center, right);
         }
     }
 
@@ -95,40 +90,38 @@ impl<'a> DialogMessage<'a> {
         horizontal: Align,
         vertical: Align,
     ) {
-        let data = self.raw.as_ptr();
-        let header = header.as_ptr();
-        let horizontal = horizontal.into();
-        let vertical = vertical.into();
-        // SAFTY: `data` and `header` are always valid pointers
-        // and all values are corrrect
         unsafe {
-            sys::dialog_message_set_header(data, header, x, y, horizontal, vertical);
+            sys::dialog_message_set_header(
+                self.data.as_ptr(),
+                header.as_ptr(),
+                x,
+                y,
+                horizontal.to_sys(),
+                vertical.to_sys(),
+            );
         }
     }
 
     /// Sets the body text.
     pub fn set_text(&mut self, text: &'a CStr, x: u8, y: u8, horizontal: Align, vertical: Align) {
-        let data = self.raw.as_ptr();
-        let text = text.as_ptr();
-        let horizontal = horizontal.into();
-        let vertical = vertical.into();
-        // SAFTY: `data` and `text` are always valid pointers
-        // and all values are corrrect
         unsafe {
-            sys::dialog_message_set_text(data, text, x, y, horizontal, vertical);
+            sys::dialog_message_set_text(
+                self.data.as_ptr(),
+                text.as_ptr(),
+                x,
+                y,
+                horizontal.to_sys(),
+                vertical.to_sys(),
+            );
         }
     }
 
     /// Clears the header text.
     pub fn clear_header(&mut self) {
-        let data = self.raw.as_ptr();
-        let text = ptr::null();
-        // SAFTY: `data` is always a valid pointer
-        // and all values are corrrect
         unsafe {
             sys::dialog_message_set_header(
-                data,
-                text,
+                self.data.as_ptr(),
+                ptr::null(),
                 0,
                 0,
                 sys::Align_AlignLeft,
@@ -139,13 +132,10 @@ impl<'a> DialogMessage<'a> {
 
     /// Clears the body text.
     pub fn clear_text(&mut self) {
-        let data = self.raw.as_ptr();
-        let text = ptr::null();
-        // SAFTY: `data` is always a valid pointer and all values are corrrect
         unsafe {
             sys::dialog_message_set_text(
-                data,
-                text,
+                self.data.as_ptr(),
+                ptr::null(),
                 0,
                 0,
                 sys::Align_AlignLeft,
@@ -157,10 +147,9 @@ impl<'a> DialogMessage<'a> {
 
 impl<'a> Drop for DialogMessage<'a> {
     fn drop(&mut self) {
-        let data = self.raw.as_ptr();
-        // SAFETY: `data` is a valid pointer
-        // which has been created by a call to `dialog_message_alloc`
-        unsafe { sys::dialog_message_free(data) };
+        unsafe {
+            sys::dialog_message_free(self.data.as_ptr());
+        }
     }
 }
 
