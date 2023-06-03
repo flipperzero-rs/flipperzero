@@ -11,7 +11,7 @@ impl Icon {
     ///
     /// # Safety
     ///
-    /// `raw` should be a valid pointer to [`SysCanvas`].
+    /// `raw` should be a valid non-null pointer to [`SysCanvas`].
     ///
     /// # Examples
     ///
@@ -23,7 +23,9 @@ impl Icon {
     /// let ptr = todo!();
     /// let canvas = unsafe { Icon::from_raw(ptr) };
     /// ```
-    pub unsafe fn from_raw(raw: NonNull<SysIcon>) -> Self {
+    pub unsafe fn from_raw(raw: *mut SysIcon) -> Self {
+        // SAFETY: the caller is required to provide the valid pointer
+        let raw = NonNull::new_unchecked(raw);
         Self { raw }
     }
 

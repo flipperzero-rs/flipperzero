@@ -361,20 +361,12 @@ impl TryFrom<SysViewPortOrientation> for ViewPortOrientation {
     type Error = FromSysViewPortOrientationError;
 
     fn try_from(value: SysViewPortOrientation) -> Result<Self, Self::Error> {
-        use sys::{
-            ViewPortOrientation_ViewPortOrientationHorizontal as SYS_VIEW_PORT_ORIENTATION_HORIZONTAL,
-            ViewPortOrientation_ViewPortOrientationHorizontalFlip as SYS_VIEW_PORT_ORIENTATION_HORIZONTAL_FLIP,
-            ViewPortOrientation_ViewPortOrientationMAX as SYS_VIEW_PORT_ORIENTATION_MAX,
-            ViewPortOrientation_ViewPortOrientationVertical as SYS_VIEW_PORT_ORIENTATION_VERTICAL,
-            ViewPortOrientation_ViewPortOrientationVerticalFlip as SYS_VIEW_PORT_ORIENTATION_VERTICAL_FLIP,
-        };
-
         Ok(match value {
-            SYS_VIEW_PORT_ORIENTATION_HORIZONTAL => Self::Horizontal,
-            SYS_VIEW_PORT_ORIENTATION_HORIZONTAL_FLIP => Self::HorizontalFlip,
-            SYS_VIEW_PORT_ORIENTATION_VERTICAL => Self::Vertical,
-            SYS_VIEW_PORT_ORIENTATION_VERTICAL_FLIP => Self::VerticalFlip,
-            SYS_VIEW_PORT_ORIENTATION_MAX => Err(Self::Error::Max)?,
+            sys::ViewPortOrientation_ViewPortOrientationHorizontal => Self::Horizontal,
+            sys::ViewPortOrientation_ViewPortOrientationHorizontalFlip => Self::HorizontalFlip,
+            sys::ViewPortOrientation_ViewPortOrientationVertical => Self::Vertical,
+            sys::ViewPortOrientation_ViewPortOrientationVerticalFlip => Self::VerticalFlip,
+            sys::ViewPortOrientation_ViewPortOrientationMAX => Err(Self::Error::Max)?,
             invalid => Err(Self::Error::Invalid(invalid))?,
         })
     }
@@ -382,18 +374,17 @@ impl TryFrom<SysViewPortOrientation> for ViewPortOrientation {
 
 impl From<ViewPortOrientation> for SysViewPortOrientation {
     fn from(value: ViewPortOrientation) -> Self {
-        use sys::{
-            ViewPortOrientation_ViewPortOrientationHorizontal as SYS_VIEW_PORT_ORIENTATION_HORIZONTAL,
-            ViewPortOrientation_ViewPortOrientationHorizontalFlip as SYS_VIEW_PORT_ORIENTATION_HORIZONTAL_FLIP,
-            ViewPortOrientation_ViewPortOrientationVertical as SYS_VIEW_PORT_ORIENTATION_VERTICAL,
-            ViewPortOrientation_ViewPortOrientationVerticalFlip as SYS_VIEW_PORT_ORIENTATION_VERTICAL_FLIP,
-        };
-
         match value {
-            ViewPortOrientation::Horizontal => SYS_VIEW_PORT_ORIENTATION_HORIZONTAL,
-            ViewPortOrientation::HorizontalFlip => SYS_VIEW_PORT_ORIENTATION_HORIZONTAL_FLIP,
-            ViewPortOrientation::Vertical => SYS_VIEW_PORT_ORIENTATION_VERTICAL,
-            ViewPortOrientation::VerticalFlip => SYS_VIEW_PORT_ORIENTATION_VERTICAL_FLIP,
+            ViewPortOrientation::Horizontal => {
+                sys::ViewPortOrientation_ViewPortOrientationHorizontal
+            }
+            ViewPortOrientation::HorizontalFlip => {
+                sys::ViewPortOrientation_ViewPortOrientationHorizontalFlip
+            }
+            ViewPortOrientation::Vertical => sys::ViewPortOrientation_ViewPortOrientationVertical,
+            ViewPortOrientation::VerticalFlip => {
+                sys::ViewPortOrientation_ViewPortOrientationVerticalFlip
+            }
         }
     }
 }

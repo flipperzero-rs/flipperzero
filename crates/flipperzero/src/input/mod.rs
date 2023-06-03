@@ -2,6 +2,7 @@ use core::ffi::CStr;
 use flipperzero_sys::{
     self as sys, InputEvent as SysInputEvent, InputKey as SysInputKey, InputType as SysInputType,
 };
+// public type alias for an anonymous union
 pub use sys::InputEvent__bindgen_ty_1 as SysInputEventSequence;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
@@ -113,22 +114,13 @@ impl TryFrom<SysInputType> for InputType {
     type Error = FromSysInputTypeError;
 
     fn try_from(value: SysInputType) -> Result<Self, Self::Error> {
-        use sys::{
-            InputType_InputTypeLong as SYS_INPUT_TYPE_LONG,
-            InputType_InputTypeMAX as SYS_INPUT_TYPE_MAX,
-            InputType_InputTypePress as SYS_INPUT_TYPE_PRESS,
-            InputType_InputTypeRelease as SYS_INPUT_TYPE_RELEASE,
-            InputType_InputTypeRepeat as SYS_INPUT_TYPE_REPEAT,
-            InputType_InputTypeShort as SYS_INPUT_TYPE_SHORT,
-        };
-
         Ok(match value {
-            SYS_INPUT_TYPE_PRESS => Self::Press,
-            SYS_INPUT_TYPE_RELEASE => Self::Release,
-            SYS_INPUT_TYPE_SHORT => Self::Short,
-            SYS_INPUT_TYPE_LONG => Self::Long,
-            SYS_INPUT_TYPE_REPEAT => Self::Repeat,
-            SYS_INPUT_TYPE_MAX => Err(Self::Error::Max)?,
+            sys::InputType_InputTypePress => Self::Press,
+            sys::InputType_InputTypeRelease => Self::Release,
+            sys::InputType_InputTypeShort => Self::Short,
+            sys::InputType_InputTypeLong => Self::Long,
+            sys::InputType_InputTypeRepeat => Self::Repeat,
+            sys::InputType_InputTypeMAX => Err(Self::Error::Max)?,
             invalid => Err(Self::Error::Invalid(invalid))?,
         })
     }
@@ -136,20 +128,12 @@ impl TryFrom<SysInputType> for InputType {
 
 impl From<InputType> for SysInputType {
     fn from(value: InputType) -> Self {
-        use sys::{
-            InputType_InputTypeLong as SYS_INPUT_TYPE_LONG,
-            InputType_InputTypePress as SYS_INPUT_TYPE_PRESS,
-            InputType_InputTypeRelease as SYS_INPUT_TYPE_RELEASE,
-            InputType_InputTypeRepeat as SYS_INPUT_TYPE_REPEAT,
-            InputType_InputTypeShort as SYS_INPUT_TYPE_SHORT,
-        };
-
         match value {
-            InputType::Press => SYS_INPUT_TYPE_PRESS,
-            InputType::Release => SYS_INPUT_TYPE_RELEASE,
-            InputType::Short => SYS_INPUT_TYPE_SHORT,
-            InputType::Long => SYS_INPUT_TYPE_LONG,
-            InputType::Repeat => SYS_INPUT_TYPE_REPEAT,
+            InputType::Press => sys::InputType_InputTypePress,
+            InputType::Release => sys::InputType_InputTypeRelease,
+            InputType::Short => sys::InputType_InputTypeShort,
+            InputType::Long => sys::InputType_InputTypeLong,
+            InputType::Repeat => sys::InputType_InputTypeRepeat,
         }
     }
 }
@@ -183,22 +167,14 @@ impl TryFrom<SysInputKey> for InputKey {
     type Error = FromSysInputKeyError;
 
     fn try_from(value: SysInputKey) -> Result<Self, Self::Error> {
-        use sys::{
-            InputKey_InputKeyBack as SYS_INPUT_KEY_BACK,
-            InputKey_InputKeyDown as SYS_INPUT_KEY_DOWN,
-            InputKey_InputKeyLeft as SYS_INPUT_KEY_LEFT, InputKey_InputKeyMAX as SYS_INPUT_KEY_MAX,
-            InputKey_InputKeyOk as SYS_INPUT_KEY_OK, InputKey_InputKeyRight as SYS_INPUT_KEY_RIGHT,
-            InputKey_InputKeyUp as SYS_INPUT_KEY_UP,
-        };
-
         Ok(match value {
-            SYS_INPUT_KEY_UP => Self::Up,
-            SYS_INPUT_KEY_DOWN => Self::Down,
-            SYS_INPUT_KEY_RIGHT => Self::Right,
-            SYS_INPUT_KEY_LEFT => Self::Left,
-            SYS_INPUT_KEY_OK => Self::Ok,
-            SYS_INPUT_KEY_BACK => Self::Back,
-            SYS_INPUT_KEY_MAX => Err(Self::Error::Max)?,
+            sys::InputKey_InputKeyUp => Self::Up,
+            sys::InputKey_InputKeyDown => Self::Down,
+            sys::InputKey_InputKeyRight => Self::Right,
+            sys::InputKey_InputKeyLeft => Self::Left,
+            sys::InputKey_InputKeyOk => Self::Ok,
+            sys::InputKey_InputKeyBack => Self::Back,
+            sys::InputKey_InputKeyMAX => Err(Self::Error::Max)?,
             invalid => Err(Self::Error::Invalid(invalid))?,
         })
     }
@@ -206,20 +182,13 @@ impl TryFrom<SysInputKey> for InputKey {
 
 impl From<InputKey> for SysInputKey {
     fn from(value: InputKey) -> Self {
-        use sys::{
-            InputKey_InputKeyBack as SYS_INPUT_KEY_BACK,
-            InputKey_InputKeyDown as SYS_INPUT_KEY_DOWN,
-            InputKey_InputKeyLeft as SYS_INPUT_KEY_LEFT, InputKey_InputKeyOk as SYS_INPUT_KEY_OK,
-            InputKey_InputKeyRight as SYS_INPUT_KEY_RIGHT, InputKey_InputKeyUp as SYS_INPUT_KEY_UP,
-        };
-
         match value {
-            InputKey::Up => SYS_INPUT_KEY_UP,
-            InputKey::Down => SYS_INPUT_KEY_DOWN,
-            InputKey::Right => SYS_INPUT_KEY_RIGHT,
-            InputKey::Left => SYS_INPUT_KEY_LEFT,
-            InputKey::Ok => SYS_INPUT_KEY_OK,
-            InputKey::Back => SYS_INPUT_KEY_BACK,
+            InputKey::Up => sys::InputKey_InputKeyUp,
+            InputKey::Down => sys::InputKey_InputKeyDown,
+            InputKey::Right => sys::InputKey_InputKeyRight,
+            InputKey::Left => sys::InputKey_InputKeyLeft,
+            InputKey::Ok => sys::InputKey_InputKeyOk,
+            InputKey::Back => sys::InputKey_InputKeyBack,
         }
     }
 }

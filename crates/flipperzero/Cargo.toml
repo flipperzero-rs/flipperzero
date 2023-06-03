@@ -8,7 +8,6 @@ license.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 autobins = false
-autotests = false
 autobenches = false
 
 [package.metadata.docs.rs]

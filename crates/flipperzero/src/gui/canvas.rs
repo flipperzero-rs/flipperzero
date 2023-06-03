@@ -6,6 +6,7 @@ use crate::gui::{
     xbm::XbmImage,
 };
 use crate::{debug, warn};
+use core::fmt::Display;
 use core::{
     ffi::{c_char, CStr},
     marker::PhantomData,
@@ -431,8 +432,7 @@ impl From<CanvasFontParametersSnapshot> for SysCanvasFontParameters {
 pub enum Color {
     White,
     Black,
-    // TDOO: add this color
-    // Xor,
+    Xor,
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
@@ -444,16 +444,10 @@ impl TryFrom<SysColor> for Color {
     type Error = FromSysColorError;
 
     fn try_from(value: SysColor) -> Result<Self, Self::Error> {
-        use sys::{
-            Color_ColorBlack as SYS_COLOR_BLACK,
-            Color_ColorWhite as SYS_COLOR_WHITE,
-            // Color_ColorXOR as SYS_COLOR_XOR,
-        };
-
         Ok(match value {
-            SYS_COLOR_WHITE => Self::White,
-            SYS_COLOR_BLACK => Self::Black,
-            // SYS_COLOR_XOR => Ok(Self::Xor),
+            sys::Color_ColorWhite => Self::White,
+            sys::Color_ColorBlack => Self::Black,
+            sys::Color_ColorXOR => Self::Xor,
             invalid => Err(Self::Error::Invalid(invalid))?,
         })
     }
@@ -461,16 +455,10 @@ impl TryFrom<SysColor> for Color {
 
 impl From<Color> for SysColor {
     fn from(value: Color) -> Self {
-        use sys::{
-            Color_ColorBlack as SYS_COLOR_BLACK,
-            Color_ColorWhite as SYS_COLOR_WHITE,
-            // Color_ColorXOR as SYS_COLOR_XOR,
-        };
-
         match value {
-            Color::White => SYS_COLOR_WHITE,
-            Color::Black => SYS_COLOR_BLACK,
-            // Color::Xor => SYS_COLOR_XOR,
+            Color::White => sys::Color_ColorWhite,
+            Color::Black => sys::Color_ColorBlack,
+            Color::Xor => sys::Color_ColorXOR,
         }
     }
 }
@@ -483,6 +471,20 @@ pub enum Font {
     BigNumbers,
 }
 
+impl Font {
+    /// Gets the total number of available fonts.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use flipperzero::gui::canvas::Font;
+    /// assert_eq!(Font::total_number(), 4);
+    /// ```
+    pub const fn total_number() -> usize {
+        sys::Font_FontTotalNumber as usize
+    }
+}
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysFontError {
     TotalNumber,
@@ -493,18 +495,12 @@ impl TryFrom<SysFont> for Font {
     type Error = FromSysFontError;
 
     fn try_from(value: SysFont) -> Result<Self, Self::Error> {
-        use sys::{
-            Font_FontBigNumbers as SYS_FONT_BIG_NUMBERS, Font_FontKeyboard as SYS_FONT_KEYBOARD,
-            Font_FontPrimary as SYS_FONT_PRIMARY, Font_FontSecondary as SYS_FONT_SECONDARY,
-            Font_FontTotalNumber as SYS_FONT_TOTAL_NUMBER,
-        };
-
         Ok(match value {
-            SYS_FONT_PRIMARY => Self::Primary,
-            SYS_FONT_SECONDARY => Self::Secondary,
-            SYS_FONT_KEYBOARD => Self::Keyboard,
-            SYS_FONT_BIG_NUMBERS => Self::BigNumbers,
-            SYS_FONT_TOTAL_NUMBER => Err(Self::Error::TotalNumber)?,
+            sys::Font_FontPrimary => Self::Primary,
+            sys::Font_FontSecondary => Self::Secondary,
+            sys::Font_FontKeyboard => Self::Keyboard,
+            sys::Font_FontBigNumbers => Self::BigNumbers,
+            sys::Font_FontTotalNumber => Err(Self::Error::TotalNumber)?,
             invalid => Err(Self::Error::Invalid(invalid))?,
         })
     }
@@ -512,16 +508,11 @@ impl TryFrom<SysFont> for Font {
 
 impl From<Font> for SysFont {
     fn from(value: Font) -> Self {
-        use sys::{
-            Font_FontBigNumbers as SYS_FONT_BIG_NUMBERS, Font_FontKeyboard as SYS_FONT_KEYBOARD,
-            Font_FontPrimary as SYS_FONT_PRIMARY, Font_FontSecondary as SYS_FONT_SECONDARY,
-        };
-
         match value {
-            Font::Primary => SYS_FONT_PRIMARY,
-            Font::Secondary => SYS_FONT_SECONDARY,
-            Font::Keyboard => SYS_FONT_KEYBOARD,
-            Font::BigNumbers => SYS_FONT_BIG_NUMBERS,
+            Font::Primary => sys::Font_FontPrimary,
+            Font::Secondary => sys::Font_FontSecondary,
+            Font::Keyboard => sys::Font_FontKeyboard,
+            Font::BigNumbers => sys::Font_FontBigNumbers,
         }
     }
 }
@@ -543,18 +534,11 @@ impl TryFrom<SysCanvasDirection> for CanvasDirection {
     type Error = FromSysCanvasDirectionError;
 
     fn try_from(value: SysCanvasDirection) -> Result<Self, Self::Error> {
-        use sys::{
-            CanvasDirection_CanvasDirectionBottomToTop as SYS_CANVAS_DIRECTION_BOTTOM_TO_TOP,
-            CanvasDirection_CanvasDirectionLeftToRight as SYS_CANVAS_DIRECTION_LEFT_TO_RIGHT,
-            CanvasDirection_CanvasDirectionRightToLeft as SYS_CANVAS_DIRECTION_RIGHT_TO_LEFT,
-            CanvasDirection_CanvasDirectionTopToBottom as SYS_CANVAS_DIRECTION_TOP_TO_BOTTOM,
-        };
-
         Ok(match value {
-            SYS_CANVAS_DIRECTION_LEFT_TO_RIGHT => Self::LeftToRight,
-            SYS_CANVAS_DIRECTION_TOP_TO_BOTTOM => Self::TopToBottom,
-            SYS_CANVAS_DIRECTION_RIGHT_TO_LEFT => Self::RightToLeft,
-            SYS_CANVAS_DIRECTION_BOTTOM_TO_TOP => Self::BottomToTop,
+            sys::CanvasDirection_CanvasDirectionLeftToRight => Self::LeftToRight,
+            sys::CanvasDirection_CanvasDirectionTopToBottom => Self::TopToBottom,
+            sys::CanvasDirection_CanvasDirectionRightToLeft => Self::RightToLeft,
+            sys::CanvasDirection_CanvasDirectionBottomToTop => Self::BottomToTop,
             invalid => Err(Self::Error::Invalid(invalid))?,
         })
     }
@@ -562,18 +546,11 @@ impl TryFrom<SysCanvasDirection> for CanvasDirection {
 
 impl From<CanvasDirection> for SysCanvasDirection {
     fn from(value: CanvasDirection) -> Self {
-        use sys::{
-            CanvasDirection_CanvasDirectionBottomToTop as SYS_CANVAS_DIRECTION_BOTTOM_TO_TOP,
-            CanvasDirection_CanvasDirectionLeftToRight as SYS_CANVAS_DIRECTION_LEFT_TO_RIGHT,
-            CanvasDirection_CanvasDirectionRightToLeft as SYS_CANVAS_DIRECTION_RIGHT_TO_LEFT,
-            CanvasDirection_CanvasDirectionTopToBottom as SYS_CANVAS_DIRECTION_TOP_TO_BOTTOM,
-        };
-
         match value {
-            CanvasDirection::BottomToTop => SYS_CANVAS_DIRECTION_BOTTOM_TO_TOP,
-            CanvasDirection::LeftToRight => SYS_CANVAS_DIRECTION_LEFT_TO_RIGHT,
-            CanvasDirection::RightToLeft => SYS_CANVAS_DIRECTION_RIGHT_TO_LEFT,
-            CanvasDirection::TopToBottom => SYS_CANVAS_DIRECTION_TOP_TO_BOTTOM,
+            CanvasDirection::BottomToTop => sys::CanvasDirection_CanvasDirectionBottomToTop,
+            CanvasDirection::LeftToRight => sys::CanvasDirection_CanvasDirectionLeftToRight,
+            CanvasDirection::RightToLeft => sys::CanvasDirection_CanvasDirectionRightToLeft,
+            CanvasDirection::TopToBottom => sys::CanvasDirection_CanvasDirectionTopToBottom,
         }
     }
 }
@@ -596,18 +573,12 @@ impl TryFrom<SysAlign> for Align {
     type Error = FromSysAlignError;
 
     fn try_from(value: SysAlign) -> Result<Self, Self::Error> {
-        use sys::{
-            Align_AlignBottom as SYS_ALIGN_BOTTOM, Align_AlignCenter as SYS_ALIGN_CENTER,
-            Align_AlignLeft as SYS_ALIGN_LEFT, Align_AlignRight as SYS_ALIGN_RIGHT,
-            Align_AlignTop as SYS_ALIGN_TOP,
-        };
-
         Ok(match value {
-            SYS_ALIGN_LEFT => Self::Left,
-            SYS_ALIGN_RIGHT => Self::Right,
-            SYS_ALIGN_TOP => Self::Top,
-            SYS_ALIGN_BOTTOM => Self::Bottom,
-            SYS_ALIGN_CENTER => Self::Center,
+            sys::Align_AlignLeft => Self::Left,
+            sys::Align_AlignRight => Self::Right,
+            sys::Align_AlignTop => Self::Top,
+            sys::Align_AlignBottom => Self::Bottom,
+            sys::Align_AlignCenter => Self::Center,
             invalid => Err(Self::Error::Invalid(invalid))?,
         })
     }
@@ -615,18 +586,12 @@ impl TryFrom<SysAlign> for Align {
 
 impl From<Align> for SysAlign {
     fn from(value: Align) -> Self {
-        use sys::{
-            Align_AlignBottom as SYS_ALIGN_BOTTOM, Align_AlignCenter as SYS_ALIGN_CENTER,
-            Align_AlignLeft as SYS_ALIGN_LEFT, Align_AlignRight as SYS_ALIGN_RIGHT,
-            Align_AlignTop as SYS_ALIGN_TOP,
-        };
-
         match value {
-            Align::Left => SYS_ALIGN_LEFT,
-            Align::Right => SYS_ALIGN_RIGHT,
-            Align::Top => SYS_ALIGN_TOP,
-            Align::Bottom => SYS_ALIGN_BOTTOM,
-            Align::Center => SYS_ALIGN_CENTER,
+            Align::Left => sys::Align_AlignLeft,
+            Align::Right => sys::Align_AlignRight,
+            Align::Top => sys::Align_AlignTop,
+            Align::Bottom => sys::Align_AlignBottom,
+            Align::Center => sys::Align_AlignCenter,
         }
     }
 }

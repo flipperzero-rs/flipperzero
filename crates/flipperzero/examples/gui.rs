@@ -23,8 +23,8 @@ use flipperzero::{
     gui::xbm::{ByteArray, XbmImage},
     gui::{
         canvas::CanvasView,
-        gui::{Gui, GuiLayer},
         view_port::{ViewPort, ViewPortCallbacks},
+        Gui, GuiLayer,
     },
     input::{InputEvent, InputKey, InputType},
     println,
