@@ -5,6 +5,7 @@ use crate::gui::{
     icon_animation::{IconAnimation, IconAnimationCallbacks},
     xbm::XbmImage,
 };
+use crate::{debug, warn};
 use core::{
     ffi::{c_char, CStr},
     marker::PhantomData,
@@ -219,6 +220,16 @@ impl CanvasView<'_> {
         // SAFETY: `raw` is always valid
         // and `data` is always valid and does not have to outlive the view
         // as it is copied
+        if x == 2 && y == 2 {
+            warn!(
+                "Printing image at {}:{} of dims {}:{}: {:?}",
+                x,
+                y,
+                width,
+                height,
+                xbm.data()
+            );
+        }
         unsafe { sys::canvas_draw_xbm(raw, x, y, width, height, data) };
         Some(())
     }

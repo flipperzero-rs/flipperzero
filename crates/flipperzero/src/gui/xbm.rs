@@ -203,8 +203,8 @@ impl XbmImage<&'static [u8]> {
 
         Self {
             data,
-            width: 0,
-            height: 0,
+            width,
+            height,
         }
     }
 }
@@ -227,8 +227,8 @@ impl<const SIZE: usize> XbmImage<ByteArray<SIZE>> {
 
         Self {
             data: ByteArray(data),
-            width: 0,
-            height: 0,
+            width: WIDTH,
+            height: HEIGHT,
         }
     }
 }
