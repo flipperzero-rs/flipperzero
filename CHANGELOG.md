@@ -5,6 +5,14 @@ file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
+### Added
+- `flipperzero::furi::sync::FuriMutex`
+
+### Changed
+- `flipperzero::furi::sync` has been rewritten using the `lock_api` crate.
+  - `Mutex<T>` is now a type alias for `lock_api::Mutex<FuriMutex, T>`.
+  - `MutexGuard<'a, T>` is now a type alias for
+    `lock_api::MutexGuard<'a, FuriMutex, T>`.
 
 ## [0.9.0]
 ### Added

@@ -28,6 +28,9 @@ ufmt.workspace = true
 # HAL wrappers
 rand_core = "0.6"
 
+# Furi wrappers
+lock_api = "0.4"
+
 # Toolbox
 digest = "0.10"
 bitflags = "1.0"
