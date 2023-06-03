@@ -29,30 +29,32 @@ impl<'a, C: IconAnimationCallbacks> IconAnimation<'a, C> {
             _parent_lifetime: PhantomData,
         };
 
-        pub unsafe extern "C" fn dispatch_update<C: IconAnimationCallbacks>(
-            instance: *mut SysIconAnimation,
-            context: *mut c_void,
-        ) {
-            // SAFETY: `icon_anination` is guaranteed to be a valid pointer
-            let instance = unsafe { IconAnimationView::from_raw(instance) };
+        {
+            pub unsafe extern "C" fn dispatch_update<C: IconAnimationCallbacks>(
+                instance: *mut SysIconAnimation,
+                context: *mut c_void,
+            ) {
+                // SAFETY: `icon_animation` is guaranteed to be a valid pointer
+                let instance = unsafe { IconAnimationView::from_raw(instance) };
 
-            let context: *mut C = context.cast();
-            // SAFETY: `context` is stored in a `Box` which is a member of `ViewPort`
-            // and the callback is accessed exclusively by this function
-            unsafe { &mut *context }.on_update(instance);
-        }
+                let context: *mut C = context.cast();
+                // SAFETY: `context` is stored in a `Box` which is a member of `ViewPort`
+                // and the callback is accessed exclusively by this function
+                unsafe { &mut *context }.on_update(instance);
+            }
 
-        if !ptr::eq(
-            C::on_update as *const c_void,
-            <() as IconAnimationCallbacks>::on_update as *const c_void,
-        ) {
-            let context = (&*icon_animation.callbacks as *const C).cast_mut().cast();
-            let raw = raw.as_ptr();
-            let callback = Some(dispatch_update::<C> as _);
+            if !ptr::eq(
+                C::on_update as *const c_void,
+                <() as IconAnimationCallbacks>::on_update as *const c_void,
+            ) {
+                let raw = raw.as_ptr();
+                let callback = Some(dispatch_update::<C> as _);
+                let context = (&*icon_animation.callbacks as *const C).cast_mut().cast();
 
-            // SAFETY: `raw` and `callback` are valid
-            // and `context` is valid as the box lives with this struct
-            unsafe { sys::icon_animation_set_update_callback(raw, callback, context) }
+                // SAFETY: `raw` and `callback` are valid
+                // and `context` is valid as the box lives with this struct
+                unsafe { sys::icon_animation_set_update_callback(raw, callback, context) };
+            }
         }
 
         icon_animation

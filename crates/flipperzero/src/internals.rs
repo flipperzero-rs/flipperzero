@@ -9,11 +9,18 @@ use core::{marker::PhantomData, mem};
 ///
 /// Make type `Foo` `impl !Sync` and `impl !Send`:
 ///
-/// ```no_run
+/// ```compile_fail
 /// use std::marker::PhantomData;
 /// struct Foo {
 ///     _marker: PhantomData<UnsendUnsync>,
 /// }
+///
+/// fn require_send(_: impl Send) {}
+/// fn require_sync(_: impl Sync) {}
+///
+/// let x = Foo { _marker: PhantomData };
+/// require_send(x);
+/// require_sync(x);
 /// ```
 pub(crate) struct UnsendUnsync(*const ());
 
@@ -31,11 +38,16 @@ const _: () = {
 ///
 /// Make type `Foo` `impl !Send`:
 ///
-/// ```no_run
+/// ```compile_fail
 /// use std::marker::PhantomData;
 /// struct Foo {
 ///     _marker: PhantomData<Unsend>,
 /// }
+///
+/// fn require_send(_: impl Send) {}
+///
+/// let x = Foo { _marker: PhantomData };
+/// require_send(x);
 /// ```
 pub(crate) struct Unsend(*const ());
 
@@ -69,12 +81,6 @@ pub(crate) mod ops {
                 quotient + 1
             } else {
                 quotient
-            }
-
-            if divident % divisor == 0 {
-                divident / divisor
-            } else {
-                divident / divisor + 1
             }
         }
     }
