@@ -120,12 +120,20 @@ name = "string"
 harness = false
 
 [[example]]
-name = "dialog"
-required-features = ["service-dialogs", "service-input"]
+name = "storage"
+required-features = ["service-storage"]
+
+[[example]]
+name = "notification"
+required-features = ["service-notification"]
 
 [[example]]
 name = "gui"
-required-features = ["service-gui"]
+required-features = ["service-gui", "service-input"]
+
+[[example]]
+name = "dialog"
+required-features = ["service-dialogs", "service-input"]
 
 [[example]]
 name = "threads"

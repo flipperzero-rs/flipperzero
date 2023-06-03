@@ -10,10 +10,6 @@ use core::mem::{self, MaybeUninit};
 use flipperzero_rt as rt;
 use flipperzero_sys as sys;
 
-// Required for allocator
-#[cfg(feature = "alloc")]
-extern crate flipperzero_alloc;
-
 rt::manifest!(name = "Example: Images");
 rt::entry!(main);
 
