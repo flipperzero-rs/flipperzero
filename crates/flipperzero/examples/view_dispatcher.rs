@@ -12,10 +12,9 @@ use alloc::boxed::Box;
 use core::ffi::{c_char, c_void, CStr};
 use core::ptr::NonNull;
 use flipperzero::furi::string::FuriString;
+use flipperzero::gui::Gui;
 use flipperzero_rt::{entry, manifest};
 use flipperzero_sys as sys;
-
-const RECORD_GUI: *const c_char = sys::c_string!("gui");
 
 manifest!(name = "Rust ViewDispatcher example");
 entry!(main);
@@ -102,11 +101,11 @@ fn main(_args: *mut u8) -> i32 {
         );
     }
 
+    let gui = Gui::new();
     unsafe {
-        let gui = sys::furi_record_open(RECORD_GUI) as *mut sys::Gui;
         sys::view_dispatcher_attach_to_gui(
             app.view_dispatcher.as_ptr(),
-            gui,
+            gui.as_raw(),
             sys::ViewDispatcherType_ViewDispatcherTypeFullscreen,
         );
 

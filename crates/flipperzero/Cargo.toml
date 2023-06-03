@@ -88,7 +88,7 @@ service-input = []
 ## Enables Toolbox APIs.
 service-toolbox = []
 ## Enables GUI APIs of Flipper.
-service-gui = ["alloc"]
+service-gui = ["alloc", "service-input"]
 ## Enables Dialogs APIs of Flipper.
 service-dialogs = ["service-gui"]
 ## Enables Dolphin APIs of Flipper.
@@ -129,7 +129,11 @@ required-features = ["service-notification"]
 
 [[example]]
 name = "gui"
-required-features = ["service-gui", "service-input"]
+required-features = ["service-gui"]
+
+[[example]]
+name = "view_dispatcher"
+required-features = ["service-gui"]
 
 [[example]]
 name = "dialog"
