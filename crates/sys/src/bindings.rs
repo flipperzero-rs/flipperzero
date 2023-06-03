@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 1703939;
+pub const API_VERSION: u32 = 1835010;
 pub type wint_t = core::ffi::c_int;
 pub type _off_t = core::ffi::c_long;
 pub type _fpos_t = core::ffi::c_long;
@@ -7875,6 +7875,76 @@ extern "C" {
     #[doc = "Disable clock output on MCO pin\n\n"]
     pub fn furi_hal_clock_mco_disable();
 }
+pub const FuriHalBus_FuriHalBusAHB1_GRP1: FuriHalBus = 0;
+pub const FuriHalBus_FuriHalBusDMA1: FuriHalBus = 1;
+pub const FuriHalBus_FuriHalBusDMA2: FuriHalBus = 2;
+pub const FuriHalBus_FuriHalBusDMAMUX1: FuriHalBus = 3;
+pub const FuriHalBus_FuriHalBusCRC: FuriHalBus = 4;
+pub const FuriHalBus_FuriHalBusTSC: FuriHalBus = 5;
+pub const FuriHalBus_FuriHalBusAHB2_GRP1: FuriHalBus = 6;
+pub const FuriHalBus_FuriHalBusGPIOA: FuriHalBus = 7;
+pub const FuriHalBus_FuriHalBusGPIOB: FuriHalBus = 8;
+pub const FuriHalBus_FuriHalBusGPIOC: FuriHalBus = 9;
+pub const FuriHalBus_FuriHalBusGPIOD: FuriHalBus = 10;
+pub const FuriHalBus_FuriHalBusGPIOE: FuriHalBus = 11;
+pub const FuriHalBus_FuriHalBusGPIOH: FuriHalBus = 12;
+pub const FuriHalBus_FuriHalBusADC: FuriHalBus = 13;
+pub const FuriHalBus_FuriHalBusAES1: FuriHalBus = 14;
+pub const FuriHalBus_FuriHalBusAHB3_GRP1: FuriHalBus = 15;
+pub const FuriHalBus_FuriHalBusQUADSPI: FuriHalBus = 16;
+pub const FuriHalBus_FuriHalBusPKA: FuriHalBus = 17;
+pub const FuriHalBus_FuriHalBusAES2: FuriHalBus = 18;
+pub const FuriHalBus_FuriHalBusRNG: FuriHalBus = 19;
+pub const FuriHalBus_FuriHalBusHSEM: FuriHalBus = 20;
+pub const FuriHalBus_FuriHalBusIPCC: FuriHalBus = 21;
+pub const FuriHalBus_FuriHalBusFLASH: FuriHalBus = 22;
+pub const FuriHalBus_FuriHalBusAPB1_GRP1: FuriHalBus = 23;
+pub const FuriHalBus_FuriHalBusTIM2: FuriHalBus = 24;
+pub const FuriHalBus_FuriHalBusLCD: FuriHalBus = 25;
+pub const FuriHalBus_FuriHalBusSPI2: FuriHalBus = 26;
+pub const FuriHalBus_FuriHalBusI2C1: FuriHalBus = 27;
+pub const FuriHalBus_FuriHalBusI2C3: FuriHalBus = 28;
+pub const FuriHalBus_FuriHalBusCRS: FuriHalBus = 29;
+pub const FuriHalBus_FuriHalBusUSB: FuriHalBus = 30;
+pub const FuriHalBus_FuriHalBusLPTIM1: FuriHalBus = 31;
+pub const FuriHalBus_FuriHalBusAPB1_GRP2: FuriHalBus = 32;
+pub const FuriHalBus_FuriHalBusLPUART1: FuriHalBus = 33;
+pub const FuriHalBus_FuriHalBusLPTIM2: FuriHalBus = 34;
+pub const FuriHalBus_FuriHalBusAPB2_GRP1: FuriHalBus = 35;
+pub const FuriHalBus_FuriHalBusTIM1: FuriHalBus = 36;
+pub const FuriHalBus_FuriHalBusSPI1: FuriHalBus = 37;
+pub const FuriHalBus_FuriHalBusUSART1: FuriHalBus = 38;
+pub const FuriHalBus_FuriHalBusTIM16: FuriHalBus = 39;
+pub const FuriHalBus_FuriHalBusTIM17: FuriHalBus = 40;
+pub const FuriHalBus_FuriHalBusSAI1: FuriHalBus = 41;
+pub const FuriHalBus_FuriHalBusAPB3_GRP1: FuriHalBus = 42;
+pub const FuriHalBus_FuriHalBusRF: FuriHalBus = 43;
+pub const FuriHalBus_FuriHalBusMAX: FuriHalBus = 44;
+pub type FuriHalBus = core::ffi::c_uchar;
+extern "C" {
+    #[doc = "Early initialization\n\n"]
+    pub fn furi_hal_bus_init_early();
+}
+extern "C" {
+    #[doc = "Early de-initialization\n\n"]
+    pub fn furi_hal_bus_deinit_early();
+}
+extern "C" {
+    #[doc = "Enable a peripheral by turning the clocking on and deasserting the reset.\n\n**Warning!**\n\n* Peripheral must be in disabled state in order to be enabled.\n\n# Arguments\n\n* `[in]` - bus Peripheral to be enabled.\n\n"]
+    pub fn furi_hal_bus_enable(bus: FuriHalBus);
+}
+extern "C" {
+    #[doc = "Reset a peripheral by sequentially asserting and deasserting the reset.\n\n**Warning!**\n\n* Peripheral must be in enabled state in order to be reset.\n\n# Arguments\n\n* `[in]` - bus Peripheral to be reset.\n\n"]
+    pub fn furi_hal_bus_reset(bus: FuriHalBus);
+}
+extern "C" {
+    #[doc = "Disable a peripheral by turning the clocking off and asserting the reset.\n\n**Warning!**\n\n* Peripheral must be in enabled state in order to be disabled.\n\n# Arguments\n\n* `[in]` - bus Peripheral to be disabled.\n\n"]
+    pub fn furi_hal_bus_disable(bus: FuriHalBus);
+}
+extern "C" {
+    #[doc = "Check if peripheral is enabled\n\n**Warning!**\n\n* FuriHalBusAPB3_GRP1 is a special group of shared peripherals, for core1 its clock is always on and the only status we can report is peripheral reset status. Check code and Reference Manual for details.\n\nReturns:\n\n* true if enabled or always enabled, false otherwise\n\n# Arguments\n\n* `bus` - [Direction: In] The peripheral to check\n\n"]
+    pub fn furi_hal_bus_is_enabled(bus: FuriHalBus) -> bool;
+}
 #[doc = "Master key\n\n"]
 pub const FuriHalCryptoKeyType_FuriHalCryptoKeyTypeMaster: FuriHalCryptoKeyType = 0;
 #[doc = "Simple enencrypted key\n\n"]
@@ -8008,6 +8078,14 @@ extern "C" {
 extern "C" {
     #[doc = "Check if GDB debug session is active\n\n"]
     pub fn furi_hal_debug_is_gdb_session_active() -> bool;
+}
+extern "C" {
+    #[doc = "Early initialization\n\n"]
+    pub fn furi_hal_dma_init_early();
+}
+extern "C" {
+    #[doc = "Early de-initialization\n\n"]
+    pub fn furi_hal_dma_deinit_early();
 }
 extern "C" {
     pub fn furi_hal_os_tick();
@@ -9117,6 +9195,18 @@ extern "C" {
     pub fn furi_hal_rtc_datetime_to_timestamp(datetime: *mut FuriHalRtcDateTime) -> u32;
 }
 extern "C" {
+    #[doc = "Gets the number of days in the year according to the Gregorian calendar.\n\nReturns:\n\n* number of days in `year`.\n\n# Arguments\n\n* `year` - Input year.\n\n"]
+    pub fn furi_hal_rtc_get_days_per_year(year: u16) -> u16;
+}
+extern "C" {
+    #[doc = "Check if a year a leap year in the Gregorian calendar.\n\nReturns:\n\n* true if `year` is a leap year.\n\n# Arguments\n\n* `year` - Input year.\n\n"]
+    pub fn furi_hal_rtc_is_leap_year(year: u16) -> bool;
+}
+extern "C" {
+    #[doc = "Get the number of days in the month.\n\nReturns:\n\n* the number of days in the month\n\n# Arguments\n\n* `leap_year` - true to calculate based on leap years\n* `month` - month to check, where 1 = January\n\n"]
+    pub fn furi_hal_rtc_get_days_per_month(leap_year: bool, month: u8) -> u8;
+}
+extern "C" {
     #[doc = "Acquire speaker ownership\n\n**Warning!**\n\n* You must acquire speaker ownership before use\n\nReturns:\n\n* bool returns true on success\n\n# Arguments\n\n* `timeout` - Timeout during which speaker ownership must be acquired\n\n"]
     pub fn furi_hal_speaker_acquire(timeout: u32) -> bool;
 }
@@ -9699,6 +9789,14 @@ extern "C" {
 extern "C" {
     #[doc = "Get flag indicating if this build is \"dirty\" (source code had uncommited changes)\n\nReturns:\n\n* build date\n\n# Arguments\n\n* `v` - pointer to Version data. NULL for currently running software.\n\n"]
     pub fn version_get_dirty_flag(v: *const Version) -> bool;
+}
+extern "C" {
+    #[doc = "Get firmware origin. \"Official\" for mainline firmware, fork name for forks. Set by FIRMWARE_ORIGIN fbt argument.\n\n"]
+    pub fn version_get_firmware_origin(v: *const Version) -> *const core::ffi::c_char;
+}
+extern "C" {
+    #[doc = "Get git repo origin\n\n"]
+    pub fn version_get_git_origin(v: *const Version) -> *const core::ffi::c_char;
 }
 pub const FuriHalVersionOtpVersion_FuriHalVersionOtpVersion0: FuriHalVersionOtpVersion = 0;
 pub const FuriHalVersionOtpVersion_FuriHalVersionOtpVersion1: FuriHalVersionOtpVersion = 1;
@@ -11611,6 +11709,10 @@ extern "C" {
     );
 }
 extern "C" {
+    #[doc = "Initialize random subsystem\n\n"]
+    pub fn furi_hal_random_init();
+}
+extern "C" {
     #[doc = "Get random value\n\nReturns:\n\n* random value\n\n"]
     pub fn furi_hal_random_get() -> u32;
 }
@@ -11857,14 +11959,6 @@ extern "C" {
     pub fn furi_hal_rfid_pins_reset();
 }
 extern "C" {
-    #[doc = "Config rfid pins to emulate state\n\n"]
-    pub fn furi_hal_rfid_pins_emulate();
-}
-extern "C" {
-    #[doc = "Config rfid pins to read state\n\n"]
-    pub fn furi_hal_rfid_pins_read();
-}
-extern "C" {
     #[doc = "Release rfid pull pin\n\n"]
     pub fn furi_hal_rfid_pin_pull_release();
 }
@@ -11873,29 +11967,20 @@ extern "C" {
     pub fn furi_hal_rfid_pin_pull_pulldown();
 }
 extern "C" {
-    #[doc = "Config rfid timer to read state\n\n# Arguments\n\n* `freq` - timer frequency\n* `duty_cycle` - timer duty cycle, 0.0-1.0\n\n"]
-    pub fn furi_hal_rfid_tim_read(freq: f32, duty_cycle: f32);
+    #[doc = "Start read timer\n\n# Arguments\n\n* `freq` - timer frequency\n* `duty_cycle` - timer duty cycle, 0.0-1.0\n\n"]
+    pub fn furi_hal_rfid_tim_read_start(freq: f32, duty_cycle: f32);
 }
 extern "C" {
-    #[doc = "Start read timer\n\n"]
-    pub fn furi_hal_rfid_tim_read_start();
+    #[doc = "Pause read timer, to be able to continue later\n\n"]
+    pub fn furi_hal_rfid_tim_read_pause();
+}
+extern "C" {
+    #[doc = "Continue read timer\n\n"]
+    pub fn furi_hal_rfid_tim_read_continue();
 }
 extern "C" {
     #[doc = "Stop read timer\n\n"]
     pub fn furi_hal_rfid_tim_read_stop();
-}
-extern "C" {
-    #[doc = "Config rfid timer to emulate state\n\n# Arguments\n\n* `freq` - timer frequency\n\n"]
-    pub fn furi_hal_rfid_tim_emulate(freq: f32);
-}
-pub type FuriHalRfidEmulateCallback =
-    ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
-extern "C" {
-    #[doc = "Start emulation timer\n\n"]
-    pub fn furi_hal_rfid_tim_emulate_start(
-        callback: FuriHalRfidEmulateCallback,
-        context: *mut core::ffi::c_void,
-    );
 }
 pub type FuriHalRfidReadCaptureCallback = ::core::option::Option<
     unsafe extern "C" fn(level: bool, duration: u32, context: *mut core::ffi::c_void),
@@ -11924,32 +12009,12 @@ extern "C" {
     pub fn furi_hal_rfid_tim_emulate_dma_stop();
 }
 extern "C" {
-    #[doc = "Stop emulation timer\n\n"]
-    pub fn furi_hal_rfid_tim_emulate_stop();
-}
-extern "C" {
-    #[doc = "Config rfid timers to reset state\n\n"]
-    pub fn furi_hal_rfid_tim_reset();
-}
-extern "C" {
-    #[doc = "Set emulation timer period\n\n# Arguments\n\n* `period` - overall duration\n\n"]
-    pub fn furi_hal_rfid_set_emulate_period(period: u32);
-}
-extern "C" {
-    #[doc = "Set emulation timer pulse\n\n# Arguments\n\n* `pulse` - duration of high level\n\n"]
-    pub fn furi_hal_rfid_set_emulate_pulse(pulse: u32);
-}
-extern "C" {
     #[doc = "Set read timer period\n\n# Arguments\n\n* `period` - overall duration\n\n"]
     pub fn furi_hal_rfid_set_read_period(period: u32);
 }
 extern "C" {
     #[doc = "Set read timer pulse\n\n# Arguments\n\n* `pulse` - duration of high level\n\n"]
     pub fn furi_hal_rfid_set_read_pulse(pulse: u32);
-}
-extern "C" {
-    #[doc = "Сhanges the configuration of the RFID timer \"on a fly\"\n\n# Arguments\n\n* `freq` - new frequency\n* `duty_cycle` - new duty cycle\n\n"]
-    pub fn furi_hal_rfid_change_read_config(freq: f32, duty_cycle: f32);
 }
 extern "C" {
     #[doc = "Start/Enable comparator\n\n"]
@@ -14563,7 +14628,7 @@ extern "C" {
         -> FS_Error;
 }
 extern "C" {
-    #[doc = "Renames file/directory, file/directory must not be open\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `app` - pointer to the api\n* `old_path` - old path\n* `new_path` - new path\n\n"]
+    #[doc = "Renames file/directory, file/directory must not be open. Will overwrite existing file.\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `app` - pointer to the api\n* `old_path` - old path\n* `new_path` - new path\n\n"]
     pub fn storage_common_rename(
         storage: *mut Storage,
         old_path: *const core::ffi::c_char,
@@ -17144,7 +17209,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Callback to pass to infrared_worker_tx_set_get_signal_callback() if signal is steady and will not be changed between infrared_worker start and stop. Before starting transmission, desired steady signal must be set with infrared_worker_make_decoded_signal() or infrared_worker_make_raw_signal().\nThis function should not be implicitly called.\n\n# Arguments\n\n* `context` - [Direction: In] - context\n* `instance` - [Direction: In, Out] - InfraredWorker instance\n\n"]
+    #[doc = "Callback to pass to infrared_worker_tx_set_get_signal_callback() if signal is steady and will not be changed between infrared_worker start and stop. Before starting transmission, desired steady signal must be set with infrared_worker_set_decoded_signal() or infrared_worker_set_raw_signal().\nThis function should not be called directly.\n\n# Arguments\n\n* `context` - [Direction: In] - context\n* `instance` - [Direction: In, Out] - InfraredWorker instance\n\n"]
     pub fn infrared_worker_tx_get_signal_steady_callback(
         context: *mut core::ffi::c_void,
         instance: *mut InfraredWorker,
@@ -17172,11 +17237,13 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Set current raw signal for InfraredWorker instance\n\n# Arguments\n\n* `instance` - [Direction: In, Out] - InfraredWorker instance\n* `timings` - [Direction: In] - array of raw timings\n* `timings_cnt` - [Direction: In] - size of array of raw timings\n\n"]
+    #[doc = "Set current raw signal for InfraredWorker instance\n\n# Arguments\n\n* `instance` - [Direction: In, Out] - InfraredWorker instance\n* `timings` - [Direction: In] - array of raw timings\n* `timings_cnt` - [Direction: In] - size of array of raw timings\n* `frequency` - [Direction: In] - carrier frequency in Hertz\n* `duty_cycle` - [Direction: In] - carrier duty cycle (0.0 - 1.0)\n\n"]
     pub fn infrared_worker_set_raw_signal(
         instance: *mut InfraredWorker,
         timings: *const u32,
         timings_cnt: usize,
+        frequency: u32,
+        duty_cycle: f32,
     );
 }
 pub type ProtocolAlloc = ::core::option::Option<unsafe extern "C" fn() -> *mut core::ffi::c_void>;
@@ -17622,7 +17689,8 @@ pub const LFRFIDProtocol_LFRFIDProtocolParadox: LFRFIDProtocol = 13;
 pub const LFRFIDProtocol_LFRFIDProtocolPACStanley: LFRFIDProtocol = 14;
 pub const LFRFIDProtocol_LFRFIDProtocolKeri: LFRFIDProtocol = 15;
 pub const LFRFIDProtocol_LFRFIDProtocolGallagher: LFRFIDProtocol = 16;
-pub const LFRFIDProtocol_LFRFIDProtocolMax: LFRFIDProtocol = 17;
+pub const LFRFIDProtocol_LFRFIDProtocolNexwatch: LFRFIDProtocol = 17;
+pub const LFRFIDProtocol_LFRFIDProtocolMax: LFRFIDProtocol = 18;
 pub type LFRFIDProtocol = core::ffi::c_uchar;
 extern "C" {
     pub static mut lfrfid_protocols: [*const ProtocolBase; 0usize];
@@ -18234,16 +18302,17 @@ pub const MfUltralightAuthMethod_MfUltralightAuthMethodAuto: MfUltralightAuthMet
 pub type MfUltralightAuthMethod = core::ffi::c_uchar;
 pub const MfUltralightType_MfUltralightTypeUnknown: MfUltralightType = 0;
 pub const MfUltralightType_MfUltralightTypeNTAG203: MfUltralightType = 1;
-pub const MfUltralightType_MfUltralightTypeUL11: MfUltralightType = 2;
-pub const MfUltralightType_MfUltralightTypeUL21: MfUltralightType = 3;
-pub const MfUltralightType_MfUltralightTypeNTAG213: MfUltralightType = 4;
-pub const MfUltralightType_MfUltralightTypeNTAG215: MfUltralightType = 5;
-pub const MfUltralightType_MfUltralightTypeNTAG216: MfUltralightType = 6;
-pub const MfUltralightType_MfUltralightTypeNTAGI2C1K: MfUltralightType = 7;
-pub const MfUltralightType_MfUltralightTypeNTAGI2C2K: MfUltralightType = 8;
-pub const MfUltralightType_MfUltralightTypeNTAGI2CPlus1K: MfUltralightType = 9;
-pub const MfUltralightType_MfUltralightTypeNTAGI2CPlus2K: MfUltralightType = 10;
-pub const MfUltralightType_MfUltralightTypeNum: MfUltralightType = 11;
+pub const MfUltralightType_MfUltralightTypeULC: MfUltralightType = 2;
+pub const MfUltralightType_MfUltralightTypeUL11: MfUltralightType = 3;
+pub const MfUltralightType_MfUltralightTypeUL21: MfUltralightType = 4;
+pub const MfUltralightType_MfUltralightTypeNTAG213: MfUltralightType = 5;
+pub const MfUltralightType_MfUltralightTypeNTAG215: MfUltralightType = 6;
+pub const MfUltralightType_MfUltralightTypeNTAG216: MfUltralightType = 7;
+pub const MfUltralightType_MfUltralightTypeNTAGI2C1K: MfUltralightType = 8;
+pub const MfUltralightType_MfUltralightTypeNTAGI2C2K: MfUltralightType = 9;
+pub const MfUltralightType_MfUltralightTypeNTAGI2CPlus1K: MfUltralightType = 10;
+pub const MfUltralightType_MfUltralightTypeNTAGI2CPlus2K: MfUltralightType = 11;
+pub const MfUltralightType_MfUltralightTypeNum: MfUltralightType = 12;
 pub type MfUltralightType = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
