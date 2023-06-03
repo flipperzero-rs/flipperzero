@@ -6,13 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 ### Added
+- `flipperzero::format` macro.
 - `flipperzero::furi::sync::FuriMutex`
+- `flipperzero::furi::time`, containing the currently unusable placeholder types
+  `Duration` and `Instant`.
 
 ### Changed
+- Migrated to SDK API 28.2 (firmware 0.84.1).
 - `flipperzero::furi::sync` has been rewritten using the `lock_api` crate.
   - `Mutex<T>` is now a type alias for `lock_api::Mutex<FuriMutex, T>`.
   - `MutexGuard<'a, T>` is now a type alias for
     `lock_api::MutexGuard<'a, FuriMutex, T>`.
+- `flipperzero::{print, println}` macros now panic if they cannot write to
+  stdout.
 
 ## [0.9.0]
 ### Added
