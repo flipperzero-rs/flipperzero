@@ -245,7 +245,7 @@ impl<const N: usize> DerefMut for ByteArray<N> {
 /// Creates a compile-time XBM image.
 /// The type of this expression is [`XbmImage`] with [`ByteArray`] backend of the calculated size.
 ///
-/// The syntax is an [XBM image definition](XBM format)
+/// The syntax is an [XBM image definition][XBM format]
 /// optionally wrapped in an `unsafe` block.
 ///
 /// Unless the expression is wrapped in an `unsafe` block
@@ -374,7 +374,6 @@ macro_rules! xbm {
 }
 
 #[flipperzero_test::tests]
-// TODO: add this tests to some harness
 mod tests {
     #[test]
     fn valid_byte_reading_aligned() {

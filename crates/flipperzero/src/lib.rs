@@ -76,5 +76,6 @@ flipperzero_test::tests_runner!(
         crate::toolbox::crc32::tests,
         crate::toolbox::md5::tests,
         crate::toolbox::sha256::tests,
+        crate::gui::xbm::tests,
     ]
 );
