@@ -50,13 +50,23 @@ impl<D> XbmImage<D> {
         }
     }
 
+    // IMPORTANT: XBM images have trailing bits per-rows
+    // rather than at the end of the whole byte-array
     // FIXME: XBM trails on line ends
     #[inline]
     const fn offsets(&self, x: u8, y: u8) -> Option<(u8, u8)> {
-        if let Some(offset) = self.offset(x, y) {
-            Some((offset / 8, offset % 8))
-        } else {
+        let row_bytes = crate::internals::ops::div_ceil_u8(self.width, 8);
+
+        if x >= self.width || y >= self.height {
             None
+        } else {
+            Some((
+                // Per each y we skip a row of `row_bytes` bytes
+                // then we also have to skip all previous
+                (row_bytes * y) + x / 8,
+                // Since all rowas are aligned, only x ffects the bit ofset
+                x % 8,
+            ))
         }
     }
 }
@@ -250,24 +260,23 @@ impl<const N: usize> DerefMut for ByteArray<N> {
     }
 }
 
-/// Creates
+/// Creates a compile-time XBM image.
+/// The type of this expression is [`XbmImage`] with [`ByteArray`] backend of the calculated size.
+///
+/// The syntax is an [XBM image definition](XBM format)
+/// optionally wrapped in an `unsafe` block.
+///
+/// Unless the expression is wrapped in an `unsafe` block
+/// the macro will perform identifier validation:
+/// it will check that identifiers are in the order
+/// `<name>_width`, `<name>_height`, optionally `<name>_x_hot` and `<name>_y_hot` and `<name>_bits`
+/// and that the `<name>` is the same for all identifiers.
+/// The `unsafe` form omits this validations
+/// while still ensuring that the size constraints are valid.
+///
+/// [XBM format]: https://www.fileformat.info/format/xbm/egff.htm
 #[macro_export]
 macro_rules! xbm {
-    (
-        unsafe {
-            #define $_width_ident:ident $width:literal
-            #define $_height_ident:ident $height:literal
-            $(
-                #define $_x_hotspot_ident:ident $_hotspot_x:literal
-                #define $_y_hotspot_ident:ident $_hotspot_y:literal
-            )?
-            static char $_bits_ident:ident[] = {
-                $($byte:literal),* $(,)?
-            };
-        }
-    ) => {{
-        $crate::gui::xbm::XbmImage::new_from_array::<$width, $height>([$($byte,)*])
-    }};
     (
         #define $width_ident:ident $width:literal
         #define $height_ident:ident $height:literal
@@ -275,7 +284,7 @@ macro_rules! xbm {
             #define $x_hotspot_ident:ident $_hotspot_x:literal
             #define $y_hotspot_ident:ident $_hotspot_y:literal
         )?
-        static char $bits_ident:ident[] = {
+        static $(unsigned)? char $bits_ident:ident[] = {
             $($byte:literal),* $(,)?
         };
     ) => {{
@@ -365,10 +374,25 @@ macro_rules! xbm {
             };
         })
     }};
+    (
+        unsafe {
+            #define $_width_ident:ident $width:literal
+            #define $_height_ident:ident $height:literal
+            $(
+                #define $_x_hotspot_ident:ident $_hotspot_x:literal
+                #define $_y_hotspot_ident:ident $_hotspot_y:literal
+            )?
+            static $(unsigned)? char $_bits_ident:ident[] = {
+                $($byte:literal),* $(,)?
+            };
+        }
+    ) => {{
+        $crate::gui::xbm::XbmImage::new_from_array::<$width, $height>([$($byte,)*])
+    }};
 }
 
-// TODO: enable test execution
-#[cfg(test)]
+#[flipperzero_test::tests]
+// TODO: ensure that tests actually pass :pekaface:
 mod tests {
 
     #[test]
@@ -386,37 +410,37 @@ mod tests {
             };
         );
 
-        assert!(!image.get((0, 0)));
-        assert!(image.get((0, 1)));
-        assert!(!image.get((0, 2)));
-        assert!(!image.get((0, 3)));
-        assert!(image.get((0, 4)));
-        assert!(image.get((0, 5)));
-        assert!(!image.get((0, 6)));
-        assert!(!image.get((0, 7)));
-        assert!(!image.get((0, 8)));
-        assert!(!image.get((0, 9)));
-        assert!(image.get((0, 10)));
-        assert!(image.get((0, 11)));
-        assert!(image.get((0, 12)));
-        assert!(image.get((0, 13)));
-        assert!(!image.get((0, 14)));
-        assert!(!image.get((0, 15)));
-        assert!(!image.get((1, 0)));
-        assert!(!image.get((1, 1)));
-        assert!(!image.get((1, 2)));
-        assert!(!image.get((1, 3)));
-        assert!(!image.get((1, 4)));
-        assert!(!image.get((1, 5)));
-        assert!(image.get((1, 6)));
-        assert!(image.get((1, 7)));
-        assert!(image.get((1, 8)));
-        assert!(image.get((1, 9)));
-        assert!(image.get((1, 10)));
-        assert!(image.get((1, 11)));
-        assert!(image.get((1, 12)));
-        assert!(image.get((1, 13)));
-        assert!(!image.get((1, 14)));
-        assert!(!image.get((1, 15)));
+        assert!(!image.get((0, 0)).unwrap());
+        assert!(image.get((0, 1)).unwrap());
+        assert!(!image.get((0, 2)).unwrap());
+        assert!(!image.get((0, 3)).unwrap());
+        assert!(image.get((0, 4)).unwrap());
+        assert!(image.get((0, 5)).unwrap());
+        assert!(!image.get((0, 6)).unwrap());
+        assert!(!image.get((0, 7)).unwrap());
+        assert!(!image.get((0, 8)).unwrap());
+        assert!(!image.get((0, 9)).unwrap());
+        assert!(image.get((0, 10)).unwrap());
+        assert!(image.get((0, 11)).unwrap());
+        assert!(image.get((0, 12)).unwrap());
+        assert!(image.get((0, 13)).unwrap());
+        assert!(!image.get((0, 14)).unwrap());
+        assert!(!image.get((0, 15)).unwrap());
+        assert!(!image.get((1, 0)).unwrap());
+        assert!(!image.get((1, 1)).unwrap());
+        assert!(!image.get((1, 2)).unwrap());
+        assert!(!image.get((1, 3)).unwrap());
+        assert!(!image.get((1, 4)).unwrap());
+        assert!(!image.get((1, 5)).unwrap());
+        assert!(image.get((1, 6)).unwrap());
+        assert!(image.get((1, 7)).unwrap());
+        assert!(image.get((1, 8)).unwrap());
+        assert!(image.get((1, 9)).unwrap());
+        assert!(image.get((1, 10)).unwrap());
+        assert!(image.get((1, 11)).unwrap());
+        assert!(image.get((1, 12)).unwrap());
+        assert!(image.get((1, 13)).unwrap());
+        assert!(!image.get((1, 14)).unwrap());
+        assert!(!image.get((1, 15)).unwrap());
     }
 }
