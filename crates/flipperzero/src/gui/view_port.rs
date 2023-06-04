@@ -235,6 +235,12 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
         }
     }
 
+    pub fn update(&mut self) {
+        let raw = self.as_raw();
+        // SAFETY: `raw` is always valid
+        unsafe { sys::view_port_update(raw) }
+    }
+
     /// Gets the dimensions of this `ViewPort`.
     ///
     /// # Examples
@@ -339,7 +345,10 @@ impl<C: ViewPortCallbacks> Drop for ViewPort<C> {
         let raw = self.raw.as_ptr();
         // SAFETY: `self.raw` is always valid
         // and it should have been unregistered from the system by now
-        unsafe { sys::view_port_free(raw) }
+        unsafe {
+            sys::view_port_enabled_set(raw, false);
+            sys::view_port_free(raw);
+        }
     }
 }
 

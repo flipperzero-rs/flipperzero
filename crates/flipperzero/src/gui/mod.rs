@@ -124,6 +124,13 @@ impl<'a, VPC: ViewPortCallbacks> GuiViewPort<'a, VPC> {
     //
     //     unsafe { sys::gui_view_port_send_to_back(gui, view_port) };
     // }
+
+    pub fn update(&mut self) {
+        let view_port = self.view_port.as_raw();
+
+        // SAFETY: `view_port` is a valid pointer
+        unsafe { sys::view_port_update(view_port) }
+    }
 }
 
 impl<VPC: ViewPortCallbacks> Drop for GuiViewPort<'_, VPC> {
@@ -133,7 +140,12 @@ impl<VPC: ViewPortCallbacks> Drop for GuiViewPort<'_, VPC> {
 
         // SAFETY: `gui` and `view_port` are valid pointers
         // and this view port should have been added to the gui on creation
-        unsafe { sys::gui_remove_view_port(gui, view_port) }
+        unsafe {
+            sys::view_port_enabled_set(view_port, false);
+            sys::gui_remove_view_port(gui, view_port);
+            // the object has to be deallocated since the ownership was transferred to the `Gui`
+            sys::view_port_free(view_port);
+        }
     }
 }
 

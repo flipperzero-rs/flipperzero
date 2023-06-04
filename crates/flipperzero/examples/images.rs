@@ -1,11 +1,22 @@
 //! Example Images application.
-//! See https://github.com/flipperdevices/flipperzero-firmware/blob/dev/applications/examples/example_images/example_images.c
+//! See <https://github.com/flipperdevices/flipperzero-firmware/blob/dev/applications/examples/example_images/example_images.c>
 
 #![no_std]
 #![no_main]
 
-use core::ffi::{c_char, c_void};
-use core::mem::{self, MaybeUninit};
+use core::time::Duration;
+use flipperzero::{
+    furi::message_queue::MessageQueue,
+    gui::{
+        canvas::CanvasView,
+        icon::Icon,
+        view_port::{ViewPort, ViewPortCallbacks},
+        Gui, GuiLayer,
+    },
+    input::{InputEvent, InputKey, InputType},
+};
+
+extern crate flipperzero_alloc;
 
 use flipperzero_rt as rt;
 use flipperzero_sys as sys;
@@ -13,18 +24,15 @@ use flipperzero_sys as sys;
 rt::manifest!(name = "Example: Images");
 rt::entry!(main);
 
-const RECORD_GUI: *const c_char = sys::c_string!("gui");
-
-static mut TARGET_ICON: Icon = Icon {
+// NOTE: `*mut`s are required to enforce `unsafe` since there are raw pointers involved
+static mut TARGET_FRAMES: [*const u8; 1] = [include_bytes!("icons/rustacean-48x32.icon").as_ptr()];
+static mut SYS_ICON: sys::Icon = sys::Icon {
     width: 48,
     height: 32,
     frame_count: 1,
     frame_rate: 0,
     frames: unsafe { TARGET_FRAMES.as_ptr() },
 };
-static mut TARGET_FRAMES: [*const u8; 1] = [include_bytes!("icons/rustacean-48x32.icon").as_ptr()];
-
-static mut IMAGE_POSITION: ImagePosition = ImagePosition { x: 0, y: 0 };
 
 #[repr(C)]
 struct ImagePosition {
@@ -32,90 +40,78 @@ struct ImagePosition {
     pub y: u8,
 }
 
-/// Internal icon representation.
-#[repr(C)]
-struct Icon {
-    width: u8,
-    height: u8,
-    frame_count: u8,
-    frame_rate: u8,
-    frames: *const *const u8,
-}
-
-// Screen is 128x64 px
-extern "C" fn app_draw_callback(canvas: *mut sys::Canvas, _ctx: *mut c_void) {
-    unsafe {
-        sys::canvas_clear(canvas);
-        sys::canvas_draw_icon(
-            canvas,
-            IMAGE_POSITION.x % 128,
-            IMAGE_POSITION.y % 128,
-            &TARGET_ICON as *const Icon as *const c_void as *const sys::Icon,
-        );
-    }
-}
-
-extern "C" fn app_input_callback(input_event: *mut sys::InputEvent, ctx: *mut c_void) {
-    unsafe {
-        let event_queue = ctx as *mut sys::FuriMessageQueue;
-        sys::furi_message_queue_put(event_queue, input_event as *mut c_void, 0);
-    }
-}
-
 fn main(_args: *mut u8) -> i32 {
-    unsafe {
-        let event_queue = sys::furi_message_queue_alloc(8, mem::size_of::<sys::InputEvent>() as u32)
-            as *mut sys::FuriMessageQueue;
+    // SAFETY: `Icon` is a read-only;
+    // there will be a safe API for this in this future
+    let icon = unsafe { Icon::from_raw(&SYS_ICON as *const _ as *mut _) };
 
-        // Configure view port
-        let view_port = sys::view_port_alloc();
-        sys::view_port_draw_callback_set(
-            view_port,
-            Some(app_draw_callback),
-            view_port as *mut c_void,
-        );
-        sys::view_port_input_callback_set(
-            view_port,
-            Some(app_input_callback),
-            event_queue as *mut c_void,
-        );
+    // Configure view port
+    struct State<'a> {
+        exit_queue: &'a MessageQueue<()>,
+        image_position: ImagePosition,
+        target_icon: &'a Icon,
+        hidden: bool,
+    }
 
-        // Register view port in GUI
-        let gui = sys::furi_record_open(RECORD_GUI) as *mut sys::Gui;
-        sys::gui_add_view_port(gui, view_port, sys::GuiLayer_GuiLayerFullscreen);
+    impl ViewPortCallbacks for State<'_> {
+        fn on_draw(&mut self, mut canvas: CanvasView) {
+            canvas.clear();
+            if !self.hidden {
+                // Screen is 128x64 px
+                canvas.draw_icon(
+                    self.image_position.x % 128,
+                    self.image_position.y % 64,
+                    self.target_icon,
+                );
+            }
+        }
 
-        let mut event: MaybeUninit<sys::InputEvent> = MaybeUninit::uninit();
-
-        let mut running = true;
-        while running {
-            if sys::furi_message_queue_get(
-                event_queue,
-                event.as_mut_ptr() as *mut sys::InputEvent as *mut c_void,
-                100,
-            ) == sys::FuriStatus_FuriStatusOk
-            {
-                let event = event.assume_init();
-                if event.type_ == sys::InputType_InputTypePress
-                    || event.type_ == sys::InputType_InputTypeRepeat
-                {
-                    match event.key {
-                        sys::InputKey_InputKeyLeft => IMAGE_POSITION.x -= 2,
-                        sys::InputKey_InputKeyRight => IMAGE_POSITION.x += 2,
-                        sys::InputKey_InputKeyUp => IMAGE_POSITION.y -= 2,
-                        sys::InputKey_InputKeyDown => IMAGE_POSITION.y += 2,
-                        _ => running = false,
+        fn on_input(&mut self, event: InputEvent) {
+            if matches!(event.r#type, InputType::Press | InputType::Repeat) {
+                match event.key {
+                    InputKey::Left => {
+                        self.image_position.x = self.image_position.x.saturating_sub(2)
+                    }
+                    InputKey::Right => {
+                        self.image_position.x = self.image_position.x.saturating_add(2)
+                    }
+                    InputKey::Up => self.image_position.y = self.image_position.y.saturating_sub(2),
+                    InputKey::Down => {
+                        self.image_position.y = self.image_position.y.saturating_add(2)
+                    }
+                    // to be a bit more creative than the original example
+                    // we make `Ok` button (un)hide the canvas
+                    InputKey::Ok => self.hidden = !self.hidden,
+                    _ => {
+                        let _ = self.exit_queue.put_now(());
                     }
                 }
             }
-            sys::view_port_update(view_port);
         }
+    }
 
-        sys::view_port_enabled_set(view_port, false);
-        sys::gui_remove_view_port(gui, view_port);
-        sys::view_port_free(view_port);
-        sys::furi_message_queue_free(event_queue);
+    // The original example has all `InputEvent`s transferred via `MessageQueue`
+    // While this is possible, there is no need for this
+    // since we do all the handling in `on_input_event`
+    // thus we only have to send a single object indicating shutdown
+    let exit_queue = MessageQueue::new(1);
+    let view_port = ViewPort::new(State {
+        exit_queue: &exit_queue,
+        image_position: ImagePosition { x: 0, y: 0 },
+        target_icon: &icon,
+        hidden: false,
+    });
 
-        sys::furi_record_close(RECORD_GUI);
+    // Register view port in GUI
+    let mut gui = Gui::new();
+    let mut view_port = gui.add_view_port(view_port, GuiLayer::Fullscreen);
+
+    let mut running = true;
+    while running {
+        if exit_queue.get(Duration::from_millis(100)).is_ok() {
+            running = false
+        }
+        view_port.update();
     }
 
     0

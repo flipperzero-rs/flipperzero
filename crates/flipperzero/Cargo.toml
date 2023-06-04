@@ -132,6 +132,10 @@ name = "gui"
 required-features = ["service-gui"]
 
 [[example]]
+name = "images"
+required-features = ["service-gui"]
+
+[[example]]
 name = "view_dispatcher"
 required-features = ["service-gui"]
 
