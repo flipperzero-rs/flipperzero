@@ -1,5 +1,6 @@
-//! User-friendly wrappers of XDM images.
+//! User-friendly wrappers of XBM images.
 
+use crate::internals::ops::div_ceil_u8;
 use alloc::{vec, vec::Vec};
 use core::{
     ops::{Deref, DerefMut},
@@ -27,44 +28,27 @@ impl<D> XbmImage<D> {
     }
 
     #[inline]
-    const fn dimension_bits(width: u8, height: u8) -> u16 {
-        width as u16 * height as u16
+    const fn row_bytes(width: u8) -> u8 {
+        div_ceil_u8(width, 8)
     }
 
     #[inline]
-    const fn bits_to_min_required_bytes(bits: u16) -> u16 {
-        crate::internals::ops::div_ceil_u16(bits, 8)
-    }
-
-    #[inline]
-    const fn dimension_bytes(width: u8, height: u8) -> u16 {
-        Self::bits_to_min_required_bytes(Self::dimension_bits(width, height))
-    }
-
-    #[inline]
-    const fn offset(&self, x: u8, y: u8) -> Option<u8> {
-        if x >= self.width || y >= self.height {
-            None
-        } else {
-            Some(x * self.width + y)
-        }
+    const fn total_bytes(width: u8, height: u8) -> u16 {
+        Self::row_bytes(width) as u16 * height as u16
     }
 
     // IMPORTANT: XBM images have trailing bits per-rows
     // rather than at the end of the whole byte-array
-    // FIXME: XBM trails on line ends
     #[inline]
     const fn offsets(&self, x: u8, y: u8) -> Option<(u8, u8)> {
-        let row_bytes = crate::internals::ops::div_ceil_u8(self.width, 8);
-
         if x >= self.width || y >= self.height {
             None
         } else {
             Some((
                 // Per each y we skip a row of `row_bytes` bytes
                 // then we also have to skip all previous
-                (row_bytes * y) + x / 8,
-                // Since all rowas are aligned, only x ffects the bit ofset
+                (Self::row_bytes(self.width) * y) + x / 8,
+                // Since all rows are aligned, only x affects the bit offset
                 x % 8,
             ))
         }
@@ -86,15 +70,13 @@ impl<T: ?Sized, D: Deref<Target = T>> XbmImage<D> {
 
 impl<D: Deref<Target = [u8]>> XbmImage<D> {
     pub fn new_from(width: u8, height: u8, data: D) -> Self {
-        let bits = Self::dimension_bits(width, height);
-        let bytes = Self::bits_to_min_required_bytes(bits);
+        let bytes = Self::total_bytes(width, height);
 
         assert!(
             bytes as usize == data.len(),
-            "width={} * height={} = {} should correspond to {} bytes, but data has length {}",
+            "width={}bits * height={}bits should correspond to {}bytes, but data has length {}",
             width,
             height,
-            bits,
             bytes,
             data.len()
         );
@@ -117,7 +99,7 @@ impl<D: Deref<Target = [u8]>> XbmImage<D> {
 
 impl<'a> XbmImage<&'a [u8]> {
     pub unsafe fn from_raw(width: u8, height: u8, data: *const u8) -> Self {
-        let bytes = Self::dimension_bytes(width, height) as usize;
+        let bytes = Self::total_bytes(width, height) as usize;
 
         // SAFETY: the size is exactly calculated based on width and height
         // and caller upholds the `data` validity invariant
@@ -133,7 +115,7 @@ impl<'a> XbmImage<&'a [u8]> {
 
 impl<'a> XbmImage<&'a mut [u8]> {
     pub unsafe fn from_raw_mut(width: u8, height: u8, data: *mut u8) -> Self {
-        let bytes = Self::dimension_bytes(width, height) as usize;
+        let bytes = Self::total_bytes(width, height) as usize;
 
         // SAFETY: the size is exactly calculated based on width and height
         // and caller upholds the `data` validity invariant
@@ -179,7 +161,7 @@ impl<D: Deref<Target = [u8]> + DerefMut> XbmImage<D> {
 
 impl XbmImage<Vec<u8>> {
     pub fn new(width: u8, height: u8) -> Self {
-        let bytes = Self::dimension_bytes(width, height) as usize;
+        let bytes = Self::total_bytes(width, height) as usize;
         Self {
             data: vec![0; bytes],
             width,
@@ -204,7 +186,7 @@ impl XbmImage<&'static [u8]> {
     /// const IMAGE: XbmImage<&'static [u8]> = XbmImage::new_from_static(4, 4, &[0xFE, 0x12]);
     /// ```
     pub const fn new_from_static(width: u8, height: u8, data: &'static [u8]) -> Self {
-        let bytes = Self::dimension_bytes(width, height);
+        let bytes = Self::total_bytes(width, height);
 
         assert!(
             bytes as usize == data.len(),
@@ -231,7 +213,7 @@ impl<const SIZE: usize> XbmImage<ByteArray<SIZE>> {
     /// const IMAGE: XbmImage<ByteArray<2>> = XbmImage::new_from_array::<4, 4>([0xFE, 0x12]);
     /// ```
     pub const fn new_from_array<const WIDTH: u8, const HEIGHT: u8>(data: [u8; SIZE]) -> Self {
-        let bytes = Self::dimension_bytes(WIDTH, HEIGHT);
+        let bytes = Self::total_bytes(WIDTH, HEIGHT);
 
         assert!(bytes as usize == SIZE, "dimensions don't match data length");
 
@@ -392,11 +374,10 @@ macro_rules! xbm {
 }
 
 #[flipperzero_test::tests]
-// TODO: ensure that tests actually pass :pekaface:
+// TODO: add this tests to some harness
 mod tests {
-
     #[test]
-    fn valid_byte_reading() {
+    fn valid_byte_reading_aligned() {
         // 0100110000111100
         // 0000001111111100
         let image = xbm!(
@@ -411,36 +392,89 @@ mod tests {
         );
 
         assert!(!image.get((0, 0)).unwrap());
-        assert!(image.get((0, 1)).unwrap());
-        assert!(!image.get((0, 2)).unwrap());
-        assert!(!image.get((0, 3)).unwrap());
-        assert!(image.get((0, 4)).unwrap());
-        assert!(image.get((0, 5)).unwrap());
-        assert!(!image.get((0, 6)).unwrap());
-        assert!(!image.get((0, 7)).unwrap());
-        assert!(!image.get((0, 8)).unwrap());
-        assert!(!image.get((0, 9)).unwrap());
-        assert!(image.get((0, 10)).unwrap());
-        assert!(image.get((0, 11)).unwrap());
-        assert!(image.get((0, 12)).unwrap());
-        assert!(image.get((0, 13)).unwrap());
-        assert!(!image.get((0, 14)).unwrap());
-        assert!(!image.get((0, 15)).unwrap());
-        assert!(!image.get((1, 0)).unwrap());
+        assert!(image.get((1, 0)).unwrap());
+        assert!(!image.get((2, 0)).unwrap());
+        assert!(!image.get((3, 0)).unwrap());
+        assert!(image.get((4, 0)).unwrap());
+        assert!(image.get((5, 0)).unwrap());
+        assert!(!image.get((6, 0)).unwrap());
+        assert!(!image.get((7, 0)).unwrap());
+        assert!(!image.get((8, 0)).unwrap());
+        assert!(!image.get((9, 0)).unwrap());
+        assert!(image.get((10, 0)).unwrap());
+        assert!(image.get((11, 0)).unwrap());
+        assert!(image.get((12, 0)).unwrap());
+        assert!(image.get((13, 0)).unwrap());
+        assert!(!image.get((14, 0)).unwrap());
+        assert!(!image.get((15, 0)).unwrap());
+        assert!(!image.get((0, 1)).unwrap());
         assert!(!image.get((1, 1)).unwrap());
-        assert!(!image.get((1, 2)).unwrap());
-        assert!(!image.get((1, 3)).unwrap());
-        assert!(!image.get((1, 4)).unwrap());
-        assert!(!image.get((1, 5)).unwrap());
-        assert!(image.get((1, 6)).unwrap());
-        assert!(image.get((1, 7)).unwrap());
-        assert!(image.get((1, 8)).unwrap());
-        assert!(image.get((1, 9)).unwrap());
-        assert!(image.get((1, 10)).unwrap());
-        assert!(image.get((1, 11)).unwrap());
-        assert!(image.get((1, 12)).unwrap());
-        assert!(image.get((1, 13)).unwrap());
-        assert!(!image.get((1, 14)).unwrap());
-        assert!(!image.get((1, 15)).unwrap());
+        assert!(!image.get((2, 1)).unwrap());
+        assert!(!image.get((3, 1)).unwrap());
+        assert!(!image.get((4, 1)).unwrap());
+        assert!(!image.get((5, 1)).unwrap());
+        assert!(image.get((6, 1)).unwrap());
+        assert!(image.get((7, 1)).unwrap());
+        assert!(image.get((8, 1)).unwrap());
+        assert!(image.get((9, 1)).unwrap());
+        assert!(image.get((10, 1)).unwrap());
+        assert!(image.get((11, 1)).unwrap());
+        assert!(image.get((12, 1)).unwrap());
+        assert!(image.get((13, 1)).unwrap());
+        assert!(!image.get((14, 1)).unwrap());
+        assert!(!image.get((15, 1)).unwrap());
+    }
+
+    #[test]
+    fn valid_byte_reading_misaligned() {
+        // 01001100 00111100 0*******
+        // 00000011 11111100 1*******
+        let image = xbm!(
+            #define xbm_test_width 17
+            #define xbm_test_height 2
+            static char xbm_test_bits[] = {
+                0x32, // 0b00110010 ~ 0b01001100
+                0x3C, // 0b00111100 ~ 0b00111100
+                0xF0, // 0b00001111 ~ 0b11110000
+                0xC0, // 0b11000000 ~ 0b00000011
+                0x3F, // 0b00111111 ~ 0b11111100
+                0x0F, // 0b11110000 ~ 0b00001111
+            };
+        );
+
+        assert!(!image.get((0, 0)).unwrap());
+        assert!(image.get((1, 0)).unwrap());
+        assert!(!image.get((2, 0)).unwrap());
+        assert!(!image.get((3, 0)).unwrap());
+        assert!(image.get((4, 0)).unwrap());
+        assert!(image.get((5, 0)).unwrap());
+        assert!(!image.get((6, 0)).unwrap());
+        assert!(!image.get((7, 0)).unwrap());
+        assert!(!image.get((8, 0)).unwrap());
+        assert!(!image.get((9, 0)).unwrap());
+        assert!(image.get((10, 0)).unwrap());
+        assert!(image.get((11, 0)).unwrap());
+        assert!(image.get((12, 0)).unwrap());
+        assert!(image.get((13, 0)).unwrap());
+        assert!(!image.get((14, 0)).unwrap());
+        assert!(!image.get((15, 0)).unwrap());
+        assert!(!image.get((16, 0)).unwrap());
+        assert!(!image.get((0, 1)).unwrap());
+        assert!(!image.get((1, 1)).unwrap());
+        assert!(!image.get((2, 1)).unwrap());
+        assert!(!image.get((3, 1)).unwrap());
+        assert!(!image.get((4, 1)).unwrap());
+        assert!(!image.get((5, 1)).unwrap());
+        assert!(image.get((6, 1)).unwrap());
+        assert!(image.get((7, 1)).unwrap());
+        assert!(image.get((8, 1)).unwrap());
+        assert!(image.get((9, 1)).unwrap());
+        assert!(image.get((10, 1)).unwrap());
+        assert!(image.get((11, 1)).unwrap());
+        assert!(image.get((12, 1)).unwrap());
+        assert!(image.get((13, 1)).unwrap());
+        assert!(!image.get((14, 1)).unwrap());
+        assert!(!image.get((15, 1)).unwrap());
+        assert!(image.get((16, 1)).unwrap());
     }
 }
