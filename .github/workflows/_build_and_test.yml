@@ -9,6 +9,7 @@ on:
 
 jobs:
   build-and-test:
+    name: Build and test
     runs-on: ubuntu-latest
     defaults:
       run:

@@ -1,6 +1,7 @@
 //! Low-level bindings for the Flipper Zero.
 
 #![no_std]
+#![deny(rustdoc::broken_intra_doc_links)]
 
 // Features that identify thumbv7em-none-eabihf.
 // Until target_abi is stable, this also permits thumbv7em-none-eabi.
@@ -20,6 +21,7 @@ mod inlines;
 #[allow(non_upper_case_globals)]
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
+#[allow(rustdoc::broken_intra_doc_links)]
 mod bindings;
 
 /// Create a static C string.

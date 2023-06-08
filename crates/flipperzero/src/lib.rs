@@ -2,6 +2,7 @@
 
 #![no_std]
 #![cfg_attr(test, no_main)]
+#![deny(rustdoc::broken_intra_doc_links)]
 
 #[cfg(feature = "alloc")]
 extern crate alloc;

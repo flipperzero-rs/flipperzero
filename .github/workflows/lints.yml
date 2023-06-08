@@ -1,0 +1,17 @@
+name: Lints
+
+# We only run these lints on trial-merges of PRs to reduce noise.
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  crates:
+    uses: ./.github/workflows/_lints.yml
+    with:
+      target: crates
+
+  tools:
+    uses: ./.github/workflows/_lints.yml
+    with:
+      target: tools
