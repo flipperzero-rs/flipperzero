@@ -102,6 +102,10 @@ impl<T> UnsafeRecord<T> {
     ///
     /// Safety: The caller must ensure that `record_name` lives for the
     /// duration of the object lifetime.
+    ///
+    /// # Safety
+    ///
+    /// The caller must provide a valid C-string `name`.
     pub unsafe fn open(name: *const c_char) -> Self {
         Self {
             name,

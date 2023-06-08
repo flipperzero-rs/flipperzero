@@ -30,7 +30,7 @@ impl<M: Sized> MessageQueue<M> {
     // Attempts to add the message to the end of the queue, waiting up to timeout ticks.
     pub fn put(&self, msg: M, timeout: Duration) -> furi::Result<()> {
         let mut msg = core::mem::ManuallyDrop::new(msg);
-        let timeout_ticks = sys::furi::duration_to_ticks(timeout);
+        let timeout_ticks = duration_to_ticks(timeout);
 
         let status: Status = unsafe {
             sys::furi_message_queue_put(

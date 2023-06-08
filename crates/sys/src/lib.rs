@@ -17,9 +17,15 @@ core::compile_error!("This crate requires `--target thumbv7em-none-eabihf`");
 pub mod furi;
 mod inlines;
 
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
+#[allow(
+    non_upper_case_globals,
+    non_camel_case_types,
+    non_snake_case,
+    clippy::useless_transmute,
+    clippy::transmute_int_to_bool,
+    clippy::missing_safety_doc,
+    rustdoc::broken_intra_doc_links
+)]
 mod bindings;
 
 /// Create a static C string.

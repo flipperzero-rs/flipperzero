@@ -1,9 +1,13 @@
 //! High-level bindings for the Flipper Zero.
-
+//!
+//! # Features
+#![cfg_attr(feature = "document-features", doc = document_features::document_features!())]
 #![no_std]
 #![cfg_attr(test, no_main)]
+#![cfg_attr(feature = "unstable_docs", feature(doc_cfg))]
 
 #[cfg(feature = "alloc")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
 extern crate alloc;
 
 pub mod dialogs;

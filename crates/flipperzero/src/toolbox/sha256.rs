@@ -11,9 +11,10 @@ use flipperzero_sys as sys;
 
 /// The [SHA-256 hash function][1].
 ///
-/// Equivalent to [`sha2::Sha256`].
+/// Equivalent to [`sha2::Sha256`][2].
 ///
 /// [1]: https://en.wikipedia.org/wiki/SHA-2
+/// [2]: https://docs.rs/sha2/latest/sha2/type.Sha256.html
 pub type Sha256 = CoreWrapper<Sha256Core>;
 
 /// Core block-level SHA-256 hasher.

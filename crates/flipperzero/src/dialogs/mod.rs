@@ -12,11 +12,6 @@ use flipperzero_sys::furi::UnsafeRecord;
 
 use crate::gui::canvas::Align;
 
-const RECORD_DIALOGS: *const c_char = sys::c_string!("dialogs");
-
-#[cfg(feature = "alloc")]
-const BUTTON_OK: &'static CStr = unsafe { CStr::from_bytes_with_nul_unchecked(b"OK\0") };
-
 /// A handle to the Dialogs app.
 pub struct DialogsApp {
     data: UnsafeRecord<sys::DialogsApp>,
@@ -37,10 +32,12 @@ pub enum DialogMessageButton {
 }
 
 impl DialogsApp {
+    const RECORD_DIALOGS: *const c_char = sys::c_string!("dialogs");
+
     /// Obtains a handle to the Dialogs app.
     pub fn open() -> Self {
         Self {
-            data: unsafe { UnsafeRecord::open(RECORD_DIALOGS) },
+            data: unsafe { UnsafeRecord::open(Self::RECORD_DIALOGS) },
         }
     }
 
@@ -152,6 +149,12 @@ impl<'a> Drop for DialogMessage<'a> {
     }
 }
 
+impl<'a> Default for DialogMessage<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl DialogMessageButton {
     fn from_sys(sys: sys::DialogMessageButton) -> Option<Self> {
         match sys {
@@ -166,7 +169,10 @@ impl DialogMessageButton {
 
 /// Displays a simple dialog.
 #[cfg(feature = "alloc")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
 pub fn alert(text: &str) {
+    const BUTTON_OK: &'static CStr = unsafe { CStr::from_bytes_with_nul_unchecked(b"OK\0") };
+
     let text = CString::new(text.as_bytes()).unwrap();
 
     let mut dialogs = DialogsApp::open();

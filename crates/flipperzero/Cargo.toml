@@ -35,6 +35,9 @@ lock_api = "0.4"
 digest = "0.10"
 bitflags = "1.0"
 
+# Docs
+document-features = { workspace = true, optional = true }
+
 [dev-dependencies]
 flipperzero-alloc.workspace = true
 flipperzero-rt.workspace = true
@@ -45,8 +48,24 @@ md-5 = { version = "0.10", default-features = false }
 sha2 = { version = "0.10", default-features = false }
 
 [features]
-# enables features requiring an allocator
+
+#! ## Core features
+
+## Enables features requiring an allocator.
+##
+## This will require you to set up an allocator such as by the following:
+##
+## ```
+## extern crate alloc;
+## extern crate flipperzero_alloc;
+## ```
 alloc = []
+
+# Internal features.
+
+# Enables unstable documentation features.
+# This is only intended to be used by `cargo doc`.
+unstable_docs = []
 
 [[test]]
 name = "dolphin"

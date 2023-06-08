@@ -23,6 +23,7 @@ const MIN_STACK_SIZE: usize = 1024;
 
 /// Thread factory, which can be used in order to configure the properties of a new thread.
 #[cfg(feature = "alloc")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
 pub struct Builder {
     /// Guaranteed to be UTF-8.
     name: Option<CString>,
@@ -141,6 +142,7 @@ impl Builder {
 /// This call will create a thread using default parameters of [`Builder`]. If you want to
 /// specify the stack size or the name of the thread, use that API instead.
 #[cfg(feature = "alloc")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
 pub fn spawn<F>(f: F) -> JoinHandle
 where
     F: FnOnce() -> i32,
@@ -151,6 +153,7 @@ where
 
 /// Gets a handle to the thread that invokes it.
 #[cfg(feature = "alloc")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
 pub fn current() -> Thread {
     use alloc::borrow::ToOwned;
 
@@ -194,10 +197,12 @@ pub fn sleep(duration: core::time::Duration) {
 
 /// A unique identifier for a running thread.
 #[cfg(feature = "alloc")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
 pub struct ThreadId(sys::FuriThreadId);
 
 /// A handle to a thread.
 #[cfg(feature = "alloc")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
 pub struct Thread {
     /// Guaranteed to be UTF-8.
     name: Option<CString>,
@@ -281,6 +286,7 @@ impl ufmt::uDebug for Thread {
 
 /// An owned permission to join on a thread (block on its termination).
 #[cfg(feature = "alloc")]
+#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
 pub struct JoinHandle {
     context: Option<Arc<Thread>>,
 }

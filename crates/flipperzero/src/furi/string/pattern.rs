@@ -35,14 +35,17 @@ const FURI_STRING_FAILURE: usize = usize::MAX;
 pub trait Pattern: Sized {
     /// Checks whether the pattern matches anywhere in the haystack.
     #[inline]
+    #[allow(clippy::wrong_self_convention)] // same as in `std`
     fn is_contained_in(self, haystack: &FuriString) -> bool {
         self.find_in(haystack).is_some()
     }
 
     /// Checks whether the pattern matches at the front of the haystack.
+    #[allow(clippy::wrong_self_convention)] // same as in `std`
     fn is_prefix_of(self, haystack: &FuriString) -> bool;
 
     /// Checks whether the pattern matches at the back of the haystack.
+    #[allow(clippy::wrong_self_convention)] // same as in `std`
     fn is_suffix_of(self, haystack: &FuriString) -> bool;
 
     /// Returns the byte index of the first byte of the haystack that matches the pattern.
