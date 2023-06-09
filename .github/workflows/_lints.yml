@@ -1,0 +1,92 @@
+name: Reusable workflow for lints
+
+on:
+  workflow_call:
+    inputs:
+      target:
+        required: true
+        type: string
+
+jobs:
+  clippy:
+    name: Clippy (MSRV)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.target }}
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - name: Install build dependencies
+        run: sudo apt install libudev-dev
+      - name: Run Clippy
+        uses: auguwu/clippy-action@1.1.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          working-directory: ${{ inputs.target }}
+          all-features: true
+          # Broken until https://github.com/auguwu/clippy-action/issues/13 is resolved.
+          # deny: warnings
+          # Ignored until https://github.com/auguwu/clippy-action/issues/14 is resolved.
+          args: --all-targets
+
+  clippy-beta:
+    name: Clippy (beta)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: ${{ inputs.target }}
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - name: Install build dependencies
+        run: sudo apt install libudev-dev
+      - uses: dtolnay/rust-toolchain@beta
+        id: toolchain
+        with:
+          components: clippy
+      - run: rustup override set ${{ steps.toolchain.outputs.name }}
+      - name: Run Clippy (beta)
+        uses: auguwu/clippy-action@1.1.2
+        continue-on-error: true
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          working-directory: ${{ inputs.target }}
+          all-features: true
+          # Broken until https://github.com/auguwu/clippy-action/issues/13 is resolved.
+          # warn: clippy::all
+          # Ignored until https://github.com/auguwu/clippy-action/issues/14 is resolved.
+          args: --all-targets
+
+  doc-links:
+    name: Intra-doc links
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.target }}
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - name: Install build dependencies
+        run: sudo apt install libudev-dev
+      # Use nightly Rust (as docs.rs does), because some of our dependencies enable the
+      # `doc_cfg` feature when the `docsrs` config option is set.
+      - uses: dtolnay/rust-toolchain@nightly
+        id: toolchain
+        with:
+          targets: thumbv7em-none-eabihf
+      - run: rustup override set ${{ steps.toolchain.outputs.name }}
+      - run: cargo fetch
+      # Requires #![deny(rustdoc::broken_intra_doc_links)] in crates.
+      - name: Check intra-doc links
+        run: cargo doc --workspace --document-private-items
+        env:
+          RUSTDOCFLAGS: --cfg docsrs
+
+  fmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.target }}
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - run: cargo fmt --all --check

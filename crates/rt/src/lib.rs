@@ -4,6 +4,7 @@
 //! is linked directly into the `.text` section.
 
 #![no_std]
+#![deny(rustdoc::broken_intra_doc_links)]
 
 pub mod manifest;
 pub mod panic_handler;

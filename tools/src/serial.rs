@@ -5,7 +5,7 @@ use std::io;
 use bytes::BytesMut;
 use once_cell::sync::Lazy;
 use regex::bytes::Regex as BytesRegex;
-use serialport::{SerialPortType, SerialPortInfo, SerialPort};
+use serialport::{SerialPort, SerialPortInfo, SerialPortType};
 
 /// STMicroelectronics Virtual COM Port
 const HWID: (u16, u16) = (0x0483, 0x5740);
@@ -19,17 +19,14 @@ pub static CLI_READY: Lazy<BytesRegex> = Lazy::new(|| BytesRegex::new(r"Ready\?\
 /// Try to find the Flipper Zero USB serial port.
 pub fn find_flipperzero(port_name: Option<&str>) -> Option<SerialPortInfo> {
     let ports = serialport::available_ports().ok()?;
-    
+
     ports.into_iter().find(|p| {
         if let Some(port) = port_name {
             // Search for port by name
             p.port_name == port
         } else {
             // Auto-detect port
-            match &p.port_type {
-                SerialPortType::UsbPort(usb) if (usb.vid, usb.pid) == HWID => true,
-                _ => false,
-            }
+            matches!(&p.port_type, SerialPortType::UsbPort(usb) if (usb.vid, usb.pid) == HWID)
         }
     })
 }
@@ -51,20 +48,23 @@ impl SerialCli {
     pub fn port(&self) -> &dyn SerialPort {
         self.reader.get_ref()
     }
-    
+
     /// Get mutable reference to underlying [`SerialPort`].
     pub fn port_mut(&mut self) -> &mut dyn SerialPort {
         self.reader.get_mut()
     }
-    
+
     /// Reset serial to prompt.
     pub fn start(&mut self) -> io::Result<()> {
         self.port().clear(serialport::ClearBuffer::Input)?;
-        self.port_mut().write_data_terminal_ready(true).expect("failed to set DTR");
+        self.port_mut()
+            .write_data_terminal_ready(true)
+            .expect("failed to set DTR");
 
         // Send command with known syntax to make sure buffer is flushed
         self.send_line("device_info")?;
-        self.reader.read_until(&BytesRegex::new(r"hardware_model").unwrap(), true)?;
+        self.reader
+            .read_until(&BytesRegex::new(r"hardware_model").unwrap(), true)?;
 
         // Read buffer until we get prompt
         self.read_until_prompt()?;
@@ -95,12 +95,12 @@ impl SerialCli {
     pub fn read_until_prompt(&mut self) -> io::Result<BytesMut> {
         self.reader.read_until(&CLI_PROMPT, true)
     }
-    
+
     /// Read until next CLI "Ready?" prompt.
     pub fn read_until_ready(&mut self) -> io::Result<BytesMut> {
         self.reader.read_until(&CLI_READY, true)
     }
-    
+
     /// Read until next end-of-line.
     pub fn read_until_eol(&mut self) -> io::Result<BytesMut> {
         self.reader.read_until(&CLI_EOL, true)
@@ -136,7 +136,7 @@ pub struct SerialReader {
 impl SerialReader {
     /// Create new [`SerialReader`] connected to a [`SerialPort`].
     pub fn new(port: Box<dyn SerialPort>) -> Self {
-        Self { 
+        Self {
             port,
             buffer: BytesMut::with_capacity(BUF_SIZE),
         }

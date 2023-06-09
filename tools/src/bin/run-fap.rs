@@ -22,7 +22,7 @@ struct Cli {
 
     /// Arguments to provide to the FAP binary.
     ///
-    /// Ignored until https://github.com/flipperdevices/flipperzero-firmware/issues/2505 is resolved.
+    /// Ignored until <https://github.com/flipperdevices/flipperzero-firmware/issues/2505> is resolved.
     args: Vec<String>,
 }
 
@@ -89,7 +89,7 @@ fn main() -> Result<(), Error> {
 
     let port_info =
         serial::find_flipperzero(cli.port.as_deref()).ok_or(Error::FlipperZeroNotFound)?;
-    let port = serialport::new(&port_info.port_name, serial::BAUD_115200)
+    let port = serialport::new(port_info.port_name, serial::BAUD_115200)
         .timeout(Duration::from_secs(30))
         .open()
         .map_err(Error::FailedToOpenSerialPort)?;

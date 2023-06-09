@@ -5,6 +5,10 @@ file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
+### Added
+- `impl Default for flipperzero::dialogs::DialogMessage`
+- `impl Default for flipperzero::toolbox::Crc32`
+
 ### Changed
 - `flipperzero_test::tests` now allows `#[cfg(..)]` attributes on test methods.
 

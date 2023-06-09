@@ -10,7 +10,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  crates:
     uses: ./.github/workflows/_build_and_test.yml
     with:
       target: crates
