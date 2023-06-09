@@ -2,8 +2,8 @@
 //!
 //! See: https://github.com/flipperdevices/flipperzero-firmware/blob/dev/scripts/storage.py
 
-use std::process;
 use std::path::PathBuf;
+use std::process;
 use std::time::Duration;
 
 use clap::{Parser, Subcommand};
@@ -19,7 +19,7 @@ struct Cli {
     port: Option<String>,
     /// Commands
     #[command(subcommand)]
-    command: Option<Commands>
+    command: Option<Commands>,
 }
 
 #[derive(Subcommand)]
@@ -77,11 +77,12 @@ fn main() {
         None => {
             eprintln!("No subcommand specified");
             process::exit(2);
-        },
+        }
         Some(c) => c,
     };
 
-    let port_info = serial::find_flipperzero(cli.port.as_deref()).expect("unable to find Flipper Zero");
+    let port_info =
+        serial::find_flipperzero(cli.port.as_deref()).expect("unable to find Flipper Zero");
     let port = serialport::new(&port_info.port_name, serial::BAUD_115200)
         .timeout(Duration::from_secs(30))
         .open()
@@ -91,46 +92,35 @@ fn main() {
     store.start().expect("failed to start storage");
 
     let result = match command {
-        Commands::Mkdir { flipper_path } => {
-            store.mkdir(flipper_path)
-        },
-        Commands::Format => {
-            store.format_ext()
-        },
-        Commands::Remove { flipper_path } => {
-            store.remove(flipper_path)
-        },
+        Commands::Mkdir { flipper_path } => store.mkdir(flipper_path),
+        Commands::Format => store.format_ext(),
+        Commands::Remove { flipper_path } => store.remove(flipper_path),
         Commands::Read => todo!(),
-        Commands::Size { flipper_path } => {
-            match store.size(flipper_path) {
-                Err(err) => Err(err),
-                Ok(size) => {
-                    println!("{size}");
+        Commands::Size { flipper_path } => match store.size(flipper_path) {
+            Err(err) => Err(err),
+            Ok(size) => {
+                println!("{size}");
 
-                    Ok(())
-                }
+                Ok(())
             }
         },
-        Commands::Receive { flipper_path, local_path } => {
-            store.receive_file(flipper_path, &local_path)
-        },
-        Commands::Send { local_path, flipper_path } => {
-            store.send_file(local_path.as_path(), flipper_path)
-        },
-        Commands::List { flipper_path } => {
-            store.list_tree(flipper_path)
-        },
-        Commands::Md5sum { flipper_path } => {
-            match store.md5sum(flipper_path) {
-                Err(err) => Err(err),
-                Ok(md5sum) => {
-                    println!("{md5sum}");
+        Commands::Receive {
+            flipper_path,
+            local_path,
+        } => store.receive_file(flipper_path, &local_path),
+        Commands::Send {
+            local_path,
+            flipper_path,
+        } => store.send_file(local_path.as_path(), flipper_path),
+        Commands::List { flipper_path } => store.list_tree(flipper_path),
+        Commands::Md5sum { flipper_path } => match store.md5sum(flipper_path) {
+            Err(err) => Err(err),
+            Ok(md5sum) => {
+                println!("{md5sum}");
 
-                    Ok(())
-                }
+                Ok(())
             }
         },
-
     };
 
     if let Err(err) = result {
