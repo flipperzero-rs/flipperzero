@@ -4,11 +4,11 @@
 #![cfg_attr(feature = "document-features", doc = document_features::document_features!())]
 #![no_std]
 #![cfg_attr(test, no_main)]
-#![cfg_attr(feature = "unstable_docs", feature(doc_cfg))]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 #![deny(rustdoc::broken_intra_doc_links)]
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 extern crate alloc;
 
 pub mod dialogs;

@@ -523,7 +523,7 @@ impl From<&CStr> for FuriString {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl From<Box<str>> for FuriString {
     fn from(value: Box<str>) -> Self {
         FuriString::from(value.as_ref())
@@ -531,7 +531,7 @@ impl From<Box<str>> for FuriString {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl<'a> From<Cow<'a, str>> for FuriString {
     fn from(value: Cow<'a, str>) -> Self {
         FuriString::from(value.as_ref())
@@ -572,7 +572,7 @@ impl<'a> Extend<&'a CStr> for FuriString {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl Extend<Box<str>> for FuriString {
     fn extend<T: IntoIterator<Item = Box<str>>>(&mut self, iter: T) {
         iter.into_iter().for_each(move |s| self.push_str(&s));
@@ -580,7 +580,7 @@ impl Extend<Box<str>> for FuriString {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl<'a> Extend<Cow<'a, str>> for FuriString {
     fn extend<T: IntoIterator<Item = Cow<'a, str>>>(&mut self, iter: T) {
         iter.into_iter().for_each(move |s| self.push_str(&s));
@@ -637,7 +637,7 @@ impl<'a> FromIterator<&'a CStr> for FuriString {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl FromIterator<Box<str>> for FuriString {
     fn from_iter<T: IntoIterator<Item = Box<str>>>(iter: T) -> Self {
         let mut buf = FuriString::new();
@@ -647,7 +647,7 @@ impl FromIterator<Box<str>> for FuriString {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl<'a> FromIterator<Cow<'a, str>> for FuriString {
     fn from_iter<T: IntoIterator<Item = Cow<'a, str>>>(iter: T) -> Self {
         let mut buf = FuriString::new();
@@ -716,7 +716,7 @@ impl PartialEq<FuriString> for &str {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl PartialEq<CString> for FuriString {
     fn eq(&self, other: &CString) -> bool {
         self.eq(other.as_c_str())
@@ -724,7 +724,7 @@ impl PartialEq<CString> for FuriString {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl PartialEq<FuriString> for CString {
     fn eq(&self, other: &FuriString) -> bool {
         other.eq(self.as_c_str())

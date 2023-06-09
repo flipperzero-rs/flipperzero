@@ -169,7 +169,7 @@ impl DialogMessageButton {
 
 /// Displays a simple dialog.
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 pub fn alert(text: &str) {
     const BUTTON_OK: &'static CStr = unsafe { CStr::from_bytes_with_nul_unchecked(b"OK\0") };
 
