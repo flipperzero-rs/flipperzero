@@ -15,7 +15,7 @@ jobs:
       run:
         working-directory: ${{ inputs.target }}
     steps:
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.3
       - name: Install build dependencies
         run: sudo apt install libudev-dev
       - name: Run Clippy
@@ -37,7 +37,7 @@ jobs:
       run:
         working-directory: ${{ inputs.target }}
     steps:
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.3
       - name: Install build dependencies
         run: sudo apt install libudev-dev
       - uses: dtolnay/rust-toolchain@beta
@@ -64,7 +64,7 @@ jobs:
       run:
         working-directory: ${{ inputs.target }}
     steps:
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.3
       - name: Install build dependencies
         run: sudo apt install libudev-dev
       # Use nightly Rust (as docs.rs does), because some of our dependencies enable the
@@ -88,5 +88,5 @@ jobs:
       run:
         working-directory: ${{ inputs.target }}
     steps:
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.3
       - run: cargo fmt --all --check
