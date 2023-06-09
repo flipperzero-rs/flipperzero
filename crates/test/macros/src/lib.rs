@@ -261,7 +261,7 @@ fn tests_impl(args: TokenStream, input: TokenStream) -> parse::Result<TokenStrea
     .into())
 }
 
-fn check_ret_block(stmts: &mut Vec<Stmt>) -> parse::Result<()> {
+fn check_ret_block(stmts: &mut [Stmt]) -> parse::Result<()> {
     if let Some(stmt) = stmts.last_mut() {
         if let Stmt::Expr(expr) = stmt {
             if let Some(new_stmt) = check_ret_expr(expr)? {

@@ -40,6 +40,12 @@ impl Crc32 {
     }
 }
 
+impl Default for Crc32 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[flipperzero_test::tests]
 mod tests {
     use super::Crc32;

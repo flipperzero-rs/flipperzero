@@ -26,7 +26,7 @@ pub fn wait_for_completion() {
             unsafe { sys::furi_thread_enumerate(thread_ids.as_mut_ptr(), MAX_THREADS as u32) }
                 as usize;
 
-        for &thread_id in thread_ids[..thread_count].into_iter() {
+        for &thread_id in thread_ids[..thread_count].iter() {
             let thread_app_id = unsafe { CStr::from_ptr(sys::furi_thread_get_appid(thread_id)) };
 
             if thread_id == cur_thread_id || thread_app_id != app_id {
