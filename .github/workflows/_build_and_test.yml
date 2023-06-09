@@ -17,15 +17,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: sudo apt install libudev-dev
-    - name: Rustup
-      run: rustup +nightly target add thumbv7em-none-eabihf
     - name: Build
-      run: cargo +nightly build --release --verbose
+      run: cargo build --release --verbose
     - name: Build examples
-      run: cargo +nightly build --examples --release --verbose
+      run: cargo build --examples --release --verbose
     - name: Run tests
       run: |
-        cargo +nightly test --release --verbose 2>&1 | tee stderr.txt
+        cargo test --release --verbose 2>&1 | tee stderr.txt
     - name: Check that tests failed for the expected reason
       run: |
         cat stderr.txt | grep -q "Error: unable to find Flipper Zero"
