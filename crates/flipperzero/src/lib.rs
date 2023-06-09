@@ -5,6 +5,7 @@
 #![no_std]
 #![cfg_attr(test, no_main)]
 #![cfg_attr(feature = "unstable_docs", feature(doc_cfg))]
+#![deny(rustdoc::broken_intra_doc_links)]
 
 #[cfg(feature = "alloc")]
 #[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]

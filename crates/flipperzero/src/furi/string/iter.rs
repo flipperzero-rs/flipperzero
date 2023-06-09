@@ -21,11 +21,12 @@ pub unsafe fn next_code_point<'a, I: Iterator<Item = &'a u8>>(bytes: &mut I) -> 
 
 /// An iterator over the [`char`]s of a string.
 ///
-/// This struct is created by the [`chars`] method on [`FuriString`]. See its
+/// This struct is created by the [`chars_lossy`] method on [`FuriString`]. See its
 /// documentation for more.
 ///
 /// [`char`]: prim@char
-/// [`chars`]: FuriString::chars
+/// [`chars_lossy`]: super::FuriString::chars_lossy
+/// [`FuriString`]: super::FuriString
 #[derive(Clone)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 pub struct Chars<'a> {
@@ -65,11 +66,12 @@ impl FusedIterator for Chars<'_> {}
 
 /// An iterator over the [`char`]s of a string, and their positions.
 ///
-/// This struct is created by the [`char_indices`] method on [`FuriString`]. See its
+/// This struct is created by the [`char_indices_lossy`] method on [`FuriString`]. See its
 /// documentation for more.
 ///
 /// [`char`]: prim@char
-/// [`char_indices`]: FuriString::char_indices
+/// [`char_indices_lossy`]: super::FuriString::char_indices_lossy
+/// [`FuriString`]: super::FuriString
 #[derive(Clone, Debug)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 pub struct CharIndices<'a> {
@@ -112,7 +114,8 @@ impl FusedIterator for CharIndices<'_> {}
 /// This struct is created by the [`bytes`] method on [`FuriString`]. See its
 /// documentation for more.
 ///
-/// [`bytes`]: FuriString::bytes
+/// [`bytes`]: super::FuriString::bytes
+/// [`FuriString`]: super::FuriString
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[derive(Clone, Debug)]
 pub struct Bytes<'a>(pub(super) Copied<slice::Iter<'a, u8>>);

@@ -54,10 +54,7 @@ impl FlipperStorage {
             .send_and_wait_eol(&format!("storage list {}", path))?;
 
         let data = self.cli.read_until_prompt()?;
-        for line in CLI_EOL
-            .split(&data)
-            .map(|line| String::from_utf8_lossy(line))
-        {
+        for line in CLI_EOL.split(&data).map(String::from_utf8_lossy) {
             let line = line.trim();
             if line.is_empty() {
                 continue;
@@ -72,7 +69,7 @@ impl FlipperStorage {
                 continue;
             }
 
-            if let Some((typ, info)) = line.split_once(" ") {
+            if let Some((typ, info)) = line.split_once(' ') {
                 match typ {
                     // Directory
                     "[D]" => {
@@ -83,7 +80,7 @@ impl FlipperStorage {
                     }
                     // File
                     "[F]" => {
-                        if let Some((name, size)) = info.rsplit_once(" ") {
+                        if let Some((name, size)) = info.rsplit_once(' ') {
                             let path = path.clone() + name;
 
                             eprintln!("{path}, size {size}");
@@ -101,7 +98,7 @@ impl FlipperStorage {
     /// Send local file to the device.
     pub fn send_file(&mut self, from: impl AsRef<Path>, to: &FlipperPath) -> io::Result<()> {
         // Try to create directory on Flipper
-        if let Some(dir) = to.0.rsplit_once("/") {
+        if let Some(dir) = to.0.rsplit_once('/') {
             self.mkdir(&FlipperPath::from(dir.0)).ok();
         }
         self.remove(to).ok();
@@ -162,12 +159,9 @@ impl FlipperStorage {
         let (_, size) = line
             .split_once(": ")
             .ok_or_else(|| io::Error::new(io::ErrorKind::Other, "failed to read chunk size"))?;
-        let size: usize = size.parse().or_else(|_| {
-            Err(io::Error::new(
-                io::ErrorKind::Other,
-                "failed to parse chunk size",
-            ))
-        })?;
+        let size: usize = size
+            .parse()
+            .map_err(|_| io::Error::new(io::ErrorKind::Other, "failed to parse chunk size"))?;
 
         let mut data = BytesMut::with_capacity(BUF_SIZE);
 

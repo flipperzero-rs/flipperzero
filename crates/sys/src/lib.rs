@@ -1,6 +1,7 @@
 //! Low-level bindings for the Flipper Zero.
 
 #![no_std]
+#![deny(rustdoc::broken_intra_doc_links)]
 
 // Features that identify thumbv7em-none-eabihf.
 // Until target_abi is stable, this also permits thumbv7em-none-eabi.

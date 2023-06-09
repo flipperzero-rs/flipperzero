@@ -20,7 +20,7 @@ const TOOLCHAIN: &str = "../../../toolchain/x86_64-windows/arm-none-eabi/include
 const TOOLCHAIN: &str = "../../../toolchain/i686-linux/arm-none-eabi/include";
 #[cfg(all(unix, target_arch = "x86_64"))]
 const TOOLCHAIN: &str = "../../../toolchain/x86_64-linux/arm-none-eabi/include";
-#[cfg(all(target_os="macos", target_arch = "aarch64"))]
+#[cfg(all(target_os = "macos", target_arch = "aarch64"))]
 const TOOLCHAIN: &str = "../../../toolchain/x86_64-darwin/arm-none-eabi/include";
 const VISIBILITY_PUBLIC: &str = "+";
 
@@ -160,8 +160,7 @@ fn main() {
 
     let replace_sdk_root_dir = |s: &str| {
         // Need to use '/' on Windows, or else include paths don't work
-        s.replace("SDK_ROOT_DIR", sdk.as_str())
-            .replace('\\', "/")
+        s.replace("SDK_ROOT_DIR", sdk.as_str()).replace('\\', "/")
     };
 
     // Load SDK compiler flags

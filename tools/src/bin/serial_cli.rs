@@ -28,7 +28,7 @@ fn main() -> io::Result<()> {
 
     let port_info =
         serial::find_flipperzero(cli.port.as_deref()).expect("unable to find Flipper Zero");
-    let mut port = serialport::new(&port_info.port_name, serial::BAUD_115200)
+    let mut port = serialport::new(port_info.port_name, serial::BAUD_115200)
         .timeout(Duration::from_millis(10))
         .open()
         .expect("unable to open serial port");
@@ -58,7 +58,7 @@ fn run(port: &mut dyn serialport::SerialPort) -> io::Result<()> {
         match port.read(&mut buf) {
             Err(err) => {
                 if err.kind() != io::ErrorKind::TimedOut {
-                    return Err(err.into());
+                    return Err(err);
                 }
             }
             Ok(count) => {
@@ -69,41 +69,39 @@ fn run(port: &mut dyn serialport::SerialPort) -> io::Result<()> {
 
         while crossterm::event::poll(Duration::ZERO)? {
             let event = crossterm::event::read()?;
-            match event {
-                Event::Key(KeyEvent {
-                    code,
-                    modifiers,
-                    kind,
-                    ..
-                }) => {
-                    if kind == KeyEventKind::Release {
-                        continue;
-                    }
-
-                    match (modifiers, code) {
-                        // MacOS converts Ctrl+] to Ctrl+5
-                        (KeyModifiers::CONTROL, KeyCode::Char(']') | KeyCode::Char('5')) => {
-                            eprintln!("Exiting...");
-                            return Ok(());
-                        }
-                        (KeyModifiers::CONTROL, KeyCode::Char('c')) => write!(port, "{ETXT}")?,
-                        (KeyModifiers::SHIFT, KeyCode::Char(c)) => {
-                            write!(port, "{c}")?;
-                        }
-                        (KeyModifiers::NONE, KeyCode::Char(c)) => {
-                            write!(port, "{c}")?;
-                        }
-                        (KeyModifiers::NONE, KeyCode::Backspace) => {
-                            write!(port, "{DEL}")?;
-                        }
-                        (KeyModifiers::NONE, KeyCode::Enter) => {
-                            write!(port, "\r\n")?;
-                        }
-                        _ => (),
-                    }
+            if let Event::Key(KeyEvent {
+                code,
+                modifiers,
+                kind,
+                ..
+            }) = event
+            {
+                if kind == KeyEventKind::Release {
+                    continue;
                 }
-                _ => (),
-            };
+
+                match (modifiers, code) {
+                    // MacOS converts Ctrl+] to Ctrl+5
+                    (KeyModifiers::CONTROL, KeyCode::Char(']') | KeyCode::Char('5')) => {
+                        eprintln!("Exiting...");
+                        return Ok(());
+                    }
+                    (KeyModifiers::CONTROL, KeyCode::Char('c')) => write!(port, "{ETXT}")?,
+                    (KeyModifiers::SHIFT, KeyCode::Char(c)) => {
+                        write!(port, "{c}")?;
+                    }
+                    (KeyModifiers::NONE, KeyCode::Char(c)) => {
+                        write!(port, "{c}")?;
+                    }
+                    (KeyModifiers::NONE, KeyCode::Backspace) => {
+                        write!(port, "{DEL}")?;
+                    }
+                    (KeyModifiers::NONE, KeyCode::Enter) => {
+                        write!(port, "\r\n")?;
+                    }
+                    _ => (),
+                }
+            }
 
             port.flush()?;
         }
