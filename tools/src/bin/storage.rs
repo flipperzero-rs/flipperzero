@@ -83,7 +83,7 @@ fn main() {
 
     let port_info =
         serial::find_flipperzero(cli.port.as_deref()).expect("unable to find Flipper Zero");
-    let port = serialport::new(&port_info.port_name, serial::BAUD_115200)
+    let port = serialport::new(port_info.port_name, serial::BAUD_115200)
         .timeout(Duration::from_secs(30))
         .open()
         .expect("unable to open serial port");
@@ -107,7 +107,7 @@ fn main() {
         Commands::Receive {
             flipper_path,
             local_path,
-        } => store.receive_file(flipper_path, &local_path),
+        } => store.receive_file(flipper_path, local_path),
         Commands::Send {
             local_path,
             flipper_path,

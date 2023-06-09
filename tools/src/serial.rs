@@ -26,10 +26,7 @@ pub fn find_flipperzero(port_name: Option<&str>) -> Option<SerialPortInfo> {
             p.port_name == port
         } else {
             // Auto-detect port
-            match &p.port_type {
-                SerialPortType::UsbPort(usb) if (usb.vid, usb.pid) == HWID => true,
-                _ => false,
-            }
+            matches!(&p.port_type, SerialPortType::UsbPort(usb) if (usb.vid, usb.pid) == HWID)
         }
     })
 }
