@@ -42,6 +42,9 @@ const WHITESPACE: &[char] = &[
 /// allocator. Very short strings (7 bytes or fewer) are stored directly inside the
 /// `FuriString` struct (which is stored on the heap), while longer strings are allocated
 /// on the heap by the Flipper Zero firmware.
+///
+/// [`CString`]: alloc::ffi::CString
+/// [`String`]: alloc::string::String
 #[derive(Eq)]
 pub struct FuriString(NonNull<sys::FuriString>);
 
@@ -296,11 +299,10 @@ impl FuriString {
     ///
     /// Returns `false` if it does not.
     ///
-    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
-    /// [pattern]: self::pattern
     #[inline]
     pub fn contains<P: Pattern>(&self, pat: P) -> bool {
         pat.is_contained_in(self)
@@ -310,11 +312,10 @@ impl FuriString {
     ///
     /// Returns `false` if it does not.
     ///
-    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
-    /// [pattern]: self::pattern
     pub fn starts_with<P: Pattern>(&self, pat: P) -> bool {
         pat.is_prefix_of(self)
     }
@@ -323,11 +324,10 @@ impl FuriString {
     ///
     /// Returns `false` if it does not.
     ///
-    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
-    /// [pattern]: self::pattern
     pub fn ends_with<P: Pattern>(&self, pat: P) -> bool {
         pat.is_suffix_of(self)
     }
@@ -336,11 +336,10 @@ impl FuriString {
     ///
     /// Returns [`None`] if the pattern doesn't match.
     ///
-    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
-    /// [pattern]: self::pattern
     #[inline]
     pub fn find<P: Pattern>(&self, pat: P) -> Option<usize> {
         pat.find_in(self)
@@ -351,11 +350,10 @@ impl FuriString {
     ///
     /// Returns [`None`] if the pattern doesn't match.
     ///
-    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
-    /// [pattern]: self::pattern
     #[inline]
     pub fn rfind<P: Pattern>(&self, pat: P) -> Option<usize> {
         pat.rfind_in(self)
@@ -404,11 +402,10 @@ impl FuriString {
 
     /// Repeatedly removes from this string all prefixes and suffixes that match a pattern.
     ///
-    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
-    /// [pattern]: self::pattern
     pub fn trim_matches<P: Pattern + Copy>(&mut self, pat: P) {
         self.trim_start_matches(pat);
         self.trim_end_matches(pat);
@@ -416,11 +413,10 @@ impl FuriString {
 
     /// Repeatedly removes from this string all prefixes that match a pattern.
     ///
-    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
-    /// [pattern]: self::pattern
     ///
     /// # Text directionality
     ///
@@ -434,11 +430,10 @@ impl FuriString {
 
     /// Repeatedly removes from this string all suffixes that match a pattern.
     ///
-    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
-    /// [pattern]: self::pattern
     ///
     /// # Text directionality
     ///
@@ -457,11 +452,10 @@ impl FuriString {
     ///
     /// If the string does not start with `prefix`, returns `false`.
     ///
-    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
-    /// [pattern]: self::pattern
     #[must_use]
     pub fn strip_prefix<P: Pattern>(&mut self, prefix: P) -> bool {
         prefix.strip_prefix_of(self)
@@ -474,11 +468,10 @@ impl FuriString {
     ///
     /// If the string does not end with `suffix`, returns `false`.
     ///
-    /// The [pattern] can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
     /// [`char`]s.
     ///
     /// [`char`]: prim@char
-    /// [pattern]: self::pattern
     #[must_use]
     pub fn strip_suffix<P: Pattern>(&mut self, suffix: P) -> bool {
         suffix.strip_suffix_of(self)

@@ -4,7 +4,7 @@
 #![cfg_attr(test, no_main)]
 #![deny(rustdoc::broken_intra_doc_links)]
 
-#[cfg(feature = "alloc")]
+#[cfg(any(feature = "alloc", docsrs))]
 extern crate alloc;
 
 pub mod dialogs;

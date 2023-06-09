@@ -1,6 +1,6 @@
 //! Inlines for Furi HAL GPIO interface.
 //!
-//! See: https://github.com/flipperdevices/flipperzero-firmware/blob/release/firmware/targets/f7/furi_hal/furi_hal_gpio.h
+//! See: <https://github.com/flipperdevices/flipperzero-firmware/blob/release/firmware/targets/f7/furi_hal/furi_hal_gpio.h>
 
 use crate as sys;
 
