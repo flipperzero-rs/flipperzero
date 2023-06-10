@@ -299,7 +299,8 @@ impl FuriString {
     ///
     /// Returns `false` if it does not.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     #[inline]
@@ -311,7 +312,8 @@ impl FuriString {
     ///
     /// Returns `false` if it does not.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     pub fn starts_with<P: Pattern>(&self, pat: P) -> bool {
@@ -322,7 +324,8 @@ impl FuriString {
     ///
     /// Returns `false` if it does not.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     pub fn ends_with<P: Pattern>(&self, pat: P) -> bool {
@@ -333,7 +336,8 @@ impl FuriString {
     ///
     /// Returns [`None`] if the pattern doesn't match.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     #[inline]
@@ -346,7 +350,8 @@ impl FuriString {
     ///
     /// Returns [`None`] if the pattern doesn't match.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     #[inline]
@@ -397,7 +402,8 @@ impl FuriString {
 
     /// Repeatedly removes from this string all prefixes and suffixes that match a pattern.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`] or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     pub fn trim_matches<P: Pattern + Copy>(&mut self, pat: P) {
@@ -407,7 +413,8 @@ impl FuriString {
 
     /// Repeatedly removes from this string all prefixes that match a pattern `pat`.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`] or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     ///
@@ -423,7 +430,8 @@ impl FuriString {
 
     /// Repeatedly removes from this string all suffixes that match a pattern `pat`.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`] or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     ///
@@ -444,7 +452,8 @@ impl FuriString {
     ///
     /// If the string does not start with `prefix`, returns `false`.
     ///
-    /// The prefix can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of [`char`]s.
+    /// The prefix can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     #[must_use]
@@ -459,7 +468,8 @@ impl FuriString {
     ///
     /// If the string does not end with `suffix`, returns `false`.
     ///
-    /// The suffix can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of [`char`]s.
+    /// The suffix can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     #[must_use]
