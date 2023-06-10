@@ -27,6 +27,8 @@ pub unsafe extern "C" fn furi_hal_gpio_write(gpio: *const sys::GpioPin, state: b
 /// # Safety
 ///
 /// Safety invariants are not yet defined for GPIO.
+///
+/// `port` must be non-null, and the memory it points to must be initialized.
 #[inline]
 pub unsafe extern "C" fn furi_hal_gpio_write_port_pin(
     port: *mut sys::GPIO_TypeDef,
@@ -55,6 +57,8 @@ pub unsafe extern "C" fn furi_hal_gpio_read(gpio: *const sys::GpioPin) -> bool {
 /// # Safety
 ///
 /// Safety invariants are not yet defined for GPIO.
+///
+/// `port` must be non-null, and the memory it points to must be initialized.
 #[inline]
 pub unsafe extern "C" fn furi_hal_gpio_read_port_pin(
     port: *mut sys::GPIO_TypeDef,
