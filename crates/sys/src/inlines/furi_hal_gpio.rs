@@ -1,6 +1,6 @@
 //! Inlines for Furi HAL GPIO interface.
 //!
-//! See: [furi_hal_gpio.h][1]
+//! See: [`furi_hal_gpio.h`][1]
 //!
 //! [1]: https://github.com/flipperdevices/flipperzero-firmware/blob/release/firmware/targets/f7/furi_hal/furi_hal_gpio.h
 
@@ -13,7 +13,7 @@ pub const GPIO_NUMBER: usize = 16;
 ///
 /// # Safety
 ///
-/// Safety invariants are not yet defined for GPIO.
+/// `gpio` must be non-null, and the memory it points to must be initialized.
 #[inline]
 pub unsafe extern "C" fn furi_hal_gpio_write(gpio: *const sys::GpioPin, state: bool) {
     let port = (*gpio).port;
@@ -41,7 +41,7 @@ pub unsafe extern "C" fn furi_hal_gpio_write_port_pin(
 ///
 /// # Safety
 ///
-/// Safety invariants are not yet defined for GPIO.
+/// `gpio` must be non-null, and the memory it points to must be initialized.
 #[inline]
 pub unsafe extern "C" fn furi_hal_gpio_read(gpio: *const sys::GpioPin) -> bool {
     let port = (*gpio).port;

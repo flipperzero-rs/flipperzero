@@ -299,8 +299,7 @@ impl FuriString {
     ///
     /// Returns `false` if it does not.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`],
-    /// or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of [`char`]s.
     ///
     /// [`char`]: prim@char
     #[inline]
@@ -801,7 +800,7 @@ impl ufmt::uDisplay for FuriString {
     }
 }
 
-impl fmt::Write for FuriString {
+impl Write for FuriString {
     #[inline]
     fn write_str(&mut self, s: &str) -> fmt::Result {
         self.push_str(s);

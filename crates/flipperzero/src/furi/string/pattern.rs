@@ -32,7 +32,6 @@ const FURI_STRING_FAILURE: usize = usize::MAX;
 /// | `&CStr                   | is substring                              |
 /// | `char`                   | is contained in string                    |
 /// | `&[char]`                | any char in slice is contained in string  |
-#[allow(clippy::wrong_self_convention)]
 pub trait Pattern: Sized {
     /// Checks whether the pattern matches anywhere in the haystack.
     #[inline]
