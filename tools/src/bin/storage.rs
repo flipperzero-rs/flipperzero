@@ -1,8 +1,8 @@
 //! Storage CLI.
 //!
-//! See: [storage.py][1] script.
+//! See: [`storage.py`][1] script.
 //!
-//! [1]: (https://github.com/flipperdevices/flipperzero-firmware/blob/dev/scripts/storage.py)
+//! [1]: https://github.com/flipperdevices/flipperzero-firmware/blob/dev/scripts/storage.py
 
 use std::path::PathBuf;
 use std::process;
