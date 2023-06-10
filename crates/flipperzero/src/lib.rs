@@ -2,6 +2,7 @@
 //!
 //! # Features
 #![cfg_attr(feature = "document-features", doc = document_features::document_features!())]
+//!
 #![no_std]
 #![cfg_attr(test, no_main)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
