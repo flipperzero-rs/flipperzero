@@ -13,13 +13,14 @@ const DEFAULT_STACK_SIZE: u16 = 2048; // 2 KiB
 /// # Examples
 ///
 /// ```
+/// # use flipperzero_rt::manifest;
 /// manifest!(
 ///     name = "MyApp",
 ///     stack_size = 1024,
 ///     app_version = 1,
 ///     has_icon = true,
 ///     icon: "app.icon",
-/// )
+/// );
 /// ```
 #[macro_export]
 macro_rules! manifest {

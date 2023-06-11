@@ -466,6 +466,7 @@ impl ufmt::uDisplay for ParseLevelFilterError {
 }
 
 #[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 impl std::error::Error for ParseLevelFilterError {}
 
 #[repr(usize)]

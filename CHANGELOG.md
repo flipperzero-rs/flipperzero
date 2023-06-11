@@ -12,6 +12,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - `flipperzero_test::tests` now allows `#[cfg(..)]` attributes on test methods.
 
+### Documentation
+- Feature flags are now documented and the items guarded by them are now annotated.
+
 ## [0.10.0]
 ### Added
 - `flipperzero::format` macro.

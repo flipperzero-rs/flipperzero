@@ -12,6 +12,10 @@ mod thread;
 
 /// The C entry point.
 /// This just delegates to the user's Rust entry point.
+///
+/// # Safety
+///
+/// This should never be called manually.
 #[no_mangle]
 pub unsafe extern "C" fn _start(args: *mut u8) -> i32 {
     extern "Rust" {

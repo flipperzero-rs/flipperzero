@@ -62,6 +62,7 @@ impl Drop for FuriMutex {
 }
 
 unsafe impl RawMutex for FuriMutex {
+    // See docs to the parent definition
     #[allow(clippy::declare_interior_mutable_const)]
     const INIT: Self = FuriMutex::new();
     type GuardMarker = GuardNoSend;

@@ -11,10 +11,11 @@ pub use metadata::{Level, LevelFilter};
 /// # Examples
 ///
 /// ```
-/// use flipperzero::{error, furi::log::Level};
+/// use flipperzero::{log, furi::log::Level};
 ///
 /// # fn main() {
 /// let error_code = 42;
+///
 /// log!(Level::ERROR, "Failed to handle the florp: {}", error_code);
 /// log!(target: "events", Level::INFO, "Finished the documentation!");
 /// # }
