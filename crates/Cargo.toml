@@ -24,7 +24,7 @@ flipperzero-rt = { path = "rt", version = "0.10.0" }
 flipperzero-alloc = { path = "alloc", version = "0.10.0" }
 flipperzero-test = { path = "test", version = "0.10.0" }
 ufmt = "0.2.0"
-document-features ="0.2.0"
+document-features = "0.2.0"
 
 [profile.dev]
 opt-level = "z"
