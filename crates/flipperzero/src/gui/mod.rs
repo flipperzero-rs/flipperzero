@@ -23,7 +23,7 @@ use flipperzero_sys::{self as sys, furi::UnsafeRecord, Canvas as SysCanvas, Gui 
 
 pub use gui_layer::*;
 
-/// System Gui wrapper.
+/// System GUI wrapper.
 pub struct Gui {
     raw: UnsafeRecord<SysGui>,
 }
@@ -32,6 +32,19 @@ impl Gui {
     /// Furi record corresponding to GUI.
     pub const RECORD: *const c_char = sys::c_string!("gui");
 
+    /// Creates a new GUI.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use flipperzero::gui::{view_port::ViewPort, Gui, GuiLayer};
+    /// let view_port = ViewPort::new(());
+    /// // create a GUI with a view port added to it
+    /// let mut gui = Gui::new();
+    /// let view_port = gui.add_view_port(view_port, GuiLayer::Desktop);
+    /// ```
     pub fn new() -> Self {
         // SAFETY: `RECORD` is a constant
         let gui = unsafe { UnsafeRecord::open(Self::RECORD) };

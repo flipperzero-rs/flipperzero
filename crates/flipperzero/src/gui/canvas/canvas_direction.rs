@@ -3,11 +3,18 @@ use core::fmt::{self, Display, Formatter};
 use flipperzero_sys::{self as sys, CanvasDirection as SysCanvasDirection};
 use ufmt::{derive::uDebug, uDisplay, uWrite, uwrite};
 
+/// Direction of an element on the canvas.
+///
+/// Corresponds to raw [`SysCanvasDirection`].
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum CanvasDirection {
+    /// The direction is from left to right.
     LeftToRight,
+    /// The direction is from top to bottom.
     TopToBottom,
+    /// The direction is from right to left.
     RightToLeft,
+    /// The direction is from bottom to top.
     BottomToTop,
 }
 
@@ -36,9 +43,12 @@ impl From<CanvasDirection> for SysCanvasDirection {
     }
 }
 
+/// An error which may occur while trying
+/// to convert raw [`SysCanvasDirection`] to [`CanvasDirection`].
 #[non_exhaustive]
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysCanvasDirectionError {
+    /// The [`SysCanvasDirection`] is an invalid value.
     Invalid(SysCanvasDirection),
 }
 

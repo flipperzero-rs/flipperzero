@@ -37,7 +37,8 @@ impl NotificationService {
 
     /// Runs a notification sequence.
     ///
-    /// #Safety
+    /// # Safety
+    ///
     /// Due to how rust interacts with the firmware this function is not safe to use at any time
     /// where the application might exit directly afterwards as the rust runtime will free the
     /// sequence before the firmware has finished reading it. At any time where this is an issue

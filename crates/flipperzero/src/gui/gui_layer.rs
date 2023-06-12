@@ -3,12 +3,20 @@ use core::fmt::{self, Display, Formatter};
 use flipperzero_sys::{self as sys, GuiLayer as SysGuiLayer};
 use ufmt::{derive::uDebug, uDisplay, uWrite, uwrite};
 
+/// The font used to draw text.
+///
+/// Corresponds to raw [`SysGuiLayer`].
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum GuiLayer {
+    /// Desktop layer for internal use. Like fullscreen but with status bar.
     Desktop,
+    /// Window layer, status bar is shown.
     Window,
+    /// Status bar left-side layer, auto-layout.
     StatusBarLeft,
+    /// Status bar right-side layer, auto-layout
     StatusBarRight,
+    /// Fullscreen layer, no status bar.
     Fullscreen,
 }
 
@@ -40,9 +48,16 @@ impl From<GuiLayer> for SysGuiLayer {
     }
 }
 
+/// An error which may occur while trying
+/// to convert raw [`SysGuiLayer`] to [`GuiLayer`].
+#[non_exhaustive]
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysGuiLayerError {
+    /// The [`SysGuiLayer`] is [`MAX`][sys::GuiLayer_GuiLayerMAX]
+    /// which is a meta-value used to track enum size.
     Max,
+    /// The [`SysGuiLayer`] is an invalid value
+    /// other than [`MAX`][sys::GuiLayer_GuiLayerMAX].
     Invalid(SysGuiLayer),
 }
 

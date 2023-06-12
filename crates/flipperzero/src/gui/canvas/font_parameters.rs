@@ -6,15 +6,18 @@ use core::{
 use flipperzero_sys::CanvasFontParameters as SysCanvasFontParameters;
 use ufmt::{derive::uDebug, uDisplay, uWrite};
 
+/// Font parameters on a canvas.
+///
+/// Corresponds to raw [`SysCanvasFontParameters`].
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash)]
-pub struct CanvasFontParametersSnapshot {
+pub struct CanvasFontParameters {
     pub leading_default: NonZeroU8,
     pub leading_min: NonZeroU8,
     pub height: NonZeroU8,
     pub descender: u8,
 }
 
-impl TryFrom<SysCanvasFontParameters> for CanvasFontParametersSnapshot {
+impl TryFrom<SysCanvasFontParameters> for CanvasFontParameters {
     type Error = FromSysCanvasFontParameters;
 
     fn try_from(value: SysCanvasFontParameters) -> Result<Self, Self::Error> {
@@ -33,8 +36,8 @@ impl TryFrom<SysCanvasFontParameters> for CanvasFontParametersSnapshot {
     }
 }
 
-impl From<CanvasFontParametersSnapshot> for SysCanvasFontParameters {
-    fn from(value: CanvasFontParametersSnapshot) -> Self {
+impl From<CanvasFontParameters> for SysCanvasFontParameters {
+    fn from(value: CanvasFontParameters) -> Self {
         Self {
             leading_default: value.leading_default.into(),
             leading_min: value.leading_min.into(),
@@ -44,11 +47,18 @@ impl From<CanvasFontParametersSnapshot> for SysCanvasFontParameters {
     }
 }
 
+/// An error which may occur while trying
+/// to convert raw [`SysCanvasFontParameters`] to [`CanvasFontParameters`].
+///
+/// All of these correspond to errors in individual parameters.
 #[non_exhaustive]
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysCanvasFontParameters {
+    /// [`leading_default`] field is set to `0`.
     ZeroLeadingDefault,
+    /// [`leading_min`] field is set to `0`.
     ZeroLeadingMin,
+    /// [`height`] field is set to `0`.
     ZeroHeight,
 }
 

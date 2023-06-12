@@ -15,6 +15,7 @@ use flipperzero::furi::string::FuriString;
 use flipperzero::gui::Gui;
 use flipperzero_rt::{entry, manifest};
 use flipperzero_sys as sys;
+use flipperzero_sys::ViewDispatcher;
 
 manifest!(name = "Rust ViewDispatcher example");
 entry!(main);
@@ -26,7 +27,7 @@ enum AppView {
 
 struct App {
     name: [c_char; 16],
-    view_dispatcher: NonNull<sys::ViewDispatcher>,
+    view_dispatcher: NonNull<ViewDispatcher>,
     widget: NonNull<sys::Widget>,
     text_input: NonNull<sys::TextInput>,
 }

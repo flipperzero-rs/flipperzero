@@ -4,17 +4,38 @@ use core::fmt::{self, Display, Formatter};
 use flipperzero_sys::{self as sys, InputKey as SysInputKey};
 use ufmt::{derive::uDebug, uDisplay, uWrite, uwrite};
 
+/// Input key of a Flipper, i.e. its button.
+///
+/// Corresponds to raw [`SysInputKey`].
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum InputKey {
+    /// **Up** key (top triangle).
     Up,
+    /// **Down** key (bottom triangle).
     Down,
+    /// **Right** key (right triangle).
     Right,
+    /// **Left** key (left triangle).
     Left,
+    /// **Ok** key (central round).
     Ok,
+    /// **Back** key (right bottom backward arrow).
     Back,
 }
 
 impl InputKey {
+    /// Gets the name of this input key.
+    /// Unlike `Debug` and `uDebug` which use Rust enu name,
+    /// this relies on Flipper's API intended for this purpose.
+    ///
+    /// # Example
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use flipperzero::input::InputKey;
+    /// assert_eq!(InputKey::Up.name(), "Up");
+    /// ```
     pub fn name(self) -> &'static CStr {
         let this = SysInputKey::from(self);
         // SAFETY: `this` is always a valid enum value
@@ -53,9 +74,15 @@ impl From<InputKey> for SysInputKey {
     }
 }
 
+/// An error which may occur while trying
+/// to convert raw [`SysInputKey`] to [`InputKey`].
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysInputKeyError {
+    /// The [`SysInputKey`] is [`MAX`][sys::InputKey_InputKeyMAX]
+    /// which is a meta-value used to track enum size.
     Max,
+    /// The [`SysInputKey`] is an invalid value
+    /// other than [`MAX`][sys::InputKey_InputKeyMAX].
     Invalid(SysInputKey),
 }
 
@@ -64,8 +91,8 @@ impl Display for FromSysInputKeyError {
         match self {
             Self::Max => write!(
                 f,
-                "input key ID {} (Max) is a meta-value",
-                sys::Font_FontTotalNumber,
+                "input key ID {} (MAX) is a meta-value",
+                sys::InputKey_InputKeyMAX,
             ),
             Self::Invalid(id) => write!(f, "input key ID {id} is invalid"),
         }
@@ -81,7 +108,7 @@ impl uDisplay for FromSysInputKeyError {
             Self::Max => uwrite!(
                 f,
                 "input key ID {} (Max) is a meta-value",
-                sys::Font_FontTotalNumber,
+                sys::InputKey_InputKeyMAX,
             ),
             Self::Invalid(id) => uwrite!(f, "input key ID {} is invalid", id),
         }

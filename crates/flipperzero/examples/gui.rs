@@ -16,7 +16,6 @@ extern crate flipperzero_alloc as alloc;
 
 use alloc::{ffi::CString, string::ToString};
 use core::{ffi::CStr, time::Duration};
-
 use flipperzero::{
     furi::message_queue::MessageQueue,
     gui::{

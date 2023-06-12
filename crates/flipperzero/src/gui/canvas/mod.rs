@@ -1,4 +1,4 @@
-//! Canvases.
+//! Canvas-related APIs allowing to draw on it.
 
 mod align;
 mod canvas_direction;
@@ -11,7 +11,6 @@ use crate::{
         icon::Icon,
         icon_animation::{IconAnimation, IconAnimationCallbacks},
     },
-    warn,
     xbm::XbmImage,
 };
 use core::{
@@ -50,10 +49,10 @@ impl CanvasView<'_> {
     /// Basic usage:
     ///
     /// ```
-    /// use flipperzero::gui::canvas::CanvasView;
-    ///
-    /// let ptr = todo!();
-    /// let canvas = unsafe { CanvasView::from_raw(ptr) };
+    /// # use flipperzero::gui::canvas::CanvasView;
+    /// # let canvas_ptr: *mut flipperzero_sys::Canvas = todo!();
+    /// // wrap a raw pointer to a canvas
+    /// let canvas = unsafe { CanvasView::from_raw(canvas_ptr) };
     /// ```
     pub unsafe fn from_raw(raw: *mut SysCanvas) -> Self {
         Self {
@@ -61,6 +60,49 @@ impl CanvasView<'_> {
             raw: unsafe { NonNull::new_unchecked(raw) },
             _lifetime: PhantomData,
         }
+    }
+
+    /// Resets canvas drawing tools configuration.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use flipperzero::gui::canvas::{CanvasView, Color};
+    /// # let mut canvas: CanvasView<'static> = todo!();
+    /// // change canvas color and use it for drawing
+    /// canvas.set_color(Color::Xor);
+    /// canvas.draw_circle(10, 10, 5);
+    /// // reset canvas options and use defaults for drawing
+    /// canvas.reset();
+    /// canvas.draw_circle(20, 20, 5);
+    /// ```
+    pub fn reset(&mut self) {
+        let raw = self.raw.as_ptr();
+        // SAFETY: `raw` is always valid
+        unsafe { sys::canvas_reset(raw) };
+    }
+
+    /// Commits canvas sending its buffer to display.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use flipperzero::gui::canvas::{CanvasView, Color};
+    /// # let mut canvas: CanvasView<'static> = todo!();
+    /// // perform some draw operations on the canvas
+    /// canvas.draw_frame(0, 0, 51, 51);
+    /// canvas.draw_circle(25, 25, 10);
+    /// // commit changes
+    /// canvas.commit();
+    /// ```
+    pub fn commit(&mut self) {
+        let raw = self.raw.as_ptr();
+        // SAFETY: `raw` is always valid
+        unsafe { sys::canvas_commit(raw) };
     }
 
     // FIXME:
@@ -92,7 +134,7 @@ impl CanvasView<'_> {
             .expect("`canvas_current_font_height` should produce a positive value")
     }
 
-    pub fn get_font_params(&self, font: Font) -> CanvasFontParameters<'_> {
+    pub fn get_font_params(&self, font: Font) -> OwnedCanvasFontParameters<'_> {
         let raw = self.raw.as_ptr();
         // SAFETY: `raw` is always valid
         let font = font.into();
@@ -102,7 +144,7 @@ impl CanvasView<'_> {
         let raw = unsafe { sys::canvas_get_font_params(raw, font) }.cast_mut();
         // SAFETY: `raw` is always a valid pointer
         let raw = unsafe { NonNull::new_unchecked(raw) };
-        CanvasFontParameters {
+        OwnedCanvasFontParameters {
             raw,
             _parent: PhantomData,
         }
@@ -213,6 +255,7 @@ impl CanvasView<'_> {
     }
 
     // TODO: do we need other range checks?
+    #[cfg(feature = "xbm")]
     pub fn draw_xbm(&mut self, x: u8, y: u8, xbm: &XbmImage<impl Deref<Target = [u8]>>) {
         let raw = self.raw.as_ptr();
         let width = xbm.width();
@@ -223,16 +266,6 @@ impl CanvasView<'_> {
         // SAFETY: `raw` is always valid
         // and `data` is always valid and does not have to outlive the view
         // as it is copied
-        if x == 2 && y == 2 {
-            warn!(
-                "Printing image at {}:{} of dims {}:{}: {:?}",
-                x,
-                y,
-                width,
-                height,
-                xbm.data()
-            );
-        }
         unsafe { sys::canvas_draw_xbm(raw, x, y, width, height, data) };
     }
 
@@ -326,13 +359,13 @@ impl CanvasView<'_> {
     }
 }
 
-pub struct CanvasFontParameters<'a> {
+pub struct OwnedCanvasFontParameters<'a> {
     // this wraps an effectively const pointer thus it should never be used for weiting
     raw: NonNull<SysCanvasFontParameters>,
     _parent: PhantomData<&'a CanvasView<'a>>,
 }
 
-impl<'a> CanvasFontParameters<'a> {
+impl<'a> OwnedCanvasFontParameters<'a> {
     pub fn leading_default(&self) -> NonZeroU8 {
         let raw = self.raw.as_ptr();
         // SAFETY: `raw` is always valid and this allways outlives its parent
@@ -366,7 +399,7 @@ impl<'a> CanvasFontParameters<'a> {
         unsafe { *raw }.descender
     }
 
-    pub fn snapshot(&self) -> CanvasFontParametersSnapshot {
+    pub fn snapshot(&self) -> CanvasFontParameters {
         let raw = self.raw.as_ptr();
         // SAFETY: `raw` is always valid and this allways outlives its parent
         unsafe { *raw }

@@ -68,7 +68,7 @@ const _: () = {
 /// falling back to ad-hoc implementations otherwise.
 #[allow(dead_code)] // this functions may be unused if a specific feature set does not require them
 pub(crate) mod ops {
-    pub const fn div_ceil_u8(divident: u8, divisor: u8) -> u8 {
+    pub(crate) const fn div_ceil_u8(divident: u8, divisor: u8) -> u8 {
         #[cfg(feature = "unstable_intrinsics")]
         {
             divident.div_ceil(divisor)

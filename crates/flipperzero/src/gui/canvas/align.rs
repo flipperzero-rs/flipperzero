@@ -3,12 +3,20 @@ use core::fmt::{self, Display, Formatter};
 use flipperzero_sys::{self as sys, Align as SysAlign};
 use ufmt::{derive::uDebug, uDisplay, uWrite, uwrite};
 
+/// Alignment of an object on the canvas.
+///
+/// Corresponds to raw [`SysAlign`].
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum Align {
+    /// The values are aligned relative to the right.
     Left,
+    /// The values are aligned relative to the left.
     Right,
+    /// The values are aligned relative to the top.
     Top,
+    /// The values are aligned relative to the bottom.
     Bottom,
+    /// The values are aligned relative to the center.
     Center,
 }
 
@@ -39,9 +47,12 @@ impl From<Align> for SysAlign {
     }
 }
 
+/// An error which may occur while trying
+/// to convert raw [`SysAlign`] to [`Align`].
 #[non_exhaustive]
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysAlignError {
+    /// The [`SysAlign`] is an invalid value.
     Invalid(SysAlign),
 }
 

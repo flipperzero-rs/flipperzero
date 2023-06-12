@@ -3,10 +3,16 @@ use core::fmt::{self, Display, Formatter};
 use flipperzero_sys::{self as sys, Color as SysColor};
 use ufmt::{derive::uDebug, uDisplay, uWrite, uwrite};
 
+/// Color on the canvas.
+///
+/// Corresponds to raw [`SysColor`].
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum Color {
+    /// White color is used.
     White,
+    /// Black color is used.
     Black,
+    /// The color is inverted.
     Xor,
 }
 
@@ -33,9 +39,12 @@ impl From<Color> for SysColor {
     }
 }
 
+/// An error which may occur while trying
+/// to convert raw [`SysColor`] to [`Color`].
 #[non_exhaustive]
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysColorError {
+    /// The [`SysColor`] is an invalid value.
     Invalid(SysColor),
 }
 

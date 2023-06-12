@@ -3,12 +3,86 @@ use core::fmt::{self, Display, Formatter};
 use flipperzero_sys::{self as sys, ViewPortOrientation as SysViewPortOrientation};
 use ufmt::{derive::uDebug, uDisplay, uWrite, uwrite};
 
+/// Orientation of a view port.
+///
+/// Corresponds to raw [`SysViewPortOrientation`].
+///
+/// # Examples
+///
+/// Basic
+///
+/// ```
+/// # use flipperzero::gui::view_port::ViewPort;
+/// # use flipperzero::log;
+/// let view_port = ViewPort::new(());
+/// let orientation = view_port.get_orientation();
+/// if matches!(orientation, ViewPortOrientation::Horizontal) {
+///     log!("Currently in horizontal orientation")
+/// }
+/// ```
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum ViewPortOrientation {
+    /// Horizontal orientation.
     Horizontal,
+    /// Flipped horizontal orientation.
     HorizontalFlip,
+    /// Vertical orientation.
     Vertical,
+    /// Flipped vertical orientation.
     VerticalFlip,
+}
+
+impl ViewPortOrientation {
+    /// Checks that this orientation is horizontal.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use flipperzero::gui::view_port::ViewPortOrientation;
+    /// assert!(ViewPortOrientation::Horizontal.is_horizontal());
+    /// assert!(ViewPortOrientation::HorizontalFlip.is_horizontal());
+    /// assert!(!ViewPortOrientation::Vertical.is_horizontal());
+    /// assert!(!ViewPortOrientation::VerticalFlip.is_horizontal());
+    /// ```
+    pub const fn is_horizontal(self) -> bool {
+        matches!(self, Self::Horizontal | Self::HorizontalFlip)
+    }
+
+    /// Checks that this orientation is vertical.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use flipperzero::gui::view_port::ViewPortOrientation;
+    /// assert!(ViewPortOrientation::Vertical.is_vertical());
+    /// assert!(ViewPortOrientation::VerticalFlip.is_vertical());
+    /// assert!(!ViewPortOrientation::Horizontal.is_vertical());
+    /// assert!(!ViewPortOrientation::HorizontalFlip.is_vertical());
+    /// ```
+    pub const fn is_vertical(self) -> bool {
+        matches!(self, Self::Vertical | Self::VerticalFlip)
+    }
+
+    /// Checks that this orientation is flipped.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use flipperzero::gui::view_port::ViewPortOrientation;
+    /// assert!(ViewPortOrientation::HorizontalFlip.is_flipped());
+    /// assert!(ViewPortOrientation::VerticalFlip.is_flipped());
+    /// assert!(!ViewPortOrientation::Horizontal.is_flipped());
+    /// assert!(!ViewPortOrientation::Vertical.is_flipped());
+    /// ```
+    pub const fn is_flipped(self) -> bool {
+        matches!(self, Self::HorizontalFlip | Self::VerticalFlip)
+    }
 }
 
 impl TryFrom<SysViewPortOrientation> for ViewPortOrientation {
@@ -43,10 +117,17 @@ impl From<ViewPortOrientation> for SysViewPortOrientation {
     }
 }
 
+/// An error which may occur while trying
+/// to convert raw [`SysViewPortOrientation`] to [`ViewPortOrientation`].
 #[non_exhaustive]
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysViewPortOrientationError {
+    /// The [`SysViewPortOrientation`]
+    /// is [`MAX`][sys::ViewPortOrientation_ViewPortOrientationMAX]
+    /// which is a meta-value used to track enum size.
     Max,
+    /// The [`SysViewPortOrientation`] is an invalid value
+    /// other than [`MAX`][sys::ViewPortOrientation_ViewPortOrientationMAX].
     Invalid(SysViewPortOrientation),
 }
 

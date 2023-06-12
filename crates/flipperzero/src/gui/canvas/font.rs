@@ -3,11 +3,18 @@ use core::fmt::{self, Display, Formatter};
 use flipperzero_sys::{self as sys, Font as SysFont};
 use ufmt::{derive::uDebug, uDisplay, uWrite, uwrite};
 
+/// The font used to draw text.
+///
+/// Corresponds to raw [`SysFont`].
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum Font {
+    /// The primary font.
     Primary,
+    /// The secondary font.
     Secondary,
+    /// The keyboard font.
     Keyboard,
+    /// The font with big numbers.
     BigNumbers,
 }
 
@@ -51,10 +58,16 @@ impl From<Font> for SysFont {
     }
 }
 
+/// An error which may occur while trying
+/// to convert raw [`SysFont`] to [`Font`].
 #[non_exhaustive]
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysFontError {
+    /// The [`SysFont`] is [`TotalNumber`][sys::Font_FontTotalNumber]
+    /// which is a meta-value used to track enum size.
     TotalNumber,
+    /// The [`SysFont`] is an invalid value
+    /// other than [`TotalNumber`][sys::Font_FontTotalNumber].
     Invalid(SysFont),
 }
 

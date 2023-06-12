@@ -35,6 +35,7 @@ impl<C: ViewCallbacks> Drop for View<C> {
 pub trait ViewCallbacks {
     fn on_draw(&mut self, _canvas: CanvasView) {}
     fn on_input(&mut self, _event: InputEvent) {}
+    // TODO: the remaining callbacks and actual usage of callbacks
 }
 
 impl ViewCallbacks for () {}

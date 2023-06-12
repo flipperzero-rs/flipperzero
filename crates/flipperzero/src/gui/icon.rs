@@ -56,8 +56,9 @@ impl Icon {
         let (width, height) = self.get_dimensions();
 
         let raw = self.raw.as_ptr();
-        // SAFETY: `raw` is always valid
-        // and `width` and `height` are always in sync with data
+        // SAFETY: `raw` is always valid,
+        // `width` and `height` are always in sync with data
+        // and the lifetime is based on `&self`'s
         unsafe { XbmImage::from_raw(width, height, sys::icon_get_data(raw)) }
     }
 }

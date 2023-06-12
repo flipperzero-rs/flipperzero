@@ -73,7 +73,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
                 input_event: *mut sys::InputEvent,
                 context: *mut c_void,
             ) {
-                let input_event: InputEvent = (&unsafe { *input_event })
+                let input_event: InputEvent = (unsafe { *input_event })
                     .try_into()
                     .expect("`input_event` should be a valid event");
 
