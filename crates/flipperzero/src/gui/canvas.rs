@@ -1,5 +1,11 @@
 //! Canvases.
 
+mod align;
+mod canvas_direction;
+mod color;
+mod font;
+mod font_parameters;
+
 use crate::{
     gui::{
         icon::Icon,
@@ -16,9 +22,14 @@ use core::{
     ptr::NonNull,
 };
 use flipperzero_sys::{
-    self as sys, Align as SysAlign, Canvas as SysCanvas, CanvasDirection as SysCanvasDirection,
-    CanvasFontParameters as SysCanvasFontParameters, Color as SysColor, Font as SysFont,
+    self as sys, Canvas as SysCanvas, CanvasFontParameters as SysCanvasFontParameters,
 };
+
+pub use align::*;
+pub use canvas_direction::*;
+pub use color::*;
+pub use font::*;
+pub use font_parameters::*;
 
 /// System Canvas view.
 pub struct CanvasView<'a> {
@@ -175,9 +186,11 @@ impl CanvasView<'_> {
         unsafe { sys::canvas_glyph_width(raw, glyph) }
     }
 
+    // Note: FURI is guaranteed to correctly handle out-of-bounds draws
+    // so we don't need to check the bounds
+
     // TODO `canvas_draw_bitmap` compressed bitmap support
 
-    // TODO: do we need range checks?
     pub fn draw_icon_animation<'a, 'b: 'a>(
         &'a mut self,
         x: u8,
@@ -191,7 +204,6 @@ impl CanvasView<'_> {
         unsafe { sys::canvas_draw_icon_animation(raw, x, y, icon_animation) }
     }
 
-    // TODO: do we need range checks?
     pub fn draw_icon<'a, 'b: 'a>(&'a mut self, x: u8, y: u8, animation: &'b Icon) {
         let raw = self.raw.as_ptr();
         let icon = animation.as_raw();
@@ -201,20 +213,10 @@ impl CanvasView<'_> {
     }
 
     // TODO: do we need other range checks?
-    //  what is the best return type?
-    pub fn draw_xbm(
-        &mut self,
-        x: u8,
-        y: u8,
-        xbm: &XbmImage<impl Deref<Target = [u8]>>,
-    ) -> Option<()> {
+    pub fn draw_xbm(&mut self, x: u8, y: u8, xbm: &XbmImage<impl Deref<Target = [u8]>>) {
         let raw = self.raw.as_ptr();
         let width = xbm.width();
         let height = xbm.height();
-
-        // ensure that the image is not too big
-        let _ = x.checked_add(width)?;
-        let _ = y.checked_add(height)?;
 
         let data = xbm.data().as_ptr();
 
@@ -232,7 +234,6 @@ impl CanvasView<'_> {
             );
         }
         unsafe { sys::canvas_draw_xbm(raw, x, y, width, height, data) };
-        Some(())
     }
 
     // TODO:
@@ -246,7 +247,6 @@ impl CanvasView<'_> {
         unsafe { sys::canvas_draw_dot(raw, x, y) }
     }
 
-    // TODO: do we need range checks?
     // TODO: do `width` and `height` have to be non-zero
     pub fn draw_box(&mut self, x: u8, y: u8, width: u8, height: u8) {
         let raw = self.raw.as_ptr();
@@ -254,7 +254,6 @@ impl CanvasView<'_> {
         unsafe { sys::canvas_draw_box(raw, x, y, width, height) }
     }
 
-    // TODO: do we need range checks?
     // TODO: do `width` and `height` have to be non-zero
     pub fn draw_frame(&mut self, x: u8, y: u8, width: u8, height: u8) {
         let raw = self.raw.as_ptr();
@@ -262,7 +261,6 @@ impl CanvasView<'_> {
         unsafe { sys::canvas_draw_frame(raw, x, y, width, height) }
     }
 
-    // TODO: do we need range checks?
     // TODO: do `x2` and `y2` have to be non-zero
     pub fn draw_line(&mut self, x1: u8, y1: u8, x2: u8, y2: u8) {
         let raw = self.raw.as_ptr();
@@ -270,7 +268,6 @@ impl CanvasView<'_> {
         unsafe { sys::canvas_draw_line(raw, x1, y1, x2, y2) }
     }
 
-    // TODO: do we need range checks?
     // TODO: does `radius` have to be non-zero
     pub fn draw_circle(&mut self, x: u8, y: u8, radius: u8) {
         let raw = self.raw.as_ptr();
@@ -278,7 +275,6 @@ impl CanvasView<'_> {
         unsafe { sys::canvas_draw_circle(raw, x, y, radius) }
     }
 
-    // TODO: do we need range checks?
     // TODO: does `radius` have to be non-zero
     pub fn draw_disc(&mut self, x: u8, y: u8, radius: u8) {
         let raw = self.raw.as_ptr();
@@ -286,7 +282,6 @@ impl CanvasView<'_> {
         unsafe { sys::canvas_draw_disc(raw, x, y, radius) }
     }
 
-    // TODO: do we need range checks?
     // TODO: do `base` and `height` have to be non-zero
     pub fn draw_triangle(
         &mut self,
@@ -303,7 +298,6 @@ impl CanvasView<'_> {
         unsafe { sys::canvas_draw_triangle(raw, x, y, base, height, direction) }
     }
 
-    // TODO: do we need range checks?
     // TODO: does `character` have to be of a wrapper type
     pub fn draw_glyph(&mut self, x: u8, y: u8, character: u16) {
         let raw = self.raw.as_ptr();
@@ -317,7 +311,6 @@ impl CanvasView<'_> {
         unsafe { sys::canvas_set_bitmap_mode(raw, alpha) }
     }
 
-    // TODO: do we need range checks?
     // TODO: do `width`, `height` and `radius` have to be non-zero
     pub fn draw_rframe(&mut self, x: u8, y: u8, width: u8, height: u8, radius: u8) {
         let raw = self.raw.as_ptr();
@@ -325,7 +318,6 @@ impl CanvasView<'_> {
         unsafe { sys::canvas_draw_rframe(raw, x, y, width, height, radius) }
     }
 
-    // TODO: do we need range checks?
     // TODO: do `width`, `height` and `radius` have to be non-zero
     pub fn draw_rbox(&mut self, x: u8, y: u8, width: u8, height: u8, radius: u8) {
         let raw = self.raw.as_ptr();
@@ -380,218 +372,5 @@ impl<'a> CanvasFontParameters<'a> {
         unsafe { *raw }
             .try_into()
             .expect("raw `CanvasFontParameters` should be valid")
-    }
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
-pub struct CanvasFontParametersSnapshot {
-    pub leading_default: NonZeroU8,
-    pub leading_min: NonZeroU8,
-    pub height: NonZeroU8,
-    pub descender: u8,
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum FromSysGuiLayerError {
-    ZeroLeadingDefault,
-    ZeroLeadingMin,
-    ZeroHeight,
-}
-
-impl TryFrom<SysCanvasFontParameters> for CanvasFontParametersSnapshot {
-    type Error = FromSysGuiLayerError;
-
-    fn try_from(value: SysCanvasFontParameters) -> Result<Self, Self::Error> {
-        Ok(Self {
-            leading_default: value
-                .leading_default
-                .try_into()
-                .or(Err(Self::Error::ZeroLeadingDefault))?,
-            leading_min: value
-                .leading_min
-                .try_into()
-                .or(Err(Self::Error::ZeroLeadingMin))?,
-            height: value.height.try_into().or(Err(Self::Error::ZeroHeight))?,
-            descender: value.descender,
-        })
-    }
-}
-
-impl From<CanvasFontParametersSnapshot> for SysCanvasFontParameters {
-    fn from(value: CanvasFontParametersSnapshot) -> Self {
-        Self {
-            leading_default: value.leading_default.into(),
-            leading_min: value.leading_min.into(),
-            height: value.height.into(),
-            descender: value.descender,
-        }
-    }
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum Color {
-    White,
-    Black,
-    Xor,
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum FromSysColorError {
-    Invalid(SysColor),
-}
-
-impl TryFrom<SysColor> for Color {
-    type Error = FromSysColorError;
-
-    fn try_from(value: SysColor) -> Result<Self, Self::Error> {
-        Ok(match value {
-            sys::Color_ColorWhite => Self::White,
-            sys::Color_ColorBlack => Self::Black,
-            sys::Color_ColorXOR => Self::Xor,
-            invalid => Err(Self::Error::Invalid(invalid))?,
-        })
-    }
-}
-
-impl From<Color> for SysColor {
-    fn from(value: Color) -> Self {
-        match value {
-            Color::White => sys::Color_ColorWhite,
-            Color::Black => sys::Color_ColorBlack,
-            Color::Xor => sys::Color_ColorXOR,
-        }
-    }
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum Font {
-    Primary,
-    Secondary,
-    Keyboard,
-    BigNumbers,
-}
-
-impl Font {
-    /// Gets the total number of available fonts.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// # use flipperzero::gui::canvas::Font;
-    /// assert_eq!(Font::total_number(), 4);
-    /// ```
-    pub const fn total_number() -> usize {
-        sys::Font_FontTotalNumber as usize
-    }
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum FromSysFontError {
-    TotalNumber,
-    Invalid(SysFont),
-}
-
-impl TryFrom<SysFont> for Font {
-    type Error = FromSysFontError;
-
-    fn try_from(value: SysFont) -> Result<Self, Self::Error> {
-        Ok(match value {
-            sys::Font_FontPrimary => Self::Primary,
-            sys::Font_FontSecondary => Self::Secondary,
-            sys::Font_FontKeyboard => Self::Keyboard,
-            sys::Font_FontBigNumbers => Self::BigNumbers,
-            sys::Font_FontTotalNumber => Err(Self::Error::TotalNumber)?,
-            invalid => Err(Self::Error::Invalid(invalid))?,
-        })
-    }
-}
-
-impl From<Font> for SysFont {
-    fn from(value: Font) -> Self {
-        match value {
-            Font::Primary => sys::Font_FontPrimary,
-            Font::Secondary => sys::Font_FontSecondary,
-            Font::Keyboard => sys::Font_FontKeyboard,
-            Font::BigNumbers => sys::Font_FontBigNumbers,
-        }
-    }
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum CanvasDirection {
-    LeftToRight,
-    TopToBottom,
-    RightToLeft,
-    BottomToTop,
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum FromSysCanvasDirectionError {
-    Invalid(SysCanvasDirection),
-}
-
-impl TryFrom<SysCanvasDirection> for CanvasDirection {
-    type Error = FromSysCanvasDirectionError;
-
-    fn try_from(value: SysCanvasDirection) -> Result<Self, Self::Error> {
-        Ok(match value {
-            sys::CanvasDirection_CanvasDirectionLeftToRight => Self::LeftToRight,
-            sys::CanvasDirection_CanvasDirectionTopToBottom => Self::TopToBottom,
-            sys::CanvasDirection_CanvasDirectionRightToLeft => Self::RightToLeft,
-            sys::CanvasDirection_CanvasDirectionBottomToTop => Self::BottomToTop,
-            invalid => Err(Self::Error::Invalid(invalid))?,
-        })
-    }
-}
-
-impl From<CanvasDirection> for SysCanvasDirection {
-    fn from(value: CanvasDirection) -> Self {
-        match value {
-            CanvasDirection::BottomToTop => sys::CanvasDirection_CanvasDirectionBottomToTop,
-            CanvasDirection::LeftToRight => sys::CanvasDirection_CanvasDirectionLeftToRight,
-            CanvasDirection::RightToLeft => sys::CanvasDirection_CanvasDirectionRightToLeft,
-            CanvasDirection::TopToBottom => sys::CanvasDirection_CanvasDirectionTopToBottom,
-        }
-    }
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub enum Align {
-    Left,
-    Right,
-    Top,
-    Bottom,
-    Center,
-}
-
-#[derive(Clone, Copy, Debug)]
-pub enum FromSysAlignError {
-    Invalid(SysAlign),
-}
-
-impl TryFrom<SysAlign> for Align {
-    type Error = FromSysAlignError;
-
-    fn try_from(value: SysAlign) -> Result<Self, Self::Error> {
-        Ok(match value {
-            sys::Align_AlignLeft => Self::Left,
-            sys::Align_AlignRight => Self::Right,
-            sys::Align_AlignTop => Self::Top,
-            sys::Align_AlignBottom => Self::Bottom,
-            sys::Align_AlignCenter => Self::Center,
-            invalid => Err(Self::Error::Invalid(invalid))?,
-        })
-    }
-}
-
-impl From<Align> for SysAlign {
-    fn from(value: Align) -> Self {
-        match value {
-            Align::Left => sys::Align_AlignLeft,
-            Align::Right => sys::Align_AlignRight,
-            Align::Top => sys::Align_AlignTop,
-            Align::Bottom => sys::Align_AlignBottom,
-            Align::Center => sys::Align_AlignCenter,
-        }
     }
 }

@@ -1,4 +1,4 @@
-use crate::internals::Unsend;
+use crate::internals::{macros::impl_std_error, Unsend};
 use core::{
     fmt::{self, Display, Formatter},
     marker::PhantomData,
@@ -72,3 +72,5 @@ impl Display for LockError {
         }
     }
 }
+
+impl_std_error!(LockError);

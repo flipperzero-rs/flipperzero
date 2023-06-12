@@ -1,5 +1,7 @@
 //! ViewPort APIs
 
+mod orientation;
+
 use crate::{gui::canvas::CanvasView, input::InputEvent};
 use alloc::boxed::Box;
 use core::{
@@ -11,6 +13,8 @@ use flipperzero_sys::{
     self as sys, Canvas as SysCanvas, ViewPort as SysViewPort,
     ViewPortOrientation as SysViewPortOrientation,
 };
+
+pub use orientation::*;
 
 /// System ViewPort.
 pub struct ViewPort<C: ViewPortCallbacks> {
@@ -348,52 +352,6 @@ impl<C: ViewPortCallbacks> Drop for ViewPort<C> {
         unsafe {
             sys::view_port_enabled_set(raw, false);
             sys::view_port_free(raw);
-        }
-    }
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum ViewPortOrientation {
-    Horizontal,
-    HorizontalFlip,
-    Vertical,
-    VerticalFlip,
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum FromSysViewPortOrientationError {
-    Max,
-    Invalid(SysViewPortOrientation),
-}
-
-impl TryFrom<SysViewPortOrientation> for ViewPortOrientation {
-    type Error = FromSysViewPortOrientationError;
-
-    fn try_from(value: SysViewPortOrientation) -> Result<Self, Self::Error> {
-        Ok(match value {
-            sys::ViewPortOrientation_ViewPortOrientationHorizontal => Self::Horizontal,
-            sys::ViewPortOrientation_ViewPortOrientationHorizontalFlip => Self::HorizontalFlip,
-            sys::ViewPortOrientation_ViewPortOrientationVertical => Self::Vertical,
-            sys::ViewPortOrientation_ViewPortOrientationVerticalFlip => Self::VerticalFlip,
-            sys::ViewPortOrientation_ViewPortOrientationMAX => Err(Self::Error::Max)?,
-            invalid => Err(Self::Error::Invalid(invalid))?,
-        })
-    }
-}
-
-impl From<ViewPortOrientation> for SysViewPortOrientation {
-    fn from(value: ViewPortOrientation) -> Self {
-        match value {
-            ViewPortOrientation::Horizontal => {
-                sys::ViewPortOrientation_ViewPortOrientationHorizontal
-            }
-            ViewPortOrientation::HorizontalFlip => {
-                sys::ViewPortOrientation_ViewPortOrientationHorizontalFlip
-            }
-            ViewPortOrientation::Vertical => sys::ViewPortOrientation_ViewPortOrientationVertical,
-            ViewPortOrientation::VerticalFlip => {
-                sys::ViewPortOrientation_ViewPortOrientationVerticalFlip
-            }
         }
     }
 }

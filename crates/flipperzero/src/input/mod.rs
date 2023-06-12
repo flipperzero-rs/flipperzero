@@ -1,9 +1,12 @@
-use core::ffi::CStr;
-use flipperzero_sys::{
-    self as sys, InputEvent as SysInputEvent, InputKey as SysInputKey, InputType as SysInputType,
-};
+mod key;
+mod r#type;
+
+use flipperzero_sys::{self as sys, InputEvent as SysInputEvent};
 // public type alias for an anonymous union
 pub use sys::InputEvent__bindgen_ty_1 as SysInputEventSequence;
+
+pub use key::*;
+pub use r#type::*;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub struct InputEvent {
@@ -90,111 +93,4 @@ impl From<FromSysInputTypeError> for FromSysInputEventError {
     fn from(value: FromSysInputTypeError) -> Self {
         Self::InvalidType(value)
     }
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum InputType {
-    Press,
-    Release,
-    Short,
-    Long,
-    Repeat,
-}
-
-impl InputType {
-    pub fn name(self) -> &'static CStr {
-        let this = SysInputType::from(self);
-        // SAFETY: `this` is always a valid enum value
-        // and the returned string is a static string
-        unsafe { CStr::from_ptr(sys::input_get_type_name(this)) }
-    }
-}
-
-impl TryFrom<SysInputType> for InputType {
-    type Error = FromSysInputTypeError;
-
-    fn try_from(value: SysInputType) -> Result<Self, Self::Error> {
-        Ok(match value {
-            sys::InputType_InputTypePress => Self::Press,
-            sys::InputType_InputTypeRelease => Self::Release,
-            sys::InputType_InputTypeShort => Self::Short,
-            sys::InputType_InputTypeLong => Self::Long,
-            sys::InputType_InputTypeRepeat => Self::Repeat,
-            sys::InputType_InputTypeMAX => Err(Self::Error::Max)?,
-            invalid => Err(Self::Error::Invalid(invalid))?,
-        })
-    }
-}
-
-impl From<InputType> for SysInputType {
-    fn from(value: InputType) -> Self {
-        match value {
-            InputType::Press => sys::InputType_InputTypePress,
-            InputType::Release => sys::InputType_InputTypeRelease,
-            InputType::Short => sys::InputType_InputTypeShort,
-            InputType::Long => sys::InputType_InputTypeLong,
-            InputType::Repeat => sys::InputType_InputTypeRepeat,
-        }
-    }
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum FromSysInputTypeError {
-    Max,
-    Invalid(SysInputType),
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum InputKey {
-    Up,
-    Down,
-    Right,
-    Left,
-    Ok,
-    Back,
-}
-
-impl InputKey {
-    pub fn name(self) -> &'static CStr {
-        let this = SysInputKey::from(self);
-        // SAFETY: `this` is always a valid enum value
-        // and the returned string is a static string
-        unsafe { CStr::from_ptr(sys::input_get_key_name(this)) }
-    }
-}
-
-impl TryFrom<SysInputKey> for InputKey {
-    type Error = FromSysInputKeyError;
-
-    fn try_from(value: SysInputKey) -> Result<Self, Self::Error> {
-        Ok(match value {
-            sys::InputKey_InputKeyUp => Self::Up,
-            sys::InputKey_InputKeyDown => Self::Down,
-            sys::InputKey_InputKeyRight => Self::Right,
-            sys::InputKey_InputKeyLeft => Self::Left,
-            sys::InputKey_InputKeyOk => Self::Ok,
-            sys::InputKey_InputKeyBack => Self::Back,
-            sys::InputKey_InputKeyMAX => Err(Self::Error::Max)?,
-            invalid => Err(Self::Error::Invalid(invalid))?,
-        })
-    }
-}
-
-impl From<InputKey> for SysInputKey {
-    fn from(value: InputKey) -> Self {
-        match value {
-            InputKey::Up => sys::InputKey_InputKeyUp,
-            InputKey::Down => sys::InputKey_InputKeyDown,
-            InputKey::Right => sys::InputKey_InputKeyRight,
-            InputKey::Left => sys::InputKey_InputKeyLeft,
-            InputKey::Ok => sys::InputKey_InputKeyOk,
-            InputKey::Back => sys::InputKey_InputKeyBack,
-        }
-    }
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum FromSysInputKeyError {
-    Max,
-    Invalid(SysInputKey),
 }

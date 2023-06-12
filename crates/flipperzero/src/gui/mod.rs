@@ -1,5 +1,7 @@
 //! GUI service.
 
+mod gui_layer;
+
 pub mod canvas;
 pub mod icon;
 pub mod icon_animation;
@@ -15,12 +17,11 @@ use crate::{
 };
 use core::{
     ffi::c_char,
-    fmt::Debug,
     ops::{Deref, DerefMut},
 };
-use flipperzero_sys::{
-    self as sys, furi::UnsafeRecord, Canvas as SysCanvas, Gui as SysGui, GuiLayer as SysGuiLayer,
-};
+use flipperzero_sys::{self as sys, furi::UnsafeRecord, Canvas as SysCanvas, Gui as SysGui};
+
+pub use gui_layer::*;
 
 /// System Gui wrapper.
 pub struct Gui {
@@ -144,49 +145,6 @@ impl<VPC: ViewPortCallbacks> Drop for GuiViewPort<'_, VPC> {
             sys::gui_remove_view_port(gui, view_port);
             // the object has to be deallocated since the ownership was transferred to the `Gui`
             sys::view_port_free(view_port);
-        }
-    }
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum GuiLayer {
-    Desktop,
-    Window,
-    StatusBarLeft,
-    StatusBarRight,
-    Fullscreen,
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub enum FromSysGuiLayerError {
-    Max,
-    Invalid(SysGuiLayer),
-}
-
-impl TryFrom<SysGuiLayer> for GuiLayer {
-    type Error = FromSysGuiLayerError;
-
-    fn try_from(value: SysGuiLayer) -> Result<Self, Self::Error> {
-        Ok(match value {
-            sys::GuiLayer_GuiLayerDesktop => Self::Desktop,
-            sys::GuiLayer_GuiLayerWindow => Self::Window,
-            sys::GuiLayer_GuiLayerStatusBarLeft => Self::StatusBarLeft,
-            sys::GuiLayer_GuiLayerStatusBarRight => Self::StatusBarRight,
-            sys::GuiLayer_GuiLayerFullscreen => Self::Fullscreen,
-            sys::GuiLayer_GuiLayerMAX => Err(Self::Error::Max)?,
-            invalid => Err(Self::Error::Invalid(invalid))?,
-        })
-    }
-}
-
-impl From<GuiLayer> for SysGuiLayer {
-    fn from(value: GuiLayer) -> Self {
-        match value {
-            GuiLayer::Desktop => sys::GuiLayer_GuiLayerDesktop,
-            GuiLayer::Window => sys::GuiLayer_GuiLayerWindow,
-            GuiLayer::StatusBarLeft => sys::GuiLayer_GuiLayerStatusBarLeft,
-            GuiLayer::StatusBarRight => sys::GuiLayer_GuiLayerStatusBarRight,
-            GuiLayer::Fullscreen => sys::GuiLayer_GuiLayerFullscreen,
         }
     }
 }

@@ -182,7 +182,7 @@ impl XbmImage<&'static [u8]> {
     /// Basic usage:
     ///
     /// ```rust
-    /// # use flipperzero::gui::xbm::XbmImage;
+    /// # use flipperzero::xbm::XbmImage;
     /// const IMAGE: XbmImage<&'static [u8]> = XbmImage::new_from_static(4, 4, &[0xFE, 0x12]);
     /// ```
     pub const fn new_from_static(width: u8, height: u8, data: &'static [u8]) -> Self {
@@ -209,7 +209,7 @@ impl<const SIZE: usize> XbmImage<ByteArray<SIZE>> {
     /// Basic usage:
     ///
     /// ```rust
-    /// # use flipperzero::gui::xbm::{XbmImage, ByteArray};
+    /// # use flipperzero::xbm::{XbmImage, ByteArray};
     /// const IMAGE: XbmImage<ByteArray<2>> = XbmImage::new_from_array::<4, 4>([0xFE, 0x12]);
     /// ```
     pub const fn new_from_array<const WIDTH: u8, const HEIGHT: u8>(data: [u8; SIZE]) -> Self {

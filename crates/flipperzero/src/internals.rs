@@ -85,3 +85,15 @@ pub(crate) mod ops {
         }
     }
 }
+
+pub(crate) mod macros {
+    macro_rules! impl_std_error {
+        ($error_type:ident) => {
+            #[cfg(feature = "std")]
+            #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
+            impl std::error::Error for $error_type {}
+        };
+    }
+
+    pub(crate) use impl_std_error;
+}
