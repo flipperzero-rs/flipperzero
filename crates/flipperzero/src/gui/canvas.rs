@@ -1,11 +1,13 @@
 //! Canvases.
 
-use crate::gui::{
-    icon::Icon,
-    icon_animation::{IconAnimation, IconAnimationCallbacks},
+use crate::{
+    gui::{
+        icon::Icon,
+        icon_animation::{IconAnimation, IconAnimationCallbacks},
+    },
+    warn,
     xbm::XbmImage,
 };
-use crate::warn;
 use core::{
     ffi::{c_char, CStr},
     marker::PhantomData,
@@ -13,9 +15,8 @@ use core::{
     ops::Deref,
     ptr::NonNull,
 };
-use flipperzero_sys::Align as SysAlign;
 use flipperzero_sys::{
-    self as sys, Canvas as SysCanvas, CanvasDirection as SysCanvasDirection,
+    self as sys, Align as SysAlign, Canvas as SysCanvas, CanvasDirection as SysCanvasDirection,
     CanvasFontParameters as SysCanvasFontParameters, Color as SysColor, Font as SysFont,
 };
 

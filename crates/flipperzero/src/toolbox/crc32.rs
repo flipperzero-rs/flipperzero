@@ -5,6 +5,8 @@ use flipperzero_sys as sys;
 /// Equivalent to [`crc32fast::Hasher`].
 ///
 /// [1]: https://en.wikipedia.org/wiki/Cyclic_redundancy_check
+///
+/// [`crc32fast::Hasher`]: https://docs.rs/crc32fast/latest/crc32fast/struct.Hasher.html
 #[derive(Clone)]
 pub struct Crc32 {
     state: u32,
@@ -37,6 +39,12 @@ impl Crc32 {
     /// state that might have been passed to a previous [`Crc32::new_with_initial`] call.
     pub fn reset(&mut self) {
         self.state = 0;
+    }
+}
+
+impl Default for Crc32 {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

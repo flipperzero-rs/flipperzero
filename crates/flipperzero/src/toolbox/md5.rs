@@ -30,6 +30,8 @@ use flipperzero_sys as sys;
 /// [2]: https://www.kb.cert.org/vuls/id/836068
 /// [3]: https://dl.acm.org/citation.cfm?id=1724151
 /// [4]: https://tools.ietf.org/html/rfc6151
+///
+/// [`md5::Md5`]: https://docs.rs/md-5/latest/md5/type.Md5.html
 pub type Md5 = CoreWrapper<Md5Core>;
 
 /// Core MD5 hasher.

@@ -153,6 +153,12 @@ impl<'a> Drop for DialogMessage<'a> {
     }
 }
 
+impl<'a> Default for DialogMessage<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl DialogMessageButton {
     fn from_sys(sys: sys::DialogMessageButton) -> Option<Self> {
         match sys {
@@ -165,15 +171,9 @@ impl DialogMessageButton {
     }
 }
 
-impl Default for DialogMessage<'_> {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 /// Displays a simple dialog.
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 pub fn alert(text: &str) {
     // SAFETY: string is known to end with NUL
     const BUTTON_OK: &CStr = unsafe { CStr::from_bytes_with_nul_unchecked(b"OK\0") };

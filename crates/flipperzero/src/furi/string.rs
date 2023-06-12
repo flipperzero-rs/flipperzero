@@ -35,13 +35,16 @@ const WHITESPACE: &[char] = &[
 ///
 /// This is similar to Rust's [`CString`] in that it represents an owned, C-compatible,
 /// nul-terminated string with no nul bytes in the middle. It also has additional methods
-/// to provide the flexibility of Rust's [`String`](alloc::string::String).
+/// to provide the flexibility of Rust's [`String`].
 /// It is used in various APIs of the Flipper Zero SDK.
 ///
 /// This type does not requre the `alloc` feature flag, because it does not use the Rust
 /// allocator. Very short strings (7 bytes or fewer) are stored directly inside the
 /// `FuriString` struct (which is stored on the heap), while longer strings are allocated
 /// on the heap by the Flipper Zero firmware.
+///
+/// [`CString`]: alloc::ffi::CString
+/// [`String`]: alloc::string::String
 #[derive(Eq)]
 pub struct FuriString(NonNull<sys::FuriString>);
 
@@ -296,8 +299,8 @@ impl FuriString {
     ///
     /// Returns `false` if it does not.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`],
-    /// or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     #[inline]
@@ -309,7 +312,8 @@ impl FuriString {
     ///
     /// Returns `false` if it does not.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     pub fn starts_with<P: Pattern>(&self, pat: P) -> bool {
@@ -320,7 +324,8 @@ impl FuriString {
     ///
     /// Returns `false` if it does not.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     pub fn ends_with<P: Pattern>(&self, pat: P) -> bool {
@@ -331,7 +336,8 @@ impl FuriString {
     ///
     /// Returns [`None`] if the pattern doesn't match.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     #[inline]
@@ -344,7 +350,8 @@ impl FuriString {
     ///
     /// Returns [`None`] if the pattern doesn't match.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     #[inline]
@@ -395,7 +402,8 @@ impl FuriString {
 
     /// Repeatedly removes from this string all prefixes and suffixes that match a pattern.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`] or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     pub fn trim_matches<P: Pattern + Copy>(&mut self, pat: P) {
@@ -405,7 +413,8 @@ impl FuriString {
 
     /// Repeatedly removes from this string all prefixes that match a pattern `pat`.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`] or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     ///
@@ -421,7 +430,8 @@ impl FuriString {
 
     /// Repeatedly removes from this string all suffixes that match a pattern `pat`.
     ///
-    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`] or a slice of [`char`]s.
+    /// The pattern can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     ///
@@ -442,7 +452,8 @@ impl FuriString {
     ///
     /// If the string does not start with `prefix`, returns `false`.
     ///
-    /// The prefix can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of [`char`]s.
+    /// The prefix can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     #[must_use]
@@ -457,7 +468,8 @@ impl FuriString {
     ///
     /// If the string does not end with `suffix`, returns `false`.
     ///
-    /// The suffix can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of [`char`]s.
+    /// The suffix can be a `&FuriString`, [`c_char`], `&CStr`, [`char`], or a slice of
+    /// [`char`]s.
     ///
     /// [`char`]: prim@char
     #[must_use]
@@ -520,7 +532,7 @@ impl From<&CStr> for FuriString {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl From<Box<str>> for FuriString {
     fn from(value: Box<str>) -> Self {
         FuriString::from(value.as_ref())
@@ -528,7 +540,7 @@ impl From<Box<str>> for FuriString {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl<'a> From<Cow<'a, str>> for FuriString {
     fn from(value: Cow<'a, str>) -> Self {
         FuriString::from(value.as_ref())
@@ -569,7 +581,7 @@ impl<'a> Extend<&'a CStr> for FuriString {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl Extend<Box<str>> for FuriString {
     fn extend<T: IntoIterator<Item = Box<str>>>(&mut self, iter: T) {
         iter.into_iter().for_each(move |s| self.push_str(&s));
@@ -577,7 +589,7 @@ impl Extend<Box<str>> for FuriString {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl<'a> Extend<Cow<'a, str>> for FuriString {
     fn extend<T: IntoIterator<Item = Cow<'a, str>>>(&mut self, iter: T) {
         iter.into_iter().for_each(move |s| self.push_str(&s));
@@ -634,7 +646,7 @@ impl<'a> FromIterator<&'a CStr> for FuriString {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl FromIterator<Box<str>> for FuriString {
     fn from_iter<T: IntoIterator<Item = Box<str>>>(iter: T) -> Self {
         let mut buf = FuriString::new();
@@ -644,7 +656,7 @@ impl FromIterator<Box<str>> for FuriString {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl<'a> FromIterator<Cow<'a, str>> for FuriString {
     fn from_iter<T: IntoIterator<Item = Cow<'a, str>>>(iter: T) -> Self {
         let mut buf = FuriString::new();
@@ -713,7 +725,7 @@ impl PartialEq<FuriString> for &str {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl PartialEq<CString> for FuriString {
     fn eq(&self, other: &CString) -> bool {
         self.eq(other.as_c_str())
@@ -721,7 +733,7 @@ impl PartialEq<CString> for FuriString {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(feature = "unstable_docs", doc(cfg(feature = "alloc")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 impl PartialEq<FuriString> for CString {
     fn eq(&self, other: &FuriString) -> bool {
         other.eq(self.as_c_str())
@@ -798,7 +810,7 @@ impl ufmt::uDisplay for FuriString {
     }
 }
 
-impl fmt::Write for FuriString {
+impl Write for FuriString {
     #[inline]
     fn write_str(&mut self, s: &str) -> fmt::Result {
         self.push_str(s);

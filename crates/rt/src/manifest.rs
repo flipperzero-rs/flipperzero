@@ -20,7 +20,7 @@ const DEFAULT_STACK_SIZE: u16 = 2048; // 2 KiB
 ///     app_version = 1,
 ///     has_icon = true,
 ///     icon: "app.icon",
-/// )
+/// );
 /// ```
 #[macro_export]
 macro_rules! manifest {

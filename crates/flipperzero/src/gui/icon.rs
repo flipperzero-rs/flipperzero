@@ -1,4 +1,5 @@
-use crate::gui::xbm::XbmImage;
+#[cfg(feature = "xbm")]
+use crate::xbm::XbmImage;
 use core::ptr::NonNull;
 use flipperzero_sys::{self as sys, Icon as SysIcon};
 
@@ -49,6 +50,8 @@ impl Icon {
         (self.get_width(), self.get_height())
     }
 
+    #[cfg(feature = "xbm")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "xbm")))]
     pub fn get_data(&self) -> XbmImage<&'_ [u8]> {
         let (width, height) = self.get_dimensions();
 

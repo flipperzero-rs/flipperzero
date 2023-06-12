@@ -8,7 +8,13 @@ license.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 autobins = false
+autotests = false
 autobenches = false
+
+[package.metadata.docs.rs]
+default-target = "thumbv7em-none-eabihf"
+targets = []
+all-features = true
 
 [lib]
 bench = false
@@ -43,20 +49,17 @@ sha2 = { version = "0.10", default-features = false }
 
 [features]
 
-## Default features.
-default = []
+#! ## Core features
 
 ## Enables features requiring an allocator.
 ##
-## This will require you to set up an allocator such as by the following:
+## This will require you to set the global allocator
+## by importing the `flipperzero_alloc`:
 ##
 ## ```
-## extern crate flipperzero_alloc as alloc;
+## extern crate alloc;
+## extern crate flipperzero_alloc;
 ## ```
-##
-## Note that the `as alloc` part is optional but is helpful
-## if you want to reference items from `alloc` crate all of which are re-exported by `flipperzero_alloc`
-## such as `alloc::string::ToString` instead of `flipperzero_alloc::string::ToString`.
 alloc = []
 
 #! ## Service features.
@@ -87,6 +90,13 @@ service-gui = ["alloc", "service-input"]
 service-dialogs = ["service-gui"]
 ## Enables Dolphin APIs of Flipper.
 service-dolphin = []
+
+#! ## Utilities
+#!
+#! These APIs provide extra functionality required for specific use-cases.
+
+## Enables APIs for working with XBM-images.
+xbm = []
 
 #! ## Unstable features
 #!
@@ -124,7 +134,7 @@ required-features = ["service-notification"]
 
 [[example]]
 name = "gui"
-required-features = ["service-gui"]
+required-features = ["service-gui", "xbm"]
 
 [[example]]
 name = "images"

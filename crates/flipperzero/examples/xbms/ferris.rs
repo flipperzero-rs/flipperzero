@@ -1,4 +1,4 @@
-use flipperzero::gui::xbm::{ByteArray, XbmImage};
+use flipperzero::xbm::{ByteArray, XbmImage};
 
 pub const IMAGE: XbmImage<ByteArray<192>> = flipperzero::xbm! {
   #define ferris_width 48

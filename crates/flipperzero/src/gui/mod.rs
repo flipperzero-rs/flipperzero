@@ -5,7 +5,6 @@ pub mod icon;
 pub mod icon_animation;
 pub mod view;
 pub mod view_port;
-pub mod xbm;
 
 use crate::{
     gui::{

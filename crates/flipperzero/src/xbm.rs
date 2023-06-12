@@ -369,7 +369,7 @@ macro_rules! xbm {
             };
         }
     ) => {{
-        $crate::gui::xbm::XbmImage::new_from_array::<$width, $height>([$($byte,)*])
+        $crate::xbm::XbmImage::new_from_array::<$width, $height>([$($byte,)*])
     }};
 }
 

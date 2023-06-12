@@ -2,6 +2,7 @@
 //! *Note:* This currently requires using nightly.
 
 #![no_std]
+#![deny(rustdoc::broken_intra_doc_links)]
 
 use core::alloc::{GlobalAlloc, Layout};
 use core::ffi::c_void;

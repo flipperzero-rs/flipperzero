@@ -19,7 +19,6 @@ use core::{ffi::CStr, time::Duration};
 
 use flipperzero::{
     furi::message_queue::MessageQueue,
-    gui::xbm::{ByteArray, XbmImage},
     gui::{
         canvas::CanvasView,
         view_port::{ViewPort, ViewPortCallbacks},
@@ -27,6 +26,7 @@ use flipperzero::{
     },
     input::{InputEvent, InputKey, InputType},
     println,
+    xbm::{ByteArray, XbmImage},
 };
 use flipperzero_rt::{entry, manifest};
 use flipperzero_sys::furi::Status;

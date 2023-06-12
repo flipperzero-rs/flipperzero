@@ -4,6 +4,7 @@
 //! is linked directly into the `.text` section.
 
 #![no_std]
+#![deny(rustdoc::broken_intra_doc_links)]
 
 pub mod manifest;
 pub mod panic_handler;
@@ -11,6 +12,10 @@ mod thread;
 
 /// The C entry point.
 /// This just delegates to the user's Rust entry point.
+///
+/// # Safety
+///
+/// This should never be called manually.
 #[no_mangle]
 pub unsafe extern "C" fn _start(args: *mut u8) -> i32 {
     extern "Rust" {
