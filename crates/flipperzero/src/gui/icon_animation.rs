@@ -10,7 +10,7 @@ use flipperzero_sys::{self as sys, IconAnimation as SysIconAnimation};
 /// System Icon Animation wrapper.
 pub struct IconAnimation<'a, C: IconAnimationCallbacks> {
     raw: NonNull<SysIconAnimation>,
-    callbacks: Box<C>,
+    callbacks: NonNull<C>,
     _parent_lifetime: PhantomData<&'a ()>,
 }
 
@@ -21,12 +21,15 @@ impl<'a, C: IconAnimationCallbacks> IconAnimation<'a, C> {
         // or stops the system on OOM,
         // `icon` is a valid pointer and `icon` outlives this animation
         let raw = unsafe { NonNull::new_unchecked(sys::icon_animation_alloc(icon)) };
-        let callbacks = Box::new(callbacks);
+        let callbacks = Box::into_raw(Box::new(callbacks));
 
-        let icon_animation = Self {
-            raw,
-            callbacks,
-            _parent_lifetime: PhantomData,
+        let icon_animation = {
+            let callbacks = unsafe { NonNull::new_unchecked(callbacks) };
+            Self {
+                raw,
+                callbacks,
+                _parent_lifetime: PhantomData,
+            }
         };
 
         {
@@ -49,7 +52,7 @@ impl<'a, C: IconAnimationCallbacks> IconAnimation<'a, C> {
             ) {
                 let raw = raw.as_ptr();
                 let callback = Some(dispatch_update::<C> as _);
-                let context = (&*icon_animation.callbacks as *const C).cast_mut().cast();
+                let context = callbacks.cast();
 
                 // SAFETY: `raw` and `callback` are valid
                 // and `context` is valid as the box lives with this struct
@@ -105,6 +108,10 @@ impl<C: IconAnimationCallbacks> Drop for IconAnimation<'_, C> {
         // SAFETY: `raw` is a valid pointer
         // which should have been created via `icon_animation_alloc`
         unsafe { sys::icon_animation_free(raw) }
+
+        let callbacks = self.callbacks.as_ptr();
+        // SAFETY: `callbacks` has been created via `Box`
+        let _ = unsafe { Box::from_raw(callbacks) };
     }
 }
 

@@ -70,7 +70,7 @@ pub unsafe extern "C" fn text_input_callback(context: *mut c_void) {
 }
 
 pub unsafe extern "C" fn navigation_event_callback(context: *mut c_void) -> bool {
-    let view_dispatcher = context as *mut sys::ViewDispatcher;
+    let view_dispatcher = context as *mut ViewDispatcher;
     sys::view_dispatcher_stop(view_dispatcher);
     sys::view_dispatcher_remove_view(view_dispatcher, AppView::Widget as u32);
     sys::view_dispatcher_remove_view(view_dispatcher, AppView::TextInput as u32);

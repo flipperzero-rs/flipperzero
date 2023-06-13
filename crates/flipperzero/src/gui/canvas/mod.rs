@@ -6,13 +6,12 @@ mod color;
 mod font;
 mod font_parameters;
 
-use crate::{
-    gui::{
-        icon::Icon,
-        icon_animation::{IconAnimation, IconAnimationCallbacks},
-    },
-    xbm::XbmImage,
+use crate::gui::{
+    icon::Icon,
+    icon_animation::{IconAnimation, IconAnimationCallbacks},
 };
+#[cfg(feature = "xbm")]
+use crate::xbm::XbmImage;
 use core::{
     ffi::{c_char, CStr},
     marker::PhantomData,
@@ -138,11 +137,11 @@ impl CanvasView<'_> {
         let raw = self.raw.as_ptr();
         // SAFETY: `raw` is always valid
         let font = font.into();
-        // SAFETY: `raw` is always a valid pointer
+        // SAFETY: `raw` is a valid pointer
         // and `font` is guaranteed to be a valid value by `From` implementation
         // `cast_mut` is required since `NonNull` can only be created froma mut-pointer
         let raw = unsafe { sys::canvas_get_font_params(raw, font) }.cast_mut();
-        // SAFETY: `raw` is always a valid pointer
+        // SAFETY: `raw` is a valid pointer
         let raw = unsafe { NonNull::new_unchecked(raw) };
         OwnedCanvasFontParameters {
             raw,

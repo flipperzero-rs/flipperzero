@@ -76,13 +76,13 @@ impl Gui {
 
     pub fn get_frame_buffer_size(&self) -> usize {
         let raw = self.as_raw();
-        // SAFETY: `raw` is always a valid pointer
+        // SAFETY: `raw` is a valid pointer
         unsafe { sys::gui_get_framebuffer_size(raw) }
     }
 
     pub fn set_lockdown(&self, lockdown: bool) {
         let raw = self.raw.as_raw();
-        // SAFETY: `raw` is always a valid pointer
+        // SAFETY: `raw` is a valid pointer
         unsafe { sys::gui_set_lockdown(raw, lockdown) }
     }
 
@@ -91,7 +91,7 @@ impl Gui {
     pub fn direct_draw_acquire(&mut self) -> ExclusiveCanvas<'_> {
         let raw = self.as_raw();
 
-        // SAFETY: `raw` is always a valid pointer
+        // SAFETY: `raw` is a valid pointer
         let canvas = unsafe { CanvasView::from_raw(sys::gui_direct_draw_acquire(raw)) };
 
         ExclusiveCanvas { gui: self, canvas }

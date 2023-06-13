@@ -19,7 +19,7 @@ pub use orientation::*;
 /// System ViewPort.
 pub struct ViewPort<C: ViewPortCallbacks> {
     raw: NonNull<SysViewPort>,
-    callbacks: Box<C>,
+    callbacks: NonNull<C>,
 }
 
 impl<C: ViewPortCallbacks> ViewPort<C> {
@@ -38,9 +38,13 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
         // SAFETY: allocation either succeeds producing the valid pointer
         // or stops the system on OOM
         let raw = unsafe { NonNull::new_unchecked(sys::view_port_alloc()) };
-        let callbacks = Box::new(callbacks);
+        let callbacks = Box::into_raw(Box::new(callbacks));
 
-        let view_port = Self { raw, callbacks };
+        let view_port = {
+            // SAFETY: `callbacks` has been created via `Box`
+            let callbacks = unsafe { NonNull::new_unchecked(callbacks) };
+            Self { raw, callbacks }
+        };
 
         {
             pub unsafe extern "C" fn dispatch_draw<C: ViewPortCallbacks>(
@@ -60,7 +64,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
                 C::on_draw as *const c_void,
                 <() as ViewPortCallbacks>::on_draw as *const c_void,
             ) {
-                let context = (&*view_port.callbacks as *const C).cast_mut().cast();
+                let context = callbacks.cast();
                 let raw = raw.as_ptr();
                 let callback = Some(dispatch_draw::<C> as _);
                 // SAFETY: `raw` is valid
@@ -87,7 +91,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
                 C::on_input as *const c_void,
                 <() as ViewPortCallbacks>::on_input as *const c_void,
             ) {
-                let context = (&*view_port.callbacks as *const C).cast_mut().cast();
+                let context = callbacks.cast();
                 let raw = raw.as_ptr();
                 let callback = Some(dispatch_input::<C> as _);
 
@@ -353,6 +357,10 @@ impl<C: ViewPortCallbacks> Drop for ViewPort<C> {
             sys::view_port_enabled_set(raw, false);
             sys::view_port_free(raw);
         }
+
+        let callbacks = self.callbacks.as_ptr();
+        // SAFETY: `callbacks` has been created via `Box`
+        let _ = unsafe { Box::from_raw(callbacks) };
     }
 }
 

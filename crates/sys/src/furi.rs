@@ -104,11 +104,7 @@ impl<T> UnsafeRecord<T> {
     /// # Safety
     ///
     /// The caller must ensure that `record_name` lives for the
-    /// duration of the object lifetime.
-    ///
-    /// # Safety
-    ///
-    /// The caller must provide a valid C-string `name`.
+    /// duration of the object lifetime and that it is a valid C-string.
     pub unsafe fn open(name: *const c_char) -> Self {
         // SAFETY: the created pointer is guaranteed to be valid
         let data = unsafe { crate::furi_record_open(name) } as *mut T;

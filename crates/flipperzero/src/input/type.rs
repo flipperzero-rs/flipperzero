@@ -40,7 +40,7 @@ impl InputType {
     /// ```
     pub fn name(self) -> &'static CStr {
         let this = SysInputType::from(self);
-        // SAFETY: `this` is always a valid enum value
+        // SAFETY: `this` is a valid enum value
         // and the returned string is a static string
         unsafe { CStr::from_ptr(sys::input_get_type_name(this)) }
     }
