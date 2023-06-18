@@ -10,7 +10,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "0.10.1"
+version = "0.10.0"
 description = "Rust for Flipper Zero"
 edition = "2021"
 rust-version = "1.70.0"
@@ -19,7 +19,7 @@ readme = "../README.md"
 license = "MIT"
 
 [workspace.dependencies]
-flipperzero-sys = { path = "sys", version = "0.10.1" }
+flipperzero-sys = { path = "sys", version = "0.10.0" }
 flipperzero-rt = { path = "rt", version = "0.10.0" }
 flipperzero-alloc = { path = "alloc", version = "0.10.0" }
 flipperzero-test = { path = "test", version = "0.10.0" }
