@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 1835010;
+pub const API_VERSION: u32 = 1966081;
 pub type wint_t = core::ffi::c_int;
 pub type _off_t = core::ffi::c_long;
 pub type _fpos_t = core::ffi::c_long;
@@ -1689,6 +1689,64 @@ extern "C" {
 }
 extern "C" {
     pub fn xTaskGetSchedulerState() -> BaseType_t;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __FuriCriticalInfo {
+    pub isrm: u32,
+    pub from_isr: bool,
+    pub kernel_running: bool,
+}
+#[test]
+fn bindgen_test_layout___FuriCriticalInfo() {
+    const UNINIT: ::core::mem::MaybeUninit<__FuriCriticalInfo> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<__FuriCriticalInfo>(),
+        8usize,
+        concat!("Size of: ", stringify!(__FuriCriticalInfo))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<__FuriCriticalInfo>(),
+        4usize,
+        concat!("Alignment of ", stringify!(__FuriCriticalInfo))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).isrm) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(__FuriCriticalInfo),
+            "::",
+            stringify!(isrm)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).from_isr) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(__FuriCriticalInfo),
+            "::",
+            stringify!(from_isr)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).kernel_running) as usize - ptr as usize },
+        5usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(__FuriCriticalInfo),
+            "::",
+            stringify!(kernel_running)
+        )
+    );
+}
+extern "C" {
+    pub fn __furi_critical_enter() -> __FuriCriticalInfo;
+}
+extern "C" {
+    pub fn __furi_critical_exit(info: __FuriCriticalInfo);
 }
 #[doc = "Operation completed successfully.\n\n"]
 pub const FuriStatus_FuriStatusOk: FuriStatus = 0;
@@ -6101,7 +6159,7 @@ fn bindgen_test_layout_DolphinStats() {
 }
 extern "C" {
     #[doc = "Deed complete notification. Call it on deed completion. See dolphin_deed.h for available deeds. In futures it will become part of assets. Thread safe, async\n\n"]
-    pub fn dolphin_deed(dolphin: *mut Dolphin, deed: DolphinDeed);
+    pub fn dolphin_deed(deed: DolphinDeed);
 }
 extern "C" {
     #[doc = "Retrieve dolphin stats Thread safe, blocking\n\n"]
@@ -12159,6 +12217,11 @@ fn bindgen_test_layout_DigitalSignal() {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+pub struct DigitalSequence {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct NfcaSignal {
     pub one: *mut DigitalSignal,
     pub zero: *mut DigitalSignal,
@@ -13198,6 +13261,8 @@ pub const NotificationMessageType_NotificationMessageTypeForceDisplayBrightnessS
     NotificationMessageType = 16;
 pub const NotificationMessageType_NotificationMessageTypeLedBrightnessSettingApply:
     NotificationMessageType = 17;
+pub const NotificationMessageType_NotificationMessageTypeLcdContrastUpdate:
+    NotificationMessageType = 18;
 pub type NotificationMessageType = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -13702,6 +13767,9 @@ extern "C" {
     pub static message_force_display_brightness_setting_1f: NotificationMessage;
 }
 extern "C" {
+    pub static message_lcd_contrast_update: NotificationMessage;
+}
+extern "C" {
     #[doc = "Message sequences\n\n"]
     pub static sequence_reset_red: NotificationSequence;
 }
@@ -13850,6 +13918,9 @@ extern "C" {
 }
 extern "C" {
     pub static sequence_audiovisual_alert: NotificationSequence;
+}
+extern "C" {
+    pub static sequence_lcd_contrast_update: NotificationSequence;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -19669,6 +19740,633 @@ fn bindgen_test_layout_MifareDesfireData() {
         )
     );
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct PulseReader {
+    _unused: [u8; 0],
+}
+extern "C" {
+    pub fn nfc_util_num2bytes(src: u64, len: u8, dest: *mut u8);
+}
+extern "C" {
+    pub fn nfc_util_bytes2num(src: *const u8, len: u8) -> u64;
+}
+extern "C" {
+    pub fn nfc_util_even_parity32(data: u32) -> u8;
+}
+extern "C" {
+    pub fn nfc_util_odd_parity8(data: u8) -> u8;
+}
+extern "C" {
+    pub fn nfc_util_odd_parity(src: *const u8, dst: *mut u8, len: u8);
+}
+pub const NfcVAuthMethod_NfcVAuthMethodManual: NfcVAuthMethod = 0;
+pub const NfcVAuthMethod_NfcVAuthMethodTonieBox: NfcVAuthMethod = 1;
+pub type NfcVAuthMethod = core::ffi::c_uchar;
+pub const NfcVSubtype_NfcVTypePlain: NfcVSubtype = 0;
+pub const NfcVSubtype_NfcVTypeSlix: NfcVSubtype = 1;
+pub const NfcVSubtype_NfcVTypeSlixS: NfcVSubtype = 2;
+pub const NfcVSubtype_NfcVTypeSlixL: NfcVSubtype = 3;
+pub const NfcVSubtype_NfcVTypeSlix2: NfcVSubtype = 4;
+pub const NfcVSubtype_NfcVTypeSniff: NfcVSubtype = 255;
+pub type NfcVSubtype = core::ffi::c_uchar;
+pub const NfcVSendFlags_NfcVSendFlagsNormal: NfcVSendFlags = 0;
+pub const NfcVSendFlags_NfcVSendFlagsSof: NfcVSendFlags = 1;
+pub const NfcVSendFlags_NfcVSendFlagsCrc: NfcVSendFlags = 2;
+pub const NfcVSendFlags_NfcVSendFlagsEof: NfcVSendFlags = 4;
+pub const NfcVSendFlags_NfcVSendFlagsOneSubcarrier: NfcVSendFlags = 0;
+pub const NfcVSendFlags_NfcVSendFlagsTwoSubcarrier: NfcVSendFlags = 8;
+pub const NfcVSendFlags_NfcVSendFlagsLowRate: NfcVSendFlags = 0;
+pub const NfcVSendFlags_NfcVSendFlagsHighRate: NfcVSendFlags = 16;
+pub type NfcVSendFlags = core::ffi::c_uchar;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct NfcVSlixData {
+    pub key_read: [u8; 4usize],
+    pub key_write: [u8; 4usize],
+    pub key_privacy: [u8; 4usize],
+    pub key_destroy: [u8; 4usize],
+    pub key_eas: [u8; 4usize],
+    pub rand: [u8; 2usize],
+    pub privacy: bool,
+}
+#[test]
+fn bindgen_test_layout_NfcVSlixData() {
+    const UNINIT: ::core::mem::MaybeUninit<NfcVSlixData> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<NfcVSlixData>(),
+        23usize,
+        concat!("Size of: ", stringify!(NfcVSlixData))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<NfcVSlixData>(),
+        1usize,
+        concat!("Alignment of ", stringify!(NfcVSlixData))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_read) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVSlixData),
+            "::",
+            stringify!(key_read)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_write) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVSlixData),
+            "::",
+            stringify!(key_write)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_privacy) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVSlixData),
+            "::",
+            stringify!(key_privacy)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_destroy) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVSlixData),
+            "::",
+            stringify!(key_destroy)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_eas) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVSlixData),
+            "::",
+            stringify!(key_eas)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).rand) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVSlixData),
+            "::",
+            stringify!(rand)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).privacy) as usize - ptr as usize },
+        22usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVSlixData),
+            "::",
+            stringify!(privacy)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union NfcVSubtypeData {
+    pub slix: NfcVSlixData,
+}
+#[test]
+fn bindgen_test_layout_NfcVSubtypeData() {
+    const UNINIT: ::core::mem::MaybeUninit<NfcVSubtypeData> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<NfcVSubtypeData>(),
+        23usize,
+        concat!("Size of: ", stringify!(NfcVSubtypeData))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<NfcVSubtypeData>(),
+        1usize,
+        concat!("Alignment of ", stringify!(NfcVSubtypeData))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).slix) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVSubtypeData),
+            "::",
+            stringify!(slix)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct NfcVEmuAirSignals {
+    pub nfcv_resp_sof: *mut DigitalSignal,
+    pub nfcv_resp_one: *mut DigitalSignal,
+    pub nfcv_resp_zero: *mut DigitalSignal,
+    pub nfcv_resp_eof: *mut DigitalSignal,
+}
+#[test]
+fn bindgen_test_layout_NfcVEmuAirSignals() {
+    const UNINIT: ::core::mem::MaybeUninit<NfcVEmuAirSignals> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<NfcVEmuAirSignals>(),
+        16usize,
+        concat!("Size of: ", stringify!(NfcVEmuAirSignals))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<NfcVEmuAirSignals>(),
+        4usize,
+        concat!("Alignment of ", stringify!(NfcVEmuAirSignals))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).nfcv_resp_sof) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVEmuAirSignals),
+            "::",
+            stringify!(nfcv_resp_sof)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).nfcv_resp_one) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVEmuAirSignals),
+            "::",
+            stringify!(nfcv_resp_one)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).nfcv_resp_zero) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVEmuAirSignals),
+            "::",
+            stringify!(nfcv_resp_zero)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).nfcv_resp_eof) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVEmuAirSignals),
+            "::",
+            stringify!(nfcv_resp_eof)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct NfcVEmuAir {
+    pub reader_signal: *mut PulseReader,
+    pub nfcv_resp_pulse: *mut DigitalSignal,
+    pub nfcv_resp_half_pulse: *mut DigitalSignal,
+    pub nfcv_resp_unmod: *mut DigitalSignal,
+    pub signals_high: NfcVEmuAirSignals,
+    pub signals_low: NfcVEmuAirSignals,
+    pub nfcv_signal: *mut DigitalSequence,
+}
+#[test]
+fn bindgen_test_layout_NfcVEmuAir() {
+    const UNINIT: ::core::mem::MaybeUninit<NfcVEmuAir> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<NfcVEmuAir>(),
+        52usize,
+        concat!("Size of: ", stringify!(NfcVEmuAir))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<NfcVEmuAir>(),
+        4usize,
+        concat!("Alignment of ", stringify!(NfcVEmuAir))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).reader_signal) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVEmuAir),
+            "::",
+            stringify!(reader_signal)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).nfcv_resp_pulse) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVEmuAir),
+            "::",
+            stringify!(nfcv_resp_pulse)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).nfcv_resp_half_pulse) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVEmuAir),
+            "::",
+            stringify!(nfcv_resp_half_pulse)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).nfcv_resp_unmod) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVEmuAir),
+            "::",
+            stringify!(nfcv_resp_unmod)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).signals_high) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVEmuAir),
+            "::",
+            stringify!(signals_high)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).signals_low) as usize - ptr as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVEmuAir),
+            "::",
+            stringify!(signals_low)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).nfcv_signal) as usize - ptr as usize },
+        48usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVEmuAir),
+            "::",
+            stringify!(nfcv_signal)
+        )
+    );
+}
+pub type NfcVEmuProtocolHandler = ::core::option::Option<
+    unsafe extern "C" fn(
+        tx_rx: *mut FuriHalNfcTxRxContext,
+        nfc_data: *mut FuriHalNfcDevData,
+        nfcv_data: *mut core::ffi::c_void,
+    ),
+>;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct NfcVData {
+    pub dsfid: u8,
+    pub afi: u8,
+    pub ic_ref: u8,
+    pub block_num: u16,
+    pub block_size: u8,
+    pub data: [u8; 8192usize],
+    pub security_status: [u8; 257usize],
+    pub selected: bool,
+    pub quiet: bool,
+    pub modified: bool,
+    pub ready: bool,
+    pub echo_mode: bool,
+    pub sub_type: NfcVSubtype,
+    pub sub_data: NfcVSubtypeData,
+    pub auth_method: NfcVAuthMethod,
+    pub emu_air: NfcVEmuAir,
+    pub frame: *mut u8,
+    pub frame_length: u8,
+    pub eof_timestamp: u32,
+    pub emu_protocol_handler: NfcVEmuProtocolHandler,
+    pub emu_protocol_ctx: *mut core::ffi::c_void,
+    pub last_command: [core::ffi::c_char; 128usize],
+    pub error: [core::ffi::c_char; 128usize],
+}
+#[test]
+fn bindgen_test_layout_NfcVData() {
+    const UNINIT: ::core::mem::MaybeUninit<NfcVData> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<NfcVData>(),
+        8816usize,
+        concat!("Size of: ", stringify!(NfcVData))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<NfcVData>(),
+        4usize,
+        concat!("Alignment of ", stringify!(NfcVData))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).dsfid) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(dsfid)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).afi) as usize - ptr as usize },
+        1usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(afi)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).ic_ref) as usize - ptr as usize },
+        2usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(ic_ref)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).block_num) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(block_num)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).block_size) as usize - ptr as usize },
+        6usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(block_size)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        7usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(data)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).security_status) as usize - ptr as usize },
+        8199usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(security_status)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).selected) as usize - ptr as usize },
+        8456usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(selected)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).quiet) as usize - ptr as usize },
+        8457usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(quiet)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).modified) as usize - ptr as usize },
+        8458usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(modified)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).ready) as usize - ptr as usize },
+        8459usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(ready)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).echo_mode) as usize - ptr as usize },
+        8460usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(echo_mode)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).sub_type) as usize - ptr as usize },
+        8461usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(sub_type)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).sub_data) as usize - ptr as usize },
+        8462usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(sub_data)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).auth_method) as usize - ptr as usize },
+        8485usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(auth_method)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).emu_air) as usize - ptr as usize },
+        8488usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(emu_air)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).frame) as usize - ptr as usize },
+        8540usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(frame)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).frame_length) as usize - ptr as usize },
+        8544usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(frame_length)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).eof_timestamp) as usize - ptr as usize },
+        8548usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(eof_timestamp)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).emu_protocol_handler) as usize - ptr as usize },
+        8552usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(emu_protocol_handler)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).emu_protocol_ctx) as usize - ptr as usize },
+        8556usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(emu_protocol_ctx)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).last_command) as usize - ptr as usize },
+        8560usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(last_command)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
+        8688usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcVData),
+            "::",
+            stringify!(error)
+        )
+    );
+}
+extern "C" {
+    pub fn nfcv_emu_init(nfc_data: *mut FuriHalNfcDevData, nfcv_data: *mut NfcVData);
+}
+extern "C" {
+    pub fn nfcv_emu_deinit(nfcv_data: *mut NfcVData);
+}
+extern "C" {
+    pub fn nfcv_emu_loop(
+        tx_rx: *mut FuriHalNfcTxRxContext,
+        nfc_data: *mut FuriHalNfcDevData,
+        nfcv_data: *mut NfcVData,
+        timeout_ms: u32,
+    ) -> bool;
+}
+extern "C" {
+    pub fn nfcv_emu_send(
+        tx_rx: *mut FuriHalNfcTxRxContext,
+        nfcv: *mut NfcVData,
+        data: *mut u8,
+        length: u8,
+        flags: NfcVSendFlags,
+        send_time: u32,
+    );
+}
 pub type NfcLoadingCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void, state: bool)>;
 pub const NfcProtocol_NfcDeviceProtocolUnknown: NfcProtocol = 0;
@@ -19676,12 +20374,14 @@ pub const NfcProtocol_NfcDeviceProtocolEMV: NfcProtocol = 1;
 pub const NfcProtocol_NfcDeviceProtocolMifareUl: NfcProtocol = 2;
 pub const NfcProtocol_NfcDeviceProtocolMifareClassic: NfcProtocol = 3;
 pub const NfcProtocol_NfcDeviceProtocolMifareDesfire: NfcProtocol = 4;
+pub const NfcProtocol_NfcDeviceProtocolNfcV: NfcProtocol = 5;
 pub type NfcProtocol = core::ffi::c_uchar;
 pub const NfcDeviceSaveFormat_NfcDeviceSaveFormatUid: NfcDeviceSaveFormat = 0;
 pub const NfcDeviceSaveFormat_NfcDeviceSaveFormatBankCard: NfcDeviceSaveFormat = 1;
 pub const NfcDeviceSaveFormat_NfcDeviceSaveFormatMifareUl: NfcDeviceSaveFormat = 2;
 pub const NfcDeviceSaveFormat_NfcDeviceSaveFormatMifareClassic: NfcDeviceSaveFormat = 3;
 pub const NfcDeviceSaveFormat_NfcDeviceSaveFormatMifareDesfire: NfcDeviceSaveFormat = 4;
+pub const NfcDeviceSaveFormat_NfcDeviceSaveFormatNfcV: NfcDeviceSaveFormat = 5;
 pub type NfcDeviceSaveFormat = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -19845,6 +20545,7 @@ pub union NfcDeviceData__bindgen_ty_2 {
     pub mf_ul_data: MfUltralightData,
     pub mf_classic_data: MfClassicData,
     pub mf_df_data: MifareDesfireData,
+    pub nfcv_data: NfcVData,
 }
 #[test]
 fn bindgen_test_layout_NfcDeviceData__bindgen_ty_2() {
@@ -19853,7 +20554,7 @@ fn bindgen_test_layout_NfcDeviceData__bindgen_ty_2() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<NfcDeviceData__bindgen_ty_2>(),
-        4152usize,
+        8816usize,
         concat!("Size of: ", stringify!(NfcDeviceData__bindgen_ty_2))
     );
     assert_eq!(
@@ -19901,6 +20602,16 @@ fn bindgen_test_layout_NfcDeviceData__bindgen_ty_2() {
             stringify!(mf_df_data)
         )
     );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).nfcv_data) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(NfcDeviceData__bindgen_ty_2),
+            "::",
+            stringify!(nfcv_data)
+        )
+    );
 }
 #[test]
 fn bindgen_test_layout_NfcDeviceData() {
@@ -19908,7 +20619,7 @@ fn bindgen_test_layout_NfcDeviceData() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<NfcDeviceData>(),
-        4256usize,
+        8920usize,
         concat!("Size of: ", stringify!(NfcDeviceData))
     );
     assert_eq!(
@@ -19948,7 +20659,7 @@ fn bindgen_test_layout_NfcDeviceData() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).parsed_data) as usize - ptr as usize },
-        4248usize,
+        8912usize,
         concat!(
             "Offset of field: ",
             stringify!(NfcDeviceData),
@@ -19977,7 +20688,7 @@ fn bindgen_test_layout_NfcDevice() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<NfcDevice>(),
-        4312usize,
+        8976usize,
         concat!("Size of: ", stringify!(NfcDevice))
     );
     assert_eq!(
@@ -20017,7 +20728,7 @@ fn bindgen_test_layout_NfcDevice() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).dev_name) as usize - ptr as usize },
-        4264usize,
+        8928usize,
         concat!(
             "Offset of field: ",
             stringify!(NfcDevice),
@@ -20027,7 +20738,7 @@ fn bindgen_test_layout_NfcDevice() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).load_path) as usize - ptr as usize },
-        4288usize,
+        8952usize,
         concat!(
             "Offset of field: ",
             stringify!(NfcDevice),
@@ -20037,7 +20748,7 @@ fn bindgen_test_layout_NfcDevice() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).folder) as usize - ptr as usize },
-        4292usize,
+        8956usize,
         concat!(
             "Offset of field: ",
             stringify!(NfcDevice),
@@ -20047,7 +20758,7 @@ fn bindgen_test_layout_NfcDevice() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).format) as usize - ptr as usize },
-        4296usize,
+        8960usize,
         concat!(
             "Offset of field: ",
             stringify!(NfcDevice),
@@ -20057,7 +20768,7 @@ fn bindgen_test_layout_NfcDevice() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).shadow_file_exist) as usize - ptr as usize },
-        4297usize,
+        8961usize,
         concat!(
             "Offset of field: ",
             stringify!(NfcDevice),
@@ -20067,7 +20778,7 @@ fn bindgen_test_layout_NfcDevice() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).loading_cb) as usize - ptr as usize },
-        4300usize,
+        8964usize,
         concat!(
             "Offset of field: ",
             stringify!(NfcDevice),
@@ -20077,7 +20788,7 @@ fn bindgen_test_layout_NfcDevice() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).loading_cb_ctx) as usize - ptr as usize },
-        4304usize,
+        8968usize,
         concat!(
             "Offset of field: ",
             stringify!(NfcDevice),
@@ -20132,21 +20843,6 @@ extern "C" {
         callback: NfcLoadingCallback,
         context: *mut core::ffi::c_void,
     );
-}
-extern "C" {
-    pub fn nfc_util_num2bytes(src: u64, len: u8, dest: *mut u8);
-}
-extern "C" {
-    pub fn nfc_util_bytes2num(src: *const u8, len: u8) -> u64;
-}
-extern "C" {
-    pub fn nfc_util_even_parity32(data: u32) -> u8;
-}
-extern "C" {
-    pub fn nfc_util_odd_parity8(data: u8) -> u8;
-}
-extern "C" {
-    pub fn nfc_util_odd_parity(src: *const u8, dst: *mut u8, len: u8);
 }
 extern "C" {
     pub fn maxim_crc8(data: *const u8, data_size: u8, crc_init: u8) -> u8;
@@ -21018,12 +21714,74 @@ extern "C" {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct SubGhzKeystore {
+pub struct SubGhzEnvironment {
     _unused: [u8; 0],
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct SubGhzEnvironment {
+pub struct SubGhzProtocolRegistry {
+    pub items: *mut *const SubGhzProtocol,
+    pub size: usize,
+}
+#[test]
+fn bindgen_test_layout_SubGhzProtocolRegistry() {
+    const UNINIT: ::core::mem::MaybeUninit<SubGhzProtocolRegistry> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<SubGhzProtocolRegistry>(),
+        8usize,
+        concat!("Size of: ", stringify!(SubGhzProtocolRegistry))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<SubGhzProtocolRegistry>(),
+        4usize,
+        concat!("Alignment of ", stringify!(SubGhzProtocolRegistry))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).items) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SubGhzProtocolRegistry),
+            "::",
+            stringify!(items)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SubGhzProtocolRegistry),
+            "::",
+            stringify!(size)
+        )
+    );
+}
+extern "C" {
+    #[doc = "Registration by name SubGhzProtocol.\n\nReturns:\n\n* SubGhzProtocol* pointer to a SubGhzProtocol instance\n\n# Arguments\n\n* `protocol_registry` - SubGhzProtocolRegistry\n* `name` - Protocol name\n\n"]
+    pub fn subghz_protocol_registry_get_by_name(
+        protocol_registry: *const SubGhzProtocolRegistry,
+        name: *const core::ffi::c_char,
+    ) -> *const SubGhzProtocol;
+}
+extern "C" {
+    #[doc = "Registration protocol by index in array SubGhzProtocol.\n\nReturns:\n\n* SubGhzProtocol* pointer to a SubGhzProtocol instance\n\n# Arguments\n\n* `protocol_registry` - SubGhzProtocolRegistry\n* `index` - Protocol by index in array\n\n"]
+    pub fn subghz_protocol_registry_get_by_index(
+        protocol_registry: *const SubGhzProtocolRegistry,
+        index: usize,
+    ) -> *const SubGhzProtocol;
+}
+extern "C" {
+    #[doc = "Getting the number of registered protocols.\n\nReturns:\n\n* Number of protocols\n\n# Arguments\n\n* `protocol_registry` - SubGhzProtocolRegistry\n\n"]
+    pub fn subghz_protocol_registry_count(
+        protocol_registry: *const SubGhzProtocolRegistry,
+    ) -> usize;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct SubGhzKeystore {
     _unused: [u8; 0],
 }
 extern "C" {
@@ -21089,14 +21847,14 @@ extern "C" {
     #[doc = "Set list of protocols to work.\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzEnvironment instance\n* `protocol_registry_items` - Pointer to a SubGhzProtocolRegistry\n\n"]
     pub fn subghz_environment_set_protocol_registry(
         instance: *mut SubGhzEnvironment,
-        protocol_registry_items: *mut core::ffi::c_void,
+        protocol_registry_items: *const SubGhzProtocolRegistry,
     );
 }
 extern "C" {
     #[doc = "Get list of protocols to work.\n\nReturns:\n\n* Pointer to a SubGhzProtocolRegistry\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzEnvironment instance\n\n"]
     pub fn subghz_environment_get_protocol_registry(
         instance: *mut SubGhzEnvironment,
-    ) -> *mut core::ffi::c_void;
+    ) -> *const SubGhzProtocolRegistry;
 }
 extern "C" {
     #[doc = "Get list of protocols names.\n\nReturns:\n\n* Pointer to a SubGhzProtocolRegistry\n\n# Arguments\n\n* `instance` - Pointer to a SubGhzEnvironment instance\n* `idx` - index protocols\n\n"]
@@ -22008,67 +22766,8 @@ extern "C" {
         decoder_name: *const core::ffi::c_char,
     ) -> *mut SubGhzProtocolDecoderBase;
 }
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct SubGhzProtocolRegistry {
-    pub items: *mut *const SubGhzProtocol,
-    pub size: usize,
-}
-#[test]
-fn bindgen_test_layout_SubGhzProtocolRegistry() {
-    const UNINIT: ::core::mem::MaybeUninit<SubGhzProtocolRegistry> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<SubGhzProtocolRegistry>(),
-        8usize,
-        concat!("Size of: ", stringify!(SubGhzProtocolRegistry))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<SubGhzProtocolRegistry>(),
-        4usize,
-        concat!("Alignment of ", stringify!(SubGhzProtocolRegistry))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).items) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(SubGhzProtocolRegistry),
-            "::",
-            stringify!(items)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(SubGhzProtocolRegistry),
-            "::",
-            stringify!(size)
-        )
-    );
-}
 extern "C" {
-    #[doc = "Registration by name SubGhzProtocol.\n\nReturns:\n\n* SubGhzProtocol* pointer to a SubGhzProtocol instance\n\n# Arguments\n\n* `protocol_registry` - SubGhzProtocolRegistry\n* `name` - Protocol name\n\n"]
-    pub fn subghz_protocol_registry_get_by_name(
-        protocol_registry: *const SubGhzProtocolRegistry,
-        name: *const core::ffi::c_char,
-    ) -> *const SubGhzProtocol;
-}
-extern "C" {
-    #[doc = "Registration protocol by index in array SubGhzProtocol.\n\nReturns:\n\n* SubGhzProtocol* pointer to a SubGhzProtocol instance\n\n# Arguments\n\n* `protocol_registry` - SubGhzProtocolRegistry\n* `index` - Protocol by index in array\n\n"]
-    pub fn subghz_protocol_registry_get_by_index(
-        protocol_registry: *const SubGhzProtocolRegistry,
-        index: usize,
-    ) -> *const SubGhzProtocol;
-}
-extern "C" {
-    #[doc = "Getting the number of registered protocols.\n\nReturns:\n\n* Number of protocols\n\n# Arguments\n\n* `protocol_registry` - SubGhzProtocolRegistry\n\n"]
-    pub fn subghz_protocol_registry_count(
-        protocol_registry: *const SubGhzProtocolRegistry,
-    ) -> usize;
+    pub static subghz_protocol_registry: SubGhzProtocolRegistry;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -22835,6 +23534,10 @@ extern "C" {
 }
 extern "C" {
     pub fn tar_archive_finalize(archive: *mut TarArchive) -> bool;
+}
+extern "C" {
+    #[doc = "Get the index of a int32_t array element which is closest to the given value.\nReturned index corresponds to the first element found. If no suitable elements were found, the function returns 0.\n\nReturns:\n\n* value's index.\n\n# Arguments\n\n* `value` - value to be searched.\n* `values` - pointer to the array to perform the search in.\n* `values_count` - array size.\n\n"]
+    pub fn value_index_int32(value: i32, values: *const i32, values_count: u8) -> u8;
 }
 extern "C" {
     #[doc = "Get the index of a uint32_t array element which is closest to the given value.\nReturned index corresponds to the first element found. If no suitable elements were found, the function returns 0.\n\nReturns:\n\n* value's index.\n\n# Arguments\n\n* `value` - value to be searched.\n* `values` - pointer to the array to perform the search in.\n* `values_count` - array size.\n\n"]
