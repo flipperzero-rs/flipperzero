@@ -87,6 +87,13 @@ impl FuriString {
         unsafe { CStr::from_ptr(self.as_c_ptr()) }
     }
 
+    /// Raw pointer to the inner sys::FuriString
+    #[inline]
+    #[must_use]
+    pub(crate) fn as_mut_ptr(&mut self) -> *mut sys::FuriString {
+        self.0.as_ptr()
+    }
+
     /// Appends a given `FuriString` onto the end of this `FuriString`.
     #[inline]
     pub fn push_string(&mut self, string: &FuriString) {
