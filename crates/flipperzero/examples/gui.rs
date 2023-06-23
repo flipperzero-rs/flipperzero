@@ -6,7 +6,7 @@
 #![no_std]
 #![forbid(unsafe_code)]
 
-mod xbms;
+mod xbm_images;
 
 // Required for panic handler
 extern crate flipperzero_rt;
@@ -33,6 +33,11 @@ use flipperzero_sys::furi::Status;
 manifest!(name = "Rust GUI example");
 entry!(main);
 
+/// An image of an 8x8 plus.
+///
+/// It is important to note that byte bits are read in reverse order
+/// but since this image is symmetric we don't need to reverse the bytes
+/// unlike in [`RS_IMAGE`].
 const PLUS_IMAGE: XbmImage<ByteArray<8>> = XbmImage::new_from_array::<8, 8>([
     0b00_11_11_00,
     0b00_11_11_00,
@@ -44,6 +49,7 @@ const PLUS_IMAGE: XbmImage<ByteArray<8>> = XbmImage::new_from_array::<8, 8>([
     0b10_11_11_01,
 ]);
 
+/// An image of an 8x8 R and S letters.
 const RS_IMAGE: XbmImage<ByteArray<8>> = XbmImage::new_from_array::<8, 8>([
     0b11100000u8.reverse_bits(),
     0b10010000u8.reverse_bits(),
@@ -72,7 +78,7 @@ fn main(_args: *mut u8) -> i32 {
                 .expect("should be a valid string");
             canvas.draw_str(80, 10, bottom_text);
             canvas.draw_xbm(100, 50, &RS_IMAGE);
-            canvas.draw_xbm(0, 32, &xbms::ferris::IMAGE);
+            canvas.draw_xbm(0, 32, &xbm_images::ferris::IMAGE);
         }
 
         fn on_input(&mut self, event: InputEvent) {
@@ -113,11 +119,10 @@ fn main(_args: *mut u8) -> i32 {
                 println!("Exit pressed");
                 break 0;
             }
+            Err(Status::ERR_TIMEOUT) => {} // it's okay to continue polling
             Err(e) => {
-                if e != Status::ERR_TIMEOUT {
-                    println!("ERROR while receiving event: {:?}", e);
-                    break 1;
-                }
+                println!("ERROR while receiving event: {:?}", e);
+                break 1;
             }
         }
     };

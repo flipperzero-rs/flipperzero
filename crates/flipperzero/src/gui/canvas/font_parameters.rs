@@ -54,11 +54,11 @@ impl From<CanvasFontParameters> for SysCanvasFontParameters {
 #[non_exhaustive]
 #[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum FromSysCanvasFontParameters {
-    /// [`leading_default`] field is set to `0`.
+    /// [`SysCanvasFontParameters::leading_default`] field is set to `0`.
     ZeroLeadingDefault,
-    /// [`leading_min`] field is set to `0`.
+    /// [`SysCanvasFontParameters::leading_min`] field is set to `0`.
     ZeroLeadingMin,
-    /// [`height`] field is set to `0`.
+    /// [`SysCanvasFontParameters::height`] field is set to `0`.
     ZeroHeight,
 }
 

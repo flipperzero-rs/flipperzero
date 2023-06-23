@@ -87,11 +87,13 @@ pub(crate) mod ops {
 }
 
 pub(crate) mod macros {
+    /// Generates an implementation of `std::error::Error` for the passed type
+    /// hidden behind an `std` feature flag.
     macro_rules! impl_std_error {
         ($error_type:ident) => {
             #[cfg(feature = "std")]
             #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
-            impl std::error::Error for $error_type {}
+            impl ::std::error::Error for $error_type {}
         };
     }
 

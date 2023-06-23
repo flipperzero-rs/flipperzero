@@ -89,12 +89,16 @@ impl From<FromSysInputTypeError> for FromSysInputEventError {
 pub struct InputEventSequence(u32);
 
 impl InputEventSequence {
+    const SOURCE_SHIFT: u32 = 30;
+    const SOURCE_MASK: u32 = (u32::MAX) >> Self::SOURCE_SHIFT;
+    const COUNTER_MASK: u32 = !(Self::SOURCE_MASK << Self::SOURCE_SHIFT);
+
     pub const fn source(self) -> u8 {
-        ((self.0 >> 30) & 0b11) as u8
+        ((self.0 >> Self::SOURCE_SHIFT) & Self::SOURCE_MASK) as u8
     }
 
     pub const fn counter(self) -> u32 {
-        self.0 & !(0b11 << 30)
+        self.0 & Self::COUNTER_MASK
     }
 }
 

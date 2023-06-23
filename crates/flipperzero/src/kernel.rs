@@ -4,6 +4,7 @@ use core::{
     marker::PhantomData,
 };
 use flipperzero_sys::{self as sys, furi::Status};
+use ufmt::{derive::uDebug, uDebug, uDisplay, uWrite, uwrite};
 
 #[inline(always)]
 fn is_irq_or_masked() -> bool {
@@ -32,7 +33,7 @@ pub fn lock() -> Result<LockGuard, LockError> {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug)]
 #[cfg_attr(
     feature = "unstable_lints",
     must_not_suspend = "holding a MutexGuard across suspend \
@@ -57,8 +58,20 @@ impl Drop for LockGuard {
     }
 }
 
+impl uDebug for LockGuard {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: uWrite + ?Sized,
+    {
+        // TODO: use `derive` once `ufmt` supports `PhantomReference`
+        f.debug_struct("LockGuard")?
+            .field("was_locked", &self.was_locked)?
+            .finish()
+    }
+}
+
 /// A type of error which can be returned whenever a lock is acquired.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
+#[derive(Copy, Clone, Debug, uDebug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum LockError {
     Interrupted,
     ErrorStatus(Status),
@@ -69,6 +82,18 @@ impl Display for LockError {
         match self {
             Self::Interrupted => write!(f, "context is in interruption state"),
             Self::ErrorStatus(status) => write!(f, "error status: {status}"),
+        }
+    }
+}
+
+impl uDisplay for LockError {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: uWrite + ?Sized,
+    {
+        match self {
+            Self::Interrupted => uwrite!(f, "context is in interruption state"),
+            Self::ErrorStatus(status) => uwrite!(f, "error status: {}", status),
         }
     }
 }

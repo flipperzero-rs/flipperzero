@@ -6,6 +6,7 @@ pub mod canvas;
 pub mod icon;
 pub mod icon_animation;
 pub mod view;
+pub mod view_dispatcher;
 pub mod view_port;
 
 use crate::{

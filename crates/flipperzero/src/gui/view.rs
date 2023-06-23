@@ -1,3 +1,4 @@
+use crate::internals::alloc::BoxNonNull;
 use crate::{gui::canvas::CanvasView, input::InputEvent};
 use alloc::boxed::Box;
 use core::ptr::NonNull;
@@ -5,7 +6,7 @@ use flipperzero_sys::{self as sys, View as SysView};
 
 pub struct View<C: ViewCallbacks> {
     raw: NonNull<SysView>,
-    callbacks: NonNull<C>,
+    callbacks: BoxNonNull<C>,
 }
 
 impl<C: ViewCallbacks> View<C> {
@@ -13,9 +14,7 @@ impl<C: ViewCallbacks> View<C> {
         // SAFETY: allocation either succeeds producing a valid non-null pointer
         // or stops the system on OOM
         let raw = unsafe { NonNull::new_unchecked(sys::view_alloc()) };
-        let callbacks = Box::into_raw(Box::new(callbacks));
-        // SAFETY: callbacks is a valid non-null pointer
-        let callbacks = unsafe { NonNull::new_unchecked(callbacks) };
+        let callbacks = BoxNonNull::new(callbacks);
 
         Self { raw, callbacks }
     }
@@ -31,10 +30,6 @@ impl<C: ViewCallbacks> Drop for View<C> {
         let raw = self.raw.as_ptr();
         // SAFETY: `raw` is always valid
         unsafe { sys::view_free(raw) }
-
-        let callbacks = self.callbacks.as_ptr();
-        // SAFETY: `callbacks` has been created via `Box`
-        let _ = unsafe { Box::from_raw(callbacks) };
     }
 }
 

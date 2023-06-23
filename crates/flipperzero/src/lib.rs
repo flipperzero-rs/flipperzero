@@ -38,8 +38,6 @@ pub mod notification;
 #[cfg(feature = "service-storage")]
 #[cfg_attr(docsrs, doc(cfg(feature = "service-storage")))]
 pub mod storage;
-#[cfg(feature = "service-toolbox")]
-#[cfg_attr(docsrs, doc(cfg(feature = "service-toolbox")))]
 pub mod toolbox;
 #[cfg(feature = "xbm")]
 #[cfg_attr(docsrs, doc(cfg(feature = "xbm")))]

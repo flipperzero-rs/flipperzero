@@ -23,6 +23,8 @@ harness = false
 [dependencies]
 flipperzero-sys.workspace = true
 flipperzero-test.workspace = true
+
+# Formatting
 ufmt.workspace = true
 
 # HAL wrappers
@@ -71,7 +73,6 @@ all-services = [
     "service-storage",
     "service-notification",
     "service-input",
-    "service-toolbox",
     "service-gui",
     "service-dialogs",
     "service-dolphin",
@@ -82,8 +83,6 @@ service-storage = []
 service-notification = []
 ## Enables Input Service APIs.
 service-input = []
-## Enables Toolbox APIs.
-service-toolbox = []
 ## Enables GUI APIs of Flipper.
 service-gui = ["alloc", "service-input"]
 ## Enables Dialogs APIs of Flipper.

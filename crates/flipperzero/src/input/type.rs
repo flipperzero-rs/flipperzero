@@ -18,7 +18,7 @@ pub enum InputType {
     /// done within `INPUT_LONG_PRESS` interval.
     Short,
     /// Long event, emitted after `INPUT_LONG_PRESS_COUNTS` interval,
-    /// asynchronous to [`InputTypeRelease`].
+    /// asynchronous to [`InputType::Release`].
     Long,
     /// Repeat event, emitted with `INPUT_LONG_PRESS_COUNTS` period
     /// after [InputType::Long] event.

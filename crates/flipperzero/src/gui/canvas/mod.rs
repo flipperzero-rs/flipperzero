@@ -104,11 +104,6 @@ impl CanvasView<'_> {
         unsafe { sys::canvas_commit(raw) };
     }
 
-    // FIXME:
-    //  - canvas_reset
-    //  - canvas_commit
-    //  This are currently not available in bindings
-
     pub fn width(&self) -> NonZeroU8 {
         let raw = self.raw.as_ptr();
         // SAFETY: `raw` is always valid
@@ -253,7 +248,6 @@ impl CanvasView<'_> {
         unsafe { sys::canvas_draw_icon(raw, x, y, icon) }
     }
 
-    // TODO: do we need other range checks?
     #[cfg(feature = "xbm")]
     pub fn draw_xbm(&mut self, x: u8, y: u8, xbm: &XbmImage<impl Deref<Target = [u8]>>) {
         let raw = self.raw.as_ptr();

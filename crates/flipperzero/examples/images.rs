@@ -25,7 +25,7 @@ rt::manifest!(name = "Example: Images");
 rt::entry!(main);
 
 // NOTE: `*mut`s are required to enforce `unsafe` since there are raw pointers involved
-static TARGET_FRAMES: [*const u8; 1] = [include_bytes!("icons/rustacean-48x32.icon").as_ptr()];
+static mut TARGET_FRAMES: [*const u8; 1] = [include_bytes!("icons/rustacean-48x32.icon").as_ptr()];
 static mut SYS_ICON: sys::Icon = sys::Icon {
     width: 48,
     height: 32,

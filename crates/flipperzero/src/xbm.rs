@@ -333,15 +333,6 @@ macro_rules! xbm {
                 "bits identifier and y-hotspot identifier should have the same prefix"
             );
             )?
-
-            // assert!(::core::matches!(
-            //     width_ident.get(width_ident.len() - 5),
-            //     ::core::option::Option::Some(b'w')
-            // ), "sad");
-            // match width_ident.get(width_ident.len() - 5..) {
-            //     ::core::option::Option::Some(b"width") => {},
-            //     _ => panic!("the first identifier should end with `_width")
-            // };
         }
 
         $crate::xbm!(unsafe {
