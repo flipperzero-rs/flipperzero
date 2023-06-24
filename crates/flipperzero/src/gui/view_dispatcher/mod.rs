@@ -1,15 +1,18 @@
-use crate::internals::alloc::BoxNonNull;
-use alloc::boxed::Box;
-use core::num::NonZeroU32;
+mod r#type;
+
+use crate::internals::alloc::NonUniqueBox;
 use core::{
     ffi::c_void,
+    num::NonZeroU32,
     ptr::{self, NonNull},
 };
 use flipperzero_sys::{self as sys, ViewDispatcher as SysViewDispatcher};
 
+pub use r#type::*;
+
 pub struct ViewDispatcher<C: ViewDispatcherCallbacks, const QUEUE: bool> {
-    raw: NonNull<SysViewDispatcher>,
-    callbacks: BoxNonNull<C>,
+    inner: ViewDispatcherInner,
+    callbacks: NonUniqueBox<C>,
 }
 
 impl<C: ViewDispatcherCallbacks, const QUEUE: bool> ViewDispatcher<C, QUEUE> {
@@ -29,17 +32,13 @@ impl<C: ViewDispatcherCallbacks, const QUEUE: bool> ViewDispatcher<C, QUEUE> {
         ))
         .then(|| callbacks.tick_period());
 
-        // SAFETY: allocation either succeeds producing the valid pointer
-        // or stops the system on OOM,
-        let raw = unsafe { sys::view_dispatcher_alloc() };
-        let callbacks = BoxNonNull::new(callbacks);
+        let inner = ViewDispatcherInner::new();
+        let callbacks = NonUniqueBox::new(callbacks);
 
         // SAFETY: both pointers are guaranteed to be non-null
-        let view_dispatcher = {
-            let raw = unsafe { NonNull::new_unchecked(raw) };
-            Self { raw, callbacks }
-        };
+        let view_dispatcher = Self { inner, callbacks };
 
+        let raw = view_dispatcher.as_raw();
         if QUEUE {
             // SAFETY: `raw` is a valid pointer
             // and corresponds to a newly created `ViewPort`
@@ -106,45 +105,51 @@ impl<C: ViewDispatcherCallbacks, const QUEUE: bool> ViewDispatcher<C, QUEUE> {
         view_dispatcher
     }
 
+    #[inline]
+    #[must_use]
     pub fn as_raw(&self) -> *mut SysViewDispatcher {
-        self.raw.as_ptr()
+        self.inner.0.as_ptr()
     }
-
-    // pub fn add_view(&mut self,)
 }
 
 impl<C: ViewDispatcherCallbacks> ViewDispatcher<C, true> {
     pub fn run(&mut self) {
-        let raw = self.raw.as_ptr();
-        // SAFETY: `raw` is a valid pointer
+        let raw = self.as_raw();
+        // SAFETY: `raw` is valid
         // and this is a `ViewDispatcher` with a queue
         unsafe { sys::view_dispatcher_run(raw) };
     }
 
     pub fn stop(&mut self) {
-        let raw = self.raw.as_ptr();
-        // SAFETY: `raw` is a valid pointer
+        let raw = self.as_raw();
+        // SAFETY: `raw` is valid
         // and this is a `ViewDispatcher` with a queue
         unsafe { sys::view_dispatcher_stop(raw) };
     }
 
     pub fn send_custom_event(&mut self, event: u32) {
-        let raw = self.raw.as_ptr();
-        // SAFETY: `raw` is a valid pointer
+        let raw = self.as_raw();
+        // SAFETY: `raw` is valid
         // and this is a `ViewDispatcher` with a queue
         unsafe { sys::view_dispatcher_send_custom_event(raw, event) };
     }
 }
 
-impl<C: ViewDispatcherCallbacks, const QUEUE: bool> Drop for ViewDispatcher<C, QUEUE> {
-    fn drop(&mut self) {
-        let raw = self.raw.as_ptr();
-        // SAFETY: `raw` is a valid pointer
-        unsafe { sys::view_dispatcher_free(raw) };
+struct ViewDispatcherInner(NonNull<SysViewDispatcher>);
 
-        let callbacks = self.callbacks.as_ptr();
-        // SAFETY: `callbacks` has been created via `Box`
-        let _ = unsafe { Box::from_raw(callbacks) };
+impl ViewDispatcherInner {
+    fn new() -> Self {
+        // SAFETY: allocation either succeeds producing the valid pointer
+        // or stops the system on OOM,
+        Self(unsafe { NonNull::new_unchecked(sys::view_dispatcher_alloc()) })
+    }
+}
+
+impl Drop for ViewDispatcherInner {
+    fn drop(&mut self) {
+        let raw = self.0.as_ptr();
+        // SAFETY: `raw` is valid
+        unsafe { sys::view_dispatcher_free(raw) };
     }
 }
 

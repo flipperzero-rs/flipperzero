@@ -1,34 +1,44 @@
-use crate::internals::alloc::BoxNonNull;
-use crate::{gui::canvas::CanvasView, input::InputEvent};
-use alloc::boxed::Box;
+use crate::{gui::canvas::CanvasView, input::InputEvent, internals::alloc::NonUniqueBox};
 use core::ptr::NonNull;
 use flipperzero_sys::{self as sys, View as SysView};
 
+/// UI view.
 pub struct View<C: ViewCallbacks> {
-    raw: NonNull<SysView>,
-    callbacks: BoxNonNull<C>,
+    inner: ViewInner,
+    callbacks: NonUniqueBox<C>,
 }
 
 impl<C: ViewCallbacks> View<C> {
     pub fn new(callbacks: C) -> Self {
-        // SAFETY: allocation either succeeds producing a valid non-null pointer
-        // or stops the system on OOM
-        let raw = unsafe { NonNull::new_unchecked(sys::view_alloc()) };
-        let callbacks = BoxNonNull::new(callbacks);
+        let inner = ViewInner::new();
+        let callbacks = NonUniqueBox::new(callbacks);
 
-        Self { raw, callbacks }
+        Self { inner, callbacks }
     }
 
     /// Creates a copy of raw pointer to the [`sys::View`].
+    #[inline]
+    #[must_use]
     pub fn as_raw(&self) -> *mut SysView {
-        self.raw.as_ptr()
+        self.inner.0.as_ptr()
     }
 }
 
-impl<C: ViewCallbacks> Drop for View<C> {
+/// Plain alloc-free wrapper over a [`SysView`].
+struct ViewInner(NonNull<SysView>);
+
+impl ViewInner {
+    fn new() -> Self {
+        // SAFETY: allocation either succeeds producing a valid non-null pointer
+        // or stops the system on OOM
+        Self(unsafe { NonNull::new_unchecked(sys::view_alloc()) })
+    }
+}
+
+impl Drop for ViewInner {
     fn drop(&mut self) {
-        let raw = self.raw.as_ptr();
-        // SAFETY: `raw` is always valid
+        let raw = self.0.as_ptr();
+        // SAFETY: `raw` is valid
         unsafe { sys::view_free(raw) }
     }
 }

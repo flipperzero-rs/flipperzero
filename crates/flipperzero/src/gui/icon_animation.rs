@@ -1,30 +1,29 @@
-use crate::{gui::icon::Icon, internals::alloc::BoxNonNull};
-use alloc::boxed::Box;
+use crate::{gui::icon::Icon, internals::alloc::NonUniqueBox};
 use core::{
     ffi::c_void,
     marker::PhantomData,
     ptr::{self, NonNull},
 };
-use flipperzero_sys::{self as sys, IconAnimation as SysIconAnimation};
+use flipperzero_sys::{self as sys, Icon as SysIcon, IconAnimation as SysIconAnimation};
 
-/// System Icon Animation wrapper.
+/// Icon Animation
+/// which can be [started](IconAnimation::start) and [stopped](IconAnimation::stop).
 pub struct IconAnimation<'a, C: IconAnimationCallbacks> {
-    raw: NonNull<SysIconAnimation>,
-    callbacks: BoxNonNull<C>,
+    inner: IconAnimationInner,
+    callbacks: NonUniqueBox<C>,
     _parent_lifetime: PhantomData<&'a ()>,
 }
 
 impl<'a, C: IconAnimationCallbacks> IconAnimation<'a, C> {
+    /// Creates a new icon animation from the specified [icon](`Icon`).
     pub fn new<'b: 'a>(icon: &'b Icon, callbacks: C) -> Self {
-        let icon = icon.as_raw();
-        // SAFETY: allocation either succeeds producing the valid pointer
-        // or stops the system on OOM,
-        // `icon` is a valid pointer and `icon` outlives this animation
-        let raw = unsafe { NonNull::new_unchecked(sys::icon_animation_alloc(icon)) };
-        let callbacks = BoxNonNull::new(callbacks);
+        let icon = icon.as_raw().cast_const();
+        // SAFETY: `icon` is a valid pointer and will outlive `inner` while remaining const
+        let inner = unsafe { IconAnimationInner::new(icon) };
+        let callbacks = NonUniqueBox::new(callbacks);
 
         let icon_animation = Self {
-            raw,
+            inner,
             callbacks,
             _parent_lifetime: PhantomData,
         };
@@ -47,7 +46,7 @@ impl<'a, C: IconAnimationCallbacks> IconAnimation<'a, C> {
                 C::on_update as *const c_void,
                 <() as IconAnimationCallbacks>::on_update as *const c_void,
             ) {
-                let raw = raw.as_ptr();
+                let raw = icon_animation.as_raw();
                 let callback = Some(dispatch_update::<C> as _);
                 let context = icon_animation.callbacks.as_ptr().cast();
 
@@ -60,55 +59,77 @@ impl<'a, C: IconAnimationCallbacks> IconAnimation<'a, C> {
         icon_animation
     }
 
+    #[inline]
+    #[must_use]
     pub fn as_raw(&self) -> *mut SysIconAnimation {
-        self.raw.as_ptr()
+        self.inner.0.as_ptr()
     }
 
+    /// Gets the width of this icon animation.
     pub fn get_width(&self) -> u8 {
-        let raw = self.raw.as_ptr();
-        // SAFETY: `raw` is always valid
+        let raw = self.as_raw();
+        // SAFETY: `raw` is valid
         unsafe { sys::icon_animation_get_width(raw) }
     }
 
+    /// Gets the height of this icon animation.
     pub fn get_height(&self) -> u8 {
-        let raw = self.raw.as_ptr();
-        // SAFETY: `raw` is always valid
+        let raw = self.as_raw();
+        // SAFETY: `raw` is valid
         unsafe { sys::icon_animation_get_height(raw) }
     }
 
+    /// Gets the dimensions of this icon animation.
     pub fn get_dimensions(&self) -> (u8, u8) {
         (self.get_width(), self.get_height())
     }
 
+    /// Starts this icon animation.
     pub fn start(&mut self) {
-        let raw = self.raw.as_ptr();
-        // SAFETY: `raw` is always valid
+        let raw = self.as_raw();
+        // SAFETY: `raw` is valid
         unsafe { sys::icon_animation_start(raw) }
     }
 
+    /// Stops this icon animation.
     pub fn stop(&mut self) {
-        let raw = self.raw.as_ptr();
-        // SAFETY: `raw` is always valid
+        let raw = self.as_raw();
+        // SAFETY: `raw` is valid
         unsafe { sys::icon_animation_stop(raw) }
     }
 
+    /// Checks if the current frame is the last one.
     pub fn is_last_frame(&self) -> bool {
-        let raw = self.raw.as_ptr();
-        // SAFETY: `raw` is always valid
+        let raw = self.as_raw();
+        // SAFETY: `raw` is valid
         unsafe { sys::icon_animation_is_last_frame(raw) }
     }
 }
 
-impl<C: IconAnimationCallbacks> Drop for IconAnimation<'_, C> {
+/// Plain alloc-free wrapper over a [`SysIconAnimation`].
+struct IconAnimationInner(NonNull<SysIconAnimation>);
+
+impl IconAnimationInner {
+    /// Creates a new icon animation wrapper for the specified icon.
+    ///
+    /// # Safety
+    ///
+    /// `icon` should outlive the created wrapper
+    /// and should not mutate during this wrapper's existence.
+    unsafe fn new(icon: *const SysIcon) -> Self {
+        // SAFETY: allocation either succeeds producing the valid pointer
+        // or stops the system on OOM,
+        // `icon` is a valid pointer and `icon` outlives this animation
+        Self(unsafe { NonNull::new_unchecked(sys::icon_animation_alloc(icon)) })
+    }
+}
+
+impl Drop for IconAnimationInner {
     fn drop(&mut self) {
-        let raw = self.raw.as_ptr();
+        let raw = self.0.as_ptr();
         // SAFETY: `raw` is a valid pointer
         // which should have been created via `icon_animation_alloc`
         unsafe { sys::icon_animation_free(raw) }
-
-        let callbacks = self.callbacks.as_ptr();
-        // SAFETY: `callbacks` has been created via `Box`
-        let _ = unsafe { Box::from_raw(callbacks) };
     }
 }
 
@@ -148,13 +169,13 @@ impl IconAnimationView<'_> {
 
     pub fn get_width(&self) -> u8 {
         let raw = self.raw.as_ptr();
-        // SAFETY: `raw` is always valid
+        // SAFETY: `raw` is valid
         unsafe { sys::icon_animation_get_width(raw) }
     }
 
     pub fn get_height(&self) -> u8 {
         let raw = self.raw.as_ptr();
-        // SAFETY: `raw` is always valid
+        // SAFETY: `raw` is valid
         unsafe { sys::icon_animation_get_height(raw) }
     }
 
@@ -166,25 +187,27 @@ impl IconAnimationView<'_> {
     //  i.e. if it is sound to call start/stop from callbacks
     // pub fn start(&mut self) {
     //     let raw = self.raw.as_ptr();
-    //     // SAFETY: `raw` is always valid
+    //     // SAFETY: `raw` is valid
     //     unsafe { sys::icon_animation_start(raw) }
     // }
     //
     // pub fn stop(&mut self) {
     //     let raw = self.raw.as_ptr();
-    //     // SAFETY: `raw` is always valid
+    //     // SAFETY: `raw` is valid
     //     unsafe { sys::icon_animation_stop(raw) }
     // }
 
     pub fn is_last_frame(&self) -> bool {
         let raw = self.raw.as_ptr();
-        // SAFETY: `raw` is always valid
+        // SAFETY: `raw` is valid
         unsafe { sys::icon_animation_is_last_frame(raw) }
     }
 }
 
+/// Callbacks of the [`IconAnimation`].
 pub trait IconAnimationCallbacks {
     fn on_update(&mut self, _icon_animation: IconAnimationView) {}
 }
 
+/// Stub implementation, use it whenever callbacks are not needed.
 impl IconAnimationCallbacks for () {}

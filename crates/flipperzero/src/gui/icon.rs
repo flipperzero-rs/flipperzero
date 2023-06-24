@@ -30,6 +30,8 @@ impl Icon {
         Self { raw }
     }
 
+    #[inline]
+    #[must_use]
     pub fn as_raw(&self) -> *mut SysIcon {
         self.raw.as_ptr()
     }

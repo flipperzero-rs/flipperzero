@@ -53,6 +53,8 @@ impl Gui {
         Self { raw: gui }
     }
 
+    #[inline]
+    #[must_use]
     pub fn as_raw(&self) -> *mut SysGui {
         self.raw.as_raw()
     }

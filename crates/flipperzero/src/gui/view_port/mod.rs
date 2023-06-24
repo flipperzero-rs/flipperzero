@@ -2,8 +2,7 @@
 
 mod orientation;
 
-use crate::{gui::canvas::CanvasView, input::InputEvent};
-use alloc::boxed::Box;
+use crate::{gui::canvas::CanvasView, input::InputEvent, internals::alloc::NonUniqueBox};
 use core::{
     ffi::c_void,
     num::NonZeroU8,
@@ -18,8 +17,8 @@ pub use orientation::*;
 
 /// System ViewPort.
 pub struct ViewPort<C: ViewPortCallbacks> {
-    raw: NonNull<SysViewPort>,
-    callbacks: NonNull<C>,
+    inner: ViewPortInner,
+    callbacks: NonUniqueBox<C>,
 }
 
 impl<C: ViewPortCallbacks> ViewPort<C> {
@@ -35,16 +34,11 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     /// let view_port = ViewPort::new(());
     /// ```
     pub fn new(callbacks: C) -> Self {
-        // SAFETY: allocation either succeeds producing the valid pointer
-        // or stops the system on OOM
-        let raw = unsafe { NonNull::new_unchecked(sys::view_port_alloc()) };
-        let callbacks = Box::into_raw(Box::new(callbacks));
+        let inner = ViewPortInner::new();
+        let callbacks = NonUniqueBox::new(callbacks);
 
-        let view_port = {
-            // SAFETY: `callbacks` has been created via `Box`
-            let callbacks = unsafe { NonNull::new_unchecked(callbacks) };
-            Self { raw, callbacks }
-        };
+        let view_port = Self { inner, callbacks };
+        let raw = view_port.as_raw();
 
         {
             pub unsafe extern "C" fn dispatch_draw<C: ViewPortCallbacks>(
@@ -64,8 +58,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
                 C::on_draw as *const c_void,
                 <() as ViewPortCallbacks>::on_draw as *const c_void,
             ) {
-                let context = callbacks.cast();
-                let raw = raw.as_ptr();
+                let context = view_port.callbacks.as_ptr().cast();
                 let callback = Some(dispatch_draw::<C> as _);
                 // SAFETY: `raw` is valid
                 // and `callbacks` is valid and lives with this struct
@@ -91,8 +84,7 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
                 C::on_input as *const c_void,
                 <() as ViewPortCallbacks>::on_input as *const c_void,
             ) {
-                let context = callbacks.cast();
-                let raw = raw.as_ptr();
+                let context = view_port.callbacks.as_ptr().cast();
                 let callback = Some(dispatch_input::<C> as _);
 
                 // SAFETY: `raw` is valid
@@ -105,8 +97,10 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
     }
 
     /// Creates a copy of the raw pointer to the [`sys::ViewPort`].
+    #[inline]
+    #[must_use]
     pub fn as_raw(&self) -> *mut SysViewPort {
-        self.raw.as_ptr()
+        self.inner.0.as_ptr()
     }
 
     /// Sets the width of this `ViewPort`.
@@ -349,23 +343,31 @@ impl<C: ViewPortCallbacks> ViewPort<C> {
 impl<C: ViewPortCallbacks> Drop for ViewPort<C> {
     fn drop(&mut self) {
         // FIXME: unregister from system (whatever this means)
+        self.set_enabled(false);
+    }
+}
 
-        let raw = self.raw.as_ptr();
-        // SAFETY: `self.raw` is always valid
-        // and it should have been unregistered from the system by now
-        unsafe {
-            sys::view_port_enabled_set(raw, false);
-            sys::view_port_free(raw);
-        }
+/// Plain alloc-free wrapper over a [`SysViewPort`].
+struct ViewPortInner(NonNull<SysViewPort>);
 
-        let callbacks = self.callbacks.as_ptr();
-        // SAFETY: `callbacks` has been created via `Box`
-        let _ = unsafe { Box::from_raw(callbacks) };
+impl ViewPortInner {
+    fn new() -> Self {
+        // SAFETY: allocation either succeeds producing the valid non-null pointer
+        // or stops the system on OOM
+        Self(unsafe { NonNull::new_unchecked(sys::view_port_alloc()) })
+    }
+}
+
+impl Drop for ViewPortInner {
+    fn drop(&mut self) {
+        let raw = self.0.as_ptr();
+        // SAFETY: `raw` is a valid pointer
+        unsafe { sys::view_port_free(raw) };
     }
 }
 
 pub trait ViewPortCallbacks {
-    fn on_draw(&mut self, _canvas: CanvasView) {}
+    fn on_draw(&mut self, _canvas: CanvasView<'_>) {}
     fn on_input(&mut self, _event: InputEvent) {}
 }
 
