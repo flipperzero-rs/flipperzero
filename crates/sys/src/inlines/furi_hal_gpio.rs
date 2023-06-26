@@ -60,5 +60,5 @@ pub unsafe extern "C" fn furi_hal_gpio_read_port_pin(
     port: *mut sys::GPIO_TypeDef,
     pin: u16,
 ) -> bool {
-    (*port).IDR != 0 && pin != 0x00
+    (*port).IDR & pin as u32 != 0x00
 }
