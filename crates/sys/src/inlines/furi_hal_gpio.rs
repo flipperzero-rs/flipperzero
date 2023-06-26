@@ -34,7 +34,10 @@ pub unsafe extern "C" fn furi_hal_gpio_write_port_pin(
     state: bool,
 ) {
     // writing to BSSR is an atomic operation
-    (*port).BSRR = (pin as u32) << if state { 0 } else { GPIO_NUMBER };
+    core::ptr::write_volatile(
+        &mut (*port).BSRR,
+        (pin as u32) << if state { 0 } else { GPIO_NUMBER },
+    );
 }
 
 /// GPIO read pin.
@@ -60,5 +63,5 @@ pub unsafe extern "C" fn furi_hal_gpio_read_port_pin(
     port: *mut sys::GPIO_TypeDef,
     pin: u16,
 ) -> bool {
-    (*port).IDR & pin as u32 != 0x00
+    core::ptr::read_volatile(&(*port).IDR) & pin as u32 != 0x00
 }
