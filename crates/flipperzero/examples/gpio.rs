@@ -37,8 +37,16 @@ fn main(_args: *mut u8) -> i32 {
 
         sleep(Duration::from_secs(1));
 
+        let state = sys::furi_hal_gpio_read(&sys::gpio_ext_pc0);
+        println!("Pin C0 is {}", if state { "high" } else { "low" });
+
         println!("Pulling pin C0 low");
         sys::furi_hal_gpio_write(&sys::gpio_ext_pc0, false);
+
+        sleep(Duration::from_secs(1));
+
+        let state = sys::furi_hal_gpio_read(&sys::gpio_ext_pc0);
+        println!("Pin C0 is {}", if state { "high" } else { "low" });
     }
 
     0
