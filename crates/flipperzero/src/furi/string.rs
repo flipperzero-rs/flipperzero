@@ -38,13 +38,13 @@ const WHITESPACE: &[char] = &[
 /// to provide the flexibility of Rust's [`String`].
 /// It is used in various APIs of the Flipper Zero SDK.
 ///
-/// This type does not requre the `alloc` feature flag, because it does not use the Rust
+/// This type does not require the `alloc` feature flag, because it does not use the Rust
 /// allocator. Very short strings (7 bytes or fewer) are stored directly inside the
 /// `FuriString` struct (which is stored on the heap), while longer strings are allocated
 /// on the heap by the Flipper Zero firmware.
 ///
-/// [`CString`]: alloc::ffi::CString
-/// [`String`]: alloc::string::String
+/// [`CString`]: https://doc.rust-lang.org/nightly/alloc/ffi/struct.CString.html
+/// [`String`]: https://doc.rust-lang.org/nightly/alloc/string/struct.String.html
 #[derive(Eq)]
 pub struct FuriString(NonNull<sys::FuriString>);
 
