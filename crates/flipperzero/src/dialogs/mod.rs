@@ -5,10 +5,10 @@ use alloc::ffi::CString;
 
 use core::ffi::{c_char, c_void, CStr};
 use core::marker::PhantomData;
+use core::mem::MaybeUninit;
 use core::ptr::{self, NonNull};
-
 use flipperzero_sys as sys;
-use sys::{c_string, furi::UnsafeRecord};
+use sys::furi::UnsafeRecord;
 
 use crate::furi::string::FuriString;
 use crate::gui::canvas::Align;
@@ -25,6 +25,7 @@ pub struct DialogMessage<'a> {
 }
 
 /// A dialog file browser options.
+#[repr(transparent)]
 pub struct DialogFileBrowserOptions<'a> {
     data: sys::DialogsFileBrowserOptions,
     _phantom: PhantomData<&'a ()>,
@@ -202,19 +203,22 @@ impl DialogMessageButton {
 
 impl<'a> DialogFileBrowserOptions<'a> {
     /// Creates a new dialog file browser options and initializes to default values.
-    pub fn new() -> Self {
+    pub fn new<'e: 'a>(extension: &'e CStr) -> Self {
+        let mut options = MaybeUninit::<sys::DialogsFileBrowserOptions>::uninit();
+        let uninit_options = options.as_mut_ptr();
+        let extension = extension.as_ptr();
+        // TODO: as for now, we stick to default (NULL) icon,
+        //  although we may want to make it customizable via this function's parameter
+        //  once there are safe Icon-related APIs
+        let icon = ptr::null();
+        // SAFETY: all pointers are valid (`icon` is allowed to be NULL)
+        // and options is intentionally uninitialized
+        // since it is the called function's job to do it
+        unsafe { sys::dialog_file_browser_set_basic_options(uninit_options, extension, icon) };
         Self {
-            // default values from sys::dialog_file_browser_set_basic_options()
-            data: sys::DialogsFileBrowserOptions {
-                extension: c_string!("*"),
-                base_path: ptr::null(),
-                skip_assets: true,
-                hide_dot_files: false,
-                icon: ptr::null(),
-                hide_ext: true,
-                item_loader_callback: None,
-                item_loader_context: ptr::null_mut(),
-            },
+            // SAFETY: data has just been initialized fully
+            // as guaranteed by the previously called function's contract
+            data: unsafe { options.assume_init() },
             _phantom: PhantomData,
         }
     }

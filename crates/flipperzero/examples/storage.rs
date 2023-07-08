@@ -18,6 +18,7 @@ use flipperzero::io::*;
 use flipperzero::println;
 use flipperzero::storage::*;
 use flipperzero_rt::{entry, manifest};
+use flipperzero_sys::c_str;
 
 manifest!(name = "Rust storage example");
 entry!(main);
@@ -41,7 +42,9 @@ fn main(_args: *mut u8) -> i32 {
 
     // Next, we'll open a file browser dialog and let the user select the file.
     let mut dialogs_app = DialogsApp::open();
-    let file_browser_options = DialogFileBrowserOptions::new().set_hide_ext(false);
+
+    static EXTENSION: &CStr = c_str!("*");
+    let file_browser_options = DialogFileBrowserOptions::new(EXTENSION).set_hide_ext(false);
     let mut start_path = FuriString::from(path);
     let result_path =
         dialogs_app.show_file_browser(Some(&mut start_path), Some(&file_browser_options));

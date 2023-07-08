@@ -29,12 +29,24 @@ mod inlines;
 )]
 mod bindings;
 
-/// Create a static C string.
+/// Create a static C string of type [`*const c_char`][core::ffi::c_char].
 /// Will automatically add a NUL terminator.
 #[macro_export]
 macro_rules! c_string {
     ($str:expr $(,)?) => {{
-        concat!($str, "\0").as_ptr() as *const core::ffi::c_char
+        ::core::concat!($str, "\0").as_ptr() as *const ::core::ffi::c_char
+    }};
+}
+
+/// Create a static C string of type [`&CStr`][`core::ffi::CStr`].
+/// Will automatically add a NUL terminator.
+#[macro_export]
+macro_rules! c_str {
+    ($str:expr $(,)?) => {{
+        match ::core::ffi::CStr::from_bytes_with_nul(::core::concat!($str, "\0").as_bytes()) {
+            Ok(c_str) => c_str,
+            Err(error) => panic!("invalid C-string literal"),
+        }
     }};
 }
 
