@@ -29,7 +29,12 @@ mod inlines;
 )]
 mod bindings;
 
-/// Create a static C string of type [`*const c_char`][core::ffi::c_char].
+/// Create a static C string of type [`&'static CStr`][`core::ffi::CStr`].
+/// Will automatically add a NUL terminator.
+pub use cstr::cstr;
+
+/// Create a static C string of type [`*const c_char`][core::ffi::c_char]
+/// referring to a `'static` string.
 /// Will automatically add a NUL terminator.
 // TODO: don't produce intermediate `CStr` whose `length` part we don't use
 #[macro_export]
@@ -38,10 +43,6 @@ macro_rules! c_string {
         $crate::cstr!($str).as_ptr()
     }};
 }
-
-/// Create a static C string of type [`&CStr`][`core::ffi::CStr`].
-/// Will automatically add a NUL terminator.
-pub use cstr::cstr;
 
 /// Crash the system.
 #[macro_export]
