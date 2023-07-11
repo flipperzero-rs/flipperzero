@@ -203,7 +203,51 @@ impl DialogMessageButton {
 
 impl<'a> DialogFileBrowserOptions<'a> {
     /// Creates a new dialog file browser options and initializes to default values.
-    pub fn new<'e: 'a>(extension: &'e CStr) -> Self {
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use flipperzero::dialogs::DialogFileBrowserOptions;
+    /// # use flipperzero_sys::cstr;
+    /// let options = DialogFileBrowserOptions::new(cstr!("*"));
+    /// ```
+    ///
+    /// ## Lifetime covariance:
+    ///
+    /// Even if `'static` lifetime is involved in the creation of options,
+    /// the resulting lifetime will be the most applicable one:
+    ///
+    /// ```
+    /// # use core::ffi::CStr;
+    /// # use flipperzero::dialogs::DialogFileBrowserOptions;
+    /// # use flipperzero_sys::{cstr, DialogsFileBrowserOptions};
+    /// // has `'static` lifetime
+    /// const EXTENSION: &CStr = cstr!("*");
+    /// // has "local" lifetime, aka `'a`
+    /// let base_path_bytes = [b'/', b'r', b'o', b'o', b't'];
+    /// let base_path = CStr::from_bytes_with_nul(&base_path_bytes).unwrap();
+    /// // the most appropriate lifetime `'a` is used
+    /// let mut options = DialogFileBrowserOptions::new(EXTENSION)
+    ///     .set_base_path(base_path);
+    /// ```
+    ///
+    /// Still this should not allow the options to outlive its components:
+    ///
+    /// ```compile_fail
+    /// # use core::ffi::CStr;
+    /// # use flipperzero::dialogs::DialogFileBrowserOptions;
+    /// # use flipperzero_sys::{cstr, DialogsFileBrowserOptions};
+    /// const EXTENSION: &CStr = cstr!("*");
+    /// let mut options = DialogFileBrowserOptions::new(EXTENSION);
+    /// {
+    ///     let base_path_bytes = [b'/', b'r', b'o', b'o', b't'];
+    ///     let base_path = CStr::from_bytes_with_nul(&base_path_bytes).unwrap();
+    ///     options = options.set_base_path(base_path);
+    /// }
+    /// ```
+    pub fn new(extension: &'a CStr) -> Self {
         let mut options = MaybeUninit::<sys::DialogsFileBrowserOptions>::uninit();
         let uninit_options = options.as_mut_ptr();
         let extension = extension.as_ptr();
@@ -275,7 +319,7 @@ impl<'a> DialogFileBrowserOptions<'a> {
 #[cfg(feature = "alloc")]
 #[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 pub fn alert(text: &str) {
-    const BUTTON_OK: &'static CStr = unsafe { CStr::from_bytes_with_nul_unchecked(b"OK\0") };
+    const BUTTON_OK: &CStr = unsafe { CStr::from_bytes_with_nul_unchecked(b"OK\0") };
 
     let text = CString::new(text.as_bytes()).unwrap();
 
