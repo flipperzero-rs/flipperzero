@@ -22,4 +22,5 @@ bench = false
 test = false
 
 [dependencies]
+cstr.workspace = true
 ufmt.workspace = true
