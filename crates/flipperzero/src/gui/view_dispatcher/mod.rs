@@ -41,7 +41,7 @@ impl<C: ViewDispatcherCallbacks, const QUEUE: bool> ViewDispatcher<C, QUEUE> {
         let raw = view_dispatcher.as_raw();
         if QUEUE {
             // SAFETY: `raw` is a valid pointer
-            // and corresponds to a newly created `ViewPort`
+            // and corresponds to a newly created `ViewDispatcher`
             // which does not have a queue yet
             unsafe { sys::view_dispatcher_enable_queue(raw) };
         }
@@ -60,7 +60,7 @@ impl<C: ViewDispatcherCallbacks, const QUEUE: bool> ViewDispatcher<C, QUEUE> {
                 event: u32,
             ) -> bool {
                 let context: *mut C = context.cast();
-                // SAFETY: `context` is stored in a `Box` which is a member of `ViewPort`
+                // SAFETY: `context` is stored in a `Box` which is a member of `ViewDispatcher`
                 // and the callback is accessed exclusively by this function
                 unsafe { &mut *context }.on_custom(event)
             }
@@ -75,7 +75,7 @@ impl<C: ViewDispatcherCallbacks, const QUEUE: bool> ViewDispatcher<C, QUEUE> {
                 context: *mut c_void,
             ) -> bool {
                 let context: *mut C = context.cast();
-                // SAFETY: `context` is stored in a `Box` which is a member of `ViewPort`
+                // SAFETY: `context` is stored in a `Box` which is a member of `ViewDispatcher`
                 // and the callback is accessed exclusively by this function
                 unsafe { &mut *context }.on_navigation()
             }
@@ -90,7 +90,7 @@ impl<C: ViewDispatcherCallbacks, const QUEUE: bool> ViewDispatcher<C, QUEUE> {
                 context: *mut c_void,
             ) {
                 let context: *mut C = context.cast();
-                // SAFETY: `context` is stored in a `Box` which is a member of `ViewPort`
+                // SAFETY: `context` is stored in a `Box` which is a member of `ViewDispatcher`
                 // and the callback is accessed exclusively by this function
                 unsafe { &mut *context }.on_tick();
             }
