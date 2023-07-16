@@ -201,7 +201,7 @@ pub(crate) mod ops {
         {
             let quotient = divident / divisor;
             let remainder = divident % divisor;
-            if remainder > 0 && divisor > 0 {
+            if remainder != 0 {
                 quotient + 1
             } else {
                 quotient
