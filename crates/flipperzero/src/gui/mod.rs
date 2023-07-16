@@ -9,6 +9,14 @@ pub mod view;
 pub mod view_dispatcher;
 pub mod view_port;
 
+use core::{
+    ffi::c_char,
+    ops::{Deref, DerefMut},
+};
+
+use flipperzero_sys::{self as sys, furi::UnsafeRecord, Canvas as SysCanvas, Gui as SysGui};
+pub use gui_layer::*;
+
 use crate::{
     gui::{
         canvas::CanvasView,
@@ -16,13 +24,6 @@ use crate::{
     },
     input::InputEvent,
 };
-use core::{
-    ffi::c_char,
-    ops::{Deref, DerefMut},
-};
-use flipperzero_sys::{self as sys, furi::UnsafeRecord, Canvas as SysCanvas, Gui as SysGui};
-
-pub use gui_layer::*;
 
 /// System GUI wrapper.
 pub struct Gui {

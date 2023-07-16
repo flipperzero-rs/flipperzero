@@ -84,8 +84,10 @@ pub(crate) mod alloc {
     ///
     /// While there are no `unsafe` methods in this struct,
     /// it is easy to misuse the pointers provided by its methods, namely:
+    ///
     /// * [`NonUniqueBox::as_ptr`]
     /// * [`NonUniqueBox::as_non_null`]
+    ///
     /// so it should be used with extra care, i.e. all uses of the pointers
     /// should follow the rules such as stacked borrows
     /// and should never be used after the drop of this structure.

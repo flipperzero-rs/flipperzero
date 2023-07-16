@@ -6,12 +6,6 @@ mod color;
 mod font;
 mod font_parameters;
 
-use crate::gui::{
-    icon::Icon,
-    icon_animation::{IconAnimation, IconAnimationCallbacks},
-};
-#[cfg(feature = "xbm")]
-use crate::xbm::XbmImage;
 use core::{
     ffi::{c_char, CStr},
     marker::PhantomData,
@@ -19,20 +13,27 @@ use core::{
     ops::Deref,
     ptr::NonNull,
 };
-use flipperzero_sys::{
-    self as sys, Canvas as SysCanvas, CanvasFontParameters as SysCanvasFontParameters,
-};
 
 pub use align::*;
 pub use canvas_direction::*;
 pub use color::*;
+use flipperzero_sys::{
+    self as sys, Canvas as SysCanvas, CanvasFontParameters as SysCanvasFontParameters,
+};
 pub use font::*;
 pub use font_parameters::*;
+
+use crate::gui::{
+    icon::Icon,
+    icon_animation::{IconAnimation, IconAnimationCallbacks},
+};
+#[cfg(feature = "xbm")]
+use crate::xbm::XbmImage;
 
 /// System Canvas view.
 pub struct CanvasView<'a> {
     raw: NonNull<SysCanvas>,
-    _lifetime: PhantomData<&'a ()>,
+    _lifetime: PhantomData<&'a SysCanvas>,
 }
 
 impl CanvasView<'_> {

@@ -2,18 +2,19 @@
 
 mod orientation;
 
-use crate::{gui::canvas::CanvasView, input::InputEvent, internals::alloc::NonUniqueBox};
 use core::{
     ffi::c_void,
     num::NonZeroU8,
     ptr::{self, NonNull},
 };
+
 use flipperzero_sys::{
     self as sys, Canvas as SysCanvas, ViewPort as SysViewPort,
     ViewPortOrientation as SysViewPortOrientation,
 };
-
 pub use orientation::*;
+
+use crate::{gui::canvas::CanvasView, input::InputEvent, internals::alloc::NonUniqueBox};
 
 /// System ViewPort.
 pub struct ViewPort<C: ViewPortCallbacks> {
@@ -366,9 +367,10 @@ impl Drop for ViewPortInner {
     }
 }
 
+#[allow(unused_variables)]
 pub trait ViewPortCallbacks {
-    fn on_draw(&mut self, _canvas: CanvasView<'_>) {}
-    fn on_input(&mut self, _event: InputEvent) {}
+    fn on_draw(&mut self, canvas: CanvasView<'_>) {}
+    fn on_input(&mut self, event: InputEvent) {}
 }
 
 impl ViewPortCallbacks for () {}

@@ -1,17 +1,19 @@
-use crate::{gui::icon::Icon, internals::alloc::NonUniqueBox};
 use core::{
     ffi::c_void,
     marker::PhantomData,
     ptr::{self, NonNull},
 };
+
 use flipperzero_sys::{self as sys, Icon as SysIcon, IconAnimation as SysIconAnimation};
+
+use crate::{gui::icon::Icon, internals::alloc::NonUniqueBox};
 
 /// Icon Animation
 /// which can be [started](IconAnimation::start) and [stopped](IconAnimation::stop).
 pub struct IconAnimation<'a, C: IconAnimationCallbacks> {
     inner: IconAnimationInner,
     callbacks: NonUniqueBox<C>,
-    _parent_lifetime: PhantomData<&'a ()>,
+    _parent_lifetime: PhantomData<&'a mut (IconAnimationInner, C)>,
 }
 
 impl<'a, C: IconAnimationCallbacks> IconAnimation<'a, C> {
@@ -138,7 +140,7 @@ impl Drop for IconAnimationInner {
 /// This is passed to [callbacks](IconAnimationCallbacks) of [`IconAnimation`].
 pub struct IconAnimationView<'a> {
     raw: NonNull<SysIconAnimation>,
-    _lifetime: PhantomData<&'a ()>,
+    _lifetime: PhantomData<&'a SysIconAnimation>,
 }
 
 impl IconAnimationView<'_> {
@@ -205,8 +207,9 @@ impl IconAnimationView<'_> {
 }
 
 /// Callbacks of the [`IconAnimation`].
+#[allow(unused_variables)]
 pub trait IconAnimationCallbacks {
-    fn on_update(&mut self, _icon_animation: IconAnimationView) {}
+    fn on_update(&mut self, icon_animation: IconAnimationView) {}
 }
 
 /// Stub implementation, use it whenever callbacks are not needed.

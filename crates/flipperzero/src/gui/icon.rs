@@ -1,7 +1,9 @@
+use core::ptr::NonNull;
+
+use flipperzero_sys::{self as sys, Icon as SysIcon};
+
 #[cfg(feature = "xbm")]
 use crate::xbm::XbmImage;
-use core::ptr::NonNull;
-use flipperzero_sys::{self as sys, Icon as SysIcon};
 
 pub struct Icon {
     raw: NonNull<SysIcon>,

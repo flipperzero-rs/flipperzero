@@ -1,7 +1,9 @@
-use crate::internals::macros::impl_std_error;
 use core::fmt::{self, Display, Formatter};
+
 use flipperzero_sys::{self as sys, Color as SysColor};
 use ufmt::{derive::uDebug, uDisplay, uWrite, uwrite};
+
+use crate::internals::macros::impl_std_error;
 
 /// Color on the canvas.
 ///

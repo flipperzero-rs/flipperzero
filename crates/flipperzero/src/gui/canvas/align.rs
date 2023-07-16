@@ -1,7 +1,9 @@
-use crate::internals::macros::impl_std_error;
 use core::fmt::{self, Display, Formatter};
+
 use flipperzero_sys::{self as sys, Align as SysAlign};
 use ufmt::{derive::uDebug, uDisplay, uWrite, uwrite};
+
+use crate::internals::macros::impl_std_error;
 
 /// Alignment of an object on the canvas.
 ///

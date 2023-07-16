@@ -1,6 +1,8 @@
-use crate::{gui::canvas::CanvasView, input::InputEvent, internals::alloc::NonUniqueBox};
 use core::ptr::NonNull;
+
 use flipperzero_sys::{self as sys, View as SysView};
+
+use crate::{gui::canvas::CanvasView, input::InputEvent, internals::alloc::NonUniqueBox};
 
 /// UI view.
 pub struct View<C: ViewCallbacks> {
@@ -43,9 +45,10 @@ impl Drop for ViewInner {
     }
 }
 
+#[allow(unused_variables)]
 pub trait ViewCallbacks {
-    fn on_draw(&mut self, _canvas: CanvasView) {}
-    fn on_input(&mut self, _event: InputEvent) {}
+    fn on_draw(&mut self, canvas: CanvasView) {}
+    fn on_input(&mut self, event: InputEvent) {}
     // TODO: the remaining callbacks and actual usage of callbacks
 }
 

@@ -1,10 +1,12 @@
-use crate::internals::macros::impl_std_error;
 use core::{
     fmt::{self, Display, Formatter},
     num::NonZeroU8,
 };
+
 use flipperzero_sys::CanvasFontParameters as SysCanvasFontParameters;
 use ufmt::{derive::uDebug, uDisplay, uWrite};
+
+use crate::internals::macros::impl_std_error;
 
 /// Font parameters on a canvas.
 ///
