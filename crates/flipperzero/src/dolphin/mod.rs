@@ -28,7 +28,7 @@ impl Dolphin {
     ///
     /// In future it will become part of assets. Thread safe, async.
     pub fn deed(&mut self, deed: Deed) {
-        unsafe { sys::dolphin_deed(self.data.as_ptr(), deed.to_raw()) };
+        unsafe { sys::dolphin_deed(deed.to_raw())};
     }
 
     /// Retrieves the dolphin's current stats.
