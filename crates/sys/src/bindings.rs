@@ -1756,8 +1756,8 @@ extern "C" {
     pub fn strlcpy(
         arg1: *mut core::ffi::c_char,
         arg2: *const core::ffi::c_char,
-        arg3: usize,
-    ) -> usize;
+        arg3: core::ffi::c_uint,
+    ) -> core::ffi::c_uint;
 }
 extern "C" {
     pub static _ctype_: [core::ffi::c_char; 0usize];
@@ -1770,7 +1770,8 @@ extern "C" {
         arg4: *const core::ffi::c_char,
     ) -> !;
 }
-pub type va_list = u32;
+pub type __gnuc_va_list = u32;
+pub type va_list = __gnuc_va_list;
 pub type FILE = __FILE;
 extern "C" {
     pub fn sscanf(
