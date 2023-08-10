@@ -1,29 +1,39 @@
 # Changelog
+
 All notable changes to the crates in this workspace will be documented in this
 file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
 ### Added
+
 - `impl Default for flipperzero::dialogs::DialogMessage`
 - `impl Default for flipperzero::toolbox::Crc32`
 
 ### Changed
+
+- Migrated to SDK API 34.3 (firmware 0.88.0).
 - `flipperzero_test::tests` now allows `#[cfg(..)]` attributes on test methods.
 
 ### Documentation
+
 - Feature flags are now documented and the items guarded by them are now annotated.
 
 ## [0.10.0]
+
 ### Added
+
 - `flipperzero::format` macro.
 - `flipperzero::furi::sync::FuriMutex`
 - `flipperzero::furi::time`, containing the currently unusable placeholder types
   `Duration` and `Instant`.
 
 ### Changed
-- Migrated to SDK API 28.2 (firmware 0.84.1).
+
+- Migrated to SDK API 28.2 (firmware 0.88.0).
 - `flipperzero::furi::sync` has been rewritten using the `lock_api` crate.
   - `Mutex<T>` is now a type alias for `lock_api::Mutex<FuriMutex, T>`.
   - `MutexGuard<'a, T>` is now a type alias for
@@ -32,7 +42,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   stdout.
 
 ## [0.9.0]
+
 ### Added
+
 - `flipperzero::{log, error, warn, info, debug, trace}` logging macros.
 - `flipperzero::furi::log`, providing the `Level` and `LevelFilter` types for
   use with the logging macros.
@@ -54,6 +66,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   on a Flipper Zero.
 
 ### Changed
+
 - Migrated to SDK API 23.0 (firmware 0.82.3).
 - MSRV is now 1.70.
 - Bumped pinned nightly Rust version to `nightly-2023-05-03`.
@@ -62,7 +75,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   would outlive the main function.
 
 ## [0.8.0]
+
 ### Added
+
 - `flipperzero::io`, providing `Read, Write, Seek` traits similar to the ones in
   `std::io`.
 - `flipperzero::storage`, providing `OpenOptions` and `File` structs similar to
@@ -70,6 +85,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `impl ufmt::{uDebug, uDisplay} for flipperzero_sys::furi::Status`
 
 ### Changed
+
 - Migrated to SDK API 20.0 (firmware 0.80.1).
 - MSRV is now 1.64.
 - Bumped pinned nightly Rust version to `nightly-2023-03-10`.
@@ -77,22 +93,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   restricted to its supported argument syntax.
 
 ## [0.7.2]
+
 ### Fixed
+
 - Removed unintended prefix from all bindings documentation.
 
 ## [0.7.1]
+
 ### Added
+
 - `flipperzero::dolphin`, providing types for interacting with the dolphin.
 
 ### Changed
+
 - `flipperzero_sys` bindings documentation is now transformed from Doxygen.
 
 ## [0.7.0]
+
 ### Changed
+
 - Migrated to SDK API 14.0 (firmware 0.77.1).
 
 ## [0.6.0]
+
 ### Added
+
 - `flipperzero/alloc` feature flag.
 - `flipperzero::dialogs`, providing the `DialogsApp` and `DialogMessage` types
   for creating simple dialogs.
@@ -101,40 +126,55 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Inline functions required to use the Furi HAL GPIO interface.
 
 ### Changed
+
 - Migrated to SDK API 11.2 (firmware 0.74.2).
 - Macros now allow trailing commas.
 
 ## [0.5.0]
+
 ### Changed
+
 - Migrated to SDK API 10.1 (firmware 0.73.1).
 
 ## [0.4.1]
+
 ### Added
+
 - Custom icon support to `flipperzero_rt::manifest!` macro.
 
 ## [0.4.0]
+
 ### Changed
+
 - Migrated to SDK API 7.5 (firmware 0.71.1).
 - `flipperzero_rt::manifest::ManifestBase` fields `api_version_major` and
   `api_version_minor` have been combined into an `api_version` field.
 
 ## [0.3.1]
+
 ### Fixed
+
 - `flipperzero-sys` bindings now use short enums as required.
 
 ## [0.3.0]
+
 ### Added
+
 - `flipperzero-rt` crate, enabling standalone app binaries to be built.
 
 ### Changed
+
 - Hand-written bindings are replaced by generated bindings from SDK API 2.2
   (firmware 0.69).
 
 ### Removed
+
 - `flipperzero::panic_handler` (moved to `flipperzero_rt::panic_handler`).
 
 ## [0.2.0]
+
 ### Added
+
 - `flipperzero::{print, println}` macros.
 - `flipperzero::furi::{message_queue, sync}` modules.
 - `flipperzero::furi::{Result, Error}` type aliases.
@@ -142,9 +182,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `flipperzero-sys` crate has more hand-written bindings.
 
 ### Changed
+
 - MSRV is now 1.64.
 - `flipperzero::furi::Stdout` moved into `flipperzero::furi::io` module.
 - `flipperzero::furi::sleep` moved into `flipperzero::furi::thread` module.
 
 ## [0.1.0]
+
 Initial release!
+
+[Unreleased]: https://github.com/flipperzero-rs/flipperzero/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.10.0
+[0.9.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.9.0
+[0.8.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.8.0
+[0.7.2]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.7.2
+[0.7.1]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.7.1
+[0.7.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.7.0
+[0.6.1]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.6.1
+[0.6.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.6.0
+[0.5.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.5.0
+[0.4.1]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.4.1
+[0.4.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.4.0
+[0.3.1]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.3.1
+[0.3.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.3.0
+[0.2.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.2.0
+[0.1.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.1.0
