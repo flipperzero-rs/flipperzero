@@ -17,13 +17,13 @@ This means it's not possible to use anything in the [`std`](https://doc.rust-lan
 
 ## SDK version
 
-Currently supports SDK 34.3 ([flipperzero-firmware@0.88.0](https://github.com/flipperdevices/flipperzero-firmware/tree/0.88.0)).
+Currently supports SDK 34.3 ([flipperzero-firmware@0.87.0](https://github.com/flipperdevices/flipperzero-firmware/tree/0.87.0)).
 
 The crate major version number will be updated after a bump in [API version](https://github.com/flipperdevices/flipperzero-firmware/blob/release/firmware/targets/f7/api_symbols.csv) in the Flipper Zero firmware.
 
 | Crate version | API version |
 |---------------|-------------|
-| 0.11.x        | 34.3        |
+| Unreleased    | 34.3        |
 | 0.10.x        | 28.2        |
 | 0.9.x         | 23.0        |
 | 0.8.x         | 20.0        |

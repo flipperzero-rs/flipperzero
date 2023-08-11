@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Migrated to SDK API 34.3 (firmware 0.88.0).
+- Migrated to SDK API 34.3 (firmware 0.87.0).
 - `flipperzero_test::tests` now allows `#[cfg(..)]` attributes on test methods.
 
 ### Documentation
@@ -32,7 +32,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Migrated to SDK API 28.2 (firmware 0.88.0).
+- Migrated to SDK API 28.2 (firmware 0.84.1).
 - `flipperzero::furi::sync` has been rewritten using the `lock_api` crate.
   - `Mutex<T>` is now a type alias for `lock_api::Mutex<FuriMutex, T>`.
   - `MutexGuard<'a, T>` is now a type alias for
