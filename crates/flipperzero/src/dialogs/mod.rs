@@ -2,11 +2,11 @@
 
 #[cfg(feature = "alloc")]
 use alloc::ffi::CString;
-
 use core::ffi::{c_char, c_void, CStr};
 use core::marker::PhantomData;
 use core::mem::MaybeUninit;
 use core::ptr::{self, NonNull};
+
 use flipperzero_sys as sys;
 use sys::furi::UnsafeRecord;
 
