@@ -25,7 +25,7 @@ Once the SDK is built, run the [`generate-bindings`] script to build a new [`bin
 
 ```bash
 $ cd tools/
-$ cargo run --bin generate-bindings ../../flipperzero-firmware/build/f7-firmware-D/sdk
+$ cargo run --bin generate-bindings ../../flipperzero-firmware/build/f7-firmware-D/sdk_headers
 $ cp bindings.rs ../crates/sys/src
 ```
 
@@ -33,10 +33,10 @@ Make sure to update the SDK details in [`README.md`] before making a new release
 
 Alternatively, you can generate `binding.rs` in an isolated env using Docker and the following command:
 
-From the root of the repository, to build the binding for the branch/tag `0.84.1` of the official SDK:
+From the root of the repository, to build the binding for the branch/tag `0.88.0` of the official SDK:
 
 ```shell
-docker run --rm $(docker build --build-arg BRANCH=0.84.1 -q -f tools/Dockerfile .) > crates/sys/src/bindings.rs
+docker run --rm $(docker build --build-arg BRANCH=0.88.0 -q -f tools/Dockerfile .) > crates/sys/src/bindings.rs
 ```
 
 [`bindings.rs`]: ../crates/sys/src/bindings.rs

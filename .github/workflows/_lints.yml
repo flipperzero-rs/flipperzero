@@ -19,7 +19,7 @@ jobs:
       - name: Install build dependencies
         run: sudo apt install libudev-dev
       - name: Run Clippy
-        uses: auguwu/clippy-action@1.1.2
+        uses: auguwu/clippy-action@1.2.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: ${{ inputs.target }}
@@ -46,7 +46,7 @@ jobs:
           components: clippy
       - run: rustup override set ${{ steps.toolchain.outputs.name }}
       - name: Run Clippy (beta)
-        uses: auguwu/clippy-action@1.1.2
+        uses: auguwu/clippy-action@1.2.2
         continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
