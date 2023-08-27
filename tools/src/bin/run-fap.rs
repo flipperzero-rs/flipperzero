@@ -115,7 +115,7 @@ fn main() -> Result<(), Error> {
     wait_for_idle(serial_cli)?;
 
     // Run the FAP.
-    serial_cli.send_and_wait_eol(&format!("loader open Applications {}", dest_file))?;
+    serial_cli.send_and_wait_eol(&format!("loader open {} {}", dest_file, cli.args.join(" ")))?;
 
     // Wait for the FAP to finish.
     wait_for_idle(serial_cli)?;

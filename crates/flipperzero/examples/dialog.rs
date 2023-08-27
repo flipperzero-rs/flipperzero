@@ -45,7 +45,7 @@ fn main(_args: *mut u8) -> i32 {
         Some(CStr::from_bytes_with_nul(b"Scissor\0").unwrap()),
     );
 
-    let button = dialogs.show(&message);
+    let button = dialogs.show_message(&message);
 
     // ... or use dialog::alert() to display a simple message:
     match button {

@@ -15,11 +15,11 @@ jobs:
       run:
         working-directory: ${{ inputs.target }}
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v3.6.0
       - name: Install build dependencies
         run: sudo apt install libudev-dev
       - name: Run Clippy
-        uses: auguwu/clippy-action@1.1.2
+        uses: auguwu/clippy-action@1.2.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: ${{ inputs.target }}
@@ -37,7 +37,7 @@ jobs:
       run:
         working-directory: ${{ inputs.target }}
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v3.6.0
       - name: Install build dependencies
         run: sudo apt install libudev-dev
       - uses: dtolnay/rust-toolchain@beta
@@ -46,7 +46,7 @@ jobs:
           components: clippy
       - run: rustup override set ${{ steps.toolchain.outputs.name }}
       - name: Run Clippy (beta)
-        uses: auguwu/clippy-action@1.1.2
+        uses: auguwu/clippy-action@1.2.2
         continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -64,7 +64,7 @@ jobs:
       run:
         working-directory: ${{ inputs.target }}
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v3.6.0
       - name: Install build dependencies
         run: sudo apt install libudev-dev
       # Use nightly Rust (as docs.rs does), because some of our dependencies enable the
@@ -88,5 +88,5 @@ jobs:
       run:
         working-directory: ${{ inputs.target }}
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v3.6.0
       - run: cargo fmt --all --check
