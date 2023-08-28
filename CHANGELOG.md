@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Migrated to SDK API 34.3 (firmware 0.87.0).
+- Migrated to SDK API 35.0 (firmware 0.89.0).
 - `flipperzero_test::tests` now allows `#[cfg(..)]` attributes on test methods.
 
 ### Documentation

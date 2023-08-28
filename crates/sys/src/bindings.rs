@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 2228227;
+pub const API_VERSION: u32 = 2293760;
 pub type wint_t = core::ffi::c_int;
 pub type _off_t = core::ffi::c_long;
 pub type _fpos_t = core::ffi::c_long;
@@ -4979,7 +4979,7 @@ extern "C" {
 }
 #[doc = "Master key\n\n"]
 pub const FuriHalCryptoKeyType_FuriHalCryptoKeyTypeMaster: FuriHalCryptoKeyType = 0;
-#[doc = "Simple enencrypted key\n\n"]
+#[doc = "Simple unencrypted key\n\n"]
 pub const FuriHalCryptoKeyType_FuriHalCryptoKeyTypeSimple: FuriHalCryptoKeyType = 1;
 #[doc = "Encrypted with Master key\n\n"]
 pub const FuriHalCryptoKeyType_FuriHalCryptoKeyTypeEncrypted: FuriHalCryptoKeyType = 2;
@@ -5042,23 +5042,41 @@ fn bindgen_test_layout_FuriHalCryptoKey() {
         )
     );
 }
+#[doc = "operation successful\n\n"]
+pub const FuriHalCryptoGCMState_FuriHalCryptoGCMStateOk: FuriHalCryptoGCMState = 0;
+#[doc = "error during encryption/decryption\n\n"]
+pub const FuriHalCryptoGCMState_FuriHalCryptoGCMStateError: FuriHalCryptoGCMState = 1;
+#[doc = "tags do not match, auth failed\n\n"]
+pub const FuriHalCryptoGCMState_FuriHalCryptoGCMStateAuthFailure: FuriHalCryptoGCMState = 2;
+#[doc = "FuriHalCryptoGCMState Result of a GCM operation\n\n"]
+pub type FuriHalCryptoGCMState = core::ffi::c_uchar;
 extern "C" {
-    pub fn furi_hal_crypto_verify_enclave(keys_nb: *mut u8, valid_keys_nb: *mut u8) -> bool;
+    #[doc = "Verify factory provisioned keys\n\nReturns:\n\n* true if all enclave keys are intact, false otherwise\n\n# Arguments\n\n* `keys_nb` - The keys number of\n* `valid_keys_nb` - The valid keys number of\n\n"]
+    pub fn furi_hal_crypto_enclave_verify(keys_nb: *mut u8, valid_keys_nb: *mut u8) -> bool;
 }
 extern "C" {
-    pub fn furi_hal_crypto_verify_key(key_slot: u8) -> bool;
+    #[doc = "Ensure that requested slot and slots before this slot contains keys.\nThis function is used to provision FURI_HAL_CRYPTO_ENCLAVE_UNIQUE_KEY_SLOT. Also you may want to use it to generate some unique keys in user key slot range.\n\n**Warning!**\n\n* Because of the sequential nature of the secure enclave this method will generate key for all slots from FURI_HAL_CRYPTO_ENCLAVE_FACTORY_KEY_SLOT_END to the slot your requested. Keys are generated using on-chip RNG.\n\nReturns:\n\n* true if key exists or created, false if enclave corrupted\n\n# Arguments\n\n* `key_slot` - [Direction: In] The key slot to enclave\n\n"]
+    pub fn furi_hal_crypto_enclave_ensure_key(key_slot: u8) -> bool;
 }
 extern "C" {
-    #[doc = "Store key in crypto storage\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `key` - FuriHalCryptoKey to store. Only Master, Simple or Encrypted\n* `slot` - pinter to int where store slot number will be saved\n\n"]
-    pub fn furi_hal_crypto_store_add_key(key: *mut FuriHalCryptoKey, slot: *mut u8) -> bool;
+    #[doc = "Store key in crypto enclave\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `key` - FuriHalCryptoKey to be stored\n* `slot` - pointer to int where enclave slot will be stored\n\n"]
+    pub fn furi_hal_crypto_enclave_store_key(key: *mut FuriHalCryptoKey, slot: *mut u8) -> bool;
 }
 extern "C" {
-    #[doc = "Init AES engine and load key from crypto store\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `slot` - store slot number\n* `iv` - [Direction: In] pointer to 16 bytes Initialization Vector data\n\n"]
-    pub fn furi_hal_crypto_store_load_key(slot: u8, iv: *const u8) -> bool;
+    #[doc = "Init AES engine and load key from crypto enclave\n\n**Warning!**\n\n* Use only with furi_hal_crypto_enclave_unload_key()\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `slot` - enclave slot\n* `iv` - [Direction: In] pointer to 16 bytes Initialization Vector data\n\n"]
+    pub fn furi_hal_crypto_enclave_load_key(slot: u8, iv: *const u8) -> bool;
 }
 extern "C" {
-    #[doc = "Unload key engine and deinit AES engine\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `slot` - store slot number\n\n"]
-    pub fn furi_hal_crypto_store_unload_key(slot: u8) -> bool;
+    #[doc = "Unload key and deinit AES engine\n\n**Warning!**\n\n* Use only with furi_hal_crypto_enclave_load_key()\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `slot` - enclave slot\n\n"]
+    pub fn furi_hal_crypto_enclave_unload_key(slot: u8) -> bool;
+}
+extern "C" {
+    #[doc = "Init AES engine and load supplied key\n\n**Warning!**\n\n* Use only with furi_hal_crypto_unload_key()\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `key` - [Direction: In] pointer to 32 bytes key data\n* `iv` - [Direction: In] pointer to 16 bytes Initialization Vector data\n\n"]
+    pub fn furi_hal_crypto_load_key(key: *const u8, iv: *const u8) -> bool;
+}
+extern "C" {
+    #[doc = "Unload key and de-init AES engine\n\n**Warning!**\n\n* Use this function only with furi_hal_crypto_load_key()\n\nReturns:\n\n* true on success\n\n"]
+    pub fn furi_hal_crypto_unload_key() -> bool;
 }
 extern "C" {
     #[doc = "Encrypt data\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `input` - pointer to input data\n* `output` - pointer to output data\n* `size` - input/output buffer size in bytes\n\n"]
@@ -5067,6 +5085,56 @@ extern "C" {
 extern "C" {
     #[doc = "Decrypt data\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `input` - pointer to input data\n* `output` - pointer to output data\n* `size` - input/output buffer size in bytes\n\n"]
     pub fn furi_hal_crypto_decrypt(input: *const u8, output: *mut u8, size: usize) -> bool;
+}
+extern "C" {
+    #[doc = "Encrypt the input using AES-CTR\nDecryption can be performed by supplying the ciphertext as input. Inits and deinits the AES engine internally.\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `key` - [Direction: In] pointer to 32 bytes key data\n* `iv` - [Direction: In] pointer to 12 bytes Initialization Vector data\n* `input` - [Direction: In] pointer to input data\n* `output` - [Direction: In, Out] pointer to output data\n* `length` - length of the input and output in bytes\n\n"]
+    pub fn furi_hal_crypto_ctr(
+        key: *const u8,
+        iv: *const u8,
+        input: *const u8,
+        output: *mut u8,
+        length: usize,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Encrypt/decrypt the input using AES-GCM\nWhen decrypting the tag generated needs to be compared to the tag attached to the ciphertext in a constant-time fashion. If the tags are not equal, the decryption failed and the plaintext returned needs to be discarded. Inits and deinits the AES engine internally.\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `key` - [Direction: In] pointer to 32 bytes key data\n* `iv` - [Direction: In] pointer to 12 bytes Initialization Vector data\n* `aad` - [Direction: In] pointer to additional authentication data\n* `aad_length` - length of the additional authentication data in bytes\n* `input` - [Direction: In] pointer to input data\n* `output` - [Direction: In, Out] pointer to output data\n* `length` - length of the input and output in bytes\n* `tag` - [Direction: In, Out] pointer to 16 bytes space for the tag\n* `decrypt` - true for decryption, false otherwise\n\n"]
+    pub fn furi_hal_crypto_gcm(
+        key: *const u8,
+        iv: *const u8,
+        aad: *const u8,
+        aad_length: usize,
+        input: *const u8,
+        output: *mut u8,
+        length: usize,
+        tag: *mut u8,
+        decrypt: bool,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Encrypt the input using AES-GCM and generate a tag\nInits and deinits the AES engine internally.\n\nReturns:\n\n* FuriHalCryptoGCMStateOk on success, FuriHalCryptoGCMStateError on failure\n\n# Arguments\n\n* `key` - [Direction: In] pointer to 32 bytes key data\n* `iv` - [Direction: In] pointer to 12 bytes Initialization Vector data\n* `aad` - [Direction: In] pointer to additional authentication data\n* `aad_length` - length of the additional authentication data in bytes\n* `input` - [Direction: In] pointer to input data\n* `output` - [Direction: In, Out] pointer to output data\n* `length` - length of the input and output in bytes\n* `tag` - [Direction: In, Out] pointer to 16 bytes space for the tag\n\n"]
+    pub fn furi_hal_crypto_gcm_encrypt_and_tag(
+        key: *const u8,
+        iv: *const u8,
+        aad: *const u8,
+        aad_length: usize,
+        input: *const u8,
+        output: *mut u8,
+        length: usize,
+        tag: *mut u8,
+    ) -> FuriHalCryptoGCMState;
+}
+extern "C" {
+    #[doc = "Decrypt the input using AES-GCM and verify the provided tag\nInits and deinits the AES engine internally.\n\nReturns:\n\n* FuriHalCryptoGCMStateOk on success, FuriHalCryptoGCMStateError on failure, FuriHalCryptoGCMStateAuthFailure if the tag does not match\n\n# Arguments\n\n* `key` - [Direction: In] pointer to 32 bytes key data\n* `iv` - [Direction: In] pointer to 12 bytes Initialization Vector data\n* `aad` - [Direction: In] pointer to additional authentication data\n* `aad_length` - length of the additional authentication data in bytes\n* `input` - [Direction: In] pointer to input data\n* `output` - [Direction: In, Out] pointer to output data\n* `length` - length of the input and output in bytes\n* `tag` - [Direction: In, Out] pointer to 16 bytes tag\n\n"]
+    pub fn furi_hal_crypto_gcm_decrypt_and_verify(
+        key: *const u8,
+        iv: *const u8,
+        aad: *const u8,
+        aad_length: usize,
+        input: *const u8,
+        output: *mut u8,
+        length: usize,
+        tag: *const u8,
+    ) -> FuriHalCryptoGCMState;
 }
 pub type FuriHalConsoleTxCallback = ::core::option::Option<
     unsafe extern "C" fn(buffer: *const u8, size: usize, context: *mut core::ffi::c_void),
@@ -24260,6 +24328,62 @@ extern "C" {
         hi_nibble: core::ffi::c_char,
         low_nibble: core::ffi::c_char,
         byte: *mut u8,
+    ) -> bool;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct CompressIcon {
+    _unused: [u8; 0],
+}
+extern "C" {
+    #[doc = "Initialize icon compressor\n\nReturns:\n\n* Compress Icon instance\n\n"]
+    pub fn compress_icon_alloc() -> *mut CompressIcon;
+}
+extern "C" {
+    #[doc = "Free icon compressor\n\n# Arguments\n\n* `instance` - The Compress Icon instance\n\n"]
+    pub fn compress_icon_free(instance: *mut CompressIcon);
+}
+extern "C" {
+    #[doc = "Decompress icon\n\n**Warning!**\n\n* decoded_buff pointer set by this function is valid till next `compress_icon_decode` or `compress_icon_free` call\n\n# Arguments\n\n* `instance` - The Compress Icon instance\n* `icon_data` - pointer to icon data\n* `decoded_buff` - [Direction: In] pointer to decoded buffer pointer\n\n"]
+    pub fn compress_icon_decode(
+        instance: *mut CompressIcon,
+        icon_data: *const u8,
+        decoded_buff: *mut *mut u8,
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Compress {
+    _unused: [u8; 0],
+}
+extern "C" {
+    #[doc = "Allocate encoder and decoder\n\nReturns:\n\n* Compress instance\n\n# Arguments\n\n* `compress_buff_size` - size of decoder and encoder buffer to allocate\n\n"]
+    pub fn compress_alloc(compress_buff_size: u16) -> *mut Compress;
+}
+extern "C" {
+    #[doc = "Free encoder and decoder\n\n# Arguments\n\n* `compress` - Compress instance\n\n"]
+    pub fn compress_free(compress: *mut Compress);
+}
+extern "C" {
+    #[doc = "Encode data\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `compress` - Compress instance\n* `data_in` - pointer to input data\n* `data_in_size` - size of input data\n* `data_out` - maximum size of output data\n* `data_res_size` - pointer to result output data size\n\n"]
+    pub fn compress_encode(
+        compress: *mut Compress,
+        data_in: *mut u8,
+        data_in_size: usize,
+        data_out: *mut u8,
+        data_out_size: usize,
+        data_res_size: *mut usize,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Decode data\n\nReturns:\n\n* true on success\n\n# Arguments\n\n* `compress` - Compress instance\n* `data_in` - pointer to input data\n* `data_in_size` - size of input data\n* `data_out` - maximum size of output data\n* `data_res_size` - pointer to result output data size\n\n"]
+    pub fn compress_decode(
+        compress: *mut Compress,
+        data_in: *mut u8,
+        data_in_size: usize,
+        data_out: *mut u8,
+        data_out_size: usize,
+        data_res_size: *mut usize,
     ) -> bool;
 }
 extern "C" {
