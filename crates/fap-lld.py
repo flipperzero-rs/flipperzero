@@ -25,8 +25,7 @@ def main():
         ] + args,
         cwd=os.path.join(os.path.dirname(__file__), TOOLS_PATH),
     )
-    if result.returncode:
-        sys.exit(result.returncode)
+    sys.exit(result.returncode)
 
 
 if __name__ == '__main__':

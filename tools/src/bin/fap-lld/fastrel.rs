@@ -15,6 +15,9 @@ use tempfile::tempdir;
 
 use super::Error;
 
+/// Version of the `.fast.rel` encoding that this module supports.
+const VERSION: u8 = 1;
+
 pub(crate) fn postprocess_fap(output_fap: &Path, objcopy: &Path) -> Result<(), Error> {
     // Parse the FAP as an ELF binary.
     let fap_data = fs::read(output_fap)?;
@@ -80,11 +83,10 @@ struct FastRel<'data> {
 
 impl<'data> FastRel<'data> {
     fn gnu_sym_hash(&self) -> u32 {
-        let mut h = 0x1505;
-        for c in self.name.as_bytes() {
-            h = (h << 5) + h + u32::from(*c);
-        }
-        h
+        self.name
+            .as_bytes()
+            .iter()
+            .fold(0x1505, |h, c| (h << 5) + h + u32::from(*c))
     }
 }
 
@@ -131,8 +133,6 @@ impl<'data> FastRelSection<'data> {
     }
 
     fn write(&self, mut w: impl Write) -> io::Result<()> {
-        const VERSION: u8 = 1;
-
         w.write_all(&[VERSION])?;
         w.write_all(&(self.fastrel_offsets.len() as u32).to_le_bytes())?;
         for (unique, offsets) in &self.fastrel_offsets {
