@@ -95,8 +95,8 @@ unsafe impl RawMutexTimed for FuriMutex {
     }
 
     fn try_lock_until(&self, timeout: Self::Instant) -> bool {
-        let now = unsafe { sys::furi_get_tick() };
-        self.try_lock_for(Duration(timeout.0.wrapping_sub(now)))
+        let now = Instant::now();
+        self.try_lock_for(timeout - now)
     }
 }
 

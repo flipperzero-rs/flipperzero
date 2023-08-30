@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `flipperzero::furi::time::{Duration, Instant}` implementations.
 - `impl Default for flipperzero::dialogs::DialogMessage`
 - `impl Default for flipperzero::toolbox::Crc32`
 
