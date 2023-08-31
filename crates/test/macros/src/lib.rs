@@ -124,15 +124,17 @@ fn tests_runner_impl(args: TokenStream) -> parse::Result<TokenStream> {
                 ret
             }
 
-            fn test_list() -> impl Iterator<Item = (&'static str, &'static str, ::flipperzero_test::TestFn)> {
+            fn test_list() -> impl Iterator<Item = (&'static str, &'static str, ::flipperzero_test::TestFn)> + Clone {
                 let ret = ::core::iter::empty();
                 #( let ret = ret.chain(#test_lists); )*
                 ret
             }
 
             // Test runner entry point
-            fn main(_args: *mut u8) -> i32 {
-                match ::flipperzero_test::__macro_support::run_tests(test_count(), test_list()) {
+            fn main(args: *mut u8) -> i32 {
+                // SAFETY: Flipper Zero passes arguments to FAPs as a C string.
+                let args = unsafe { ::flipperzero_test::__macro_support::Args::parse(args) };
+                match ::flipperzero_test::__macro_support::run_tests(test_count(), test_list(), args) {
                     Ok(()) => 0,
                     Err(e) => e,
                 }

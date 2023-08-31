@@ -65,7 +65,7 @@ impl ufmt::uDisplay for TestFailure {
 }
 
 pub mod __macro_support {
-    use core::ffi::c_char;
+    use core::ffi::{c_char, CStr};
 
     use flipperzero_sys as sys;
     use sys::furi::UnsafeRecord;
@@ -73,6 +73,74 @@ pub mod __macro_support {
     use crate::TestFn;
 
     const RECORD_STORAGE: *const c_char = sys::c_string!("storage");
+
+    pub struct Args<'a>(&'a str);
+
+    impl<'a> Args<'a> {
+        /// Parses test arguments from a raw C string.
+        ///
+        /// The total size of the raw C string must be smaller than `isize::MAX` **bytes**
+        /// in memory due to calling the `slice::from_raw_parts` function.
+        ///
+        /// If the C string does not contain valid UTF-8, it is ignored and the test is
+        /// run without arguments.
+        ///
+        /// # Safety
+        ///
+        /// * The memory pointed to by `ptr` must contain a valid nul terminator at the
+        ///   end of the string.
+        ///
+        /// * `ptr` must be [valid] for reads of bytes up to and including the null
+        ///   terminator. This means in particular that the entire memory range of the C
+        ///   string must be contained within a single allocated object!
+        ///
+        /// * The memory referenced by the returned `CStr` must not be mutated for
+        ///   the duration of lifetime `'a`.
+        ///
+        /// # Caveat
+        ///
+        /// The lifetime for the returned slice is inferred from its usage.
+        ///
+        /// [valid]: core::ptr#safety
+        pub unsafe fn parse(args: *mut u8) -> Self {
+            if args.is_null() {
+                Args("")
+            } else {
+                let args_cstr = unsafe { CStr::from_ptr(args.cast_const().cast()) };
+                let args = args_cstr.to_str().unwrap_or("");
+                Args(args)
+            }
+        }
+
+        fn filters(&self) -> Filters<'a> {
+            Filters(Some(self.0))
+        }
+    }
+
+    struct Filters<'a>(Option<&'a str>);
+
+    impl<'a> Iterator for Filters<'a> {
+        type Item = &'a str;
+
+        fn next(&mut self) -> Option<Self::Item> {
+            loop {
+                // Get the next token in the buffer.
+                let buf = self.0.take()?;
+                let token = match buf.split_once(' ') {
+                    Some((next, rest)) => {
+                        self.0 = Some(rest);
+                        next
+                    }
+                    None => buf,
+                };
+
+                // If the token is not an option, it is a filter.
+                if !token.starts_with('-') {
+                    break Some(token);
+                }
+            }
+        }
+    }
 
     struct OutputFile(*mut sys::File);
 
@@ -118,18 +186,42 @@ pub mod __macro_support {
 
     pub fn run_tests(
         test_count: usize,
-        tests: impl Iterator<Item = (&'static str, &'static str, TestFn)>,
+        tests: impl Iterator<Item = (&'static str, &'static str, TestFn)> + Clone,
+        args: Args<'_>,
     ) -> Result<(), i32> {
         let storage: UnsafeRecord<sys::Storage> = unsafe { UnsafeRecord::open(RECORD_STORAGE) };
         let mut output_file = OutputFile::new(&storage);
 
+        #[inline]
+        fn filtered_out(filters: Filters<'_>, module: &str, name: &str) -> bool {
+            let mut have_filters = false;
+            let mut matched = false;
+            for filter in filters {
+                have_filters = true;
+                matched |= module.contains(filter) || name.contains(filter);
+            }
+            have_filters && !matched
+        }
+
+        // Count the number of filtered tests.
+        let mut filtered = 0;
+        for (module, name, _) in tests.clone() {
+            if filtered_out(args.filters(), module, name) {
+                filtered += 1;
+            }
+        }
+
         ufmt::uwriteln!(output_file, "")?;
-        ufmt::uwriteln!(output_file, "running {} tests", test_count)?;
+        ufmt::uwriteln!(output_file, "running {} tests", test_count - filtered)?;
 
         let heap_before = unsafe { sys::memmgr_get_free_heap() };
         let cycle_counter = unsafe { sys::furi_get_tick() };
         let mut failed = 0;
         for (module, name, test_fn) in tests {
+            if filtered_out(args.filters(), module, name) {
+                continue;
+            }
+
             ufmt::uwrite!(output_file, "test {}::{} ... ", module, name)?;
             if let Err(e) = test_fn() {
                 failed += 1;
@@ -152,10 +244,11 @@ pub mod __macro_support {
         ufmt::uwriteln!(output_file, "")?;
         ufmt::uwriteln!(
             output_file,
-            "test result: {}. {} passed; {} failed; 0 ignored; 0 measured; 0 filtered out; finished in {}ms",
+            "test result: {}. {} passed; {} failed; 0 ignored; 0 measured; {} filtered out; finished in {}ms",
             if failed == 0 { "ok" } else { "FAILED" },
-            test_count - failed,
+            test_count - failed - filtered,
             failed,
+            filtered,
             time_taken,
         )?;
         ufmt::uwriteln!(output_file, "leaked: {} bytes", heap_before - heap_after)?;
