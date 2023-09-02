@@ -7,87 +7,76 @@ use std::path::Path;
 use std::{fs, io};
 
 use bytes::BytesMut;
-use regex::Regex;
 use serialport::SerialPort;
 
-use crate::serial::{SerialCli, CLI_EOL};
+use crate::{
+    proto::{
+        gen::{pb, pb_storage},
+        RpcSession,
+    },
+    serial::SerialCli,
+};
 
 const BUF_SIZE: usize = 1024;
 
 /// Interface to Flipper device storage.
 pub struct FlipperStorage {
-    cli: SerialCli,
+    session: RpcSession,
 }
 
 impl FlipperStorage {
     /// Create new [`FlipperStorage`] connected to a [`SerialPort`].
-    pub fn new(port: Box<dyn SerialPort>) -> Self {
-        Self {
-            cli: SerialCli::new(port),
-        }
+    pub fn new(port: Box<dyn SerialPort>) -> io::Result<Self> {
+        let mut cli = SerialCli::new(port);
+        cli.start()?;
+
+        Ok(Self {
+            session: cli.start_rpc_session()?,
+        })
     }
 
-    /// Start serial interface.
-    pub fn start(&mut self) -> io::Result<()> {
-        self.cli.start()
-    }
-
-    /// Get reference to underlying [`SerialPort`].
-    pub fn port(&self) -> &dyn SerialPort {
-        self.cli.port()
-    }
-
-    /// Get mutable reference to underlying [`SerialPort`].
-    pub fn port_mut(&mut self) -> &mut dyn SerialPort {
-        self.cli.port_mut()
-    }
-
-    /// Get mutable reference to underlying [`SerialCli`].
-    pub fn cli_mut(&mut self) -> &mut SerialCli {
-        &mut self.cli
+    /// Returns a mutable reference to the underlying [`RpcSession`].
+    pub fn session_mut(&mut self) -> &mut RpcSession {
+        &mut self.session
     }
 
     /// List files and directories on the device.
     pub fn list_tree(&mut self, path: &FlipperPath) -> io::Result<()> {
         // Note: The `storage list` command expects that paths do not end with a slash.
-        self.cli
-            .send_and_wait_eol(&format!("storage list {}", path))?;
-
-        let data = self.cli.read_until_prompt()?;
-        for line in CLI_EOL.split(&data).map(String::from_utf8_lossy) {
-            let line = line.trim();
-            if line.is_empty() {
-                continue;
-            }
-
-            if let Some(error) = SerialCli::get_error(line) {
-                eprintln!("ERROR: {error}");
-                continue;
-            }
-
-            if line == "Empty" {
-                continue;
-            }
-
-            if let Some((typ, info)) = line.split_once(' ') {
-                match typ {
-                    // Directory
-                    "[D]" => {
-                        let path = path.clone() + info;
-
-                        eprintln!("{path}");
-                        self.list_tree(&path)?;
-                    }
-                    // File
-                    "[F]" => {
-                        if let Some((name, size)) = info.rsplit_once(' ') {
-                            let path = path.clone() + name;
-
-                            eprintln!("{path}, size {size}");
+        let files = {
+            let mut files = vec![];
+            self.session.request_many(
+                0,
+                pb::main::Content::StorageListRequest(pb_storage::ListRequest {
+                    path: path.to_string(),
+                    include_md5: false,
+                    filter_max_size: u32::MAX,
+                }),
+                |resp| {
+                    Ok(match resp {
+                        pb::main::Content::StorageListResponse(resp) => {
+                            files.extend(resp.file);
+                            Ok(())
                         }
-                    }
-                    // We got something unexpected, ignore it
-                    _ => (),
+                        r => Err(r),
+                    })
+                },
+            )?;
+            files
+        };
+
+        for f in files {
+            match f.r#type() {
+                pb_storage::file::FileType::Dir => {
+                    let path = path.clone() + f.name.as_str();
+
+                    eprintln!("{path}");
+                    self.list_tree(&path)?;
+                }
+                pb_storage::file::FileType::File => {
+                    let path = path.clone() + f.name.as_str();
+
+                    eprintln!("{path}, size {}", f.size);
                 }
             }
         }
@@ -101,33 +90,24 @@ impl FlipperStorage {
         if let Some(dir) = to.0.rsplit_once('/') {
             self.mkdir(&FlipperPath::from(dir.0)).ok();
         }
-        self.remove(to).ok();
+        self.remove(to, false).ok();
 
-        let mut file = fs::File::open(from.as_ref())?;
+        let mut file = pb_storage::File::default();
+        file.set_type(pb_storage::file::FileType::File);
 
-        let mut buf = [0u8; BUF_SIZE];
-        loop {
-            let n = file.read(&mut buf)?;
-            if n == 0 {
-                break;
-            }
+        fs::File::open(from.as_ref())?.read_to_end(&mut file.data)?;
 
-            self.cli
-                .send_and_wait_eol(&format!("storage write_chunk \"{to}\" {n}"))?;
-            let line = self.cli.read_until_eol()?;
-            let line = String::from_utf8_lossy(&line);
-
-            if let Some(error) = SerialCli::get_error(&line) {
-                self.cli.read_until_prompt()?;
-
-                return Err(io::Error::new(io::ErrorKind::Other, error));
-            }
-
-            self.port_mut().write_all(&buf[..n])?;
-            self.cli.read_until_prompt()?;
-        }
-
-        Ok(())
+        self.session.request(
+            0,
+            pb::main::Content::StorageWriteRequest(pb_storage::WriteRequest {
+                path: to.to_string(),
+                file: Some(file),
+            }),
+            |resp| match resp {
+                pb::main::Content::Empty(_) => Ok(()),
+                r => Err(r),
+            },
+        )
     }
 
     /// Receive remote file from the device.
@@ -145,124 +125,122 @@ impl FlipperStorage {
 
     /// Read file data from the device.
     pub fn read_file(&mut self, path: &FlipperPath) -> io::Result<BytesMut> {
-        self.cli
-            .send_and_wait_eol(&format!("storage read_chunks \"{path}\" {}", BUF_SIZE))?;
-        let line = self.cli.read_until_eol()?;
-        let line = String::from_utf8_lossy(&line);
-
-        if let Some(error) = SerialCli::get_error(&line) {
-            self.cli.read_until_prompt()?;
-
-            return Err(io::Error::new(io::ErrorKind::Other, error));
-        }
-
-        let (_, size) = line
-            .split_once(": ")
-            .ok_or_else(|| io::Error::new(io::ErrorKind::Other, "failed to read chunk size"))?;
-        let size: usize = size
-            .parse()
-            .map_err(|_| io::Error::new(io::ErrorKind::Other, "failed to parse chunk size"))?;
-
         let mut data = BytesMut::with_capacity(BUF_SIZE);
 
-        let mut buf = [0u8; BUF_SIZE];
-        while data.len() < size {
-            self.cli.read_until_ready()?;
-            self.cli.send_line("y")?;
-
-            let n = (size - data.len()).min(BUF_SIZE);
-            self.port_mut().read_exact(&mut buf[..n])?;
-            data.extend_from_slice(&buf[..n]);
-        }
+        self.session.request_many(
+            0,
+            pb::main::Content::StorageReadRequest(pb_storage::ReadRequest {
+                path: path.to_string(),
+            }),
+            |resp| {
+                Ok(match resp {
+                    pb::main::Content::StorageReadResponse(resp) => {
+                        let file = resp.file.ok_or_else(|| {
+                            io::Error::new(io::ErrorKind::Other, "file does not exist")
+                        })?;
+                        data.extend(file.data);
+                        Ok(())
+                    }
+                    r => Err(r),
+                })
+            },
+        )?;
 
         Ok(data)
     }
 
     /// Does the file or directory exist on the device?
     pub fn exist(&mut self, path: &FlipperPath) -> io::Result<bool> {
-        let exist = match self.stat(path) {
-            Err(_err) => false,
-            Ok(_) => true,
-        };
-
-        Ok(exist)
+        self.stat(path).map(|f| f.is_some())
     }
 
     /// Does the directory exist on the device?
     pub fn exist_dir(&mut self, path: &FlipperPath) -> io::Result<bool> {
-        let exist = match self.stat(path) {
-            Err(_err) => false,
-            Ok(stat) => stat.contains("Directory") || stat.contains("Storage"),
-        };
-
-        Ok(exist)
+        self.stat(path).map(|stat| match stat {
+            Some(f) => matches!(f.r#type(), pb_storage::file::FileType::Dir),
+            None => false,
+        })
     }
 
     /// Does the file exist on the device?
     pub fn exist_file(&mut self, path: &FlipperPath) -> io::Result<bool> {
-        let exist = match self.stat(path) {
-            Err(_err) => false,
-            Ok(stat) => stat.contains("File, size:"),
-        };
-
-        Ok(exist)
+        self.stat(path).map(|stat| match stat {
+            Some(f) => matches!(f.r#type(), pb_storage::file::FileType::File),
+            None => false,
+        })
     }
 
     /// File size in bytes
     pub fn size(&mut self, path: &FlipperPath) -> io::Result<usize> {
-        let line = self.stat(path)?;
-
-        let size = Regex::new(r"File, size: (.+)b")
-            .unwrap()
-            .captures(&line)
-            .and_then(|m| m[1].parse::<usize>().ok())
-            .ok_or_else(|| io::Error::new(io::ErrorKind::Other, "failed to parse size"))?;
-
-        Ok(size)
+        self.stat(path)?
+            .map(|f| f.size as usize)
+            .ok_or_else(|| io::Error::new(io::ErrorKind::Other, "file does not exist"))
     }
 
     /// Stat a file or directory.
-    fn stat(&mut self, path: &FlipperPath) -> io::Result<String> {
-        self.cli
-            .send_and_wait_eol(&format!("storage stat {path}"))?;
-        let line = self.cli.consume_response()?;
-
-        Ok(line)
+    fn stat(&mut self, path: &FlipperPath) -> io::Result<Option<pb_storage::File>> {
+        self.session.request(
+            0,
+            pb::main::Content::StorageStatRequest(pb_storage::StatRequest {
+                path: path.to_string(),
+            }),
+            |resp| match resp {
+                pb::main::Content::StorageStatResponse(resp) => Ok(resp.file),
+                r => Err(r),
+            },
+        )
     }
 
     /// Make directory on the device.
     pub fn mkdir(&mut self, path: &FlipperPath) -> io::Result<()> {
-        self.cli
-            .send_and_wait_eol(&format!("storage mkdir {path}"))?;
-        self.cli.consume_response()?;
-
-        Ok(())
+        self.session.request(
+            0,
+            pb::main::Content::StorageMkdirRequest(pb_storage::MkdirRequest {
+                path: path.to_string(),
+            }),
+            |resp| match resp {
+                pb::main::Content::Empty(_) => Ok(()),
+                r => Err(r),
+            },
+        )
     }
 
-    /// Format external storage.
-    pub fn format_ext(&mut self) -> io::Result<()> {
-        self.cli.send_and_wait_eol("storage format /ext")?;
-        self.cli.send_and_wait_eol("y")?;
-        self.cli.consume_response()?;
+    // /// Format external storage.
+    // pub fn format_ext(&mut self) -> io::Result<()> {
+    //     self.cli.send_and_wait_eol("storage format /ext")?;
+    //     self.cli.send_and_wait_eol("y")?;
+    //     self.cli.consume_response()?;
 
-        Ok(())
-    }
+    //     Ok(())
+    // }
 
     /// Remove file or directory.
-    pub fn remove(&mut self, path: &FlipperPath) -> io::Result<()> {
-        self.cli
-            .send_and_wait_eol(&format!("storage remove {path}"))?;
-        self.cli.consume_response()?;
-
-        Ok(())
+    pub fn remove(&mut self, path: &FlipperPath, recursive: bool) -> io::Result<()> {
+        self.session.request(
+            0,
+            pb::main::Content::StorageDeleteRequest(pb_storage::DeleteRequest {
+                path: path.to_string(),
+                recursive,
+            }),
+            |resp| match resp {
+                pb::main::Content::Empty(_) => Ok(()),
+                r => Err(r),
+            },
+        )
     }
 
     /// Calculate MD5 hash of file.
     pub fn md5sum(&mut self, path: &FlipperPath) -> io::Result<String> {
-        self.cli.send_and_wait_eol(&format!("storage md5 {path}"))?;
-        let line = self.cli.consume_response()?;
-
-        Ok(line)
+        self.session.request(
+            0,
+            pb::main::Content::StorageMd5sumRequest(pb_storage::Md5sumRequest {
+                path: path.to_string(),
+            }),
+            |resp| match resp {
+                pb::main::Content::StorageMd5sumResponse(resp) => Ok(resp.md5sum),
+                r => Err(r),
+            },
+        )
     }
 }
 

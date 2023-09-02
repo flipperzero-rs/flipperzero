@@ -31,9 +31,9 @@ enum Commands {
         /// Flipper path
         flipper_path: FlipperPath,
     },
-    /// Format flash card
-    Format,
-    /// Remove file/directory
+    // /// Format flash card
+    // Format,
+    // /// Remove file/directory
     Remove {
         /// Flipper path
         flipper_path: FlipperPath,
@@ -90,13 +90,12 @@ fn main() {
         .open()
         .expect("unable to open serial port");
 
-    let mut store = storage::FlipperStorage::new(port);
-    store.start().expect("failed to start storage");
+    let mut store = storage::FlipperStorage::new(port).unwrap();
 
     let result = match command {
         Commands::Mkdir { flipper_path } => store.mkdir(flipper_path),
-        Commands::Format => store.format_ext(),
-        Commands::Remove { flipper_path } => store.remove(flipper_path),
+        // Commands::Format => store.format_ext(),
+        Commands::Remove { flipper_path } => store.remove(flipper_path, true),
         Commands::Read => todo!(),
         Commands::Size { flipper_path } => match store.size(flipper_path) {
             Err(err) => Err(err),
