@@ -7,6 +7,8 @@ use once_cell::sync::Lazy;
 use regex::bytes::Regex as BytesRegex;
 use serialport::{SerialPort, SerialPortInfo, SerialPortType};
 
+use crate::proto;
+
 /// STMicroelectronics Virtual COM Port
 const HWID: (u16, u16) = (0x0483, 0x5740);
 const BUF_SIZE: usize = 1024;
@@ -42,6 +44,10 @@ impl SerialCli {
         Self {
             reader: SerialReader::new(port),
         }
+    }
+
+    pub(crate) fn from_reader(reader: SerialReader) -> Self {
+        Self { reader }
     }
 
     /// Get reference to underlying [`SerialPort`].
@@ -125,6 +131,12 @@ impl SerialCli {
 
         Some(text.trim())
     }
+
+    /// Starts a more efficient Protobuf RPC session.
+    pub fn start_rpc_session(mut self) -> io::Result<proto::RpcSession> {
+        self.send_and_wait_eol("start_rpc_session")?;
+        proto::RpcSession::from_cli(self.reader)
+    }
 }
 
 /// Buffered reader for [`SerialPort`].
@@ -150,6 +162,20 @@ impl SerialReader {
     /// Get mutable reference to underlying [`SerialPort`].
     pub fn get_mut(&mut self) -> &mut dyn SerialPort {
         self.port.as_mut()
+    }
+
+    /// Read `length` bytes from [`SerialPort`].
+    pub fn read_exact(&mut self, length: usize) -> io::Result<BytesMut> {
+        let mut buf = [0u8; BUF_SIZE];
+        while self.buffer.len() < length {
+            // We always read at least 1 byte.
+            let n = (self.port.bytes_to_read()? as usize).clamp(1, buf.len());
+
+            self.port.read_exact(&mut buf[..n])?;
+            self.buffer.extend_from_slice(&buf[..n]);
+        }
+
+        Ok(self.buffer.split_to(length))
     }
 
     /// Read from [`SerialPort`] until [`BytesRegex`] is matched.
