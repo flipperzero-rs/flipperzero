@@ -5,6 +5,10 @@ file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## Unreleased
+
+- Updated to Flipper Zero SDK 38.0 (firmware 0.91.3-rc).
+
 ## [0.11.0]
 
 ### Added

@@ -1,5 +1,6 @@
-//! "Hello, world!" example for Flipper Zero.
-//! This app writes "Hello, Rust!" to a file on the SD card and then exits.
+//! Storage example for Flipper Zero.
+//! This app writes "Hello, Rust!" to a file on the SD card. Then it opens a file browser dialog and
+//! lets the user select the file. Finally, it reads the file back and prints the contents to the console.
 
 #![no_main]
 #![no_std]
