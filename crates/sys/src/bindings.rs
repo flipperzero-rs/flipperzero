@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 2490368;
+pub const API_VERSION: u32 = 2555905;
 pub type wint_t = core::ffi::c_int;
 pub type _off_t = core::ffi::c_long;
 pub type _fpos_t = core::ffi::c_long;
@@ -5634,48 +5634,90 @@ extern "C" {
     #[doc = "Handle for external i2c bus Bus: furi_hal_i2c_bus_external Pins: PC0(SCL) / PC1(SDA), float on release Params: 100khz\n\n"]
     pub static mut furi_hal_i2c_handle_external: FuriHalI2cBusHandle;
 }
+#[doc = "Begin the transaction by sending a START condition followed by the address\n\n"]
+pub const FuriHalI2cBegin_FuriHalI2cBeginStart: FuriHalI2cBegin = 0;
+#[doc = "Begin the transaction by sending a RESTART condition followed by the address\n\n# Notes\n\n* Must follow a transaction ended with FuriHalI2cEndAwaitRestart\n\n"]
+pub const FuriHalI2cBegin_FuriHalI2cBeginRestart: FuriHalI2cBegin = 1;
+#[doc = "Continue the previous transaction with new data\n\n# Notes\n\n* Must follow a transaction ended with FuriHalI2cEndPause and be of the same type (RX/TX)\n\n"]
+pub const FuriHalI2cBegin_FuriHalI2cBeginResume: FuriHalI2cBegin = 2;
+#[doc = "Transaction beginning signal\n\n"]
+pub type FuriHalI2cBegin = core::ffi::c_uchar;
+#[doc = "End the transaction by sending a STOP condition\n\n"]
+pub const FuriHalI2cEnd_FuriHalI2cEndStop: FuriHalI2cEnd = 0;
+#[doc = "End the transaction by clock stretching\n\n# Notes\n\n* Must be followed by a transaction using FuriHalI2cBeginRestart\n\n"]
+pub const FuriHalI2cEnd_FuriHalI2cEndAwaitRestart: FuriHalI2cEnd = 1;
+#[doc = "Pauses the transaction by clock stretching\n\n# Notes\n\n* Must be followed by a transaction using FuriHalI2cBeginResume\n\n"]
+pub const FuriHalI2cEnd_FuriHalI2cEndPause: FuriHalI2cEnd = 2;
+#[doc = "Transaction end signal\n\n"]
+pub type FuriHalI2cEnd = core::ffi::c_uchar;
 extern "C" {
-    #[doc = "Acquire i2c bus handle\n\nReturns:\n\n* Instance of FuriHalI2cBus\n\n"]
+    #[doc = "Acquire I2C bus handle\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n\n"]
     pub fn furi_hal_i2c_acquire(handle: *mut FuriHalI2cBusHandle);
 }
 extern "C" {
-    #[doc = "Release i2c bus handle\n\n# Arguments\n\n* `bus` - instance of FuriHalI2cBus aquired in `furi_hal_i2c_acquire`\n\n"]
+    #[doc = "Release I2C bus handle\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance acquired in `furi_hal_i2c_acquire`\n\n"]
     pub fn furi_hal_i2c_release(handle: *mut FuriHalI2cBusHandle);
 }
 extern "C" {
-    #[doc = "Perform I2C tx transfer\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `data` - pointer to data buffer\n* `size` - size of data buffer\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C TX transfer\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `data` - Pointer to data buffer\n* `size` - Size of data buffer\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_tx(
         handle: *mut FuriHalI2cBusHandle,
         address: u8,
         data: *const u8,
-        size: u8,
+        size: usize,
         timeout: u32,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C rx transfer\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `data` - pointer to data buffer\n* `size` - size of data buffer\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C TX transfer, with additional settings.\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `ten_bit` - Whether the address is 10 bits wide\n* `data` - Pointer to data buffer\n* `size` - Size of data buffer\n* `begin` - How to begin the transaction\n* `end` - How to end the transaction\n* `timer` - Timeout timer\n\n"]
+    pub fn furi_hal_i2c_tx_ext(
+        handle: *mut FuriHalI2cBusHandle,
+        address: u16,
+        ten_bit: bool,
+        data: *const u8,
+        size: usize,
+        begin: FuriHalI2cBegin,
+        end: FuriHalI2cEnd,
+        timeout: u32,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Perform I2C RX transfer\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `data` - Pointer to data buffer\n* `size` - Size of data buffer\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_rx(
         handle: *mut FuriHalI2cBusHandle,
         address: u8,
         data: *mut u8,
-        size: u8,
+        size: usize,
         timeout: u32,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C tx and rx transfers\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `tx_data` - pointer to tx data buffer\n* `tx_size` - size of tx data buffer\n* `rx_data` - pointer to rx data buffer\n* `rx_size` - size of rx data buffer\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C RX transfer, with additional settings.\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `ten_bit` - Whether the address is 10 bits wide\n* `data` - Pointer to data buffer\n* `size` - Size of data buffer\n* `begin` - How to begin the transaction\n* `end` - How to end the transaction\n* `timer` - Timeout timer\n\n"]
+    pub fn furi_hal_i2c_rx_ext(
+        handle: *mut FuriHalI2cBusHandle,
+        address: u16,
+        ten_bit: bool,
+        data: *mut u8,
+        size: usize,
+        begin: FuriHalI2cBegin,
+        end: FuriHalI2cEnd,
+        timeout: u32,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Perform I2C TX and RX transfers\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `tx_data` - Pointer to TX data buffer\n* `tx_size` - Size of TX data buffer\n* `rx_data` - Pointer to RX data buffer\n* `rx_size` - Size of RX data buffer\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_trx(
         handle: *mut FuriHalI2cBusHandle,
         address: u8,
         tx_data: *const u8,
-        tx_size: u8,
+        tx_size: usize,
         rx_data: *mut u8,
-        rx_size: u8,
+        rx_size: usize,
         timeout: u32,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Check if I2C device presents on bus\n\nReturns:\n\n* true if device present and is ready, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Check if I2C device presents on bus\n\nReturns:\n\n* true if device present and is ready, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_is_device_ready(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -5683,7 +5725,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C device register read (8-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - register address\n* `data` - pointer to register value\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C device register read (8-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - Register address\n* `data` - Pointer to register value\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_read_reg_8(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -5693,7 +5735,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C device register read (16-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - register address\n* `data` - pointer to register value\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C device register read (16-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - Register address\n* `data` - Pointer to register value\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_read_reg_16(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -5703,18 +5745,18 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C device memory read\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `mem_addr` - memory start address\n* `data` - pointer to data buffer\n* `len` - size of data buffer\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C device memory read\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `mem_addr` - Memory start address\n* `data` - Pointer to data buffer\n* `len` - Size of data buffer\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_read_mem(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
         mem_addr: u8,
         data: *mut u8,
-        len: u8,
+        len: usize,
         timeout: u32,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C device register write (8-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - register address\n* `data` - register value\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C device register write (8-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - Register address\n* `data` - Register value\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_write_reg_8(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -5724,7 +5766,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C device register write (16-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - register address\n* `data` - register value\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C device register write (16-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - Register address\n* `data` - Register value\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_write_reg_16(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -5734,13 +5776,13 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C device memory\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `mem_addr` - memory start address\n* `data` - pointer to data buffer\n* `len` - size of data buffer\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C device memory\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `mem_addr` - Memory start address\n* `data` - Pointer to data buffer\n* `len` - Size of data buffer\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_write_mem(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
         mem_addr: u8,
-        data: *mut u8,
-        len: u8,
+        data: *const u8,
+        len: usize,
         timeout: u32,
     ) -> bool;
 }
@@ -9162,6 +9204,9 @@ extern "C" {
     pub static mut usb_hid_u2f: FuriHalUsbInterface;
 }
 extern "C" {
+    pub static mut usb_ccid: FuriHalUsbInterface;
+}
+extern "C" {
     #[doc = "Set USB device configuration\n\nReturns:\n\n* true - mode switch started, false - mode switch is locked\n\n# Arguments\n\n* `mode` - new USB device mode\n* `ctx` - context passed to device mode init function\n\n"]
     pub fn furi_hal_usb_set_config(
         new_if: *mut FuriHalUsbInterface,
@@ -9245,6 +9290,68 @@ extern "C" {
 extern "C" {
     #[doc = "Set the following consumer key to released state and send HID report\n\n# Arguments\n\n* `button` - key code\n\n"]
     pub fn furi_hal_hid_consumer_key_release(button: u16) -> bool;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct CcidCallbacks {
+    pub icc_power_on_callback: ::core::option::Option<
+        unsafe extern "C" fn(
+            dataBlock: *mut u8,
+            dataBlockLen: *mut u32,
+            context: *mut core::ffi::c_void,
+        ),
+    >,
+    pub xfr_datablock_callback: ::core::option::Option<
+        unsafe extern "C" fn(
+            dataBlock: *mut u8,
+            dataBlockLen: *mut u32,
+            context: *mut core::ffi::c_void,
+        ),
+    >,
+}
+#[test]
+fn bindgen_test_layout_CcidCallbacks() {
+    const UNINIT: ::core::mem::MaybeUninit<CcidCallbacks> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<CcidCallbacks>(),
+        8usize,
+        concat!("Size of: ", stringify!(CcidCallbacks))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<CcidCallbacks>(),
+        4usize,
+        concat!("Alignment of ", stringify!(CcidCallbacks))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).icc_power_on_callback) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CcidCallbacks),
+            "::",
+            stringify!(icc_power_on_callback)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).xfr_datablock_callback) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CcidCallbacks),
+            "::",
+            stringify!(xfr_datablock_callback)
+        )
+    );
+}
+extern "C" {
+    pub fn furi_hal_ccid_set_callbacks(cb: *mut CcidCallbacks);
+}
+extern "C" {
+    pub fn furi_hal_ccid_ccid_insert_smartcard();
+}
+extern "C" {
+    pub fn furi_hal_ccid_ccid_remove_smartcard();
 }
 pub const FuriHalUartId_FuriHalUartIdUSART1: FuriHalUartId = 0;
 pub const FuriHalUartId_FuriHalUartIdLPUART1: FuriHalUartId = 1;
