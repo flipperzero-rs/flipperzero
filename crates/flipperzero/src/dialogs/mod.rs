@@ -200,6 +200,12 @@ impl DialogMessageButton {
     }
 }
 
+impl<'a> Default for DialogFileBrowserOptions<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<'a> DialogFileBrowserOptions<'a> {
     /// Creates a new dialog file browser options and initializes to default values.
     pub fn new() -> Self {
@@ -271,7 +277,7 @@ impl<'a> DialogFileBrowserOptions<'a> {
 #[cfg(feature = "alloc")]
 #[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 pub fn alert(text: &str) {
-    const BUTTON_OK: &'static CStr = unsafe { CStr::from_bytes_with_nul_unchecked(b"OK\0") };
+    const BUTTON_OK: &CStr = unsafe { CStr::from_bytes_with_nul_unchecked(b"OK\0") };
 
     let text = CString::new(text.as_bytes()).unwrap();
 
