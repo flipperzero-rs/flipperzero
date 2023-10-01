@@ -24,10 +24,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: ${{ inputs.target }}
           all-features: true
-          # Broken until https://github.com/auguwu/clippy-action/issues/13 is resolved.
-          # deny: warnings
-          # Ignored until https://github.com/auguwu/clippy-action/issues/14 is resolved.
-          args: --all-targets
+          deny: warnings
+          # Broken until https://github.com/auguwu/clippy-action/issues/117 is resolved.
+          # args: --all-targets
 
   clippy-beta:
     name: Clippy (beta)
@@ -52,10 +51,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: ${{ inputs.target }}
           all-features: true
-          # Broken until https://github.com/auguwu/clippy-action/issues/13 is resolved.
-          # warn: clippy::all
-          # Ignored until https://github.com/auguwu/clippy-action/issues/14 is resolved.
-          args: --all-targets
+          warn: clippy::all
+          # Broken until https://github.com/auguwu/clippy-action/issues/117 is resolved.
+          # args: --all-targets
 
   doc-links:
     name: Intra-doc links
