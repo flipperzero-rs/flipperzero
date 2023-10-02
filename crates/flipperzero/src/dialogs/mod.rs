@@ -186,12 +186,6 @@ impl<'a> Drop for DialogMessage<'a> {
     }
 }
 
-impl<'a> Default for DialogMessage<'a> {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl DialogMessageButton {
     fn from_sys(sys: sys::DialogMessageButton) -> Option<Self> {
         match sys {
@@ -201,6 +195,12 @@ impl DialogMessageButton {
             sys::DialogMessageButton_DialogMessageButtonRight => Some(Self::Right),
             _ => None,
         }
+    }
+}
+
+impl<'a> Default for DialogFileBrowserOptions<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

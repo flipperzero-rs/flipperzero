@@ -1,4 +1,5 @@
 [target.thumbv7em-none-eabihf]
+linker = "./fap-lld.py"
 runner = "python3 ../cargo-runner.py"
 rustflags = [
     # CPU is Cortex-M4 (STM32WB55)
