@@ -1,4 +1,6 @@
 //! Demonstrates use of the Flipper Zero Dialog API.
+//!
+//! Creates a dialog with three buttons, and displays a message depending on which button was pressed.
 
 #![no_main]
 #![no_std]

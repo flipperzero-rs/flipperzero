@@ -32,6 +32,13 @@ pub struct Builder {
 }
 
 #[cfg(feature = "alloc")]
+impl Default for Builder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[cfg(feature = "alloc")]
 impl Builder {
     /// Generates the base configuration for spawning a thread, from which configuration
     /// methods can be chained.

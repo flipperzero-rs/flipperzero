@@ -1,6 +1,8 @@
 //! Demonstrates use of the Flipper Zero GUI.
 //!
-//! This app write "Hello, Rust!" to the display.
+//! This app writes "Hello, Rust!" to the display.
+//!
+//! Currently uses unsafe `sys` bindings as there is no high level GUI API yet.
 
 #![no_main]
 #![no_std]

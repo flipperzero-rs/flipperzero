@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 2293760;
+pub const API_VERSION: u32 = 2555905;
 pub type wint_t = core::ffi::c_int;
 pub type _off_t = core::ffi::c_long;
 pub type _fpos_t = core::ffi::c_long;
@@ -5190,339 +5190,200 @@ extern "C" {
 extern "C" {
     pub fn furi_hal_os_tick();
 }
-#[doc = "SPI Init structures definition\n\n"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct LL_SPI_InitTypeDef {
-    #[doc = "Specifies the SPI unidirectional or bidirectional data mode.\nThis parameter can be a value of  [`SPI_LL_EC_TRANSFER_MODE`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetTransferDirection()`]\n\n"]
-    pub TransferDirection: u32,
-    #[doc = "Specifies the SPI mode (Master/Slave).\nThis parameter can be a value of  [`SPI_LL_EC_MODE`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetMode()`]\n\n"]
-    pub Mode: u32,
-    #[doc = "Specifies the SPI data width.\nThis parameter can be a value of  [`SPI_LL_EC_DATAWIDTH`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetDataWidth()`]\n\n"]
-    pub DataWidth: u32,
-    #[doc = "Specifies the serial clock steady state.\nThis parameter can be a value of  [`SPI_LL_EC_POLARITY`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetClockPolarity()`]\n\n"]
-    pub ClockPolarity: u32,
-    #[doc = "Specifies the clock active edge for the bit capture.\nThis parameter can be a value of  [`SPI_LL_EC_PHASE`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetClockPhase()`]\n\n"]
-    pub ClockPhase: u32,
-    #[doc = "Specifies whether the NSS signal is managed by hardware (NSS pin) or by software using the SSI bit.\nThis parameter can be a value of  [`SPI_LL_EC_NSS_MODE`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetNSSMode()`]\n\n"]
-    pub NSS: u32,
-    #[doc = "Specifies the BaudRate prescaler value which will be used to configure the transmit and receive SCK clock.\nThis parameter can be a value of  [`SPI_LL_EC_BAUDRATEPRESCALER`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetBaudRatePrescaler()`]\n\n# Notes\n\n* The communication clock is derived from the master clock. The slave clock does not need to be set.\n\n"]
-    pub BaudRate: u32,
-    #[doc = "Specifies whether data transfers start from MSB or LSB bit.\nThis parameter can be a value of  [`SPI_LL_EC_BIT_ORDER`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetTransferBitOrder()`]\n\n"]
-    pub BitOrder: u32,
-    #[doc = "Specifies if the CRC calculation is enabled or not.\nThis parameter can be a value of  [`SPI_LL_EC_CRC_CALCULATION`]\nThis feature can be modified afterwards using unitary functions  [`LL_SPI_EnableCRC()`] and  [`LL_SPI_DisableCRC()`]\n\n"]
-    pub CRCCalculation: u32,
-    #[doc = "Specifies the polynomial used for the CRC calculation.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0xFFFF.\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetCRCPolynomial()`]\n\n"]
-    pub CRCPoly: u32,
+pub struct FuriHalSdInfo {
+    #[doc = "total capacity in bytes\n\n"]
+    pub capacity: u64,
+    #[doc = "block size\n\n"]
+    pub block_size: u32,
+    #[doc = "logical capacity in blocks\n\n"]
+    pub logical_block_count: u32,
+    #[doc = "logical block size in bytes\n\n"]
+    pub logical_block_size: u32,
+    #[doc = "manufacturer ID\n\n"]
+    pub manufacturer_id: u8,
+    #[doc = "OEM ID, 2 characters + null terminator\n\n"]
+    pub oem_id: [core::ffi::c_char; 3usize],
+    #[doc = "product name, 5 characters + null terminator\n\n"]
+    pub product_name: [core::ffi::c_char; 6usize],
+    #[doc = "product revision major\n\n"]
+    pub product_revision_major: u8,
+    #[doc = "product revision minor\n\n"]
+    pub product_revision_minor: u8,
+    #[doc = "product serial number\n\n"]
+    pub product_serial_number: u32,
+    #[doc = "manufacturing month\n\n"]
+    pub manufacturing_month: u8,
+    #[doc = "manufacturing year\n\n"]
+    pub manufacturing_year: u16,
 }
 #[test]
-fn bindgen_test_layout_LL_SPI_InitTypeDef() {
-    const UNINIT: ::core::mem::MaybeUninit<LL_SPI_InitTypeDef> = ::core::mem::MaybeUninit::uninit();
+fn bindgen_test_layout_FuriHalSdInfo() {
+    const UNINIT: ::core::mem::MaybeUninit<FuriHalSdInfo> = ::core::mem::MaybeUninit::uninit();
     let ptr = UNINIT.as_ptr();
     assert_eq!(
-        ::core::mem::size_of::<LL_SPI_InitTypeDef>(),
+        ::core::mem::size_of::<FuriHalSdInfo>(),
         40usize,
-        concat!("Size of: ", stringify!(LL_SPI_InitTypeDef))
+        concat!("Size of: ", stringify!(FuriHalSdInfo))
     );
     assert_eq!(
-        ::core::mem::align_of::<LL_SPI_InitTypeDef>(),
-        4usize,
-        concat!("Alignment of ", stringify!(LL_SPI_InitTypeDef))
+        ::core::mem::align_of::<FuriHalSdInfo>(),
+        8usize,
+        concat!("Alignment of ", stringify!(FuriHalSdInfo))
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).TransferDirection) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).capacity) as usize - ptr as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(LL_SPI_InitTypeDef),
+            stringify!(FuriHalSdInfo),
             "::",
-            stringify!(TransferDirection)
+            stringify!(capacity)
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).Mode) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(LL_SPI_InitTypeDef),
-            "::",
-            stringify!(Mode)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).DataWidth) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).block_size) as usize - ptr as usize },
         8usize,
         concat!(
             "Offset of field: ",
-            stringify!(LL_SPI_InitTypeDef),
+            stringify!(FuriHalSdInfo),
             "::",
-            stringify!(DataWidth)
+            stringify!(block_size)
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).ClockPolarity) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).logical_block_count) as usize - ptr as usize },
         12usize,
         concat!(
             "Offset of field: ",
-            stringify!(LL_SPI_InitTypeDef),
+            stringify!(FuriHalSdInfo),
             "::",
-            stringify!(ClockPolarity)
+            stringify!(logical_block_count)
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).ClockPhase) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).logical_block_size) as usize - ptr as usize },
         16usize,
         concat!(
             "Offset of field: ",
-            stringify!(LL_SPI_InitTypeDef),
+            stringify!(FuriHalSdInfo),
             "::",
-            stringify!(ClockPhase)
+            stringify!(logical_block_size)
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).NSS) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).manufacturer_id) as usize - ptr as usize },
         20usize,
         concat!(
             "Offset of field: ",
-            stringify!(LL_SPI_InitTypeDef),
+            stringify!(FuriHalSdInfo),
             "::",
-            stringify!(NSS)
+            stringify!(manufacturer_id)
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).BaudRate) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).oem_id) as usize - ptr as usize },
+        21usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalSdInfo),
+            "::",
+            stringify!(oem_id)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).product_name) as usize - ptr as usize },
         24usize,
         concat!(
             "Offset of field: ",
-            stringify!(LL_SPI_InitTypeDef),
+            stringify!(FuriHalSdInfo),
             "::",
-            stringify!(BaudRate)
+            stringify!(product_name)
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).BitOrder) as usize - ptr as usize },
-        28usize,
+        unsafe { ::core::ptr::addr_of!((*ptr).product_revision_major) as usize - ptr as usize },
+        30usize,
         concat!(
             "Offset of field: ",
-            stringify!(LL_SPI_InitTypeDef),
+            stringify!(FuriHalSdInfo),
             "::",
-            stringify!(BitOrder)
+            stringify!(product_revision_major)
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).CRCCalculation) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).product_revision_minor) as usize - ptr as usize },
+        31usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalSdInfo),
+            "::",
+            stringify!(product_revision_minor)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).product_serial_number) as usize - ptr as usize },
         32usize,
         concat!(
             "Offset of field: ",
-            stringify!(LL_SPI_InitTypeDef),
+            stringify!(FuriHalSdInfo),
             "::",
-            stringify!(CRCCalculation)
+            stringify!(product_serial_number)
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).CRCPoly) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).manufacturing_month) as usize - ptr as usize },
         36usize,
         concat!(
             "Offset of field: ",
-            stringify!(LL_SPI_InitTypeDef),
+            stringify!(FuriHalSdInfo),
             "::",
-            stringify!(CRCPoly)
+            stringify!(manufacturing_month)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).manufacturing_year) as usize - ptr as usize },
+        38usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalSdInfo),
+            "::",
+            stringify!(manufacturing_year)
         )
     );
 }
 extern "C" {
-    pub fn LL_SPI_Init(
-        SPIx: *mut SPI_TypeDef,
-        SPI_InitStruct: *mut LL_SPI_InitTypeDef,
-    ) -> ErrorStatus;
-}
-#[doc = "Bus initialization event, called on system start\n\n"]
-pub const FuriHalSpiBusEvent_FuriHalSpiBusEventInit: FuriHalSpiBusEvent = 0;
-#[doc = "Bus deinitialization event, called on system stop\n\n"]
-pub const FuriHalSpiBusEvent_FuriHalSpiBusEventDeinit: FuriHalSpiBusEvent = 1;
-#[doc = "Bus lock event, called before activation\n\n"]
-pub const FuriHalSpiBusEvent_FuriHalSpiBusEventLock: FuriHalSpiBusEvent = 2;
-#[doc = "Bus unlock event, called after deactivation\n\n"]
-pub const FuriHalSpiBusEvent_FuriHalSpiBusEventUnlock: FuriHalSpiBusEvent = 3;
-#[doc = "Bus activation event, called before handle activation\n\n"]
-pub const FuriHalSpiBusEvent_FuriHalSpiBusEventActivate: FuriHalSpiBusEvent = 4;
-#[doc = "Bus deactivation event, called after handle deactivation\n\n"]
-pub const FuriHalSpiBusEvent_FuriHalSpiBusEventDeactivate: FuriHalSpiBusEvent = 5;
-#[doc = "FuriHal spi bus states\n\n"]
-pub type FuriHalSpiBusEvent = core::ffi::c_uchar;
-#[doc = "FuriHal spi bus event callback\n\n"]
-pub type FuriHalSpiBusEventCallback = ::core::option::Option<
-    unsafe extern "C" fn(bus: *mut FuriHalSpiBus, event: FuriHalSpiBusEvent),
->;
-#[doc = "FuriHal spi bus\n\n"]
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct FuriHalSpiBus {
-    pub spi: *mut SPI_TypeDef,
-    pub callback: FuriHalSpiBusEventCallback,
-    pub current_handle: *mut FuriHalSpiBusHandle,
-}
-#[test]
-fn bindgen_test_layout_FuriHalSpiBus() {
-    const UNINIT: ::core::mem::MaybeUninit<FuriHalSpiBus> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<FuriHalSpiBus>(),
-        12usize,
-        concat!("Size of: ", stringify!(FuriHalSpiBus))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<FuriHalSpiBus>(),
-        4usize,
-        concat!("Alignment of ", stringify!(FuriHalSpiBus))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).spi) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(FuriHalSpiBus),
-            "::",
-            stringify!(spi)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).callback) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(FuriHalSpiBus),
-            "::",
-            stringify!(callback)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).current_handle) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(FuriHalSpiBus),
-            "::",
-            stringify!(current_handle)
-        )
-    );
-}
-#[doc = "Handle init, called on system start, initialize gpio for idle state\n\n"]
-pub const FuriHalSpiBusHandleEvent_FuriHalSpiBusHandleEventInit: FuriHalSpiBusHandleEvent = 0;
-#[doc = "Handle deinit, called on system stop, deinitialize gpio for default state\n\n"]
-pub const FuriHalSpiBusHandleEvent_FuriHalSpiBusHandleEventDeinit: FuriHalSpiBusHandleEvent = 1;
-#[doc = "Handle activate: connect gpio and apply bus config\n\n"]
-pub const FuriHalSpiBusHandleEvent_FuriHalSpiBusHandleEventActivate: FuriHalSpiBusHandleEvent = 2;
-#[doc = "Handle deactivate: disconnect gpio and reset bus config\n\n"]
-pub const FuriHalSpiBusHandleEvent_FuriHalSpiBusHandleEventDeactivate: FuriHalSpiBusHandleEvent = 3;
-#[doc = "FuriHal spi handle states\n\n"]
-pub type FuriHalSpiBusHandleEvent = core::ffi::c_uchar;
-#[doc = "FuriHal spi handle event callback\n\n"]
-pub type FuriHalSpiBusHandleEventCallback = ::core::option::Option<
-    unsafe extern "C" fn(handle: *mut FuriHalSpiBusHandle, event: FuriHalSpiBusHandleEvent),
->;
-#[doc = "FuriHal spi handle\n\n"]
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct FuriHalSpiBusHandle {
-    pub bus: *mut FuriHalSpiBus,
-    pub callback: FuriHalSpiBusHandleEventCallback,
-    pub miso: *const GpioPin,
-    pub mosi: *const GpioPin,
-    pub sck: *const GpioPin,
-    pub cs: *const GpioPin,
-}
-#[test]
-fn bindgen_test_layout_FuriHalSpiBusHandle() {
-    const UNINIT: ::core::mem::MaybeUninit<FuriHalSpiBusHandle> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<FuriHalSpiBusHandle>(),
-        24usize,
-        concat!("Size of: ", stringify!(FuriHalSpiBusHandle))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<FuriHalSpiBusHandle>(),
-        4usize,
-        concat!("Alignment of ", stringify!(FuriHalSpiBusHandle))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).bus) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(FuriHalSpiBusHandle),
-            "::",
-            stringify!(bus)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).callback) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(FuriHalSpiBusHandle),
-            "::",
-            stringify!(callback)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).miso) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(FuriHalSpiBusHandle),
-            "::",
-            stringify!(miso)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).mosi) as usize - ptr as usize },
-        12usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(FuriHalSpiBusHandle),
-            "::",
-            stringify!(mosi)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).sck) as usize - ptr as usize },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(FuriHalSpiBusHandle),
-            "::",
-            stringify!(sck)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).cs) as usize - ptr as usize },
-        20usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(FuriHalSpiBusHandle),
-            "::",
-            stringify!(cs)
-        )
-    );
+    #[doc = "Init SD card presence detection\n\n"]
+    pub fn furi_hal_sd_presence_init();
 }
 extern "C" {
-    #[doc = "Init SD card detect\n\n"]
-    pub fn hal_sd_detect_init();
+    #[doc = "Get SD card status\n\nReturns:\n\n* true if SD card is present\n\n"]
+    pub fn furi_hal_sd_is_present() -> bool;
 }
 extern "C" {
-    #[doc = "Set SD card detect pin to low\n\n"]
-    pub fn hal_sd_detect_set_low();
+    #[doc = "SD card max mount retry count\n\nReturns:\n\n* uint8_t\n\n"]
+    pub fn furi_hal_sd_max_mount_retry_count() -> u8;
 }
 extern "C" {
-    #[doc = "Get SD card status\n\nReturns:\n\n* true if SD card present, false if SD card not present\n\n"]
-    pub fn hal_sd_detect() -> bool;
+    #[doc = "Init SD card\n\nReturns:\n\n* FuriStatus\n\n# Arguments\n\n* `power_reset` - reset card power\n\n"]
+    pub fn furi_hal_sd_init(power_reset: bool) -> FuriStatus;
 }
 extern "C" {
-    #[doc = "Pointer to currently used SPI Handle\n\n"]
-    pub static mut furi_hal_sd_spi_handle: *mut FuriHalSpiBusHandle;
+    #[doc = "Read blocks from SD card\n\nReturns:\n\n* FuriStatus\n\n# Arguments\n\n* `buff` - \n* `sector` - \n* `count` - \n\n"]
+    pub fn furi_hal_sd_read_blocks(buff: *mut u32, sector: u32, count: u32) -> FuriStatus;
+}
+extern "C" {
+    #[doc = "Write blocks to SD card\n\nReturns:\n\n* FuriStatus\n\n# Arguments\n\n* `buff` - \n* `sector` - \n* `count` - \n\n"]
+    pub fn furi_hal_sd_write_blocks(buff: *const u32, sector: u32, count: u32) -> FuriStatus;
+}
+extern "C" {
+    #[doc = "Get SD card info\n\nReturns:\n\n* FuriStatus\n\n# Arguments\n\n* `info` - \n\n"]
+    pub fn furi_hal_sd_info(info: *mut FuriHalSdInfo) -> FuriStatus;
+}
+extern "C" {
+    #[doc = "Get SD card state\n\nReturns:\n\n* FuriStatus\n\n"]
+    pub fn furi_hal_sd_get_card_state() -> FuriStatus;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -5773,48 +5634,90 @@ extern "C" {
     #[doc = "Handle for external i2c bus Bus: furi_hal_i2c_bus_external Pins: PC0(SCL) / PC1(SDA), float on release Params: 100khz\n\n"]
     pub static mut furi_hal_i2c_handle_external: FuriHalI2cBusHandle;
 }
+#[doc = "Begin the transaction by sending a START condition followed by the address\n\n"]
+pub const FuriHalI2cBegin_FuriHalI2cBeginStart: FuriHalI2cBegin = 0;
+#[doc = "Begin the transaction by sending a RESTART condition followed by the address\n\n# Notes\n\n* Must follow a transaction ended with FuriHalI2cEndAwaitRestart\n\n"]
+pub const FuriHalI2cBegin_FuriHalI2cBeginRestart: FuriHalI2cBegin = 1;
+#[doc = "Continue the previous transaction with new data\n\n# Notes\n\n* Must follow a transaction ended with FuriHalI2cEndPause and be of the same type (RX/TX)\n\n"]
+pub const FuriHalI2cBegin_FuriHalI2cBeginResume: FuriHalI2cBegin = 2;
+#[doc = "Transaction beginning signal\n\n"]
+pub type FuriHalI2cBegin = core::ffi::c_uchar;
+#[doc = "End the transaction by sending a STOP condition\n\n"]
+pub const FuriHalI2cEnd_FuriHalI2cEndStop: FuriHalI2cEnd = 0;
+#[doc = "End the transaction by clock stretching\n\n# Notes\n\n* Must be followed by a transaction using FuriHalI2cBeginRestart\n\n"]
+pub const FuriHalI2cEnd_FuriHalI2cEndAwaitRestart: FuriHalI2cEnd = 1;
+#[doc = "Pauses the transaction by clock stretching\n\n# Notes\n\n* Must be followed by a transaction using FuriHalI2cBeginResume\n\n"]
+pub const FuriHalI2cEnd_FuriHalI2cEndPause: FuriHalI2cEnd = 2;
+#[doc = "Transaction end signal\n\n"]
+pub type FuriHalI2cEnd = core::ffi::c_uchar;
 extern "C" {
-    #[doc = "Acquire i2c bus handle\n\nReturns:\n\n* Instance of FuriHalI2cBus\n\n"]
+    #[doc = "Acquire I2C bus handle\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n\n"]
     pub fn furi_hal_i2c_acquire(handle: *mut FuriHalI2cBusHandle);
 }
 extern "C" {
-    #[doc = "Release i2c bus handle\n\n# Arguments\n\n* `bus` - instance of FuriHalI2cBus aquired in `furi_hal_i2c_acquire`\n\n"]
+    #[doc = "Release I2C bus handle\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance acquired in `furi_hal_i2c_acquire`\n\n"]
     pub fn furi_hal_i2c_release(handle: *mut FuriHalI2cBusHandle);
 }
 extern "C" {
-    #[doc = "Perform I2C tx transfer\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `data` - pointer to data buffer\n* `size` - size of data buffer\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C TX transfer\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `data` - Pointer to data buffer\n* `size` - Size of data buffer\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_tx(
         handle: *mut FuriHalI2cBusHandle,
         address: u8,
         data: *const u8,
-        size: u8,
+        size: usize,
         timeout: u32,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C rx transfer\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `data` - pointer to data buffer\n* `size` - size of data buffer\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C TX transfer, with additional settings.\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `ten_bit` - Whether the address is 10 bits wide\n* `data` - Pointer to data buffer\n* `size` - Size of data buffer\n* `begin` - How to begin the transaction\n* `end` - How to end the transaction\n* `timer` - Timeout timer\n\n"]
+    pub fn furi_hal_i2c_tx_ext(
+        handle: *mut FuriHalI2cBusHandle,
+        address: u16,
+        ten_bit: bool,
+        data: *const u8,
+        size: usize,
+        begin: FuriHalI2cBegin,
+        end: FuriHalI2cEnd,
+        timeout: u32,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Perform I2C RX transfer\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `data` - Pointer to data buffer\n* `size` - Size of data buffer\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_rx(
         handle: *mut FuriHalI2cBusHandle,
         address: u8,
         data: *mut u8,
-        size: u8,
+        size: usize,
         timeout: u32,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C tx and rx transfers\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `tx_data` - pointer to tx data buffer\n* `tx_size` - size of tx data buffer\n* `rx_data` - pointer to rx data buffer\n* `rx_size` - size of rx data buffer\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C RX transfer, with additional settings.\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `ten_bit` - Whether the address is 10 bits wide\n* `data` - Pointer to data buffer\n* `size` - Size of data buffer\n* `begin` - How to begin the transaction\n* `end` - How to end the transaction\n* `timer` - Timeout timer\n\n"]
+    pub fn furi_hal_i2c_rx_ext(
+        handle: *mut FuriHalI2cBusHandle,
+        address: u16,
+        ten_bit: bool,
+        data: *mut u8,
+        size: usize,
+        begin: FuriHalI2cBegin,
+        end: FuriHalI2cEnd,
+        timeout: u32,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Perform I2C TX and RX transfers\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `address` - I2C slave address\n* `tx_data` - Pointer to TX data buffer\n* `tx_size` - Size of TX data buffer\n* `rx_data` - Pointer to RX data buffer\n* `rx_size` - Size of RX data buffer\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_trx(
         handle: *mut FuriHalI2cBusHandle,
         address: u8,
         tx_data: *const u8,
-        tx_size: u8,
+        tx_size: usize,
         rx_data: *mut u8,
-        rx_size: u8,
+        rx_size: usize,
         timeout: u32,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Check if I2C device presents on bus\n\nReturns:\n\n* true if device present and is ready, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Check if I2C device presents on bus\n\nReturns:\n\n* true if device present and is ready, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_is_device_ready(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -5822,7 +5725,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C device register read (8-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - register address\n* `data` - pointer to register value\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C device register read (8-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - Register address\n* `data` - Pointer to register value\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_read_reg_8(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -5832,7 +5735,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C device register read (16-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - register address\n* `data` - pointer to register value\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C device register read (16-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - Register address\n* `data` - Pointer to register value\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_read_reg_16(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -5842,18 +5745,18 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C device memory read\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `mem_addr` - memory start address\n* `data` - pointer to data buffer\n* `len` - size of data buffer\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C device memory read\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `mem_addr` - Memory start address\n* `data` - Pointer to data buffer\n* `len` - Size of data buffer\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_read_mem(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
         mem_addr: u8,
         data: *mut u8,
-        len: u8,
+        len: usize,
         timeout: u32,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C device register write (8-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - register address\n* `data` - register value\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C device register write (8-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - Register address\n* `data` - Register value\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_write_reg_8(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -5863,7 +5766,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C device register write (16-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - register address\n* `data` - register value\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C device register write (16-bit)\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `reg_addr` - Register address\n* `data` - Register value\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_write_reg_16(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
@@ -5873,13 +5776,13 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C device memory\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `mem_addr` - memory start address\n* `data` - pointer to data buffer\n* `len` - size of data buffer\n* `timeout` - timeout in ticks\n\n"]
+    #[doc = "Perform I2C device memory\n\nReturns:\n\n* true on successful transfer, false otherwise\n\n# Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n* `i2c_addr` - I2C slave address\n* `mem_addr` - Memory start address\n* `data` - Pointer to data buffer\n* `len` - Size of data buffer\n* `timeout` - Timeout in milliseconds\n\n"]
     pub fn furi_hal_i2c_write_mem(
         handle: *mut FuriHalI2cBusHandle,
         i2c_addr: u8,
         mem_addr: u8,
-        data: *mut u8,
-        len: u8,
+        data: *const u8,
+        len: usize,
         timeout: u32,
     ) -> bool;
 }
@@ -6104,6 +6007,7 @@ fn bindgen_test_layout_InputPin() {
 pub struct GpioPinRecord {
     pub pin: *const GpioPin,
     pub name: *const core::ffi::c_char,
+    pub number: u8,
     pub debug: bool,
 }
 #[test]
@@ -6141,8 +6045,18 @@ fn bindgen_test_layout_GpioPinRecord() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).debug) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).number) as usize - ptr as usize },
         8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GpioPinRecord),
+            "::",
+            stringify!(number)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).debug) as usize - ptr as usize },
+        9usize,
         concat!(
             "Offset of field: ",
             stringify!(GpioPinRecord),
@@ -6418,6 +6332,7 @@ pub const FuriHalRtcFlag_FuriHalRtcFlagC2Update: FuriHalRtcFlag = 8;
 pub const FuriHalRtcFlag_FuriHalRtcFlagHandOrient: FuriHalRtcFlag = 16;
 pub const FuriHalRtcFlag_FuriHalRtcFlagLegacySleep: FuriHalRtcFlag = 32;
 pub const FuriHalRtcFlag_FuriHalRtcFlagStealthMode: FuriHalRtcFlag = 64;
+pub const FuriHalRtcFlag_FuriHalRtcFlagDetailedFilename: FuriHalRtcFlag = 128;
 pub type FuriHalRtcFlag = core::ffi::c_uchar;
 #[doc = "Normal boot mode, default value\n\n"]
 pub const FuriHalRtcBootMode_FuriHalRtcBootModeNormal: FuriHalRtcBootMode = 0;
@@ -7951,6 +7866,324 @@ extern "C" {
     #[doc = "Check & switch C2 to given mode\n\n# Arguments\n\n* `mode` - [Direction: In] mode to switch into\n\n"]
     pub fn furi_hal_bt_ensure_c2_mode(mode: BleGlueC2Mode) -> bool;
 }
+#[doc = "SPI Init structures definition\n\n"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct LL_SPI_InitTypeDef {
+    #[doc = "Specifies the SPI unidirectional or bidirectional data mode.\nThis parameter can be a value of  [`SPI_LL_EC_TRANSFER_MODE`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetTransferDirection()`]\n\n"]
+    pub TransferDirection: u32,
+    #[doc = "Specifies the SPI mode (Master/Slave).\nThis parameter can be a value of  [`SPI_LL_EC_MODE`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetMode()`]\n\n"]
+    pub Mode: u32,
+    #[doc = "Specifies the SPI data width.\nThis parameter can be a value of  [`SPI_LL_EC_DATAWIDTH`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetDataWidth()`]\n\n"]
+    pub DataWidth: u32,
+    #[doc = "Specifies the serial clock steady state.\nThis parameter can be a value of  [`SPI_LL_EC_POLARITY`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetClockPolarity()`]\n\n"]
+    pub ClockPolarity: u32,
+    #[doc = "Specifies the clock active edge for the bit capture.\nThis parameter can be a value of  [`SPI_LL_EC_PHASE`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetClockPhase()`]\n\n"]
+    pub ClockPhase: u32,
+    #[doc = "Specifies whether the NSS signal is managed by hardware (NSS pin) or by software using the SSI bit.\nThis parameter can be a value of  [`SPI_LL_EC_NSS_MODE`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetNSSMode()`]\n\n"]
+    pub NSS: u32,
+    #[doc = "Specifies the BaudRate prescaler value which will be used to configure the transmit and receive SCK clock.\nThis parameter can be a value of  [`SPI_LL_EC_BAUDRATEPRESCALER`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetBaudRatePrescaler()`]\n\n# Notes\n\n* The communication clock is derived from the master clock. The slave clock does not need to be set.\n\n"]
+    pub BaudRate: u32,
+    #[doc = "Specifies whether data transfers start from MSB or LSB bit.\nThis parameter can be a value of  [`SPI_LL_EC_BIT_ORDER`]\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetTransferBitOrder()`]\n\n"]
+    pub BitOrder: u32,
+    #[doc = "Specifies if the CRC calculation is enabled or not.\nThis parameter can be a value of  [`SPI_LL_EC_CRC_CALCULATION`]\nThis feature can be modified afterwards using unitary functions  [`LL_SPI_EnableCRC()`] and  [`LL_SPI_DisableCRC()`]\n\n"]
+    pub CRCCalculation: u32,
+    #[doc = "Specifies the polynomial used for the CRC calculation.\nThis parameter must be a number between Min_Data = 0x00 and Max_Data = 0xFFFF.\nThis feature can be modified afterwards using unitary function  [`LL_SPI_SetCRCPolynomial()`]\n\n"]
+    pub CRCPoly: u32,
+}
+#[test]
+fn bindgen_test_layout_LL_SPI_InitTypeDef() {
+    const UNINIT: ::core::mem::MaybeUninit<LL_SPI_InitTypeDef> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<LL_SPI_InitTypeDef>(),
+        40usize,
+        concat!("Size of: ", stringify!(LL_SPI_InitTypeDef))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<LL_SPI_InitTypeDef>(),
+        4usize,
+        concat!("Alignment of ", stringify!(LL_SPI_InitTypeDef))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).TransferDirection) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_SPI_InitTypeDef),
+            "::",
+            stringify!(TransferDirection)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Mode) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_SPI_InitTypeDef),
+            "::",
+            stringify!(Mode)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).DataWidth) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_SPI_InitTypeDef),
+            "::",
+            stringify!(DataWidth)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).ClockPolarity) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_SPI_InitTypeDef),
+            "::",
+            stringify!(ClockPolarity)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).ClockPhase) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_SPI_InitTypeDef),
+            "::",
+            stringify!(ClockPhase)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).NSS) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_SPI_InitTypeDef),
+            "::",
+            stringify!(NSS)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).BaudRate) as usize - ptr as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_SPI_InitTypeDef),
+            "::",
+            stringify!(BaudRate)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).BitOrder) as usize - ptr as usize },
+        28usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_SPI_InitTypeDef),
+            "::",
+            stringify!(BitOrder)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).CRCCalculation) as usize - ptr as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_SPI_InitTypeDef),
+            "::",
+            stringify!(CRCCalculation)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).CRCPoly) as usize - ptr as usize },
+        36usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LL_SPI_InitTypeDef),
+            "::",
+            stringify!(CRCPoly)
+        )
+    );
+}
+extern "C" {
+    pub fn LL_SPI_Init(
+        SPIx: *mut SPI_TypeDef,
+        SPI_InitStruct: *mut LL_SPI_InitTypeDef,
+    ) -> ErrorStatus;
+}
+#[doc = "Bus initialization event, called on system start\n\n"]
+pub const FuriHalSpiBusEvent_FuriHalSpiBusEventInit: FuriHalSpiBusEvent = 0;
+#[doc = "Bus deinitialization event, called on system stop\n\n"]
+pub const FuriHalSpiBusEvent_FuriHalSpiBusEventDeinit: FuriHalSpiBusEvent = 1;
+#[doc = "Bus lock event, called before activation\n\n"]
+pub const FuriHalSpiBusEvent_FuriHalSpiBusEventLock: FuriHalSpiBusEvent = 2;
+#[doc = "Bus unlock event, called after deactivation\n\n"]
+pub const FuriHalSpiBusEvent_FuriHalSpiBusEventUnlock: FuriHalSpiBusEvent = 3;
+#[doc = "Bus activation event, called before handle activation\n\n"]
+pub const FuriHalSpiBusEvent_FuriHalSpiBusEventActivate: FuriHalSpiBusEvent = 4;
+#[doc = "Bus deactivation event, called after handle deactivation\n\n"]
+pub const FuriHalSpiBusEvent_FuriHalSpiBusEventDeactivate: FuriHalSpiBusEvent = 5;
+#[doc = "FuriHal spi bus states\n\n"]
+pub type FuriHalSpiBusEvent = core::ffi::c_uchar;
+#[doc = "FuriHal spi bus event callback\n\n"]
+pub type FuriHalSpiBusEventCallback = ::core::option::Option<
+    unsafe extern "C" fn(bus: *mut FuriHalSpiBus, event: FuriHalSpiBusEvent),
+>;
+#[doc = "FuriHal spi bus\n\n"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FuriHalSpiBus {
+    pub spi: *mut SPI_TypeDef,
+    pub callback: FuriHalSpiBusEventCallback,
+    pub current_handle: *mut FuriHalSpiBusHandle,
+}
+#[test]
+fn bindgen_test_layout_FuriHalSpiBus() {
+    const UNINIT: ::core::mem::MaybeUninit<FuriHalSpiBus> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FuriHalSpiBus>(),
+        12usize,
+        concat!("Size of: ", stringify!(FuriHalSpiBus))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FuriHalSpiBus>(),
+        4usize,
+        concat!("Alignment of ", stringify!(FuriHalSpiBus))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).spi) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalSpiBus),
+            "::",
+            stringify!(spi)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).callback) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalSpiBus),
+            "::",
+            stringify!(callback)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).current_handle) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalSpiBus),
+            "::",
+            stringify!(current_handle)
+        )
+    );
+}
+#[doc = "Handle init, called on system start, initialize gpio for idle state\n\n"]
+pub const FuriHalSpiBusHandleEvent_FuriHalSpiBusHandleEventInit: FuriHalSpiBusHandleEvent = 0;
+#[doc = "Handle deinit, called on system stop, deinitialize gpio for default state\n\n"]
+pub const FuriHalSpiBusHandleEvent_FuriHalSpiBusHandleEventDeinit: FuriHalSpiBusHandleEvent = 1;
+#[doc = "Handle activate: connect gpio and apply bus config\n\n"]
+pub const FuriHalSpiBusHandleEvent_FuriHalSpiBusHandleEventActivate: FuriHalSpiBusHandleEvent = 2;
+#[doc = "Handle deactivate: disconnect gpio and reset bus config\n\n"]
+pub const FuriHalSpiBusHandleEvent_FuriHalSpiBusHandleEventDeactivate: FuriHalSpiBusHandleEvent = 3;
+#[doc = "FuriHal spi handle states\n\n"]
+pub type FuriHalSpiBusHandleEvent = core::ffi::c_uchar;
+#[doc = "FuriHal spi handle event callback\n\n"]
+pub type FuriHalSpiBusHandleEventCallback = ::core::option::Option<
+    unsafe extern "C" fn(handle: *mut FuriHalSpiBusHandle, event: FuriHalSpiBusHandleEvent),
+>;
+#[doc = "FuriHal spi handle\n\n"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FuriHalSpiBusHandle {
+    pub bus: *mut FuriHalSpiBus,
+    pub callback: FuriHalSpiBusHandleEventCallback,
+    pub miso: *const GpioPin,
+    pub mosi: *const GpioPin,
+    pub sck: *const GpioPin,
+    pub cs: *const GpioPin,
+}
+#[test]
+fn bindgen_test_layout_FuriHalSpiBusHandle() {
+    const UNINIT: ::core::mem::MaybeUninit<FuriHalSpiBusHandle> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FuriHalSpiBusHandle>(),
+        24usize,
+        concat!("Size of: ", stringify!(FuriHalSpiBusHandle))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FuriHalSpiBusHandle>(),
+        4usize,
+        concat!("Alignment of ", stringify!(FuriHalSpiBusHandle))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).bus) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalSpiBusHandle),
+            "::",
+            stringify!(bus)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).callback) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalSpiBusHandle),
+            "::",
+            stringify!(callback)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).miso) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalSpiBusHandle),
+            "::",
+            stringify!(miso)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).mosi) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalSpiBusHandle),
+            "::",
+            stringify!(mosi)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).sck) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalSpiBusHandle),
+            "::",
+            stringify!(sck)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).cs) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalSpiBusHandle),
+            "::",
+            stringify!(cs)
+        )
+    );
+}
 extern "C" {
     #[doc = "Preset for ST25R916\n\n"]
     pub static furi_hal_spi_preset_2edge_low_8m: LL_SPI_InitTypeDef;
@@ -8971,6 +9204,9 @@ extern "C" {
     pub static mut usb_hid_u2f: FuriHalUsbInterface;
 }
 extern "C" {
+    pub static mut usb_ccid: FuriHalUsbInterface;
+}
+extern "C" {
     #[doc = "Set USB device configuration\n\nReturns:\n\n* true - mode switch started, false - mode switch is locked\n\n# Arguments\n\n* `mode` - new USB device mode\n* `ctx` - context passed to device mode init function\n\n"]
     pub fn furi_hal_usb_set_config(
         new_if: *mut FuriHalUsbInterface,
@@ -9054,6 +9290,68 @@ extern "C" {
 extern "C" {
     #[doc = "Set the following consumer key to released state and send HID report\n\n# Arguments\n\n* `button` - key code\n\n"]
     pub fn furi_hal_hid_consumer_key_release(button: u16) -> bool;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct CcidCallbacks {
+    pub icc_power_on_callback: ::core::option::Option<
+        unsafe extern "C" fn(
+            dataBlock: *mut u8,
+            dataBlockLen: *mut u32,
+            context: *mut core::ffi::c_void,
+        ),
+    >,
+    pub xfr_datablock_callback: ::core::option::Option<
+        unsafe extern "C" fn(
+            dataBlock: *mut u8,
+            dataBlockLen: *mut u32,
+            context: *mut core::ffi::c_void,
+        ),
+    >,
+}
+#[test]
+fn bindgen_test_layout_CcidCallbacks() {
+    const UNINIT: ::core::mem::MaybeUninit<CcidCallbacks> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<CcidCallbacks>(),
+        8usize,
+        concat!("Size of: ", stringify!(CcidCallbacks))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<CcidCallbacks>(),
+        4usize,
+        concat!("Alignment of ", stringify!(CcidCallbacks))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).icc_power_on_callback) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CcidCallbacks),
+            "::",
+            stringify!(icc_power_on_callback)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).xfr_datablock_callback) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CcidCallbacks),
+            "::",
+            stringify!(xfr_datablock_callback)
+        )
+    );
+}
+extern "C" {
+    pub fn furi_hal_ccid_set_callbacks(cb: *mut CcidCallbacks);
+}
+extern "C" {
+    pub fn furi_hal_ccid_ccid_insert_smartcard();
+}
+extern "C" {
+    pub fn furi_hal_ccid_ccid_remove_smartcard();
 }
 pub const FuriHalUartId_FuriHalUartIdUSART1: FuriHalUartId = 0;
 pub const FuriHalUartId_FuriHalUartIdLPUART1: FuriHalUartId = 1;
@@ -10499,8 +10797,15 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Check if manifest is compatible with current ELF API interface\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `manifest` - \n* `api_interface` - \n\n"]
-    pub fn flipper_application_manifest_is_compatible(
+    #[doc = "Check if API Version declared in manifest is older than firmware ELF API interface\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `manifest` - The manifest\n* `api_interface` - The api interface\n\n"]
+    pub fn flipper_application_manifest_is_too_old(
+        manifest: *const FlipperApplicationManifest,
+        api_interface: *const ElfApiInterface,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Check if API Version declared in manifest is newer than firmware ELF API interface\n\nReturns:\n\n* bool\n\n# Arguments\n\n* `manifest` - The manifest\n* `api_interface` - The api interface\n\n"]
+    pub fn flipper_application_manifest_is_too_new(
         manifest: *const FlipperApplicationManifest,
         api_interface: *const ElfApiInterface,
     ) -> bool;
@@ -10633,7 +10938,6 @@ pub struct SDInfo {
     pub product_serial_number: u32,
     pub manufacturing_month: u8,
     pub manufacturing_year: u16,
-    pub error: FS_Error,
 }
 #[test]
 fn bindgen_test_layout_SDInfo() {
@@ -10641,7 +10945,7 @@ fn bindgen_test_layout_SDInfo() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<SDInfo>(),
-        76usize,
+        72usize,
         concat!("Size of: ", stringify!(SDInfo))
     );
     assert_eq!(
@@ -10787,16 +11091,6 @@ fn bindgen_test_layout_SDInfo() {
             stringify!(SDInfo),
             "::",
             stringify!(manufacturing_year)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
-        72usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(SDInfo),
-            "::",
-            stringify!(error)
         )
     );
 }
@@ -11000,8 +11294,12 @@ extern "C" {
     pub fn storage_sd_format(api: *mut Storage) -> FS_Error;
 }
 extern "C" {
-    #[doc = "Will unmount the SD card\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `api` - pointer to the api\n\n"]
+    #[doc = "Will unmount the SD card. Will return FSE_NOT_READY if the SD card is not mounted. Will return FSE_DENIED if there are open files on the SD card.\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `api` - pointer to the api\n\n"]
     pub fn storage_sd_unmount(api: *mut Storage) -> FS_Error;
+}
+extern "C" {
+    #[doc = "Will mount the SD card\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `api` - pointer to the api\n\n"]
+    pub fn storage_sd_mount(api: *mut Storage) -> FS_Error;
 }
 extern "C" {
     #[doc = "Retrieves SD card information\n\nReturns:\n\n* FS_Error operation result\n\n# Arguments\n\n* `api` - pointer to the api\n* `info` - pointer to the info\n\n"]
@@ -11060,10 +11358,12 @@ pub const FlipperApplicationPreloadStatus_FlipperApplicationPreloadStatusInvalid
     FlipperApplicationPreloadStatus = 2;
 pub const FlipperApplicationPreloadStatus_FlipperApplicationPreloadStatusInvalidManifest:
     FlipperApplicationPreloadStatus = 3;
-pub const FlipperApplicationPreloadStatus_FlipperApplicationPreloadStatusApiMismatch:
+pub const FlipperApplicationPreloadStatus_FlipperApplicationPreloadStatusApiTooOld:
     FlipperApplicationPreloadStatus = 4;
-pub const FlipperApplicationPreloadStatus_FlipperApplicationPreloadStatusTargetMismatch:
+pub const FlipperApplicationPreloadStatus_FlipperApplicationPreloadStatusApiTooNew:
     FlipperApplicationPreloadStatus = 5;
+pub const FlipperApplicationPreloadStatus_FlipperApplicationPreloadStatusTargetMismatch:
+    FlipperApplicationPreloadStatus = 6;
 pub type FlipperApplicationPreloadStatus = core::ffi::c_uchar;
 pub const FlipperApplicationLoadStatus_FlipperApplicationLoadStatusSuccess:
     FlipperApplicationLoadStatus = 0;
@@ -13178,6 +13478,15 @@ extern "C" {
         y: u16,
         font: Font,
         label_str: *const core::ffi::c_char,
+    );
+}
+extern "C" {
+    #[doc = "Add a non-button icon to button_panel module.\n\n# Arguments\n\n* `button_panel` - ButtonPanel instance\n* `x` - x-coordinate to place icon\n* `y` - y-coordinate to place icon\n* `icon_name` - name of the icon to draw\n\n"]
+    pub fn button_panel_add_icon(
+        button_panel: *mut ButtonPanel,
+        x: u16,
+        y: u16,
+        icon_name: *const Icon,
     );
 }
 #[repr(C)]
@@ -23100,6 +23409,9 @@ pub const SubGhzProtocolStatus_SubGhzProtocolStatusErrorValueBitCount: SubGhzPro
 #[doc = "Payload encoder failure\n\n"]
 pub const SubGhzProtocolStatus_SubGhzProtocolStatusErrorEncoderGetUpload: SubGhzProtocolStatus =
     -12;
+#[doc = "Protocol not found\n\n"]
+pub const SubGhzProtocolStatus_SubGhzProtocolStatusErrorProtocolNotFound: SubGhzProtocolStatus =
+    -13;
 #[doc = "Prevents enum down-size compiler optimization.\n\n"]
 pub const SubGhzProtocolStatus_SubGhzProtocolStatusReserved: SubGhzProtocolStatus = 2147483647;
 pub type SubGhzProtocolStatus = core::ffi::c_int;
@@ -24638,6 +24950,26 @@ extern "C" {
     pub fn md5(input: *const core::ffi::c_uchar, ilen: usize, output: *mut core::ffi::c_uchar);
 }
 extern "C" {
+    #[doc = "Generates detailed/random name based on furi_hal flags\n\n# Arguments\n\n* `name` - buffer to write random name\n* `max_name_size` - length of given buffer\n* `prefix` - [Direction: In] The prefix of the name\n\n"]
+    pub fn name_generator_make_auto(
+        name: *mut core::ffi::c_char,
+        max_name_size: usize,
+        prefix: *const core::ffi::c_char,
+    );
+}
+extern "C" {
+    #[doc = "Generates random name\n\n# Arguments\n\n* `name` - buffer to write random name\n* `max_name_size` - length of given buffer\n\n"]
+    pub fn name_generator_make_random(name: *mut core::ffi::c_char, max_name_size: usize);
+}
+extern "C" {
+    #[doc = "Generates detailed name\n\n# Arguments\n\n* `name` - buffer to write random name\n* `max_name_size` - length of given buffer\n* `prefix` - [Direction: In] The prefix of the name\n\n"]
+    pub fn name_generator_make_detailed(
+        name: *mut core::ffi::c_char,
+        max_name_size: usize,
+        prefix: *const core::ffi::c_char,
+    );
+}
+extern "C" {
     #[doc = "Extract filename without extension from path.\n\n# Arguments\n\n* `path` - path string\n* `filename` - output filename string. Must be initialized before.\n\n"]
     pub fn path_extract_filename_no_ext(path: *const core::ffi::c_char, filename: *mut FuriString);
 }
@@ -24686,10 +25018,6 @@ extern "C" {
         data: *const u8,
         data_size: usize,
     );
-}
-extern "C" {
-    #[doc = "Generates random name\n\n# Arguments\n\n* `name` - buffer to write random name\n* `max_name_size` - length of given buffer\n\n"]
-    pub fn set_random_name(name: *mut core::ffi::c_char, max_name_size: u8);
 }
 extern "C" {
     pub fn saved_struct_load(

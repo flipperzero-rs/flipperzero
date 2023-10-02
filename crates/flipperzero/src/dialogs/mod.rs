@@ -201,6 +201,12 @@ impl DialogMessageButton {
     }
 }
 
+impl<'a> Default for DialogFileBrowserOptions<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<'a> DialogFileBrowserOptions<'a> {
     /// Creates a new dialog file browser options and initializes to default values.
     ///

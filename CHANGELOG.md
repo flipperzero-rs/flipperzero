@@ -5,6 +5,10 @@ file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## Unreleased
+
+- Migrated to SDK 39.1 (firmware 0.92.2).
+
 ## [0.11.0]
 
 ### Added

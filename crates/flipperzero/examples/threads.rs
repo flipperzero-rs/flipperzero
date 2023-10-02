@@ -1,4 +1,5 @@
-//! Demonstrates use of threads on the Flipper Zero.
+//! Demonstrates use of threads on the Flipper Zero by spawning two threads and dropping the first +
+//! while waiting for the second to complete.
 
 #![no_main]
 #![no_std]
