@@ -16,6 +16,7 @@ extern crate alloc;
 pub mod dialogs;
 pub mod dolphin;
 pub mod furi;
+pub mod gpio;
 pub mod gui;
 pub mod io;
 pub mod macros;
@@ -61,6 +62,7 @@ flipperzero_test::tests_runner!(
         crate::furi::string::tests,
         crate::furi::sync::tests,
         crate::furi::time::tests,
+        crate::gpio::i2c::tests,
         crate::toolbox::crc32::tests,
         crate::toolbox::md5::tests,
         crate::toolbox::sha256::tests,
