@@ -9,8 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- `flipperzero::gpio::i2c`, providing a Rust interface to the external 3.3V I2C
-  bus over GPIO pins C0 and C1, as well as the internal (power) I2C bus.
+- `flipperzero::gpio`:
+  - `i2c` module, providing a Rust interface to the external 3.3V I2C bus over
+    GPIO pins `C0` and `C1`, as well as the internal (power) I2C bus.
+  - `spi` module, providing a Rust interface to the external 3.3V SPI bus over
+    GPIO pins `(B3, A4, A6, A7)`, as well as the internal SPI sub devices.
 
 ### Changed
 
