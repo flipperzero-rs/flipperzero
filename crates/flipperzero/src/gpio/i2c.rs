@@ -291,7 +291,7 @@ impl BusHandle {
         &mut self,
         device: DeviceAddress,
         mem_addr: u8,
-        data: &mut [u8],
+        data: &[u8],
         timeout: Duration,
     ) -> Result<(), Error> {
         if unsafe {
