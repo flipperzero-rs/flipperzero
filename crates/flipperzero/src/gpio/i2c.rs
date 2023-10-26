@@ -309,11 +309,408 @@ impl BusHandle {
             Err(Error::TransferFailed)
         }
     }
+
+    /// Reads data from `device` and writes it to the `data` buffer.
+    ///
+    /// `timeout` is in milliseconds.
+    pub fn tx(
+        &mut self,
+        device: DeviceAddress,
+        data: &[u8],
+        timeout: Duration,
+    ) -> Result<(), Error> {
+        unsafe {
+            sys::furi_hal_i2c_tx(
+                self.handle,
+                device.0,
+                data.as_ptr(),
+                data.len(),
+                timeout.as_millis() as u32,
+            )
+        }
+        .then_some(())
+        .ok_or(Error::TransferFailed)
+    }
+
+    /// Writes the given data to `device`.
+    ///
+    /// `timeout` is in milliseconds.
+    pub fn rx(
+        &mut self,
+        device: DeviceAddress,
+        data: &mut [u8],
+        timeout: Duration,
+    ) -> Result<(), Error> {
+        unsafe {
+            sys::furi_hal_i2c_rx(
+                self.handle,
+                device.0,
+                data.as_mut_ptr(),
+                data.len(),
+                timeout.as_millis() as u32,
+            )
+        }
+        .then_some(())
+        .ok_or(Error::TransferFailed)
+    }
+
+    /// Writes the data in `write` to `device` and then reads from it into the `read` buffer.
+    ///
+    /// `timeout` is in milliseconds.
+    pub fn trx(
+        &mut self,
+        device: DeviceAddress,
+        write: &[u8],
+        read: &mut [u8],
+        timeout: Duration,
+    ) -> Result<(), Error> {
+        unsafe {
+            sys::furi_hal_i2c_trx(
+                self.handle,
+                device.0,
+                write.as_ptr(),
+                write.len(),
+                read.as_mut_ptr(),
+                read.len(),
+                timeout.as_millis() as u32,
+            )
+        }
+        .then_some(())
+        .ok_or(Error::TransferFailed)
+    }
+
+    /// Execute the provided operations on the I2C bus.
+    ///
+    /// Transaction contract:
+    /// - Before executing the first operation an ST is sent automatically. This is followed by SAD+R/W as appropriate.
+    /// - Data from adjacent operations of the same type are sent after each other without an SP or SR.
+    /// - Between adjacent operations of a different type an SR and SAD+R/W is sent.
+    /// - After executing the last operation an SP is sent automatically.
+    /// - If the last operation is a `Read` the master does not send an acknowledge for the last byte.
+    ///
+    /// - `ST` = start condition
+    /// - `SAD+R/W` = slave address followed by bit 1 to indicate reading or 0 to indicate writing
+    /// - `SR` = repeated start condition
+    /// - `SP` = stop condition
+    pub fn transaction(
+        &mut self,
+        device: DeviceAddress,
+        operations: &mut [Operation],
+        timeout: Duration,
+    ) -> Result<(), Error> {
+        self.transaction_impl(device, operations, timeout)
+    }
+
+    // This is similar to `trx`, the only difference being that it sends a RESTART condition
+    // between the two transfers instead of STOP + START
+    #[cfg(any(feature = "embedded-hal", feature = "embedded-hal-0"))]
+    fn write_read_impl(
+        &mut self,
+        device: DeviceAddress,
+        write: &[u8],
+        read: &mut [u8],
+        timeout: Duration,
+    ) -> Result<(), Error> {
+        unsafe {
+            sys::furi_hal_i2c_tx_ext(
+                self.handle,
+                device.0.into(),
+                false,
+                write.as_ptr(),
+                write.len(),
+                sys::FuriHalI2cBegin_FuriHalI2cBeginStart,
+                sys::FuriHalI2cEnd_FuriHalI2cEndAwaitRestart,
+                timeout.as_millis() as u32,
+            ) && sys::furi_hal_i2c_rx_ext(
+                self.handle,
+                device.0.into(),
+                false,
+                read.as_mut_ptr(),
+                read.len(),
+                sys::FuriHalI2cBegin_FuriHalI2cBeginRestart,
+                sys::FuriHalI2cEnd_FuriHalI2cEndStop,
+                timeout.as_millis() as u32,
+            )
+        }
+        .then_some(())
+        .ok_or(Error::TransferFailed)
+    }
+
+    // This function is generic to allow the implementation of both versions of the embedded_hal
+    // transaction traits
+    fn transaction_impl<'a, O>(
+        &mut self,
+        device: DeviceAddress,
+        operations: &mut [O],
+        timeout: Duration,
+    ) -> Result<(), Error>
+    where
+        O: OperationLike + 'a,
+    {
+        use sys::{
+            FuriHalI2cBegin_FuriHalI2cBeginRestart as BeginRestart,
+            FuriHalI2cBegin_FuriHalI2cBeginResume as BeginResume,
+            FuriHalI2cBegin_FuriHalI2cBeginStart as BeginStart,
+            FuriHalI2cEnd_FuriHalI2cEndAwaitRestart as EndAwaitRestart,
+            FuriHalI2cEnd_FuriHalI2cEndPause as EndPause,
+            FuriHalI2cEnd_FuriHalI2cEndStop as EndStop,
+        };
+
+        let mut operations = operations.iter_mut().peekable();
+        let mut start = BeginStart;
+        let address = device.0.into();
+
+        while let Some(op) = operations.next() {
+            let (end, next_start) = match (op.kind(), operations.peek().map(|next| next.kind())) {
+                (OperationKind::Read, Some(OperationKind::Read))
+                | (OperationKind::Write, Some(OperationKind::Write)) => (EndPause, BeginResume),
+                (_, Some(_)) => (EndAwaitRestart, BeginRestart),
+                (_, None) => (EndStop, BeginStart),
+            };
+
+            let result = unsafe {
+                match op.as_op() {
+                    Operation::Read(buffer) => flipperzero_sys::furi_hal_i2c_rx_ext(
+                        self.handle,
+                        address,
+                        false,
+                        buffer.as_mut_ptr(),
+                        buffer.len(),
+                        start,
+                        end,
+                        timeout.as_millis() as u32,
+                    ),
+                    Operation::Write(buffer) => flipperzero_sys::furi_hal_i2c_tx_ext(
+                        self.handle,
+                        address,
+                        false,
+                        buffer.as_ptr(),
+                        buffer.len(),
+                        start,
+                        end,
+                        timeout.as_millis() as u32,
+                    ),
+                }
+            };
+
+            if !result {
+                return Err(Error::TransferFailed);
+            }
+
+            start = next_start;
+        }
+
+        Ok(())
+    }
 }
 
 #[derive(Debug, PartialEq)]
 pub enum Error {
     TransferFailed,
+}
+
+/// I2C operation.
+///
+/// Several operations can be combined as part of a transaction.
+pub enum Operation<'a> {
+    /// Read data into the provided buffer
+    Read(&'a mut [u8]),
+    /// Write data from the provided buffer
+    Write(&'a [u8]),
+}
+
+// These exist to allow compatibility with both embedded_hal 1.0 and 0.2 versions of the Operation
+// enum
+
+enum OperationKind {
+    Read,
+    Write,
+}
+
+trait OperationLike {
+    fn as_op(&mut self) -> Operation;
+    fn kind(&self) -> OperationKind;
+}
+
+impl OperationLike for Operation<'_> {
+    fn as_op(&mut self) -> Operation {
+        match self {
+            Operation::Read(buffer) => Operation::Read(buffer),
+            Operation::Write(buffer) => Operation::Write(buffer),
+        }
+    }
+
+    fn kind(&self) -> OperationKind {
+        match self {
+            Operation::Read(_) => OperationKind::Read,
+            Operation::Write(_) => OperationKind::Write,
+        }
+    }
+}
+
+// embedded_hal specific
+
+/// An I2C bus implementing the embedded-hal traits
+///
+/// It acquires and releases a handle to the underlying bus for each function, similar to
+/// [embedded-hal-bus](https://docs.rs/embedded-hal-bus/0.1.0-rc.1/embedded_hal_bus/index.html)'
+/// [MutexDevice](https://docs.rs/embedded-hal-bus/0.1.0-rc.1/embedded_hal_bus/i2c/struct.MutexDevice.html).
+/// It uses the same timeout duration for each operation.
+#[cfg(any(feature = "embedded-hal", feature = "embedded-hal-0"))]
+pub struct EmbeddedHalBus {
+    bus: Bus,
+    /// The timeout used for each operation
+    timeout: Duration,
+}
+
+#[cfg(any(feature = "embedded-hal", feature = "embedded-hal-0"))]
+impl EmbeddedHalBus {
+    pub fn new(bus: Bus, timeout: Duration) -> Self {
+        Self { bus, timeout }
+    }
+
+    pub fn set_timeout(&mut self, timeout: Duration) {
+        self.timeout = timeout
+    }
+}
+
+// embedded_hal 1.0 implementations
+
+#[cfg(feature = "embedded-hal")]
+impl embedded_hal::i2c::Error for Error {
+    fn kind(&self) -> embedded_hal::i2c::ErrorKind {
+        embedded_hal::i2c::ErrorKind::Other
+    }
+}
+
+#[cfg(feature = "embedded-hal")]
+impl embedded_hal::i2c::ErrorType for EmbeddedHalBus {
+    type Error = Error;
+}
+
+#[cfg(feature = "embedded-hal")]
+impl OperationLike for embedded_hal::i2c::Operation<'_> {
+    fn as_op(&mut self) -> Operation {
+        match self {
+            embedded_hal::i2c::Operation::Read(buffer) => Operation::Read(buffer),
+            embedded_hal::i2c::Operation::Write(buffer) => Operation::Write(buffer),
+        }
+    }
+
+    fn kind(&self) -> OperationKind {
+        match self {
+            embedded_hal::i2c::Operation::Read(_) => OperationKind::Read,
+            embedded_hal::i2c::Operation::Write(_) => OperationKind::Write,
+        }
+    }
+}
+
+#[cfg(feature = "embedded-hal")]
+impl embedded_hal::i2c::I2c for EmbeddedHalBus {
+    fn transaction(
+        &mut self,
+        address: u8,
+        operations: &mut [embedded_hal::i2c::Operation<'_>],
+    ) -> Result<(), Self::Error> {
+        self.bus
+            .acquire()
+            .transaction_impl(DeviceAddress::new(address), operations, self.timeout)
+    }
+
+    fn read(&mut self, address: u8, read: &mut [u8]) -> Result<(), Self::Error> {
+        self.bus
+            .acquire()
+            .rx(DeviceAddress::new(address), read, self.timeout)
+    }
+
+    fn write(&mut self, address: u8, write: &[u8]) -> Result<(), Self::Error> {
+        self.bus
+            .acquire()
+            .tx(DeviceAddress::new(address), write, self.timeout)
+    }
+
+    fn write_read(
+        &mut self,
+        address: u8,
+        write: &[u8],
+        read: &mut [u8],
+    ) -> Result<(), Self::Error> {
+        self.bus
+            .acquire()
+            .write_read_impl(DeviceAddress::new(address), write, read, self.timeout)
+    }
+}
+
+// embedded_hal 0.2 implementations
+
+#[cfg(feature = "embedded-hal-0")]
+impl OperationLike for embedded_hal_0::blocking::i2c::Operation<'_> {
+    fn as_op(&mut self) -> Operation {
+        match self {
+            embedded_hal_0::blocking::i2c::Operation::Read(buffer) => Operation::Read(buffer),
+            embedded_hal_0::blocking::i2c::Operation::Write(buffer) => Operation::Write(buffer),
+        }
+    }
+
+    fn kind(&self) -> OperationKind {
+        match self {
+            embedded_hal_0::blocking::i2c::Operation::Read(_) => OperationKind::Read,
+            embedded_hal_0::blocking::i2c::Operation::Write(_) => OperationKind::Write,
+        }
+    }
+}
+
+#[cfg(feature = "embedded-hal-0")]
+impl embedded_hal_0::blocking::i2c::Read for EmbeddedHalBus {
+    type Error = Error;
+
+    fn read(&mut self, address: u8, buffer: &mut [u8]) -> Result<(), Self::Error> {
+        self.bus
+            .acquire()
+            .rx(DeviceAddress::new(address), buffer, self.timeout)
+    }
+}
+
+#[cfg(feature = "embedded-hal-0")]
+impl embedded_hal_0::blocking::i2c::Write for EmbeddedHalBus {
+    type Error = Error;
+
+    fn write(&mut self, address: u8, bytes: &[u8]) -> Result<(), Self::Error> {
+        self.bus
+            .acquire()
+            .tx(DeviceAddress::new(address), bytes, self.timeout)
+    }
+}
+
+#[cfg(feature = "embedded-hal-0")]
+impl embedded_hal_0::blocking::i2c::WriteRead for EmbeddedHalBus {
+    type Error = Error;
+
+    fn write_read(
+        &mut self,
+        address: u8,
+        bytes: &[u8],
+        buffer: &mut [u8],
+    ) -> Result<(), Self::Error> {
+        self.bus
+            .acquire()
+            .write_read_impl(DeviceAddress::new(address), bytes, buffer, self.timeout)
+    }
+}
+
+#[cfg(feature = "embedded-hal-0")]
+impl embedded_hal_0::blocking::i2c::Transactional for EmbeddedHalBus {
+    type Error = Error;
+
+    fn exec(
+        &mut self,
+        address: u8,
+        operations: &mut [embedded_hal_0::blocking::i2c::Operation<'_>],
+    ) -> Result<(), Self::Error> {
+        self.bus
+            .acquire()
+            .transaction_impl(DeviceAddress::new(address), operations, self.timeout)
+    }
 }
 
 #[flipperzero_test::tests]
