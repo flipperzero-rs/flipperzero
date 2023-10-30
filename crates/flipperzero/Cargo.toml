@@ -35,6 +35,10 @@ lock_api = "0.4"
 digest = "0.10"
 bitflags = "1.0"
 
+# Embedded-hal
+embedded-hal = { version = "1.0.0-rc.1", optional = true }
+embedded-hal-0 = { package = "embedded-hal", version = "0.2.7", features = ["unproven"], optional = true }
+
 # Docs
 document-features = { workspace = true, optional = true }
 
