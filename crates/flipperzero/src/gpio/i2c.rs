@@ -134,8 +134,6 @@ impl BusHandle {
     }
 
     /// Enumerates the devices that are present and ready on this bus.
-    ///
-    /// `per_device_timeout` is in milliseconds.
     pub fn enumerate_devices(
         &mut self,
         per_device_timeout: Duration,
@@ -149,8 +147,6 @@ impl BusHandle {
 
     /// Checks if the device with address `i2c_addr` is present and ready on the bus.
     ///
-    /// `timeout` is in milliseconds.
-    ///
     /// Returns `true` if the device is present and ready, false otherwise.
     pub fn is_device_ready(&mut self, device: DeviceAddress, timeout: Duration) -> bool {
         unsafe {
@@ -159,8 +155,6 @@ impl BusHandle {
     }
 
     /// Reads the 8-bit register at `reg_addr` on `device`.
-    ///
-    /// `timeout` is in milliseconds.
     pub fn read_u8(
         &mut self,
         device: DeviceAddress,
@@ -184,8 +178,6 @@ impl BusHandle {
     }
 
     /// Reads the 16-bit register at `reg_addr` on `device`.
-    ///
-    /// `timeout` is in milliseconds.
     pub fn read_u16(
         &mut self,
         device: DeviceAddress,
@@ -209,8 +201,6 @@ impl BusHandle {
     }
 
     /// Reads `device`'s memory starting at `mem_addr` into the given buffer.
-    ///
-    /// `timeout` is in milliseconds.
     pub fn read_exact(
         &mut self,
         device: DeviceAddress,
@@ -235,8 +225,6 @@ impl BusHandle {
     }
 
     /// Writes the given value into the 8-bit register at `reg_addr` on `device`.
-    ///
-    /// `timeout` is in milliseconds.
     pub fn write_u8(
         &mut self,
         device: DeviceAddress,
@@ -260,8 +248,6 @@ impl BusHandle {
     }
 
     /// Writes the given value into the 16-bit register at `reg_addr` on `device`.
-    ///
-    /// `timeout` is in milliseconds.
     pub fn write_u16(
         &mut self,
         device: DeviceAddress,
@@ -285,8 +271,6 @@ impl BusHandle {
     }
 
     /// Writes the given data into `device`'s memory starting at `mem_addr`.
-    ///
-    /// `timeout` is in milliseconds.
     pub fn write_all(
         &mut self,
         device: DeviceAddress,
@@ -311,8 +295,6 @@ impl BusHandle {
     }
 
     /// Reads data from `device` and writes it to the `data` buffer.
-    ///
-    /// `timeout` is in milliseconds.
     pub fn tx(
         &mut self,
         device: DeviceAddress,
@@ -333,8 +315,6 @@ impl BusHandle {
     }
 
     /// Writes the given data to `device`.
-    ///
-    /// `timeout` is in milliseconds.
     pub fn rx(
         &mut self,
         device: DeviceAddress,
@@ -355,8 +335,6 @@ impl BusHandle {
     }
 
     /// Writes the data in `write` to `device` and then reads from it into the `read` buffer.
-    ///
-    /// `timeout` is in milliseconds.
     pub fn trx(
         &mut self,
         device: DeviceAddress,
