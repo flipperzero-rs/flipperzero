@@ -7,7 +7,13 @@ use std::{
 };
 
 use clap::Parser;
-use flipperzero_tools::{serial, storage};
+use flipperzero_tools::{
+    proto::{
+        gen::{pb, pb_app},
+        RpcSession,
+    },
+    serial, storage,
+};
 use rand::{thread_rng, Rng};
 
 #[derive(Parser)]
@@ -62,17 +68,10 @@ impl From<io::Error> for Error {
     }
 }
 
-fn wait_for_idle(serial_cli: &mut serial::SerialCli) -> io::Result<()> {
-    loop {
-        serial_cli.send_and_wait_eol("loader info")?;
-        if serial_cli
-            .consume_response()?
-            .contains("No application is running")
-        {
-            break Ok(());
-        }
-        thread::sleep(Duration::from_millis(200));
-    }
+fn wait_for_idle(session: &mut RpcSession) -> io::Result<()> {
+    // TODO: need equivalent of "loader info" CLI command.
+    thread::sleep(Duration::from_millis(2000));
+    Ok(())
 }
 
 fn main() -> Result<(), Error> {
@@ -95,8 +94,8 @@ fn main() -> Result<(), Error> {
         .timeout(Duration::from_secs(30))
         .open()
         .map_err(Error::FailedToOpenSerialPort)?;
-    let mut store = storage::FlipperStorage::new(port);
-    store.start().map_err(Error::FailedToStartSerialInterface)?;
+    let mut store =
+        storage::FlipperStorage::new(port).map_err(Error::FailedToStartSerialInterface)?;
 
     // Upload the FAP to a temporary directory.
     let dest_dir =
@@ -109,31 +108,38 @@ fn main() -> Result<(), Error> {
         .send_file(&cli.fap, &dest_file)
         .map_err(Error::FailedToUploadFap)?;
 
-    let serial_cli = store.cli_mut();
+    let session = store.session_mut();
 
     // Wait for no application to be running.
-    wait_for_idle(serial_cli)?;
+    wait_for_idle(session)?;
 
     // Run the FAP.
-    serial_cli.send_and_wait_eol(&format!("loader open {} {}", dest_file, cli.args.join(" ")))?;
+    session.request(
+        0,
+        pb::main::Content::AppStartRequest(pb_app::StartRequest {
+            name: dest_file.to_string(),
+            args: cli.args.join(" "),
+        }),
+        |resp| match resp {
+            pb::main::Content::Empty(_) => Ok(()),
+            r => Err(r),
+        },
+    )?;
 
     // Wait for the FAP to finish.
-    wait_for_idle(serial_cli)?;
+    wait_for_idle(session)?;
 
     // Download and print the output file, if present.
     let output_file = storage::FlipperPath::from("/ext/flipperzero-rs-stdout");
     if store.exist_file(&output_file)? {
         let output = store.read_file(&output_file)?;
         io::stdout().write_all(output.as_ref())?;
-        store.remove(&output_file)?;
+        store.remove(&output_file, false)?;
     }
 
     // Remove the FAP and temporary directory.
     store
-        .remove(&dest_file)
-        .map_err(|e| Error::RemoveFailed(dest_file, e))?;
-    store
-        .remove(&dest_dir)
+        .remove(&dest_dir, true)
         .map_err(|e| Error::RemoveFailed(dest_dir, e))?;
 
     Ok(())
