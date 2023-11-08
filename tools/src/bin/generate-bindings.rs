@@ -164,10 +164,10 @@ fn main() {
     };
 
     // Load SDK compiler flags
-    let sdk_opts = load_sdk_opts(&sdk.join(SDK_OPTS));
+    let sdk_opts = load_sdk_opts(sdk.join(SDK_OPTS));
 
     // Load SDK symbols
-    let symbols = load_symbols(&sdk.join(&replace_sdk_root_dir(&sdk_opts.sdk_symbols)));
+    let symbols = load_symbols(sdk.join(replace_sdk_root_dir(&sdk_opts.sdk_symbols)));
     let bindings_header = generate_bindings_header(&symbols);
 
     // Some of the values are shell-quoted
@@ -190,7 +190,7 @@ fn main() {
         .clang_args(["-working-directory", sdk.as_str()])
         .clang_args(["--system-header-prefix=f7_sdk/"])
         .clang_args(["-isystem", toolchain.as_str()])
-        .clang_args(&cc_flags)
+        .clang_args(cc_flags)
         .clang_arg("-Wno-error")
         .clang_arg("-fshort-enums")
         .clang_arg("-fvisibility=default")
