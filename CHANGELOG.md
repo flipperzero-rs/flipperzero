@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Migrated to SDK 39.1 (firmware 0.92.2).
+- Migrated to SDK 40.1 (firmware 0.94.1).
 
 ## [0.11.0]
 
