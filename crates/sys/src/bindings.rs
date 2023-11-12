@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 2555905;
+pub const API_VERSION: u32 = 2555906;
 pub type wint_t = core::ffi::c_int;
 pub type _off_t = core::ffi::c_long;
 pub type _fpos_t = core::ffi::c_long;
@@ -9303,8 +9303,10 @@ pub struct CcidCallbacks {
     >,
     pub xfr_datablock_callback: ::core::option::Option<
         unsafe extern "C" fn(
-            dataBlock: *mut u8,
-            dataBlockLen: *mut u32,
+            dataBlock: *const u8,
+            dataBlockLen: u32,
+            responseDataBlock: *mut u8,
+            responseDataBlockLen: *mut u32,
             context: *mut core::ffi::c_void,
         ),
     >,
@@ -11166,6 +11168,10 @@ extern "C" {
 extern "C" {
     #[doc = "Gets the size of the file\n\nReturns:\n\n* uint64_t size of the file\n\n# Arguments\n\n* `file` - pointer to file object.\n\n"]
     pub fn storage_file_size(file: *mut File) -> u64;
+}
+extern "C" {
+    #[doc = "Writes file cache to storage\n\nReturns:\n\n* bool success flag\n\n# Arguments\n\n* `file` - pointer to file object.\n\n"]
+    pub fn storage_file_sync(file: *mut File) -> bool;
 }
 extern "C" {
     #[doc = "Checks that the r/w pointer is at the end of the file\n\nReturns:\n\n* bool success flag\n\n# Arguments\n\n* `file` - pointer to file object.\n\n"]
