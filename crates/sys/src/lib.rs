@@ -47,7 +47,7 @@ macro_rules! crash {
             let msg = $crate::c_string!($msg);
             core::arch::asm!("", in("r12") msg, options(nomem, nostack));
 
-            $crate::__furi_crash();
+            $crate::__furi_crash_implementation();
             core::hint::unreachable_unchecked();
         }
     };
