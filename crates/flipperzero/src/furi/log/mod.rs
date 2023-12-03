@@ -45,7 +45,7 @@ macro_rules! log {
         }
     });
 
-    ($lvl:expr, $msg:literal $(, $arg:expr)*) => (
+    ($lvl:expr, $msg:expr $(, $arg:expr)*) => (
         $crate::log!(target: module_path!(), $lvl, $msg $(, $arg)*)
     );
 }

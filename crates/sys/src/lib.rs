@@ -47,7 +47,7 @@ mod bindings;
 /// ```
 #[macro_export]
 macro_rules! crash {
-    ($msg:literal $(,)?) => {{
+    ($msg:expr $(,)?) => {{
         const MESSAGE: *const ::core::primitive::i8 =
             match ::core::ffi::CStr::from_bytes_with_nul(
                 ::core::concat!($msg, "\0").as_bytes(),
