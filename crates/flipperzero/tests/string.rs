@@ -280,10 +280,10 @@ mod tests {
         assert_eq!(s, "");
 
         let mut s = String::from("12345");
-        let p = s.as_c_str().as_ptr();
+        let p = s.as_c_ptr();
         s.truncate(3);
         s.push_str("6");
-        let p_ = s.as_c_str().as_ptr();
+        let p_ = s.as_c_ptr();
         assert_eq!(p_, p);
     }
 

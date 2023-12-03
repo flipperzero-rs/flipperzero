@@ -4,19 +4,18 @@
 #![no_std]
 #![no_main]
 
-use core::ffi::{c_char, c_void};
+use core::ffi::{c_void};
 use core::mem::{self, MaybeUninit};
 
 use flipperzero_rt as rt;
 use flipperzero_sys as sys;
+use flipperzero_sys::furi::UnsafeRecord;
 
 // Required for allocator
 extern crate flipperzero_alloc;
 
 rt::manifest!(name = "Example: Images");
 rt::entry!(main);
-
-const RECORD_GUI: *const c_char = sys::c_string!("gui");
 
 static mut TARGET_ICON: Icon = Icon {
     width: 48,
@@ -84,18 +83,15 @@ fn main(_args: *mut u8) -> i32 {
         );
 
         // Register view port in GUI
-        let gui = sys::furi_record_open(RECORD_GUI) as *mut sys::Gui;
-        sys::gui_add_view_port(gui, view_port, sys::GuiLayer_GuiLayerFullscreen);
+        let gui = UnsafeRecord::open(c"gui".as_ptr());
+        sys::gui_add_view_port(gui.as_ptr(), view_port, sys::GuiLayer_GuiLayerFullscreen);
 
         let mut event: MaybeUninit<sys::InputEvent> = MaybeUninit::uninit();
 
         let mut running = true;
         while running {
-            if sys::furi_message_queue_get(
-                event_queue,
-                event.as_mut_ptr() as *mut sys::InputEvent as *mut c_void,
-                100,
-            ) == sys::FuriStatus_FuriStatusOk
+            if sys::furi_message_queue_get(event_queue, event.as_mut_ptr() as *mut c_void, 100)
+                == sys::FuriStatus_FuriStatusOk
             {
                 let event = event.assume_init();
                 if event.type_ == sys::InputType_InputTypePress
@@ -114,11 +110,9 @@ fn main(_args: *mut u8) -> i32 {
         }
 
         sys::view_port_enabled_set(view_port, false);
-        sys::gui_remove_view_port(gui, view_port);
+        sys::gui_remove_view_port(gui.as_ptr(), view_port);
         sys::view_port_free(view_port);
         sys::furi_message_queue_free(event_queue);
-
-        sys::furi_record_close(RECORD_GUI);
     }
 
     0

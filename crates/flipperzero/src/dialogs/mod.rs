@@ -3,12 +3,12 @@
 #[cfg(feature = "alloc")]
 use alloc::ffi::CString;
 
-use core::ffi::{c_char, c_void, CStr};
+use core::ffi::{c_void, CStr};
 use core::marker::PhantomData;
 use core::ptr::{self, NonNull};
 
 use flipperzero_sys as sys;
-use sys::{c_string, furi::UnsafeRecord};
+use sys::{furi::UnsafeRecord};
 
 use crate::furi::string::FuriString;
 use crate::gui::canvas::Align;
@@ -39,12 +39,10 @@ pub enum DialogMessageButton {
 }
 
 impl DialogsApp {
-    const RECORD_DIALOGS: *const c_char = sys::c_string!("dialogs");
-
     /// Obtains a handle to the Dialogs app.
     pub fn open() -> Self {
         Self {
-            data: unsafe { UnsafeRecord::open(Self::RECORD_DIALOGS) },
+            data: unsafe { UnsafeRecord::open(c"dialogs".as_ptr()) },
         }
     }
 
@@ -212,7 +210,7 @@ impl<'a> DialogFileBrowserOptions<'a> {
         Self {
             // default values from sys::dialog_file_browser_set_basic_options()
             data: sys::DialogsFileBrowserOptions {
-                extension: c_string!("*"),
+                extension: c"*".as_ptr(),
                 base_path: ptr::null(),
                 skip_assets: true,
                 hide_dot_files: false,

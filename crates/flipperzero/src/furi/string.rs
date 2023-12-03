@@ -74,17 +74,23 @@ impl FuriString {
         s
     }
 
+    /// Extracts a pointer to a raw zero-terminated string
+    /// containing the entire string slice.
     #[inline]
     #[must_use]
-    fn as_c_ptr(&self) -> *const c_char {
-        unsafe { sys::furi_string_get_cstr(self.0.as_ptr()) }
+    pub fn as_c_ptr(&self) -> *const c_char {
+        let ptr = self.0.as_ptr();
+        // SAFETY: raw pointer is valid
+        unsafe { sys::furi_string_get_cstr(ptr) }
     }
 
     /// Extracts a `CStr` containing the entire string slice, with nul termination.
     #[inline]
     #[must_use]
     pub fn as_c_str(&self) -> &CStr {
-        unsafe { CStr::from_ptr(self.as_c_ptr()) }
+        let c_ptr = self.as_c_ptr();
+        // SAFETY: `c_ptr` has just been extracted from a valid `FuriString`
+        unsafe { CStr::from_ptr(c_ptr) }
     }
 
     /// Raw pointer to the inner sys::FuriString

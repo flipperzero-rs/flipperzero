@@ -65,14 +65,12 @@ impl ufmt::uDisplay for TestFailure {
 }
 
 pub mod __macro_support {
-    use core::ffi::{c_char, CStr};
+    use core::ffi::{CStr};
 
     use flipperzero_sys as sys;
     use sys::furi::UnsafeRecord;
 
     use crate::TestFn;
-
-    const RECORD_STORAGE: *const c_char = sys::c_string!("storage");
 
     pub struct Args<'a>(&'a str);
 
@@ -156,7 +154,7 @@ pub mod __macro_support {
             unsafe {
                 sys::storage_file_open(
                     output_file,
-                    sys::c_string!("/ext/flipperzero-rs-stdout"),
+                    c"/ext/flipperzero-rs-stdout".as_ptr(),
                     sys::FS_AccessMode_FSAM_WRITE,
                     sys::FS_OpenMode_FSOM_CREATE_ALWAYS,
                 );
@@ -189,7 +187,8 @@ pub mod __macro_support {
         tests: impl Iterator<Item = (&'static str, &'static str, TestFn)> + Clone,
         args: Args<'_>,
     ) -> Result<(), i32> {
-        let storage: UnsafeRecord<sys::Storage> = unsafe { UnsafeRecord::open(RECORD_STORAGE) };
+        let storage: UnsafeRecord<sys::Storage> =
+            unsafe { UnsafeRecord::open(c"storage".as_ptr()) };
         let mut output_file = OutputFile::new(&storage);
 
         #[inline]
