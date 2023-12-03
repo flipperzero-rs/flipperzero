@@ -42,7 +42,6 @@ fn main(_args: *mut u8) -> i32 {
 
     // Next, we'll open a file browser dialog and let the user select the file.
     let mut dialogs_app = DialogsApp::open();
-
     let file_browser_options = DialogFileBrowserOptions::new().set_hide_ext(false);
     let mut start_path = FuriString::from(path);
     let result_path =

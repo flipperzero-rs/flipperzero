@@ -174,14 +174,13 @@ impl Drop for File {
 
 impl Read for File {
     fn read(&mut self, buf: &mut [u8]) -> Result<usize, Error> {
-        let to_read = buf.len().try_into().map_err(|_| Error::InvalidParameter)?;
         let bytes_read = unsafe {
-            sys::storage_file_read(self.0.as_ptr(), buf.as_mut_ptr() as *mut c_void, to_read)
+            sys::storage_file_read(self.0.as_ptr(), buf.as_mut_ptr() as *mut c_void, buf.len())
         };
         let error = unsafe { sys::storage_file_get_error(self.0.as_ptr()) };
 
         if error == sys::FS_Error_FSE_OK {
-            Ok(bytes_read as usize)
+            Ok(bytes_read)
         } else {
             Err(Error::from_sys(error).unwrap())
         }
@@ -242,14 +241,13 @@ impl Seek for File {
 
 impl Write for File {
     fn write(&mut self, buf: &[u8]) -> Result<usize, Error> {
-        let to_write = buf.len().try_into().map_err(|_| Error::InvalidParameter)?;
         let bytes_written = unsafe {
-            sys::storage_file_write(self.0.as_ptr(), buf.as_ptr() as *mut c_void, to_write)
+            sys::storage_file_write(self.0.as_ptr(), buf.as_ptr() as *mut c_void, buf.len())
         };
         let error = unsafe { sys::storage_file_get_error(self.0.as_ptr()) };
 
         if error == sys::FS_Error_FSE_OK {
-            Ok(bytes_written as usize)
+            Ok(bytes_written)
         } else {
             Err(Error::from_sys(error).unwrap())
         }

@@ -7,18 +7,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
 
-- Migrated to SDK 39.1 (firmware 0.92.2).
+### Added
 
-## [0.12.0]
+- `flipperzero::gpio::i2c`, providing a Rust interface to the external 3.3V I2C
+  bus over GPIO pins C0 and C1, as well as the internal (power) I2C bus.
 
 ### Changed
 
-- `flipperzero::dialogs::DialogFileBrowserOptions` now uses native initialization function
+- Migrated to SDK 46.0 (firmware 0.95.0).
+- `flipperzero::dialogs::DialogFileBrowserOptions` now uses native initialization function.
 - Bumped pinned nightly Rust version to `nightly-2023-12-03`.
-
-### Removed
-
-- `impl Default for flipperzero::dialogs::DialogFileBrowserOptions`
 
 ## [0.11.0]
 
