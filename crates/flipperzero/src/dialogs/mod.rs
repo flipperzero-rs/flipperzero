@@ -95,6 +95,7 @@ impl<'a> DialogMessage<'a> {
     /// Sets the labels of the buttons.
     pub fn set_buttons(
         &mut self,
+        // FIXME: these are unsound for non-UTF8 string
         left: Option<&'a CStr>,
         center: Option<&'a CStr>,
         right: Option<&'a CStr>,
@@ -298,7 +299,7 @@ pub fn alert(text: &str) {
     let mut message = DialogMessage::new();
 
     message.set_text(&text, 0, 0, Align::Left, Align::Top);
-    message.set_buttons(None, Some(c"OK\0"), None);
+    message.set_buttons(None, Some(c"OK"), None);
 
     dialogs.show_message(&message);
 }

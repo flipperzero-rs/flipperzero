@@ -587,6 +587,7 @@ impl<'a> Extend<&'a str> for FuriString {
     }
 }
 
+// FIXME: this is unsound for non-UTF8 string
 impl<'a> Extend<&'a CStr> for FuriString {
     fn extend<T: IntoIterator<Item = &'a CStr>>(&mut self, iter: T) {
         iter.into_iter().for_each(move |s| self.push_c_str(s));
