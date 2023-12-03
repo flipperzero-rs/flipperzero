@@ -1,7 +1,5 @@
 //! Interact with your Dolphin!
 
-
-
 use flipperzero_sys::{self as sys, furi::UnsafeRecord};
 
 pub use sys::DolphinStats as Stats;

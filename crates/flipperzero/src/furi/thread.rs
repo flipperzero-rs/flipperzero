@@ -87,6 +87,7 @@ impl Builder {
             stack_size,
             heap_trace_enabled,
         } = self;
+        #[allow(clippy::arc_with_non_send_sync)] // TODO: is using `Arc` neccessary/sound here?
         let thread = Arc::new(Thread::new(name, stack_size, heap_trace_enabled));
 
         // We need to box twice because trait objects are fat pointers, so we need the

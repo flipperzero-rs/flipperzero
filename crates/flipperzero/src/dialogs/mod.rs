@@ -8,7 +8,7 @@ use core::marker::PhantomData;
 use core::ptr::{self, NonNull};
 
 use flipperzero_sys as sys;
-use sys::{furi::UnsafeRecord};
+use sys::furi::UnsafeRecord;
 
 use crate::furi::string::FuriString;
 use crate::gui::canvas::Align;

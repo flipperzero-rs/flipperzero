@@ -2,8 +2,6 @@
 
 use bitflags::bitflags;
 
-
-
 use flipperzero_sys as sys;
 use flipperzero_sys::furi::UnsafeRecord;
 
