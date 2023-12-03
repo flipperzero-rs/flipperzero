@@ -9,6 +9,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Migrated to SDK 39.1 (firmware 0.92.2).
 
+## [0.12.0]
+
+### Changed
+
+- `flipperzero::dialogs::DialogFileBrowserOptions` now uses native initialization function
+- Bumped pinned nightly Rust version to `nightly-2023-12-03`.
+
+### Removed
+
+- `impl Default for flipperzero::dialogs::DialogFileBrowserOptions`
+
 ## [0.11.0]
 
 ### Added
@@ -16,7 +27,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `flipperzero::furi::time::{Duration, Instant}` implementations.
 - `impl Default for flipperzero::dialogs::DialogMessage`
 - `impl Default for flipperzero::toolbox::Crc32`
-- `flipperzero_sys::cstr`
 - `flipperzero::dialogs::DialogFileBrowserOptions`
 
 ### Changed

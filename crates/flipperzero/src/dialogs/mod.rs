@@ -210,8 +210,7 @@ impl<'a> DialogFileBrowserOptions<'a> {
     ///
     /// ```
     /// # use flipperzero::dialogs::DialogFileBrowserOptions;
-    /// # use flipperzero_sys::cstr;
-    /// let options = DialogFileBrowserOptions::new(cstr!("*"));
+    /// let options = DialogFileBrowserOptions::new(c"*");
     /// ```
     ///
     /// ## Lifetime covariance:
