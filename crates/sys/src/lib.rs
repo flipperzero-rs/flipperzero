@@ -29,18 +29,12 @@ mod inlines;
 )]
 mod bindings;
 
-/// Create a static C string of type [`&'static CStr`][`core::ffi::CStr`].
+/// Create a static C string.
 /// Will automatically add a NUL terminator.
-pub use cstr::cstr;
-
-/// Create a static C string of type [`*const c_char`][core::ffi::c_char]
-/// referring to a `'static` string.
-/// Will automatically add a NUL terminator.
-// TODO: don't produce intermediate `CStr` whose `length` part we don't use
 #[macro_export]
 macro_rules! c_string {
     ($str:expr $(,)?) => {{
-        $crate::cstr!($str).as_ptr()
+        concat!($str, "\0").as_ptr() as *const core::ffi::c_char
     }};
 }
 
@@ -53,7 +47,7 @@ macro_rules! crash {
             let msg = $crate::c_string!($msg);
             core::arch::asm!("", in("r12") msg, options(nomem, nostack));
 
-            $crate::__furi_crash();
+            $crate::__furi_crash_implementation();
             core::hint::unreachable_unchecked();
         }
     };

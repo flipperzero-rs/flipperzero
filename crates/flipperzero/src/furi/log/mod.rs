@@ -22,39 +22,24 @@ pub use metadata::{Level, LevelFilter};
 /// ```
 #[macro_export]
 macro_rules! log {
-    (target: $target:literal, $lvl:expr, $msg:literal $(, $arg:expr)*) => ({
-        $crate::log!(@unsafe {
-            target: $crate::__macro_support::__sys::c_string!($target),
-            $lvl, $msg $(, $arg)*
-        })
-    });
-
-    ($lvl:expr, $msg:literal $(, $arg:expr)*) => (
-        $crate::log!(@unsafe {
-            target: concat!(module_path!(), "\0").as_ptr() as *const core::ffi::c_char,
-            $lvl, $msg $(, $arg)*
-        })
-    );
-
-    (@unsafe {
-        target: $target_cstr_ptr:expr,
-        $lvl:expr, $msg:literal $(, $arg:expr)*
-    }) => ({
+    (target: $target:expr, $lvl:expr, $msg:expr $(, $arg:expr)*) => ({
         if $lvl <= $crate::furi::log::LevelFilter::current() {
             let mut buf = $crate::__macro_support::FuriString::new();
             $crate::__macro_support::ufmt::uwrite!(&mut buf, $msg $(, $arg)*)
                 .expect("can append to FuriString");
-            // SAFETY: `$target_cstr_ptr` should be a valid pointer
-            //  and `buf` has just been created safely
             unsafe {
                 $crate::__macro_support::__sys::furi_log_print_format(
                     $crate::__macro_support::__level_to_furi($lvl),
-                    $target_cstr_ptr,
+                    $crate::__macro_support::__sys::c_string!($target),
                     buf.as_c_str().as_ptr(),
                 );
             }
         }
-    })
+    });
+
+    ($lvl:expr, $msg:expr $(, $arg:expr)*) => (
+        $crate::log!(target: module_path!(), $lvl, $msg $(, $arg)*)
+    );
 }
 
 /// Logs a message at the error level.
@@ -74,11 +59,11 @@ macro_rules! log {
 /// ```
 #[macro_export]
 macro_rules! error {
-    (target: $target:expr, $msg:literal $(, $arg:expr)*) => (
+    (target: $target:expr, $msg:expr $(, $arg:expr)*) => (
         $crate::log!(target: $target, $crate::furi::log::Level::ERROR, $msg $(, $arg)*)
     );
 
-    ($msg:literal $(, $arg:expr)*) => (
+    ($msg:expr $(, $arg:expr)*) => (
         $crate::log!($crate::furi::log::Level::ERROR, $msg $(, $arg)*)
     );
 }
@@ -99,11 +84,11 @@ macro_rules! error {
 /// ```
 #[macro_export]
 macro_rules! warn {
-    (target: $target:expr, $msg:literal $(, $arg:expr)*) => (
+    (target: $target:expr, $msg:expr $(, $arg:expr)*) => (
         $crate::log!(target: $target, $crate::furi::log::Level::WARN, $msg $(, $arg)*)
     );
 
-    ($msg:literal $(, $arg:expr)*) => (
+    ($msg:expr $(, $arg:expr)*) => (
         $crate::log!($crate::furi::log::Level::WARN, $msg $(, $arg)*)
     );
 }
@@ -124,11 +109,11 @@ macro_rules! warn {
 /// ```
 #[macro_export]
 macro_rules! info {
-    (target: $target:expr, $msg:literal $(, $arg:expr)*) => (
+    (target: $target:expr, $msg:expr $(, $arg:expr)*) => (
         $crate::log!(target: $target, $crate::furi::log::Level::INFO, $msg $(, $arg)*)
     );
 
-    ($msg:literal $(, $arg:expr)*) => (
+    ($msg:expr $(, $arg:expr)*) => (
         $crate::log!($crate::furi::log::Level::INFO, $msg $(, $arg)*)
     );
 }
@@ -149,11 +134,11 @@ macro_rules! info {
 /// ```
 #[macro_export]
 macro_rules! debug {
-    (target: $target:expr, $msg:literal $(, $arg:expr)*) => (
+    (target: $target:expr, $msg:expr $(, $arg:expr)*) => (
         $crate::log!(target: $target, $crate::furi::log::Level::DEBUG, $msg $(, $arg)*)
     );
 
-    ($msg:literal $(, $arg:expr)*) => (
+    ($msg:expr $(, $arg:expr)*) => (
         $crate::log!($crate::furi::log::Level::DEBUG, $msg $(, $arg)*)
     );
 }
@@ -174,11 +159,11 @@ macro_rules! debug {
 /// ```
 #[macro_export]
 macro_rules! trace {
-    (target: $target:expr, $msg:literal $(, $arg:expr)*) => (
+    (target: $target:expr, $msg:expr $(, $arg:expr)*) => (
         $crate::log!(target: $target, $crate::furi::log::Level::TRACE, $msg $(, $arg)*)
     );
 
-    ($msg:literal $(, $arg:expr)*) => (
+    ($msg:expr $(, $arg:expr)*) => (
         $crate::log!($crate::furi::log::Level::TRACE, $msg $(, $arg)*)
     );
 }

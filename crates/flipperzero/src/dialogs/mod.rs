@@ -201,8 +201,27 @@ impl DialogMessageButton {
     }
 }
 
+impl<'a> Default for DialogFileBrowserOptions<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<'a> DialogFileBrowserOptions<'a> {
+    pub fn new() -> Self {
+        // SAFETY: the string is a valid UTF-8
+        unsafe { Self::with_extension(c"*") }
+    }
+
     /// Creates a new dialog file browser options and initializes to default values.
+    ///
+    /// # Safety
+    ///
+    /// `extension` should be a valid UTF-8 string
+    ///
+    /// # Compatibility
+    ///
+    /// This function's signature may change in the future to make it safe.
     ///
     /// # Examples
     ///
@@ -221,14 +240,14 @@ impl<'a> DialogFileBrowserOptions<'a> {
     /// ```
     /// # use core::ffi::CStr;
     /// # use flipperzero::dialogs::DialogFileBrowserOptions;
-    /// # use flipperzero_sys::{cstr, DialogsFileBrowserOptions};
     /// // has `'static` lifetime
-    /// const EXTENSION: &CStr = cstr!("*");
+    /// const EXTENSION: &CStr = c"txt";
     /// // has "local" lifetime, aka `'a`
     /// let base_path_bytes = [b'/', b'r', b'o', b'o', b't'];
     /// let base_path = CStr::from_bytes_with_nul(&base_path_bytes).unwrap();
     /// // the most appropriate lifetime `'a` is used
-    /// let mut options = DialogFileBrowserOptions::new(EXTENSION)
+    /// // SAFETY: `EXTENSION` is a valid UTF-8 string
+    /// let mut options = unsafe { DialogFileBrowserOptions::new(EXTENSION) }
     ///     .set_base_path(base_path);
     /// ```
     ///
@@ -239,14 +258,15 @@ impl<'a> DialogFileBrowserOptions<'a> {
     /// # use flipperzero::dialogs::DialogFileBrowserOptions;
     /// # use flipperzero_sys::{cstr, DialogsFileBrowserOptions};
     /// const EXTENSION: &CStr = cstr!("*");
-    /// let mut options = DialogFileBrowserOptions::new(EXTENSION);
+    /// // SAFETY: `EXTENSION` is a valid UTF-8 string
+    /// let mut options = unsafe { DialogFileBrowserOptions::new(EXTENSION) };
     /// {
     ///     let base_path_bytes = [b'/', b'r', b'o', b'o', b't'];
     ///     let base_path = CStr::from_bytes_with_nul(&base_path_bytes).unwrap();
     ///     options = options.set_base_path(base_path);
     /// }
     /// ```
-    pub fn new(extension: &'a CStr) -> Self {
+    pub unsafe fn with_extension(extension: &'a CStr) -> Self {
         let mut options = MaybeUninit::<sys::DialogsFileBrowserOptions>::uninit();
         let uninit_options = options.as_mut_ptr();
         let extension = extension.as_ptr();
@@ -267,7 +287,15 @@ impl<'a> DialogFileBrowserOptions<'a> {
     }
 
     /// Set file extension to be offered for selection.
-    pub fn set_extension(mut self, extension: &'a CStr) -> Self {
+    ///
+    /// # Safety
+    ///
+    /// `extension` should be a valid UTF-8 string
+    ///
+    /// # Compatibility
+    ///
+    /// This function's signature may change in the future to make it safe.
+    pub unsafe fn set_extension(mut self, extension: &'a CStr) -> Self {
         self.data.extension = extension.as_ptr();
         self
     }

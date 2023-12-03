@@ -23,7 +23,6 @@ flipperzero-sys = { path = "sys", version = "0.11.0" }
 flipperzero-rt = { path = "rt", version = "0.11.0" }
 flipperzero-alloc = { path = "alloc", version = "0.11.0" }
 flipperzero-test = { path = "test", version = "0.11.0" }
-cstr = "0.2.11"
 ufmt = "0.2.0"
 document-features = "0.2.0"
 
