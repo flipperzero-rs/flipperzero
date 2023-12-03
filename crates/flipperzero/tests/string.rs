@@ -2658,7 +2658,7 @@ mod str_tests {
                 #[allow(unused_imports)]
                 mod $name {
                     use std::str::pattern::SearchStep::{Match, Reject};
-                    use super::{cmp_search_to_vec};
+                    use super::cmp_search_to_vec;
                     #[test]
                     fn fwd() {
                         cmp_search_to_vec(false, $p, $h, vec![$($e),*]);

@@ -65,7 +65,7 @@ impl ufmt::uDisplay for TestFailure {
 }
 
 pub mod __macro_support {
-    use core::ffi::{CStr};
+    use core::ffi::CStr;
 
     use flipperzero_sys as sys;
     use sys::furi::UnsafeRecord;

@@ -4,7 +4,7 @@
 #![no_std]
 #![no_main]
 
-use core::ffi::{c_void};
+use core::ffi::c_void;
 use core::mem::{self, MaybeUninit};
 
 use flipperzero_rt as rt;
