@@ -53,7 +53,7 @@ macro_rules! crash {
                 ::core::concat!($msg, "\0").as_bytes(),
             ) {
                 Ok(cstr) => cstr.as_ptr(),
-                Err(error) => panic!("crash contains zeros (`\\0`)"),
+                Err(error) => panic!("message contains NULs"),
             };
         unsafe {
             // Crash message is passed via r12

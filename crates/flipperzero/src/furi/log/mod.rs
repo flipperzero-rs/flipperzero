@@ -30,7 +30,7 @@ macro_rules! log {
                     ::core::concat!($target, "\0").as_bytes(),
                 ) {
                     Ok(cstr) => cstr.as_ptr(),
-                    Err(error) => panic!("crash contains zeros (`\\0`)"),
+                    Err(error) => panic!("target contains NULs"),
                 };
 
             let mut buf = $crate::__macro_support::FuriString::new();
