@@ -29,13 +29,13 @@ fn main(_args: *mut u8) -> i32 {
 
     message.set_header(c"Make your move!", 0, 0, Align::Left, Align::Top);
     message.set_text(
-        c"Choose one of the following:\0",
+        c"Choose one of the following:",
         0,
         26,
         Align::Left,
         Align::Top,
     );
-    message.set_buttons(Some(c"Rock\0"), Some(c"Paper\0"), Some(c"Scissor\0"));
+    message.set_buttons(Some(c"Rock"), Some(c"Paper"), Some(c"Scissor"));
 
     let button = dialogs.show_message(&message);
 
