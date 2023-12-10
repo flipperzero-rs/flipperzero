@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Migrated to SDK 46.0 (firmware 0.95.0).
-- Bumped pinned nightly Rust version to `nightly-2023-12-03`.
+- Bumped pinned nightly Rust version to `nightly-2023-12-09`.
 
 ### Removed
 
