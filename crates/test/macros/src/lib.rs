@@ -131,13 +131,26 @@ fn tests_runner_impl(args: TokenStream) -> parse::Result<TokenStream> {
             }
 
             // Test runner entry point
-            fn main(args: Option<&::core::ffi::CStr>) -> i32 {
+            pub(super) fn main(args: Option<&::core::ffi::CStr>) -> i32 {
                 let args = ::flipperzero_test::__macro_support::Args::parse(args);
                 match ::flipperzero_test::__macro_support::run_tests(test_count(), test_list(), args) {
                     Ok(()) => 0,
                     Err(e) => e,
                 }
             }
+        }
+
+        #[cfg(all(test, miri))]
+        #[start]
+        fn main(argc: isize, argv: *const *const u8) -> isize {
+            // TODO: Is there any benefit to Miri in hooking up the binary arguments to
+            // the test runner?
+            let ret = __test_runner::main(None);
+
+            // Clean up app state.
+            ::flipperzero_rt::__macro_support::__wait_for_thread_completion();
+
+            ret.try_into().unwrap_or(isize::MAX)
         }
     )
     .into())

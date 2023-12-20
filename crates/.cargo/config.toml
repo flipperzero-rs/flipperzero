@@ -1,6 +1,10 @@
+# Equivalent to [target.thumbv7em-none-eabihf] but also disabing the runner for Miri.
+# Until target_abi is stable, this also permits thumbv7em-none-eabi.
+[target.'cfg(all(target_arch = "arm", target_feature = "thumb2", target_feature = "v7", target_feature = "dsp", target_os = "none", not(miri)))']
+runner = "python3 ../cargo-runner.py"
+
 [target.thumbv7em-none-eabihf]
 linker = "./fap-lld.py"
-runner = "python3 ../cargo-runner.py"
 rustflags = [
     # CPU is Cortex-M4 (STM32WB55)
     "-C", "target-cpu=cortex-m4",
