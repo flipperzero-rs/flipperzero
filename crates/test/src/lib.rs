@@ -173,12 +173,12 @@ pub mod __macro_support {
             let mut buf = s.as_bytes();
             while !buf.is_empty() {
                 let written = unsafe {
-                    sys::storage_file_write(self.0, s.as_bytes().as_ptr().cast(), s.len() as u16)
+                    sys::storage_file_write(self.0, s.as_bytes().as_ptr().cast(), s.len())
                 };
                 if written == 0 {
                     return Err(1); // TODO
                 }
-                buf = &buf[written as usize..];
+                buf = &buf[written..];
             }
             Ok(())
         }

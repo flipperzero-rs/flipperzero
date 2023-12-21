@@ -22,6 +22,7 @@ pub mod dialogs;
 #[cfg_attr(docsrs, doc(cfg(feature = "service-dolphin")))]
 pub mod dolphin;
 pub mod furi;
+pub mod gpio;
 #[cfg(feature = "service-gui")]
 #[cfg_attr(docsrs, doc(cfg(feature = "service-gui")))]
 pub mod gui;
@@ -81,6 +82,7 @@ flipperzero_test::tests_runner!(
         crate::furi::string::tests,
         crate::furi::sync::tests,
         crate::furi::time::tests,
+        crate::gpio::i2c::tests,
         crate::toolbox::crc32::tests,
         crate::toolbox::md5::tests,
         crate::toolbox::sha256::tests,
