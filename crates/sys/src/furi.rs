@@ -2,13 +2,14 @@
 
 use core::ffi::c_char;
 use core::fmt::Display;
+use core::ptr::NonNull;
 use core::time::Duration;
 
 /// Operation status.
 /// The Furi API switches between using `enum FuriStatus`, `int32_t` and `uint32_t`.
 /// Since these all use the same bit representation, we can just "cast" the returns to this type.
 #[repr(transparent)]
-#[derive(Clone, Copy, Debug, ufmt::derive::uDebug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Ord, PartialOrd, ufmt::derive::uDebug)]
 pub struct Status(pub i32);
 
 impl Status {
@@ -94,35 +95,40 @@ impl From<i32> for Status {
 /// Low-level wrapper of a record handle.
 pub struct UnsafeRecord<T> {
     name: *const c_char,
-    data: *mut T,
+    data: NonNull<T>,
 }
 
 impl<T> UnsafeRecord<T> {
     /// Opens a record.
     ///
-    /// Safety: The caller must ensure that `record_name` lives for the
-    /// duration of the object lifetime.
-    ///
     /// # Safety
     ///
-    /// The caller must provide a valid C-string `name`.
+    /// The caller must ensure that `record_name` lives for the
+    /// duration of the object lifetime and that it is a valid C-string.
     pub unsafe fn open(name: *const c_char) -> Self {
-        Self {
-            name,
-            data: crate::furi_record_open(name) as *mut T,
-        }
+        // SAFETY: the created pointer is guaranteed to be valid
+        let data = unsafe { crate::furi_record_open(name) } as *mut T;
+        // SAFETY: the created pointer is guaranteed to be non-null
+        let data = unsafe { NonNull::new_unchecked(data) };
+        Self { name, data }
     }
 
     /// Returns the record data as a raw pointer.
+    pub fn as_raw(&self) -> *mut T {
+        self.data.as_ptr()
+    }
+
+    #[deprecated = "use `as_raw(&self)` instead"]
     pub fn as_ptr(&self) -> *mut T {
-        self.data
+        self.as_raw()
     }
 }
 
 impl<T> Drop for UnsafeRecord<T> {
     fn drop(&mut self) {
         unsafe {
-            // decrement the holders count
+            // SAFETY: `self.name` is valid since it was used to construct this istance
+            // and ownership has not been taken
             crate::furi_record_close(self.name);
         }
     }

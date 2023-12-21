@@ -37,18 +37,19 @@ impl NotificationService {
 
     /// Runs a notification sequence.
     ///
-    /// #Safety
+    /// # Safety
+    ///
     /// Due to how rust interacts with the firmware this function is not safe to use at any time
     /// where the application might exit directly afterwards as the rust runtime will free the
     /// sequence before the firmware has finished reading it. At any time where this is an issue
     /// `notify_blocking` should be used instead..
     pub fn notify(&mut self, sequence: &'static NotificationSequence) {
-        unsafe { sys::notification_message(self.data.as_ptr(), sequence.to_sys()) };
+        unsafe { sys::notification_message(self.data.as_raw(), sequence.to_sys()) };
     }
 
     /// Runs a notification sequence and blocks the thread.
     pub fn notify_blocking(&mut self, sequence: &'static NotificationSequence) {
-        unsafe { sys::notification_message_block(self.data.as_ptr(), sequence.to_sys()) };
+        unsafe { sys::notification_message_block(self.data.as_raw(), sequence.to_sys()) };
     }
 }
 

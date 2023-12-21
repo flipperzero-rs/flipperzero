@@ -152,7 +152,7 @@ pub mod __macro_support {
 
     impl OutputFile {
         fn new(storage: &UnsafeRecord<sys::Storage>) -> Self {
-            let output_file = unsafe { sys::storage_file_alloc(storage.as_ptr()) };
+            let output_file = unsafe { sys::storage_file_alloc(storage.as_raw()) };
             unsafe {
                 sys::storage_file_open(
                     output_file,

@@ -51,7 +51,7 @@ impl DialogsApp {
     /// Displays a message.
     pub fn show_message(&mut self, message: &DialogMessage) -> DialogMessageButton {
         let button_sys =
-            unsafe { sys::dialog_message_show(self.data.as_ptr(), message.data.as_ptr()) };
+            unsafe { sys::dialog_message_show(self.data.as_raw(), message.data.as_ptr()) };
 
         DialogMessageButton::from_sys(button_sys).expect("Invalid button")
     }
@@ -94,6 +94,10 @@ impl<'a> DialogMessage<'a> {
         }
     }
 
+    pub fn as_raw(&self) -> *mut sys::DialogMessage {
+        self.data.as_ptr()
+    }
+
     /// Sets the labels of the buttons.
     pub fn set_buttons(
         &mut self,
@@ -125,8 +129,8 @@ impl<'a> DialogMessage<'a> {
                 header.as_ptr(),
                 x,
                 y,
-                horizontal.to_sys(),
-                vertical.to_sys(),
+                horizontal.into(),
+                vertical.into(),
             );
         }
     }
@@ -139,8 +143,8 @@ impl<'a> DialogMessage<'a> {
                 text.as_ptr(),
                 x,
                 y,
-                horizontal.to_sys(),
-                vertical.to_sys(),
+                horizontal.into(),
+                vertical.into(),
             );
         }
     }
@@ -179,12 +183,6 @@ impl<'a> Drop for DialogMessage<'a> {
         unsafe {
             sys::dialog_message_free(self.data.as_ptr());
         }
-    }
-}
-
-impl<'a> Default for DialogMessage<'a> {
-    fn default() -> Self {
-        Self::new()
     }
 }
 
@@ -277,6 +275,7 @@ impl<'a> DialogFileBrowserOptions<'a> {
 #[cfg(feature = "alloc")]
 #[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 pub fn alert(text: &str) {
+    // SAFETY: string is known to end with NUL
     const BUTTON_OK: &CStr = unsafe { CStr::from_bytes_with_nul_unchecked(b"OK\0") };
 
     let text = CString::new(text.as_bytes()).unwrap();

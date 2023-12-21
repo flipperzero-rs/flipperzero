@@ -155,7 +155,7 @@ impl File {
         unsafe {
             let record = UnsafeRecord::open(RECORD_STORAGE);
             File(
-                NonNull::new_unchecked(sys::storage_file_alloc(record.as_ptr())),
+                NonNull::new_unchecked(sys::storage_file_alloc(record.as_raw())),
                 record,
             )
         }
@@ -166,7 +166,7 @@ impl Drop for File {
     fn drop(&mut self) {
         unsafe {
             // `storage_file_close` calls `storage_file_sync`
-            // internally, so it's not necesssary to call it here.
+            // internally, so it's not necessary to call it here.
             sys::storage_file_close(self.0.as_ptr());
         }
     }

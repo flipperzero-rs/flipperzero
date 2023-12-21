@@ -5,18 +5,17 @@
 #![no_main]
 #![no_std]
 
-extern crate alloc;
-extern crate flipperzero_alloc;
+extern crate flipperzero_alloc as alloc;
 extern crate flipperzero_rt;
 
 use alloc::boxed::Box;
 use core::ffi::{c_char, c_void, CStr};
 use core::ptr::NonNull;
 use flipperzero::furi::string::FuriString;
+use flipperzero::gui::Gui;
 use flipperzero_rt::{entry, manifest};
 use flipperzero_sys as sys;
-
-const RECORD_GUI: *const c_char = sys::c_string!("gui");
+use flipperzero_sys::ViewDispatcher;
 
 manifest!(name = "Rust ViewDispatcher example");
 entry!(main);
@@ -28,7 +27,7 @@ enum AppView {
 
 struct App {
     name: [c_char; 16],
-    view_dispatcher: NonNull<sys::ViewDispatcher>,
+    view_dispatcher: NonNull<ViewDispatcher>,
     widget: NonNull<sys::Widget>,
     text_input: NonNull<sys::TextInput>,
 }
@@ -71,7 +70,7 @@ pub unsafe extern "C" fn text_input_callback(context: *mut c_void) {
 }
 
 pub unsafe extern "C" fn navigation_event_callback(context: *mut c_void) -> bool {
-    let view_dispatcher = context as *mut sys::ViewDispatcher;
+    let view_dispatcher = context as *mut ViewDispatcher;
     sys::view_dispatcher_stop(view_dispatcher);
     sys::view_dispatcher_remove_view(view_dispatcher, AppView::Widget as u32);
     sys::view_dispatcher_remove_view(view_dispatcher, AppView::TextInput as u32);
@@ -103,11 +102,11 @@ fn main(_args: *mut u8) -> i32 {
         );
     }
 
+    let gui = Gui::new();
     unsafe {
-        let gui = sys::furi_record_open(RECORD_GUI) as *mut sys::Gui;
         sys::view_dispatcher_attach_to_gui(
             app.view_dispatcher.as_ptr(),
-            gui,
+            gui.as_raw(),
             sys::ViewDispatcherType_ViewDispatcherTypeFullscreen,
         );
 

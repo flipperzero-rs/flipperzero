@@ -23,6 +23,8 @@ harness = false
 [dependencies]
 flipperzero-sys.workspace = true
 flipperzero-test.workspace = true
+
+# Formatting
 ufmt.workspace = true
 
 # HAL wrappers
@@ -66,8 +68,59 @@ sha2 = { version = "0.10", default-features = false }
 ## ```
 alloc = []
 
+#! ## Service features.
+#!
+#! These enables specific Flipper Service APIs.
+
+## enables all Service APIs
+all-services = [
+    "service-storage",
+    "service-notification",
+    "service-input",
+    "service-gui",
+    "service-dialogs",
+    "service-dolphin",
+]
+## Enables Storage Service APIs.
+service-storage = []
+## Enables Notification Service APIs.
+service-notification = []
+## Enables Input Service APIs.
+service-input = []
+## Enables GUI APIs of Flipper.
+service-gui = ["alloc", "service-input"]
+## Enables Dialogs APIs of Flipper.
+service-dialogs = ["service-gui"]
+## Enables Dolphin APIs of Flipper.
+service-dolphin = []
+
+#! ## Utilities
+#!
+#! These APIs provide extra functionality required for specific use-cases.
+
+## Enables APIs for working with XBM-images.
+xbm = []
+
+#! ## Unstable features
+#!
+#! This features are unstable and are yet a subject to drastic changes.
+#! They may provide experimental APIs, nightly-only features and optimizations etc.
+
+## Enables unstable Rust intrinsics. This requires `nightly` compiler version.
+unstable_intrinsics = []
+## Enables unstable Rust lints on types provided by this crate.
+## This requires `nightly` compiler version.
+unstable_lints = []
+
+# Internal features.
+
+# Enables unstable documentation features.
+# This is only intended to be used by `cargo doc`.
+unstable_docs = []
+
 [[test]]
 name = "dolphin"
+required-features = ["service-dolphin"]
 harness = false
 
 [[test]]
@@ -75,8 +128,28 @@ name = "string"
 harness = false
 
 [[example]]
+name = "storage"
+required-features = ["service-storage"]
+
+[[example]]
+name = "notification"
+required-features = ["service-notification"]
+
+[[example]]
+name = "gui"
+required-features = ["service-gui", "xbm"]
+
+[[example]]
+name = "images"
+required-features = ["service-gui"]
+
+[[example]]
+name = "view_dispatcher"
+required-features = ["service-gui"]
+
+[[example]]
 name = "dialog"
-required-features = ["alloc"]
+required-features = ["service-dialogs", "service-input"]
 
 [[example]]
 name = "threads"

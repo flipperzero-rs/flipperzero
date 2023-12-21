@@ -34,7 +34,7 @@ mod bindings;
 #[macro_export]
 macro_rules! c_string {
     ($str:expr $(,)?) => {{
-        concat!($str, "\0").as_ptr() as *const core::ffi::c_char
+        ::core::concat!($str, "\0").as_ptr() as *const core::ffi::c_char
     }};
 }
 
@@ -45,10 +45,10 @@ macro_rules! crash {
         unsafe {
             // Crash message is passed via r12
             let msg = $crate::c_string!($msg);
-            core::arch::asm!("", in("r12") msg, options(nomem, nostack));
+            ::core::arch::asm!("", in("r12") msg, options(nomem, nostack));
 
             $crate::__furi_crash_implementation();
-            core::hint::unreachable_unchecked();
+            ::core::hint::unreachable_unchecked();
         }
     };
 }

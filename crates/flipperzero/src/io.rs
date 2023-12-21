@@ -1,6 +1,7 @@
 use core::ffi::CStr;
 use core::fmt;
 
+use crate::internals::macros::impl_std_error;
 use flipperzero_sys as sys;
 
 /// Stream and file system related error kinds.
@@ -96,6 +97,8 @@ impl ufmt::uDisplay for Error {
         Ok(())
     }
 }
+
+impl_std_error!(LockError);
 
 /// Trait comparable to `std::Read` for the Flipper Zero API
 pub trait Read {

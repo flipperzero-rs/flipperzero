@@ -27,7 +27,7 @@ impl<M: Sized> MessageQueue<M> {
         }
     }
 
-    // Attempts to add the message to the end of the queue, waiting up to timeout ticks.
+    /// Attempts to add the message to the end of the queue, waiting up to timeout ticks.
     pub fn put(&self, msg: M, timeout: Duration) -> furi::Result<()> {
         let mut msg = core::mem::ManuallyDrop::new(msg);
         let timeout_ticks = duration_to_ticks(timeout);
@@ -44,7 +44,13 @@ impl<M: Sized> MessageQueue<M> {
         status.err_or(())
     }
 
-    // Attempts to read a message from the front of the queue within timeout ticks.
+    /// Attempts to instantly [`put`](Self::put) the message to the end of the queue.
+    #[inline]
+    pub fn put_now(&self, msg: M) -> furi::Result<()> {
+        self.put(msg, Duration::ZERO)
+    }
+
+    /// Attempts to read a message from the front of the queue within timeout ticks.
     pub fn get(&self, timeout: Duration) -> furi::Result<M> {
         let timeout_ticks = duration_to_ticks(timeout);
         let mut out = core::mem::MaybeUninit::<M>::uninit();
@@ -62,6 +68,12 @@ impl<M: Sized> MessageQueue<M> {
         } else {
             Err(status)
         }
+    }
+
+    /// Attempts to instantly [`get`](Self::get) the message from the front of the queue.
+    #[inline]
+    pub fn get_now(&self) -> furi::Result<M> {
+        self.get(Duration::ZERO)
     }
 
     /// Returns the capacity of the queue.

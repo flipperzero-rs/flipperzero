@@ -4,8 +4,14 @@
 #![no_std]
 #![deny(rustdoc::broken_intra_doc_links)]
 
-use core::alloc::{GlobalAlloc, Layout};
-use core::ffi::c_void;
+use core::{
+    alloc::{GlobalAlloc, Layout},
+    ffi::c_void,
+};
+
+extern crate alloc;
+// re-export all items from `alloc` so that the API user can only extern this crate
+pub use alloc::*;
 
 use flipperzero_sys as sys;
 
