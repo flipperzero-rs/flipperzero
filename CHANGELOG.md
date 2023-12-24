@@ -29,6 +29,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Migrated to SDK API 35.0 (firmware 0.89.0).
 - `flipperzero_test::tests` now allows `#[cfg(..)]` attributes on test methods.
 
+### Removed
+
+- `md5` and `sha256` toolbox APIs due to their removal from the firmware API.
+
 ### Documentation
 
 - Feature flags are now documented and the items guarded by them are now annotated.
