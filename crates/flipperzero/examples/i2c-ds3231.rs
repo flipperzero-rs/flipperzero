@@ -12,6 +12,8 @@ extern crate flipperzero_rt;
 #[cfg(feature = "alloc")]
 extern crate flipperzero_alloc;
 
+use core::ffi::CStr;
+
 use flipperzero::{error, furi::time::Duration, gpio::i2c, println};
 use flipperzero_rt::{entry, manifest};
 use ufmt::derive::uDebug;
@@ -61,7 +63,7 @@ impl RtcTime {
     }
 }
 
-fn main(_args: *mut u8) -> i32 {
+fn main(_args: Option<&CStr>) -> i32 {
     let mut bus = i2c::Bus::EXTERNAL.acquire();
     let rtc = i2c::DeviceAddress::new(0x68);
     let timeout = Duration::from_millis(50);

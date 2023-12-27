@@ -9,6 +9,7 @@ extern crate flipperzero_rt;
 // Required for allocator
 extern crate flipperzero_alloc;
 
+use core::ffi::CStr;
 use core::time::Duration;
 
 use flipperzero::{
@@ -24,7 +25,7 @@ manifest!(name = "Rust notification example");
 entry!(main);
 
 // Entry point
-fn main(_args: *mut u8) -> i32 {
+fn main(_args: Option<&CStr>) -> i32 {
     let mut app = NotificationService::open();
 
     // Set the notification LED to different colours

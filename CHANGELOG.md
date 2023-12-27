@@ -15,6 +15,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Migrated to SDK 50.0 (firmware 0.97.1).
+- `flipperzero_rt::entry` macro now requires a function with type signature
+  `fn(Option<&CStr>) -> i32` instead of `fn(*mut u8) -> i32`.
 
 ## [0.11.0]
 

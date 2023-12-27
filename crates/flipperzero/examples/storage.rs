@@ -23,7 +23,7 @@ use flipperzero_rt::{entry, manifest};
 manifest!(name = "Rust storage example");
 entry!(main);
 
-fn main(_args: *mut u8) -> i32 {
+fn main(_args: Option<&CStr>) -> i32 {
     // First, we'll create a file on the SD card and write "Hello, Rust!" to it.
     let path = CStr::from_bytes_with_nul(b"/ext/hello-rust.txt\0").unwrap();
     let file = OpenOptions::new()
