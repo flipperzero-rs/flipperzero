@@ -131,9 +131,8 @@ fn tests_runner_impl(args: TokenStream) -> parse::Result<TokenStream> {
             }
 
             // Test runner entry point
-            fn main(args: *mut u8) -> i32 {
-                // SAFETY: Flipper Zero passes arguments to FAPs as a C string.
-                let args = unsafe { ::flipperzero_test::__macro_support::Args::parse(args) };
+            fn main(args: Option<&::core::ffi::CStr>) -> i32 {
+                let args = ::flipperzero_test::__macro_support::Args::parse(args);
                 match ::flipperzero_test::__macro_support::run_tests(test_count(), test_list(), args) {
                     Ok(()) => 0,
                     Err(e) => e,

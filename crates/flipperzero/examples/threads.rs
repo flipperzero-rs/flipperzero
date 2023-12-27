@@ -13,6 +13,7 @@ extern crate flipperzero_alloc;
 extern crate alloc;
 
 use alloc::borrow::ToOwned;
+use core::ffi::CStr;
 use core::time::Duration;
 
 use flipperzero::{furi::thread, println};
@@ -25,7 +26,7 @@ manifest!(name = "Threads example");
 entry!(main);
 
 // Entry point
-fn main(_args: *mut u8) -> i32 {
+fn main(_args: Option<&CStr>) -> i32 {
     println!("Main app started!");
 
     let first = thread::spawn(|| {

@@ -13,6 +13,7 @@ extern crate flipperzero_rt;
 #[cfg(feature = "alloc")]
 extern crate flipperzero_alloc;
 
+use core::ffi::CStr;
 use core::time::Duration;
 
 use flipperzero::furi::thread::sleep;
@@ -27,7 +28,7 @@ manifest!(name = "Rust GPIO example");
 entry!(main);
 
 // Entry point
-fn main(_args: *mut u8) -> i32 {
+fn main(_args: Option<&CStr>) -> i32 {
     unsafe {
         println!("Configuring pin C0 as output pin");
         sys::furi_hal_gpio_init_simple(&sys::gpio_ext_pc0, sys::GpioMode_GpioModeOutputPushPull);

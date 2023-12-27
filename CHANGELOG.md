@@ -15,6 +15,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Migrated to SDK 50.0 (firmware 0.97.1).
+- `flipperzero_rt::entry` macro now requires a function with type signature
+  `fn(Option<&CStr>) -> i32` instead of `fn(*mut u8) -> i32`.
+
+### Removed
+
+- `flipperzero::toolbox::{Md5, Sha256}` (due to their removal from the Flipper
+  Zero SDK API).
 
 ## [0.11.0]
 
@@ -28,10 +35,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Migrated to SDK API 35.0 (firmware 0.89.0).
 - `flipperzero_test::tests` now allows `#[cfg(..)]` attributes on test methods.
-
-### Removed
-
-- `md5` and `sha256` toolbox APIs due to their removal from the firmware API.
 
 ### Documentation
 

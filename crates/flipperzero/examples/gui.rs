@@ -14,7 +14,7 @@ extern crate flipperzero_rt;
 #[cfg(feature = "alloc")]
 extern crate flipperzero_alloc;
 
-use core::ffi::{c_char, c_void};
+use core::ffi::{c_char, c_void, CStr};
 use core::ptr;
 use core::time::Duration;
 
@@ -36,7 +36,7 @@ pub unsafe extern "C" fn draw_callback(canvas: *mut sys::Canvas, _context: *mut 
     }
 }
 
-fn main(_args: *mut u8) -> i32 {
+fn main(_args: Option<&CStr>) -> i32 {
     // Currently there is no high level GUI bindings,
     // so this all has to be done using the `sys` bindings.
     unsafe {
