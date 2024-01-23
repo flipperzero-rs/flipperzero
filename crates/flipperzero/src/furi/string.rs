@@ -87,10 +87,11 @@ impl FuriString {
         unsafe { CStr::from_ptr(self.as_c_ptr()) }
     }
 
-    /// Raw pointer to the inner sys::FuriString
+    /// Raw pointer to the inner [`sys::FuriString`].
+    /// You must not deallocate, free or otherwise invalidate this pointer otherwise undefined behaviour will result.
     #[inline]
     #[must_use]
-    pub(crate) fn as_mut_ptr(&mut self) -> *mut sys::FuriString {
+    pub fn as_mut_ptr(&mut self) -> *mut sys::FuriString {
         self.0.as_ptr()
     }
 
