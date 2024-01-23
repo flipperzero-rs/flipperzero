@@ -248,7 +248,7 @@ impl NotificationMessage {
         })
     }
 
-    pub const fn force_display_bightness_setting(display_brightness: f32) -> Self {
+    pub const fn force_display_brightness_setting(display_brightness: f32) -> Self {
         Self(sys::NotificationMessage {
             type_:
                 sys::NotificationMessageType_NotificationMessageTypeForceDisplayBrightnessSetting,

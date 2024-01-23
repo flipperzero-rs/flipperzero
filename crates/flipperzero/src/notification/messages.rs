@@ -58,4 +58,4 @@ pub const FORCE_VIBRO_SETTING_ON: NotificationMessage =
 pub const FORCE_VIBRO_SETTING_OFF: NotificationMessage =
     NotificationMessage::force_vibro_setting(false);
 pub const FORCE_DISPLAY_BRIGHTNESS_SETTING_1: NotificationMessage =
-    NotificationMessage::force_display_bightness_setting(1.0);
+    NotificationMessage::force_display_brightness_setting(1.0);
