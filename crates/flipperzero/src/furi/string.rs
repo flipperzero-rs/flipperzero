@@ -7,6 +7,7 @@ use core::{
     ffi::{c_char, CStr},
     fmt::{self, Write},
     hash,
+    mem::ManuallyDrop,
     ops::{Add, AddAssign},
     ptr::{self, NonNull},
 };
@@ -72,6 +73,18 @@ impl FuriString {
         // terminator.
         unsafe { sys::furi_string_reserve(s.0.as_ptr(), capacity + 1) };
         s
+    }
+
+    /// Consume the [`FuriString`] and return the internal [`sys::FuriString`].
+    /// You are responsible for freeing the returned [`sys::FuriString`] using
+    /// [`sys::furi_string_free`] or similar API.
+    #[inline]
+    #[must_use]
+    pub fn into_raw(self) -> NonNull<sys::FuriString> {
+        // Inhibit calling of the `Drop` trait
+        let s = ManuallyDrop::new(self);
+
+        s.0
     }
 
     #[inline]
