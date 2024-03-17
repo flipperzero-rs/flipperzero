@@ -11,6 +11,8 @@ extern crate flipperzero_rt;
 // Required for allocator
 extern crate flipperzero_alloc;
 
+use core::ffi::CStr;
+
 use flipperzero::dialogs::{DialogFileBrowserOptions, DialogsApp};
 use flipperzero::furi::string::FuriString;
 use flipperzero::io::*;
@@ -21,7 +23,7 @@ use flipperzero_rt::{entry, manifest};
 manifest!(name = "Rust storage example");
 entry!(main);
 
-fn main(_args: *mut u8) -> i32 {
+fn main(_args: Option<&CStr>) -> i32 {
     // First, we'll create a file on the SD card and write "Hello, Rust!" to it.
     let path = c"/ext/hello-rust.txt";
     let file = OpenOptions::new()

@@ -4,7 +4,7 @@
 #![no_std]
 #![no_main]
 
-use core::ffi::c_void;
+use core::ffi::{c_void, CStr};
 use core::mem::{self, MaybeUninit};
 
 use flipperzero_rt as rt;
@@ -64,7 +64,7 @@ extern "C" fn app_input_callback(input_event: *mut sys::InputEvent, ctx: *mut c_
     }
 }
 
-fn main(_args: *mut u8) -> i32 {
+fn main(_args: Option<&CStr>) -> i32 {
     unsafe {
         let event_queue = sys::furi_message_queue_alloc(8, mem::size_of::<sys::InputEvent>() as u32)
             as *mut sys::FuriMessageQueue;

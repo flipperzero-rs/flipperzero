@@ -7,6 +7,7 @@ use core::{
     ffi::{c_char, CStr},
     fmt::{self, Write},
     hash,
+    mem::ManuallyDrop,
     ops::{Add, AddAssign},
     ptr::{self, NonNull},
 };
@@ -74,6 +75,18 @@ impl FuriString {
         s
     }
 
+    /// Consume the [`FuriString`] and return the internal [`sys::FuriString`].
+    /// You are responsible for freeing the returned [`sys::FuriString`] using
+    /// [`sys::furi_string_free`] or similar API.
+    #[inline]
+    #[must_use]
+    pub fn into_raw(self) -> NonNull<sys::FuriString> {
+        // Inhibit calling of the `Drop` trait
+        let s = ManuallyDrop::new(self);
+
+        s.0
+    }
+
     /// Extracts a pointer to a raw zero-terminated string
     /// containing the entire string slice.
     #[inline]
@@ -93,10 +106,11 @@ impl FuriString {
         unsafe { CStr::from_ptr(c_ptr) }
     }
 
-    /// Raw pointer to the inner sys::FuriString
+    /// Raw pointer to the inner [`sys::FuriString`].
+    /// You must not deallocate, free or otherwise invalidate this pointer otherwise undefined behaviour will result.
     #[inline]
     #[must_use]
-    pub(crate) fn as_mut_ptr(&mut self) -> *mut sys::FuriString {
+    pub fn as_mut_ptr(&mut self) -> *mut sys::FuriString {
         self.0.as_ptr()
     }
 

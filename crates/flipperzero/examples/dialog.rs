@@ -22,7 +22,7 @@ use flipperzero_rt::{entry, manifest};
 manifest!(name = "Rust dialog example");
 entry!(main);
 
-fn main(_args: *mut u8) -> i32 {
+fn main(_args: Option<&CStr>) -> i32 {
     // To customize the dialog, use the DialogMessage API:
     let mut dialogs = DialogsApp::open();
     let mut message = DialogMessage::new();

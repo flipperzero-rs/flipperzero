@@ -11,14 +11,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `flipperzero::gpio::i2c`, providing a Rust interface to the external 3.3V I2C
   bus over GPIO pins C0 and C1, as well as the internal (power) I2C bus.
+- `flipperzero::furi::string::FuriString::into_raw`, allowing ownership
+  of the string to be able to be handed over to C code.
 
 ### Changed
 
-- Migrated to SDK 46.0 (firmware 0.95.0).
+- Migrated to SDK 50.0 (firmware 0.97.1).
 - Bumped pinned nightly Rust version to `nightly-2023-12-09`.
+- `flipperzero_rt::entry` macro now requires a function with type signature
+  `fn(Option<&CStr>) -> i32` instead of `fn(*mut u8) -> i32`.
+- `flipperzero::furi::string::FuriString::as_mut_ptr` is now public to allow for
+  it to be used with low-level C APIs (e.g. `furi_string_printf`).
 
 ### Removed
 
+- `flipperzero::toolbox::{Md5, Sha256}` (due to their removal from the Flipper
+  Zero SDK API).
 - `flipperzero_sys::c_string!`, since `CStr` literals are stable now
   and the macro did not provide any validations.
 

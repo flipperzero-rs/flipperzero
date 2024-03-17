@@ -64,7 +64,7 @@ flipperzero_test::tests_runner!(
         crate::furi::time::tests,
         crate::gpio::i2c::tests,
         crate::toolbox::crc32::tests,
-        crate::toolbox::md5::tests,
-        crate::toolbox::sha256::tests,
+        // crate::toolbox::md5::tests,
+        // crate::toolbox::sha256::tests,
     ]
 );

@@ -75,39 +75,12 @@ pub mod __macro_support {
     pub struct Args<'a>(&'a str);
 
     impl<'a> Args<'a> {
-        /// Parses test arguments from a raw C string.
-        ///
-        /// The total size of the raw C string must be smaller than `isize::MAX` **bytes**
-        /// in memory due to calling the `slice::from_raw_parts` function.
-        ///
-        /// If the C string does not contain valid UTF-8, it is ignored and the test is
-        /// run without arguments.
-        ///
-        /// # Safety
-        ///
-        /// * The memory pointed to by `ptr` must contain a valid nul terminator at the
-        ///   end of the string.
-        ///
-        /// * `ptr` must be [valid] for reads of bytes up to and including the null
-        ///   terminator. This means in particular that the entire memory range of the C
-        ///   string must be contained within a single allocated object!
-        ///
-        /// * The memory referenced by the returned `CStr` must not be mutated for
-        ///   the duration of lifetime `'a`.
-        ///
-        /// # Caveat
-        ///
-        /// The lifetime for the returned slice is inferred from its usage.
-        ///
-        /// [valid]: core::ptr#safety
-        pub unsafe fn parse(args: *mut u8) -> Self {
-            if args.is_null() {
-                Args("")
-            } else {
-                let args_cstr = unsafe { CStr::from_ptr(args.cast_const().cast()) };
-                let args = args_cstr.to_str().unwrap_or("");
-                Args(args)
-            }
+        /// Parses test arguments from a C string.
+        pub fn parse(args: Option<&'a CStr>) -> Self {
+            let args = args
+                .and_then(|args_cstr| args_cstr.to_str().ok())
+                .unwrap_or("");
+            Args(args)
         }
 
         fn filters(&self) -> Filters<'a> {

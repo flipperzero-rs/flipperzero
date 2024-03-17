@@ -77,7 +77,7 @@ pub unsafe extern "C" fn navigation_event_callback(context: *mut c_void) -> bool
     true
 }
 
-fn main(_args: *mut u8) -> i32 {
+fn main(_args: Option<&CStr>) -> i32 {
     let mut app = App::new();
 
     unsafe {
