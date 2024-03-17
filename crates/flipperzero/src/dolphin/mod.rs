@@ -1,15 +1,11 @@
 //! Interact with your Dolphin!
 
-use core::ffi::c_char;
-
 use flipperzero_sys::{self as sys, furi::UnsafeRecord};
 
 pub use sys::DolphinStats as Stats;
 
 mod deed;
 pub use deed::{App, Deed};
-
-const RECORD_DOLPHIN: *const c_char = sys::c_string!("dolphin");
 
 /// The dolphin in your FlipperZero!
 pub struct Dolphin {
@@ -20,7 +16,7 @@ impl Dolphin {
     /// Obtains a handle to the dolphin.
     pub fn open() -> Self {
         Self {
-            data: unsafe { UnsafeRecord::open(RECORD_DOLPHIN) },
+            data: unsafe { UnsafeRecord::open(c"dolphin".as_ptr()) },
         }
     }
 

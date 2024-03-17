@@ -5,7 +5,7 @@ file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## Unreleased
+## [Unreleased]
 
 ### Added
 
@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Migrated to SDK 58.0 (firmware 0.99.1).
+- Bumped pinned nightly Rust version to `nightly-2023-12-09`.
 - `flipperzero_rt::entry` macro now requires a function with type signature
   `fn(Option<&CStr>) -> i32` instead of `fn(*mut u8) -> i32`.
 - `flipperzero::furi::string::FuriString::as_mut_ptr` is now public to allow for
@@ -26,6 +27,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `flipperzero::toolbox::{Md5, Sha256}` (due to their removal from the Flipper
   Zero SDK API).
+- `flipperzero_sys::c_string!`, since `CStr` literals are stable now
+  and the macro did not provide any validations.
 
 ## [0.11.0]
 
