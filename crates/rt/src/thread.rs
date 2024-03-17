@@ -11,8 +11,8 @@ pub fn wait_for_completion() {
     unsafe {
         sys::furi_log_print_format(
             sys::FuriLogLevel_FuriLogLevelDebug,
-            sys::c_string!("flipperzero-rt"),
-            sys::c_string!("Waiting for FAP threads to complete..."),
+            c"flipperzero-rt".as_ptr(),
+            c"Waiting for FAP threads to complete...".as_ptr(),
         );
     }
 
@@ -58,8 +58,8 @@ pub fn wait_for_completion() {
     unsafe {
         sys::furi_log_print_format(
             sys::FuriLogLevel_FuriLogLevelDebug,
-            sys::c_string!("flipperzero-rt"),
-            sys::c_string!("All FAP threads completed"),
+            c"flipperzero-rt".as_ptr(),
+            c"All FAP threads completed".as_ptr(),
         );
     }
 }

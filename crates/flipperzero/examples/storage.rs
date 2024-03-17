@@ -25,7 +25,7 @@ entry!(main);
 
 fn main(_args: Option<&CStr>) -> i32 {
     // First, we'll create a file on the SD card and write "Hello, Rust!" to it.
-    let path = CStr::from_bytes_with_nul(b"/ext/hello-rust.txt\0").unwrap();
+    let path = c"/ext/hello-rust.txt";
     let file = OpenOptions::new()
         .write(true)
         .create_always(true)

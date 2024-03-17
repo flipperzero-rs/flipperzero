@@ -2,8 +2,6 @@
 
 use bitflags::bitflags;
 
-use core::ffi::c_char;
-
 use flipperzero_sys as sys;
 use flipperzero_sys::furi::UnsafeRecord;
 
@@ -20,8 +18,6 @@ pub mod sounds;
 ///Default vibration notification sequences.
 pub mod vibro;
 
-const RECORD_NOTIFICATION: *const c_char = sys::c_string!("notification");
-
 /// A handle to the Notification service.
 pub struct NotificationService {
     data: UnsafeRecord<sys::NotificationApp>,
@@ -31,7 +27,7 @@ impl NotificationService {
     /// Obtains a handle to the Notifications service.
     pub fn open() -> Self {
         Self {
-            data: unsafe { UnsafeRecord::open(RECORD_NOTIFICATION) },
+            data: unsafe { UnsafeRecord::open(c"notification".as_ptr()) },
         }
     }
 

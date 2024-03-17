@@ -33,7 +33,7 @@ lock_api = "0.4"
 
 # Toolbox
 digest = "0.10"
-bitflags = "1.0"
+bitflags = "2.4"
 
 # Embedded-hal
 embedded-hal = { version = "1.0.0-rc.1", optional = true }

@@ -6,8 +6,6 @@ use flipperzero_sys::furi::UnsafeRecord;
 
 use crate::io::*;
 
-const RECORD_STORAGE: *const c_char = sys::c_string!("storage");
-
 #[derive(Debug, Default, Clone, Copy)]
 pub struct OpenOptions {
     access_mode: u8,
@@ -153,7 +151,7 @@ pub struct File(NonNull<sys::File>, UnsafeRecord<sys::Storage>);
 impl File {
     pub fn new() -> Self {
         unsafe {
-            let record = UnsafeRecord::open(RECORD_STORAGE);
+            let record = UnsafeRecord::open(c"storage".as_ptr());
             File(
                 NonNull::new_unchecked(sys::storage_file_alloc(record.as_ptr())),
                 record,

@@ -1,6 +1,7 @@
 //! Furi Logging system.
 
 pub(crate) mod metadata;
+
 pub use metadata::{Level, LevelFilter};
 
 /// The standard logging macro.
@@ -24,16 +25,23 @@ pub use metadata::{Level, LevelFilter};
 macro_rules! log {
     (target: $target:expr, $lvl:expr, $msg:expr $(, $arg:expr)*) => ({
         if $lvl <= $crate::furi::log::LevelFilter::current() {
+            const TARGET: *const ::core::primitive::i8 =
+                match ::core::ffi::CStr::from_bytes_with_nul(
+                    ::core::concat!($target, "\0").as_bytes(),
+                ) {
+                    Ok(cstr) => cstr.as_ptr(),
+                    Err(error) => panic!("target contains NULs"),
+                };
+
             let mut buf = $crate::__macro_support::FuriString::new();
             $crate::__macro_support::ufmt::uwrite!(&mut buf, $msg $(, $arg)*)
                 .expect("can append to FuriString");
+            // don't pass raw expression to the internal `unsafe` block
+            let lvl = $crate::__macro_support::__level_to_furi($lvl);
+            let buf = buf.as_c_ptr();
             unsafe {
-                $crate::__macro_support::__sys::furi_log_print_format(
-                    $crate::__macro_support::__level_to_furi($lvl),
-                    $crate::__macro_support::__sys::c_string!($target),
-                    buf.as_c_str().as_ptr(),
-                );
-            }
+                $crate::__macro_support::__sys::furi_log_print_format(lvl, TARGET, buf);
+            };
         }
     });
 

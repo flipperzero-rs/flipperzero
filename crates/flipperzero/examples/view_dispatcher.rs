@@ -15,8 +15,7 @@ use core::ptr::NonNull;
 use flipperzero::furi::string::FuriString;
 use flipperzero_rt::{entry, manifest};
 use flipperzero_sys as sys;
-
-const RECORD_GUI: *const c_char = sys::c_string!("gui");
+use flipperzero_sys::furi::UnsafeRecord;
 
 manifest!(name = "Rust ViewDispatcher example");
 entry!(main);
@@ -65,7 +64,7 @@ pub unsafe extern "C" fn text_input_callback(context: *mut c_void) {
         sys::Align_AlignCenter,
         sys::Align_AlignCenter,
         sys::Font_FontPrimary,
-        message.as_c_str().as_ptr(),
+        message.as_c_ptr(),
     );
     sys::view_dispatcher_switch_to_view((*app).view_dispatcher.as_ptr(), AppView::Widget as u32);
 }
@@ -104,15 +103,15 @@ fn main(_args: Option<&CStr>) -> i32 {
     }
 
     unsafe {
-        let gui = sys::furi_record_open(RECORD_GUI) as *mut sys::Gui;
+        let gui = UnsafeRecord::open(c"gui".as_ptr());
         sys::view_dispatcher_attach_to_gui(
             app.view_dispatcher.as_ptr(),
-            gui,
+            gui.as_ptr(),
             sys::ViewDispatcherType_ViewDispatcherTypeFullscreen,
         );
 
         sys::text_input_reset(app.text_input.as_ptr());
-        sys::text_input_set_header_text(app.text_input.as_ptr(), sys::c_string!("Enter your name"));
+        sys::text_input_set_header_text(app.text_input.as_ptr(), c"Enter your name".as_ptr());
 
         sys::text_input_set_result_callback(
             app.text_input.as_ptr(),
