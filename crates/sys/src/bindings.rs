@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 3276800;
+pub const API_VERSION: u32 = 3801088;
 pub type wint_t = core::ffi::c_int;
 pub type __uint_least8_t = core::ffi::c_uchar;
 pub type __uint_least16_t = core::ffi::c_ushort;
@@ -430,132 +430,6 @@ fn bindgen_test_layout___tm() {
             stringify!(__tm),
             "::",
             stringify!(__tm_isdst)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _on_exit_args {
-    pub _fnargs: [*mut core::ffi::c_void; 32usize],
-    pub _dso_handle: [*mut core::ffi::c_void; 32usize],
-    pub _fntypes: __ULong,
-    pub _is_cxa: __ULong,
-}
-#[test]
-fn bindgen_test_layout__on_exit_args() {
-    const UNINIT: ::core::mem::MaybeUninit<_on_exit_args> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<_on_exit_args>(),
-        264usize,
-        concat!("Size of: ", stringify!(_on_exit_args))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<_on_exit_args>(),
-        4usize,
-        concat!("Alignment of ", stringify!(_on_exit_args))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._fnargs) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_on_exit_args),
-            "::",
-            stringify!(_fnargs)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._dso_handle) as usize - ptr as usize },
-        128usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_on_exit_args),
-            "::",
-            stringify!(_dso_handle)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._fntypes) as usize - ptr as usize },
-        256usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_on_exit_args),
-            "::",
-            stringify!(_fntypes)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._is_cxa) as usize - ptr as usize },
-        260usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_on_exit_args),
-            "::",
-            stringify!(_is_cxa)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _atexit {
-    pub _next: *mut _atexit,
-    pub _ind: core::ffi::c_int,
-    pub _fns: [::core::option::Option<unsafe extern "C" fn()>; 32usize],
-    pub _on_exit_args: _on_exit_args,
-}
-#[test]
-fn bindgen_test_layout__atexit() {
-    const UNINIT: ::core::mem::MaybeUninit<_atexit> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<_atexit>(),
-        400usize,
-        concat!("Size of: ", stringify!(_atexit))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<_atexit>(),
-        4usize,
-        concat!("Alignment of ", stringify!(_atexit))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._next) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_atexit),
-            "::",
-            stringify!(_next)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._ind) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_atexit),
-            "::",
-            stringify!(_ind)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._fns) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_atexit),
-            "::",
-            stringify!(_fns)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._on_exit_args) as usize - ptr as usize },
-        136usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_atexit),
-            "::",
-            stringify!(_on_exit_args)
         )
     );
 }
@@ -909,58 +783,6 @@ fn bindgen_test_layout___sFILE() {
 pub type __FILE = __sFILE;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct _glue {
-    pub _next: *mut _glue,
-    pub _niobs: core::ffi::c_int,
-    pub _iobs: *mut __FILE,
-}
-#[test]
-fn bindgen_test_layout__glue() {
-    const UNINIT: ::core::mem::MaybeUninit<_glue> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<_glue>(),
-        12usize,
-        concat!("Size of: ", stringify!(_glue))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<_glue>(),
-        4usize,
-        concat!("Alignment of ", stringify!(_glue))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._next) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_glue),
-            "::",
-            stringify!(_next)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._niobs) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_glue),
-            "::",
-            stringify!(_niobs)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._iobs) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_glue),
-            "::",
-            stringify!(_iobs)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
 pub struct _rand48 {
     pub _seed: [core::ffi::c_ushort; 3usize],
     pub _mult: [core::ffi::c_ushort; 3usize],
@@ -1020,9 +842,7 @@ pub struct _reent {
     pub _stderr: *mut __FILE,
     pub _inc: core::ffi::c_int,
     pub _emergency: [core::ffi::c_char; 25usize],
-    pub _unspecified_locale_info: core::ffi::c_int,
     pub _locale: *mut __locale_t,
-    pub __sdidinit: core::ffi::c_int,
     pub __cleanup: ::core::option::Option<unsafe extern "C" fn(arg1: *mut _reent)>,
     pub _result: *mut _Bigint,
     pub _result_k: core::ffi::c_int,
@@ -1031,22 +851,16 @@ pub struct _reent {
     pub _cvtlen: core::ffi::c_int,
     pub _cvtbuf: *mut core::ffi::c_char,
     pub _new: _reent__bindgen_ty_1,
-    pub _atexit: *mut _atexit,
-    pub _atexit0: _atexit,
     pub _sig_func: *mut ::core::option::Option<unsafe extern "C" fn(arg1: core::ffi::c_int)>,
-    pub __sglue: _glue,
-    pub __sf: [__FILE; 3usize],
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union _reent__bindgen_ty_1 {
     pub _reent: _reent__bindgen_ty_1__bindgen_ty_1,
-    pub _unused: _reent__bindgen_ty_1__bindgen_ty_2,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct _reent__bindgen_ty_1__bindgen_ty_1 {
-    pub _unused_rand: core::ffi::c_uint,
     pub _strtok_last: *mut core::ffi::c_char,
     pub _asctime_buf: [core::ffi::c_char; 26usize],
     pub _localtime_buf: __tm,
@@ -1073,7 +887,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<_reent__bindgen_ty_1__bindgen_ty_1>(),
-        208usize,
+        200usize,
         concat!("Size of: ", stringify!(_reent__bindgen_ty_1__bindgen_ty_1))
     );
     assert_eq!(
@@ -1085,18 +899,8 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._unused_rand) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
-            "::",
-            stringify!(_unused_rand)
-        )
-    );
-    assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._strtok_last) as usize - ptr as usize },
-        4usize,
+        0usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1106,7 +910,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._asctime_buf) as usize - ptr as usize },
-        8usize,
+        4usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1116,7 +920,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._localtime_buf) as usize - ptr as usize },
-        36usize,
+        32usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1126,7 +930,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._gamma_signgam) as usize - ptr as usize },
-        72usize,
+        68usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1136,7 +940,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._rand_next) as usize - ptr as usize },
-        80usize,
+        72usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1146,7 +950,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._r48) as usize - ptr as usize },
-        88usize,
+        80usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1156,7 +960,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mblen_state) as usize - ptr as usize },
-        104usize,
+        96usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1166,7 +970,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mbtowc_state) as usize - ptr as usize },
-        112usize,
+        104usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1176,7 +980,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._wctomb_state) as usize - ptr as usize },
-        120usize,
+        112usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1186,7 +990,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._l64a_buf) as usize - ptr as usize },
-        128usize,
+        120usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1196,7 +1000,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._signal_buf) as usize - ptr as usize },
-        136usize,
+        128usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1206,7 +1010,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._getdate_err) as usize - ptr as usize },
-        160usize,
+        152usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1216,7 +1020,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mbrlen_state) as usize - ptr as usize },
-        164usize,
+        156usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1226,7 +1030,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mbrtowc_state) as usize - ptr as usize },
-        172usize,
+        164usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1236,7 +1040,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mbsrtowcs_state) as usize - ptr as usize },
-        180usize,
+        172usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1246,7 +1050,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._wcrtomb_state) as usize - ptr as usize },
-        188usize,
+        180usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1256,7 +1060,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._wcsrtombs_state) as usize - ptr as usize },
-        196usize,
+        188usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1266,57 +1070,12 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._h_errno) as usize - ptr as usize },
-        204usize,
+        196usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
             "::",
             stringify!(_h_errno)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _reent__bindgen_ty_1__bindgen_ty_2 {
-    pub _nextf: [*mut core::ffi::c_uchar; 30usize],
-    pub _nmalloc: [core::ffi::c_uint; 30usize],
-}
-#[test]
-fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_2() {
-    const UNINIT: ::core::mem::MaybeUninit<_reent__bindgen_ty_1__bindgen_ty_2> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<_reent__bindgen_ty_1__bindgen_ty_2>(),
-        240usize,
-        concat!("Size of: ", stringify!(_reent__bindgen_ty_1__bindgen_ty_2))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<_reent__bindgen_ty_1__bindgen_ty_2>(),
-        4usize,
-        concat!(
-            "Alignment of ",
-            stringify!(_reent__bindgen_ty_1__bindgen_ty_2)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._nextf) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_reent__bindgen_ty_1__bindgen_ty_2),
-            "::",
-            stringify!(_nextf)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._nmalloc) as usize - ptr as usize },
-        120usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_reent__bindgen_ty_1__bindgen_ty_2),
-            "::",
-            stringify!(_nmalloc)
         )
     );
 }
@@ -1327,7 +1086,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<_reent__bindgen_ty_1>(),
-        240usize,
+        200usize,
         concat!("Size of: ", stringify!(_reent__bindgen_ty_1))
     );
     assert_eq!(
@@ -1345,16 +1104,6 @@ fn bindgen_test_layout__reent__bindgen_ty_1() {
             stringify!(_reent)
         )
     );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_reent__bindgen_ty_1),
-            "::",
-            stringify!(_unused)
-        )
-    );
 }
 #[test]
 fn bindgen_test_layout__reent() {
@@ -1362,7 +1111,7 @@ fn bindgen_test_layout__reent() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<_reent>(),
-        1064usize,
+        288usize,
         concat!("Size of: ", stringify!(_reent))
     );
     assert_eq!(
@@ -1431,18 +1180,8 @@ fn bindgen_test_layout__reent() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._unspecified_locale_info) as usize - ptr as usize },
-        48usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_reent),
-            "::",
-            stringify!(_unspecified_locale_info)
-        )
-    );
-    assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._locale) as usize - ptr as usize },
-        52usize,
+        48usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1451,18 +1190,8 @@ fn bindgen_test_layout__reent() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).__sdidinit) as usize - ptr as usize },
-        56usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_reent),
-            "::",
-            stringify!(__sdidinit)
-        )
-    );
-    assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).__cleanup) as usize - ptr as usize },
-        60usize,
+        52usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1472,7 +1201,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._result) as usize - ptr as usize },
-        64usize,
+        56usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1482,7 +1211,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._result_k) as usize - ptr as usize },
-        68usize,
+        60usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1492,7 +1221,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._p5s) as usize - ptr as usize },
-        72usize,
+        64usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1502,7 +1231,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._freelist) as usize - ptr as usize },
-        76usize,
+        68usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1512,7 +1241,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._cvtlen) as usize - ptr as usize },
-        80usize,
+        72usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1522,7 +1251,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._cvtbuf) as usize - ptr as usize },
-        84usize,
+        76usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1532,7 +1261,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._new) as usize - ptr as usize },
-        88usize,
+        80usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1541,28 +1270,8 @@ fn bindgen_test_layout__reent() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._atexit) as usize - ptr as usize },
-        328usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_reent),
-            "::",
-            stringify!(_atexit)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._atexit0) as usize - ptr as usize },
-        332usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_reent),
-            "::",
-            stringify!(_atexit0)
-        )
-    );
-    assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._sig_func) as usize - ptr as usize },
-        732usize,
+        280usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1570,32 +1279,12 @@ fn bindgen_test_layout__reent() {
             stringify!(_sig_func)
         )
     );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).__sglue) as usize - ptr as usize },
-        736usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_reent),
-            "::",
-            stringify!(__sglue)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).__sf) as usize - ptr as usize },
-        748usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_reent),
-            "::",
-            stringify!(__sf)
-        )
-    );
 }
 extern "C" {
     pub static mut _impure_ptr: *mut _reent;
 }
 extern "C" {
-    pub static _global_impure_ptr: *mut _reent;
+    pub static mut _impure_data: _reent;
 }
 extern "C" {
     pub fn abort() -> !;
@@ -1623,6 +1312,9 @@ extern "C" {
     pub fn srand(__seed: core::ffi::c_uint);
 }
 extern "C" {
+    pub fn strtod(__n: *const core::ffi::c_char, __end_PTR: *mut *mut core::ffi::c_char) -> f64;
+}
+extern "C" {
     pub fn strtof(__n: *const core::ffi::c_char, __end_PTR: *mut *mut core::ffi::c_char) -> f32;
 }
 extern "C" {
@@ -1638,6 +1330,13 @@ extern "C" {
         __end_PTR: *mut *mut core::ffi::c_char,
         __base: core::ffi::c_int,
     ) -> core::ffi::c_ulong;
+}
+extern "C" {
+    pub fn itoa(
+        arg1: core::ffi::c_int,
+        arg2: *mut core::ffi::c_char,
+        arg3: core::ffi::c_int,
+    ) -> *mut core::ffi::c_char;
 }
 extern "C" {
     pub fn random() -> core::ffi::c_long;
@@ -1934,7 +1633,7 @@ extern "C" {
     pub fn furi_delay_tick(ticks: u32);
 }
 extern "C" {
-    #[doc = "Delay until tick\n\n This should never be called in interrupt request context.\n\n # Arguments\n\n* `ticks` (direction in) - The tick until which kerel should delay task execution\n\n # Returns\n\nThe furi status."]
+    #[doc = "Delay until tick\n\n This should never be called in interrupt request context.\n\n # Arguments\n\n* `tick` (direction in) - The tick until which kerel should delay task execution\n\n # Returns\n\nThe furi status."]
     pub fn furi_delay_until_tick(tick: u32) -> FuriStatus;
 }
 extern "C" {
@@ -1961,6 +1660,66 @@ pub const FuriLogLevel_FuriLogLevelInfo: FuriLogLevel = 4;
 pub const FuriLogLevel_FuriLogLevelDebug: FuriLogLevel = 5;
 pub const FuriLogLevel_FuriLogLevelTrace: FuriLogLevel = 6;
 pub type FuriLogLevel = core::ffi::c_uchar;
+pub type FuriLogHandlerCallback = ::core::option::Option<
+    unsafe extern "C" fn(data: *const u8, size: usize, context: *mut core::ffi::c_void),
+>;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FuriLogHandler {
+    pub callback: FuriLogHandlerCallback,
+    pub context: *mut core::ffi::c_void,
+}
+#[test]
+fn bindgen_test_layout_FuriLogHandler() {
+    const UNINIT: ::core::mem::MaybeUninit<FuriLogHandler> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FuriLogHandler>(),
+        8usize,
+        concat!("Size of: ", stringify!(FuriLogHandler))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FuriLogHandler>(),
+        4usize,
+        concat!("Alignment of ", stringify!(FuriLogHandler))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).callback) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriLogHandler),
+            "::",
+            stringify!(callback)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).context) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriLogHandler),
+            "::",
+            stringify!(context)
+        )
+    );
+}
+extern "C" {
+    #[doc = "Add log TX callback\n\n # Arguments\n\n* `handler` (direction in) - The callback and its context\n\n # Returns\n\ntrue on success, false otherwise"]
+    pub fn furi_log_add_handler(handler: FuriLogHandler) -> bool;
+}
+extern "C" {
+    #[doc = "Remove log TX callback\n\n # Arguments\n\n* `handler` (direction in) - The callback and its context\n\n # Returns\n\ntrue on success, false otherwise"]
+    pub fn furi_log_remove_handler(handler: FuriLogHandler) -> bool;
+}
+extern "C" {
+    #[doc = "Transmit data through log IO callbacks\n\n # Arguments\n\n* `data` (direction in) - The data\n * `size` (direction in) - The size"]
+    pub fn furi_log_tx(data: *const u8, size: usize);
+}
+extern "C" {
+    #[doc = "Transmit data through log IO callbacks\n\n # Arguments\n\n* `data` (direction in) - The data, null-terminated C-string"]
+    pub fn furi_log_puts(data: *const core::ffi::c_char);
+}
 extern "C" {
     #[doc = "Print log record\n\n # Arguments\n\n* `level` -\n * `tag` -\n * `format` -\n * `...` -"]
     pub fn furi_log_print_format(
@@ -1983,14 +1742,14 @@ extern "C" {
     pub fn furi_log_get_level() -> FuriLogLevel;
 }
 extern "C" {
-    #[doc = "Log level to string\n\n # Arguments\n\n* `level` (direction in) - The level\n\n # Returns\n\nThe string"]
+    #[doc = "Log level to string\n\n # Arguments\n\n* `level` (direction in) - The level\n * `str` (direction out) - String representation of the level\n\n # Returns\n\nTrue if success, False otherwise"]
     pub fn furi_log_level_to_string(
         level: FuriLogLevel,
         str_: *mut *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Log level from string\n\n # Arguments\n\n* `str` (direction in) - The string\n * `level` - The level\n\n # Returns\n\nTrue if success, False otherwise"]
+    #[doc = "Log level from string\n\n # Arguments\n\n* `str` (direction in) - The string\n * `level` (direction out) - The level\n\n # Returns\n\nTrue if success, False otherwise"]
     pub fn furi_log_level_from_string(
         str_: *const core::ffi::c_char,
         level: *mut FuriLogLevel,
@@ -2101,6 +1860,10 @@ extern "C" {
     pub fn furi_thread_set_priority(thread: *mut FuriThread, priority: FuriThreadPriority);
 }
 extern "C" {
+    #[doc = "Get FuriThread priority\n\n # Arguments\n\n* `thread` - FuriThread instance\n # Returns\n\nFuriThreadPriority value"]
+    pub fn furi_thread_get_priority(thread: *mut FuriThread) -> FuriThreadPriority;
+}
+extern "C" {
     #[doc = "Set current thread priority\n\n # Arguments\n\n* `priority` - FuriThreadPriority value"]
     pub fn furi_thread_set_current_priority(priority: FuriThreadPriority);
 }
@@ -2148,7 +1911,7 @@ extern "C" {
     pub fn furi_thread_get_return_code(thread: *mut FuriThread) -> i32;
 }
 extern "C" {
-    #[doc = "Get FreeRTOS FuriThreadId for current thread\n\n # Arguments\n\n* `thread` - FuriThread instance\n\n # Returns\n\nFuriThreadId or NULL"]
+    #[doc = "Get FreeRTOS FuriThreadId for current thread\n\n # Returns\n\nFuriThreadId or NULL"]
     pub fn furi_thread_get_current_id() -> FuriThreadId;
 }
 extern "C" {
@@ -2172,8 +1935,8 @@ extern "C" {
     pub fn furi_thread_flags_wait(flags: u32, options: u32, timeout: u32) -> u32;
 }
 extern "C" {
-    #[doc = "Enumerate threads\n\n # Arguments\n\n* `thread_array` - array of FuriThreadId, where thread ids will be stored\n * `array_items` - array size\n # Returns\n\nuint32_t threads count"]
-    pub fn furi_thread_enumerate(thread_array: *mut FuriThreadId, array_items: u32) -> u32;
+    #[doc = "Enumerate threads\n\n # Arguments\n\n* `thread_array` - array of FuriThreadId, where thread ids will be stored\n * `array_item_count` - array size\n # Returns\n\nuint32_t threads count"]
+    pub fn furi_thread_enumerate(thread_array: *mut FuriThreadId, array_item_count: u32) -> u32;
 }
 extern "C" {
     #[doc = "Get thread name\n\n # Arguments\n\n* `thread_id` -\n # Returns\n\nconst char* name or NULL"]
@@ -2217,15 +1980,15 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Memmgr heap enable thread allocation tracking\n\n # Arguments\n\n* `thread_id` - - thread id to track"]
-    pub fn memmgr_heap_enable_thread_trace(taks_handle: FuriThreadId);
+    pub fn memmgr_heap_enable_thread_trace(thread_id: FuriThreadId);
 }
 extern "C" {
     #[doc = "Memmgr heap disable thread allocation tracking\n\n # Arguments\n\n* `thread_id` - - thread id to track"]
-    pub fn memmgr_heap_disable_thread_trace(taks_handle: FuriThreadId);
+    pub fn memmgr_heap_disable_thread_trace(thread_id: FuriThreadId);
 }
 extern "C" {
     #[doc = "Memmgr heap get allocatred thread memory\n\n # Arguments\n\n* `thread_id` - - thread id to track\n\n # Returns\n\nbytes allocated right now"]
-    pub fn memmgr_heap_get_thread_memory(taks_handle: FuriThreadId) -> usize;
+    pub fn memmgr_heap_get_thread_memory(thread_id: FuriThreadId) -> usize;
 }
 extern "C" {
     #[doc = "Memmgr heap get the max contiguous block size on the heap\n\n # Returns\n\nsize_t max contiguous block size"]
@@ -2245,7 +2008,7 @@ extern "C" {
     pub fn furi_message_queue_free(instance: *mut FuriMessageQueue);
 }
 extern "C" {
-    #[doc = "Put message into queue\n\n # Arguments\n\n* `instance` - pointer to FuriMessageQueue instance\n * `msg_ptr` (direction in) - The message pointer\n * `timeout` (direction in) - The timeout\n * `msg_prio` (direction in) - The message prio\n\n # Returns\n\nThe furi status."]
+    #[doc = "Put message into queue\n\n # Arguments\n\n* `instance` - pointer to FuriMessageQueue instance\n * `msg_ptr` (direction in) - The message pointer\n * `timeout` (direction in) - The timeout\n\n # Returns\n\nThe furi status."]
     pub fn furi_message_queue_put(
         instance: *mut FuriMessageQueue,
         msg_ptr: *const core::ffi::c_void,
@@ -2253,7 +2016,7 @@ extern "C" {
     ) -> FuriStatus;
 }
 extern "C" {
-    #[doc = "Get message from queue\n\n # Arguments\n\n* `instance` - pointer to FuriMessageQueue instance\n * `msg_ptr` - The message pointer\n * `msg_prio` - The message prioority\n * `timeout` (direction in) - The timeout\n\n # Returns\n\nThe furi status."]
+    #[doc = "Get message from queue\n\n # Arguments\n\n* `instance` - pointer to FuriMessageQueue instance\n * `msg_ptr` - The message pointer\n * `timeout` (direction in) - The timeout\n\n # Returns\n\nThe furi status."]
     pub fn furi_message_queue_get(
         instance: *mut FuriMessageQueue,
         msg_ptr: *mut core::ffi::c_void,
@@ -2481,7 +2244,7 @@ extern "C" {
     pub fn furi_string_reserve(string: *mut FuriString, size: usize);
 }
 extern "C" {
-    #[doc = "Reset string.\n Make the string empty.\n # Arguments\n\n* `s` -"]
+    #[doc = "Reset string.\n Make the string empty.\n # Arguments\n\n* `string` -"]
     pub fn furi_string_reset(string: *mut FuriString);
 }
 extern "C" {
@@ -5142,37 +4905,6 @@ extern "C" {
         tag: *const u8,
     ) -> FuriHalCryptoGCMState;
 }
-pub type FuriHalConsoleTxCallback = ::core::option::Option<
-    unsafe extern "C" fn(buffer: *const u8, size: usize, context: *mut core::ffi::c_void),
->;
-extern "C" {
-    pub fn furi_hal_console_init();
-}
-extern "C" {
-    pub fn furi_hal_console_enable();
-}
-extern "C" {
-    pub fn furi_hal_console_disable();
-}
-extern "C" {
-    pub fn furi_hal_console_set_tx_callback(
-        callback: FuriHalConsoleTxCallback,
-        context: *mut core::ffi::c_void,
-    );
-}
-extern "C" {
-    pub fn furi_hal_console_tx(buffer: *const u8, buffer_size: usize);
-}
-extern "C" {
-    pub fn furi_hal_console_tx_with_new_line(buffer: *const u8, buffer_size: usize);
-}
-extern "C" {
-    #[doc = "Printf-like plain uart interface\n Will not work in ISR context\n # Arguments\n\n* `format` -\n * `...` -"]
-    pub fn furi_hal_console_printf(format: *const core::ffi::c_char, ...);
-}
-extern "C" {
-    pub fn furi_hal_console_puts(data: *const core::ffi::c_char);
-}
 extern "C" {
     #[doc = "Enable MCU debug"]
     pub fn furi_hal_debug_enable();
@@ -5677,7 +5409,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C TX transfer, with additional settings.\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `address` - I2C slave address\n * `ten_bit` - Whether the address is 10 bits wide\n * `data` - Pointer to data buffer\n * `size` - Size of data buffer\n * `begin` - How to begin the transaction\n * `end` - How to end the transaction\n * `timer` - Timeout timer\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
+    #[doc = "Perform I2C TX transfer, with additional settings.\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `address` - I2C slave address\n * `ten_bit` - Whether the address is 10 bits wide\n * `data` - Pointer to data buffer\n * `size` - Size of data buffer\n * `begin` - How to begin the transaction\n * `end` - How to end the transaction\n * `timeout` - Timeout in milliseconds\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
     pub fn furi_hal_i2c_tx_ext(
         handle: *mut FuriHalI2cBusHandle,
         address: u16,
@@ -5700,7 +5432,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Perform I2C RX transfer, with additional settings.\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `address` - I2C slave address\n * `ten_bit` - Whether the address is 10 bits wide\n * `data` - Pointer to data buffer\n * `size` - Size of data buffer\n * `begin` - How to begin the transaction\n * `end` - How to end the transaction\n * `timer` - Timeout timer\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
+    #[doc = "Perform I2C RX transfer, with additional settings.\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `address` - I2C slave address\n * `ten_bit` - Whether the address is 10 bits wide\n * `data` - Pointer to data buffer\n * `size` - Size of data buffer\n * `begin` - How to begin the transaction\n * `end` - How to end the transaction\n * `timeout` - Timeout in milliseconds\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
     pub fn furi_hal_i2c_rx_ext(
         handle: *mut FuriHalI2cBusHandle,
         address: u16,
@@ -6232,7 +5964,7 @@ extern "C" {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct FuriHalRtcDateTime {
+pub struct DateTime {
     #[doc = "< Hour in 24H format: 0-23"]
     pub hour: u8,
     #[doc = "< Minute: 0-59"]
@@ -6249,25 +5981,25 @@ pub struct FuriHalRtcDateTime {
     pub weekday: u8,
 }
 #[test]
-fn bindgen_test_layout_FuriHalRtcDateTime() {
-    const UNINIT: ::core::mem::MaybeUninit<FuriHalRtcDateTime> = ::core::mem::MaybeUninit::uninit();
+fn bindgen_test_layout_DateTime() {
+    const UNINIT: ::core::mem::MaybeUninit<DateTime> = ::core::mem::MaybeUninit::uninit();
     let ptr = UNINIT.as_ptr();
     assert_eq!(
-        ::core::mem::size_of::<FuriHalRtcDateTime>(),
+        ::core::mem::size_of::<DateTime>(),
         10usize,
-        concat!("Size of: ", stringify!(FuriHalRtcDateTime))
+        concat!("Size of: ", stringify!(DateTime))
     );
     assert_eq!(
-        ::core::mem::align_of::<FuriHalRtcDateTime>(),
+        ::core::mem::align_of::<DateTime>(),
         2usize,
-        concat!("Alignment of ", stringify!(FuriHalRtcDateTime))
+        concat!("Alignment of ", stringify!(DateTime))
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).hour) as usize - ptr as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(FuriHalRtcDateTime),
+            stringify!(DateTime),
             "::",
             stringify!(hour)
         )
@@ -6277,7 +6009,7 @@ fn bindgen_test_layout_FuriHalRtcDateTime() {
         1usize,
         concat!(
             "Offset of field: ",
-            stringify!(FuriHalRtcDateTime),
+            stringify!(DateTime),
             "::",
             stringify!(minute)
         )
@@ -6287,7 +6019,7 @@ fn bindgen_test_layout_FuriHalRtcDateTime() {
         2usize,
         concat!(
             "Offset of field: ",
-            stringify!(FuriHalRtcDateTime),
+            stringify!(DateTime),
             "::",
             stringify!(second)
         )
@@ -6297,7 +6029,7 @@ fn bindgen_test_layout_FuriHalRtcDateTime() {
         3usize,
         concat!(
             "Offset of field: ",
-            stringify!(FuriHalRtcDateTime),
+            stringify!(DateTime),
             "::",
             stringify!(day)
         )
@@ -6307,7 +6039,7 @@ fn bindgen_test_layout_FuriHalRtcDateTime() {
         4usize,
         concat!(
             "Offset of field: ",
-            stringify!(FuriHalRtcDateTime),
+            stringify!(DateTime),
             "::",
             stringify!(month)
         )
@@ -6317,7 +6049,7 @@ fn bindgen_test_layout_FuriHalRtcDateTime() {
         6usize,
         concat!(
             "Offset of field: ",
-            stringify!(FuriHalRtcDateTime),
+            stringify!(DateTime),
             "::",
             stringify!(year)
         )
@@ -6327,11 +6059,35 @@ fn bindgen_test_layout_FuriHalRtcDateTime() {
         8usize,
         concat!(
             "Offset of field: ",
-            stringify!(FuriHalRtcDateTime),
+            stringify!(DateTime),
             "::",
             stringify!(weekday)
         )
     );
+}
+extern "C" {
+    #[doc = "Validate Date Time\n\n # Arguments\n\n* `datetime` - The datetime to validate\n\n # Returns\n\n{ description_of_the_return_value }"]
+    pub fn datetime_validate_datetime(datetime: *mut DateTime) -> bool;
+}
+extern "C" {
+    #[doc = "Convert DateTime to UNIX timestamp\n\n Mind timezone when perform conversion\n\n # Arguments\n\n* `datetime` - The datetime (UTC)\n\n # Returns\n\nUNIX Timestamp in seconds from UNIX epoch start"]
+    pub fn datetime_datetime_to_timestamp(datetime: *mut DateTime) -> u32;
+}
+extern "C" {
+    #[doc = "Convert UNIX timestamp to DateTime\n\n Mind timezone when perform conversion\n\n # Arguments\n\n* `timestamp` (direction in) - UNIX Timestamp in seconds from UNIX epoch start\n * `datetime` (direction out) - The datetime (UTC)"]
+    pub fn datetime_timestamp_to_datetime(timestamp: u32, datetime: *mut DateTime);
+}
+extern "C" {
+    #[doc = "Gets the number of days in the year according to the Gregorian calendar.\n\n # Arguments\n\n* `year` - Input year.\n\n # Returns\n\nnumber of days in `year`."]
+    pub fn datetime_get_days_per_year(year: u16) -> u16;
+}
+extern "C" {
+    #[doc = "Check if a year a leap year in the Gregorian calendar.\n\n # Arguments\n\n* `year` - Input year.\n\n # Returns\n\ntrue if `year` is a leap year."]
+    pub fn datetime_is_leap_year(year: u16) -> bool;
+}
+extern "C" {
+    #[doc = "Get the number of days in the month.\n\n # Arguments\n\n* `leap_year` - true to calculate based on leap years\n * `month` - month to check, where 1 = January\n # Returns\n\nthe number of days in the month"]
+    pub fn datetime_get_days_per_month(leap_year: bool, month: u8) -> u8;
 }
 pub const FuriHalRtcFlag_FuriHalRtcFlagDebug: FuriHalRtcFlag = 1;
 pub const FuriHalRtcFlag_FuriHalRtcFlagStorageFormatInternal: FuriHalRtcFlag = 2;
@@ -6395,6 +6151,32 @@ pub const FuriHalRtcLocaleDateFormat_FuriHalRtcLocaleDateFormatMDY: FuriHalRtcLo
 #[doc = "< Year/Month/Day"]
 pub const FuriHalRtcLocaleDateFormat_FuriHalRtcLocaleDateFormatYMD: FuriHalRtcLocaleDateFormat = 2;
 pub type FuriHalRtcLocaleDateFormat = core::ffi::c_uchar;
+#[doc = "< Default: USART"]
+pub const FuriHalRtcLogDevice_FuriHalRtcLogDeviceUsart: FuriHalRtcLogDevice = 0;
+#[doc = "< Default: LPUART"]
+pub const FuriHalRtcLogDevice_FuriHalRtcLogDeviceLpuart: FuriHalRtcLogDevice = 1;
+#[doc = "< Reserved for future use"]
+pub const FuriHalRtcLogDevice_FuriHalRtcLogDeviceReserved: FuriHalRtcLogDevice = 2;
+#[doc = "< None, disable serial logging"]
+pub const FuriHalRtcLogDevice_FuriHalRtcLogDeviceNone: FuriHalRtcLogDevice = 3;
+pub type FuriHalRtcLogDevice = core::ffi::c_uchar;
+#[doc = "< 230400 baud"]
+pub const FuriHalRtcLogBaudRate_FuriHalRtcLogBaudRate230400: FuriHalRtcLogBaudRate = 0;
+#[doc = "< 9600 baud"]
+pub const FuriHalRtcLogBaudRate_FuriHalRtcLogBaudRate9600: FuriHalRtcLogBaudRate = 1;
+#[doc = "< 38400 baud"]
+pub const FuriHalRtcLogBaudRate_FuriHalRtcLogBaudRate38400: FuriHalRtcLogBaudRate = 2;
+#[doc = "< 57600 baud"]
+pub const FuriHalRtcLogBaudRate_FuriHalRtcLogBaudRate57600: FuriHalRtcLogBaudRate = 3;
+#[doc = "< 115200 baud"]
+pub const FuriHalRtcLogBaudRate_FuriHalRtcLogBaudRate115200: FuriHalRtcLogBaudRate = 4;
+#[doc = "< 460800 baud"]
+pub const FuriHalRtcLogBaudRate_FuriHalRtcLogBaudRate460800: FuriHalRtcLogBaudRate = 5;
+#[doc = "< 921600 baud"]
+pub const FuriHalRtcLogBaudRate_FuriHalRtcLogBaudRate921600: FuriHalRtcLogBaudRate = 6;
+#[doc = "< 1843200 baud"]
+pub const FuriHalRtcLogBaudRate_FuriHalRtcLogBaudRate1843200: FuriHalRtcLogBaudRate = 7;
+pub type FuriHalRtcLogBaudRate = core::ffi::c_uchar;
 extern "C" {
     #[doc = "Force sync shadow registers"]
     pub fn furi_hal_rtc_sync_shadow();
@@ -6418,6 +6200,22 @@ extern "C" {
 extern "C" {
     #[doc = "Get Log Level value\n\n # Returns\n\nThe Log Level value"]
     pub fn furi_hal_rtc_get_log_level() -> u8;
+}
+extern "C" {
+    #[doc = "Set logging device\n\n # Arguments\n\n* `device` (direction in) - The device"]
+    pub fn furi_hal_rtc_set_log_device(device: FuriHalRtcLogDevice);
+}
+extern "C" {
+    #[doc = "Get logging device\n\n # Returns\n\nThe furi hal rtc log device."]
+    pub fn furi_hal_rtc_get_log_device() -> FuriHalRtcLogDevice;
+}
+extern "C" {
+    #[doc = "Set logging baud rate\n\n # Arguments\n\n* `baud_rate` (direction in) - The baud rate"]
+    pub fn furi_hal_rtc_set_log_baud_rate(baud_rate: FuriHalRtcLogBaudRate);
+}
+extern "C" {
+    #[doc = "Get logging baud rate\n\n # Returns\n\nThe furi hal rtc log baud rate."]
+    pub fn furi_hal_rtc_get_log_baud_rate() -> FuriHalRtcLogBaudRate;
 }
 extern "C" {
     #[doc = "Set RTC Flag\n\n # Arguments\n\n* `flag` (direction in) - The flag to set"]
@@ -6448,7 +6246,7 @@ extern "C" {
     pub fn furi_hal_rtc_get_heap_track_mode() -> FuriHalRtcHeapTrackMode;
 }
 extern "C" {
-    #[doc = "Set locale units\n\n # Arguments\n\n* `mode` (direction in) - The RTC Locale Units"]
+    #[doc = "Set locale units\n\n # Arguments\n\n* `value` (direction in) - The RTC Locale Units"]
     pub fn furi_hal_rtc_set_locale_units(value: FuriHalRtcLocaleUnits);
 }
 extern "C" {
@@ -6473,15 +6271,11 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Set RTC Date Time\n\n # Arguments\n\n* `datetime` - The date time to set"]
-    pub fn furi_hal_rtc_set_datetime(datetime: *mut FuriHalRtcDateTime);
+    pub fn furi_hal_rtc_set_datetime(datetime: *mut DateTime);
 }
 extern "C" {
     #[doc = "Get RTC Date Time\n\n # Arguments\n\n* `datetime` - The datetime"]
-    pub fn furi_hal_rtc_get_datetime(datetime: *mut FuriHalRtcDateTime);
-}
-extern "C" {
-    #[doc = "Validate Date Time\n\n # Arguments\n\n* `datetime` - The datetime to validate\n\n # Returns\n\n{ description_of_the_return_value }"]
-    pub fn furi_hal_rtc_validate_datetime(datetime: *mut FuriHalRtcDateTime) -> bool;
+    pub fn furi_hal_rtc_get_datetime(datetime: *mut DateTime);
 }
 extern "C" {
     #[doc = "Set RTC Fault Data\n\n # Arguments\n\n* `value` (direction in) - The value"]
@@ -6502,22 +6296,6 @@ extern "C" {
 extern "C" {
     #[doc = "Get UNIX Timestamp\n\n # Returns\n\nUnix Timestamp in seconds from UNIX epoch start"]
     pub fn furi_hal_rtc_get_timestamp() -> u32;
-}
-extern "C" {
-    #[doc = "Convert DateTime to UNIX timestamp\n\n # Arguments\n\n* `datetime` - The datetime\n\n # Returns\n\nUNIX Timestamp in seconds from UNIX epoch start"]
-    pub fn furi_hal_rtc_datetime_to_timestamp(datetime: *mut FuriHalRtcDateTime) -> u32;
-}
-extern "C" {
-    #[doc = "Gets the number of days in the year according to the Gregorian calendar.\n\n # Arguments\n\n* `year` - Input year.\n\n # Returns\n\nnumber of days in `year`."]
-    pub fn furi_hal_rtc_get_days_per_year(year: u16) -> u16;
-}
-extern "C" {
-    #[doc = "Check if a year a leap year in the Gregorian calendar.\n\n # Arguments\n\n* `year` - Input year.\n\n # Returns\n\ntrue if `year` is a leap year."]
-    pub fn furi_hal_rtc_is_leap_year(year: u16) -> bool;
-}
-extern "C" {
-    #[doc = "Get the number of days in the month.\n\n # Arguments\n\n* `leap_year` - true to calculate based on leap years\n * `month` - month to check, where 1 = January\n # Returns\n\nthe number of days in the month"]
-    pub fn furi_hal_rtc_get_days_per_month(leap_year: bool, month: u8) -> u8;
 }
 extern "C" {
     #[doc = "Acquire speaker ownership\n\n You must acquire speaker ownership before use\n\n # Arguments\n\n* `timeout` - Timeout during which speaker ownership must be acquired\n\n # Returns\n\nbool returns true on success"]
@@ -6694,7 +6472,7 @@ extern "C" {
     pub fn furi_hal_power_insomnia_exit();
 }
 extern "C" {
-    #[doc = "Check if sleep availble\n\n # Returns\n\ntrue if available"]
+    #[doc = "Check if sleep available\n\n # Returns\n\ntrue if available"]
     pub fn furi_hal_power_sleep_available() -> bool;
 }
 extern "C" {
@@ -6754,7 +6532,7 @@ extern "C" {
     pub fn furi_hal_power_get_battery_charge_voltage_limit() -> f32;
 }
 extern "C" {
-    #[doc = "Set battery charge voltage limit in V\n\n Invalid values will be clamped downward to the nearest valid value.\n\n # Arguments\n\n* `voltage[in]` - voltage in V\n\n # Returns\n\nvoltage in V"]
+    #[doc = "Set battery charge voltage limit in V\n\n Invalid values will be clamped downward to the nearest valid value.\n\n # Arguments\n\n* `voltage` (direction in) - voltage in V"]
     pub fn furi_hal_power_set_battery_charge_voltage_limit(voltage: f32);
 }
 extern "C" {
@@ -6770,15 +6548,15 @@ extern "C" {
     pub fn furi_hal_power_get_battery_design_capacity() -> u32;
 }
 extern "C" {
-    #[doc = "Get battery voltage in V\n\n # Arguments\n\n* `ic` - FuriHalPowerIc to get measurment\n\n # Returns\n\nvoltage in V"]
+    #[doc = "Get battery voltage in V\n\n # Arguments\n\n* `ic` (direction in) - FuriHalPowerIc to get measurment\n\n # Returns\n\nvoltage in V"]
     pub fn furi_hal_power_get_battery_voltage(ic: FuriHalPowerIC) -> f32;
 }
 extern "C" {
-    #[doc = "Get battery current in A\n\n # Arguments\n\n* `ic` - FuriHalPowerIc to get measurment\n\n # Returns\n\ncurrent in A"]
+    #[doc = "Get battery current in A\n\n # Arguments\n\n* `ic` (direction in) - FuriHalPowerIc to get measurment\n\n # Returns\n\ncurrent in A"]
     pub fn furi_hal_power_get_battery_current(ic: FuriHalPowerIC) -> f32;
 }
 extern "C" {
-    #[doc = "Get temperature in C\n\n # Arguments\n\n* `ic` - FuriHalPowerIc to get measurment\n\n # Returns\n\ntemperature in C"]
+    #[doc = "Get temperature in C\n\n # Arguments\n\n* `ic` (direction in) - FuriHalPowerIc to get measurment\n\n # Returns\n\ntemperature in C"]
     pub fn furi_hal_power_get_battery_temperature(ic: FuriHalPowerIC) -> f32;
 }
 extern "C" {
@@ -7056,10 +6834,21 @@ pub const FuriHalInterruptId_FuriHalInterruptIdCOMP: FuriHalInterruptId = 19;
 pub const FuriHalInterruptId_FuriHalInterruptIdHsem: FuriHalInterruptId = 20;
 pub const FuriHalInterruptId_FuriHalInterruptIdLpTim1: FuriHalInterruptId = 21;
 pub const FuriHalInterruptId_FuriHalInterruptIdLpTim2: FuriHalInterruptId = 22;
-pub const FuriHalInterruptId_FuriHalInterruptIdMax: FuriHalInterruptId = 23;
+pub const FuriHalInterruptId_FuriHalInterruptIdUart1: FuriHalInterruptId = 23;
+pub const FuriHalInterruptId_FuriHalInterruptIdLpUart1: FuriHalInterruptId = 24;
+pub const FuriHalInterruptId_FuriHalInterruptIdMax: FuriHalInterruptId = 25;
 pub type FuriHalInterruptId = core::ffi::c_uchar;
+pub const FuriHalInterruptPriority_FuriHalInterruptPriorityLowest: FuriHalInterruptPriority = -3;
+pub const FuriHalInterruptPriority_FuriHalInterruptPriorityLower: FuriHalInterruptPriority = -2;
+pub const FuriHalInterruptPriority_FuriHalInterruptPriorityLow: FuriHalInterruptPriority = -1;
+pub const FuriHalInterruptPriority_FuriHalInterruptPriorityNormal: FuriHalInterruptPriority = 0;
+pub const FuriHalInterruptPriority_FuriHalInterruptPriorityHigh: FuriHalInterruptPriority = 1;
+pub const FuriHalInterruptPriority_FuriHalInterruptPriorityHigher: FuriHalInterruptPriority = 2;
+pub const FuriHalInterruptPriority_FuriHalInterruptPriorityHighest: FuriHalInterruptPriority = 3;
+pub const FuriHalInterruptPriority_FuriHalInterruptPriorityKamiSama: FuriHalInterruptPriority = 6;
+pub type FuriHalInterruptPriority = core::ffi::c_schar;
 extern "C" {
-    #[doc = "Set ISR and enable interrupt with default priority\n We don't clear interrupt flags for you, do it by your self.\n # Arguments\n\n* `index` - - interrupt ID\n * `isr` - - your interrupt service routine or use NULL to clear\n * `context` - - isr context"]
+    #[doc = "Set ISR and enable interrupt with default priority\n\n Interrupt flags are not cleared automatically. You may want to\n ensure that your peripheral status flags are cleared.\n\n # Arguments\n\n* `index` - - interrupt ID\n * `isr` - - your interrupt service routine or use NULL to clear\n * `context` - - isr context"]
     pub fn furi_hal_interrupt_set_isr(
         index: FuriHalInterruptId,
         isr: FuriHalInterruptISR,
@@ -7067,10 +6856,10 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Set ISR and enable interrupt with custom priority\n We don't clear interrupt flags for you, do it by your self.\n # Arguments\n\n* `index` - - interrupt ID\n * `priority` - - 0 to 15, 0 highest\n * `isr` - - your interrupt service routine or use NULL to clear\n * `context` - - isr context"]
+    #[doc = "Set ISR and enable interrupt with custom priority\n\n Interrupt flags are not cleared automatically. You may want to\n ensure that your peripheral status flags are cleared.\n\n # Arguments\n\n* `index` - - interrupt ID\n * `priority` - - One of FuriHalInterruptPriority\n * `isr` - - your interrupt service routine or use NULL to clear\n * `context` - - isr context"]
     pub fn furi_hal_interrupt_set_isr_ex(
         index: FuriHalInterruptId,
-        priority: u16,
+        priority: FuriHalInterruptPriority,
         isr: FuriHalInterruptISR,
         context: *mut core::ffi::c_void,
     );
@@ -7172,6 +6961,14 @@ extern "C" {
     pub fn furi_hal_version_get_mic_id() -> *const core::ffi::c_char;
 }
 extern "C" {
+    #[doc = "Get SRRC id\n\n # Returns\n\nSRRC id as C-string"]
+    pub fn furi_hal_version_get_srrc_id() -> *const core::ffi::c_char;
+}
+extern "C" {
+    #[doc = "Get NCC id\n\n # Returns\n\nNCC id as C-string"]
+    pub fn furi_hal_version_get_ncc_id() -> *const core::ffi::c_char;
+}
+extern "C" {
     #[doc = "Get OTP version\n\n # Returns\n\nOTP Version"]
     pub fn furi_hal_version_get_otp_version() -> FuriHalVersionOtpVersion;
 }
@@ -7246,6 +7043,8 @@ pub const GapEventType_GapEventTypeStopAdvertising: GapEventType = 3;
 pub const GapEventType_GapEventTypePinCodeShow: GapEventType = 4;
 pub const GapEventType_GapEventTypePinCodeVerify: GapEventType = 5;
 pub const GapEventType_GapEventTypeUpdateMTU: GapEventType = 6;
+pub const GapEventType_GapEventTypeBeaconStart: GapEventType = 7;
+pub const GapEventType_GapEventTypeBeaconStop: GapEventType = 8;
 pub type GapEventType = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -7332,95 +7131,390 @@ fn bindgen_test_layout_GapEvent() {
 pub type GapEventCallback = ::core::option::Option<
     unsafe extern "C" fn(event: GapEvent, context: *mut core::ffi::c_void) -> bool,
 >;
-pub const SerialServiceEventType_SerialServiceEventTypeDataReceived: SerialServiceEventType = 0;
-pub const SerialServiceEventType_SerialServiceEventTypeDataSent: SerialServiceEventType = 1;
-pub const SerialServiceEventType_SerialServiceEventTypesBleResetRequest: SerialServiceEventType = 2;
-pub type SerialServiceEventType = core::ffi::c_uchar;
+pub const GapPairing_GapPairingNone: GapPairing = 0;
+pub const GapPairing_GapPairingPinCodeShow: GapPairing = 1;
+pub const GapPairing_GapPairingPinCodeVerifyYesNo: GapPairing = 2;
+pub type GapPairing = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct SerialServiceData {
-    pub buffer: *mut u8,
-    pub size: u16,
+pub struct GapConnectionParamsRequest {
+    pub conn_int_min: u16,
+    pub conn_int_max: u16,
+    pub slave_latency: u16,
+    pub supervisor_timeout: u16,
 }
 #[test]
-fn bindgen_test_layout_SerialServiceData() {
-    const UNINIT: ::core::mem::MaybeUninit<SerialServiceData> = ::core::mem::MaybeUninit::uninit();
+fn bindgen_test_layout_GapConnectionParamsRequest() {
+    const UNINIT: ::core::mem::MaybeUninit<GapConnectionParamsRequest> =
+        ::core::mem::MaybeUninit::uninit();
     let ptr = UNINIT.as_ptr();
     assert_eq!(
-        ::core::mem::size_of::<SerialServiceData>(),
+        ::core::mem::size_of::<GapConnectionParamsRequest>(),
         8usize,
-        concat!("Size of: ", stringify!(SerialServiceData))
+        concat!("Size of: ", stringify!(GapConnectionParamsRequest))
     );
     assert_eq!(
-        ::core::mem::align_of::<SerialServiceData>(),
-        4usize,
-        concat!("Alignment of ", stringify!(SerialServiceData))
+        ::core::mem::align_of::<GapConnectionParamsRequest>(),
+        2usize,
+        concat!("Alignment of ", stringify!(GapConnectionParamsRequest))
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).buffer) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).conn_int_min) as usize - ptr as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(SerialServiceData),
+            stringify!(GapConnectionParamsRequest),
             "::",
-            stringify!(buffer)
+            stringify!(conn_int_min)
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).conn_int_max) as usize - ptr as usize },
+        2usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapConnectionParamsRequest),
+            "::",
+            stringify!(conn_int_max)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).slave_latency) as usize - ptr as usize },
         4usize,
         concat!(
             "Offset of field: ",
-            stringify!(SerialServiceData),
+            stringify!(GapConnectionParamsRequest),
             "::",
-            stringify!(size)
+            stringify!(slave_latency)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).supervisor_timeout) as usize - ptr as usize },
+        6usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapConnectionParamsRequest),
+            "::",
+            stringify!(supervisor_timeout)
         )
     );
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct SerialServiceEvent {
-    pub event: SerialServiceEventType,
-    pub data: SerialServiceData,
+pub struct GapConfig {
+    pub adv_service_uuid: u16,
+    pub appearance_char: u16,
+    pub bonding_mode: bool,
+    pub pairing_method: GapPairing,
+    pub mac_address: [u8; 6usize],
+    pub adv_name: [core::ffi::c_char; 18usize],
+    pub conn_param: GapConnectionParamsRequest,
 }
 #[test]
-fn bindgen_test_layout_SerialServiceEvent() {
-    const UNINIT: ::core::mem::MaybeUninit<SerialServiceEvent> = ::core::mem::MaybeUninit::uninit();
+fn bindgen_test_layout_GapConfig() {
+    const UNINIT: ::core::mem::MaybeUninit<GapConfig> = ::core::mem::MaybeUninit::uninit();
     let ptr = UNINIT.as_ptr();
     assert_eq!(
-        ::core::mem::size_of::<SerialServiceEvent>(),
-        12usize,
-        concat!("Size of: ", stringify!(SerialServiceEvent))
+        ::core::mem::size_of::<GapConfig>(),
+        38usize,
+        concat!("Size of: ", stringify!(GapConfig))
     );
     assert_eq!(
-        ::core::mem::align_of::<SerialServiceEvent>(),
-        4usize,
-        concat!("Alignment of ", stringify!(SerialServiceEvent))
+        ::core::mem::align_of::<GapConfig>(),
+        2usize,
+        concat!("Alignment of ", stringify!(GapConfig))
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).event) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).adv_service_uuid) as usize - ptr as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(SerialServiceEvent),
+            stringify!(GapConfig),
             "::",
-            stringify!(event)
+            stringify!(adv_service_uuid)
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).appearance_char) as usize - ptr as usize },
+        2usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapConfig),
+            "::",
+            stringify!(appearance_char)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).bonding_mode) as usize - ptr as usize },
         4usize,
         concat!(
             "Offset of field: ",
-            stringify!(SerialServiceEvent),
+            stringify!(GapConfig),
             "::",
-            stringify!(data)
+            stringify!(bonding_mode)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).pairing_method) as usize - ptr as usize },
+        5usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapConfig),
+            "::",
+            stringify!(pairing_method)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).mac_address) as usize - ptr as usize },
+        6usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapConfig),
+            "::",
+            stringify!(mac_address)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).adv_name) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapConfig),
+            "::",
+            stringify!(adv_name)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).conn_param) as usize - ptr as usize },
+        30usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapConfig),
+            "::",
+            stringify!(conn_param)
         )
     );
 }
-pub type SerialServiceEventCallback = ::core::option::Option<
-    unsafe extern "C" fn(event: SerialServiceEvent, context: *mut core::ffi::c_void) -> u16,
+pub const GapAdvChannelMap_GapAdvChannelMap37: GapAdvChannelMap = 1;
+pub const GapAdvChannelMap_GapAdvChannelMap38: GapAdvChannelMap = 2;
+pub const GapAdvChannelMap_GapAdvChannelMap39: GapAdvChannelMap = 4;
+pub const GapAdvChannelMap_GapAdvChannelMapAll: GapAdvChannelMap = 7;
+pub type GapAdvChannelMap = core::ffi::c_uchar;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg40dBm: GapAdvPowerLevelInd = 0;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg20_85dBm: GapAdvPowerLevelInd = 1;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg19_75dBm: GapAdvPowerLevelInd = 2;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg18_85dBm: GapAdvPowerLevelInd = 3;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg17_6dBm: GapAdvPowerLevelInd = 4;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg16_5dBm: GapAdvPowerLevelInd = 5;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg15_25dBm: GapAdvPowerLevelInd = 6;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg14_1dBm: GapAdvPowerLevelInd = 7;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg13_15dBm: GapAdvPowerLevelInd = 8;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg12_05dBm: GapAdvPowerLevelInd = 9;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg10_9dBm: GapAdvPowerLevelInd = 10;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg9_9dBm: GapAdvPowerLevelInd = 11;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg8_85dBm: GapAdvPowerLevelInd = 12;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg7_8dBm: GapAdvPowerLevelInd = 13;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg6_9dBm: GapAdvPowerLevelInd = 14;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg5_9dBm: GapAdvPowerLevelInd = 15;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg4_95dBm: GapAdvPowerLevelInd = 16;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg4dBm: GapAdvPowerLevelInd = 17;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg3_15dBm: GapAdvPowerLevelInd = 18;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg2_45dBm: GapAdvPowerLevelInd = 19;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg1_8dBm: GapAdvPowerLevelInd = 20;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg1_3dBm: GapAdvPowerLevelInd = 21;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg0_85dBm: GapAdvPowerLevelInd = 22;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg0_5dBm: GapAdvPowerLevelInd = 23;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_Neg0_15dBm: GapAdvPowerLevelInd = 24;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_0dBm: GapAdvPowerLevelInd = 25;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_1dBm: GapAdvPowerLevelInd = 26;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_2dBm: GapAdvPowerLevelInd = 27;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_3dBm: GapAdvPowerLevelInd = 28;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_4dBm: GapAdvPowerLevelInd = 29;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_5dBm: GapAdvPowerLevelInd = 30;
+pub const GapAdvPowerLevelInd_GapAdvPowerLevel_6dBm: GapAdvPowerLevelInd = 31;
+pub type GapAdvPowerLevelInd = core::ffi::c_uchar;
+pub const GapAddressType_GapAddressTypePublic: GapAddressType = 0;
+pub const GapAddressType_GapAddressTypeRandom: GapAddressType = 1;
+pub type GapAddressType = core::ffi::c_uchar;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct GapExtraBeaconConfig {
+    pub min_adv_interval_ms: u16,
+    pub max_adv_interval_ms: u16,
+    pub adv_channel_map: GapAdvChannelMap,
+    pub adv_power_level: GapAdvPowerLevelInd,
+    pub address_type: GapAddressType,
+    pub address: [u8; 6usize],
+}
+#[test]
+fn bindgen_test_layout_GapExtraBeaconConfig() {
+    const UNINIT: ::core::mem::MaybeUninit<GapExtraBeaconConfig> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<GapExtraBeaconConfig>(),
+        14usize,
+        concat!("Size of: ", stringify!(GapExtraBeaconConfig))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<GapExtraBeaconConfig>(),
+        2usize,
+        concat!("Alignment of ", stringify!(GapExtraBeaconConfig))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).min_adv_interval_ms) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapExtraBeaconConfig),
+            "::",
+            stringify!(min_adv_interval_ms)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).max_adv_interval_ms) as usize - ptr as usize },
+        2usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapExtraBeaconConfig),
+            "::",
+            stringify!(max_adv_interval_ms)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).adv_channel_map) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapExtraBeaconConfig),
+            "::",
+            stringify!(adv_channel_map)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).adv_power_level) as usize - ptr as usize },
+        5usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapExtraBeaconConfig),
+            "::",
+            stringify!(adv_power_level)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).address_type) as usize - ptr as usize },
+        6usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapExtraBeaconConfig),
+            "::",
+            stringify!(address_type)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        7usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapExtraBeaconConfig),
+            "::",
+            stringify!(address)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FuriHalBleProfileBase {
+    pub config: *const FuriHalBleProfileTemplate,
+}
+#[test]
+fn bindgen_test_layout_FuriHalBleProfileBase() {
+    const UNINIT: ::core::mem::MaybeUninit<FuriHalBleProfileBase> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FuriHalBleProfileBase>(),
+        4usize,
+        concat!("Size of: ", stringify!(FuriHalBleProfileBase))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FuriHalBleProfileBase>(),
+        4usize,
+        concat!("Alignment of ", stringify!(FuriHalBleProfileBase))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).config) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalBleProfileBase),
+            "::",
+            stringify!(config)
+        )
+    );
+}
+pub type FuriHalBleProfileParams = *mut core::ffi::c_void;
+pub type FuriHalBleProfileStart = ::core::option::Option<
+    unsafe extern "C" fn(profile_params: FuriHalBleProfileParams) -> *mut FuriHalBleProfileBase,
 >;
+pub type FuriHalBleProfileStop =
+    ::core::option::Option<unsafe extern "C" fn(profile: *mut FuriHalBleProfileBase)>;
+pub type FuriHalBleProfileGetGapConfig = ::core::option::Option<
+    unsafe extern "C" fn(target_config: *mut GapConfig, profile_params: FuriHalBleProfileParams),
+>;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FuriHalBleProfileTemplate {
+    pub start: FuriHalBleProfileStart,
+    pub stop: FuriHalBleProfileStop,
+    pub get_gap_config: FuriHalBleProfileGetGapConfig,
+}
+#[test]
+fn bindgen_test_layout_FuriHalBleProfileTemplate() {
+    const UNINIT: ::core::mem::MaybeUninit<FuriHalBleProfileTemplate> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FuriHalBleProfileTemplate>(),
+        12usize,
+        concat!("Size of: ", stringify!(FuriHalBleProfileTemplate))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FuriHalBleProfileTemplate>(),
+        4usize,
+        concat!("Alignment of ", stringify!(FuriHalBleProfileTemplate))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).start) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalBleProfileTemplate),
+            "::",
+            stringify!(start)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).stop) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalBleProfileTemplate),
+            "::",
+            stringify!(stop)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).get_gap_config) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FuriHalBleProfileTemplate),
+            "::",
+            stringify!(get_gap_config)
+        )
+    );
+}
 pub const BleGlueC2Mode_BleGlueC2ModeUnknown: BleGlueC2Mode = 0;
 pub const BleGlueC2Mode_BleGlueC2ModeFUS: BleGlueC2Mode = 1;
 pub const BleGlueC2Mode_BleGlueC2ModeStack: BleGlueC2Mode = 2;
@@ -7652,16 +7746,12 @@ extern "C" {
     pub fn ble_glue_init();
 }
 extern "C" {
-    #[doc = "Start Core2 Radio stack\n\n # Returns\n\ntrue on success"]
-    pub fn ble_glue_start() -> bool;
-}
-extern "C" {
     #[doc = "Is core2 alive and at least FUS is running\n\n # Returns\n\ntrue if core2 is alive"]
     pub fn ble_glue_is_alive() -> bool;
 }
 extern "C" {
     #[doc = "Waits for C2 to reports its mode to callback\n\n # Returns\n\ntrue if it reported before reaching timeout"]
-    pub fn ble_glue_wait_for_c2_start(timeout: i32) -> bool;
+    pub fn ble_glue_wait_for_c2_start(timeout_ms: i32) -> bool;
 }
 extern "C" {
     pub fn ble_glue_get_c2_info() -> *const BleGlueC2Info;
@@ -7678,10 +7768,6 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Stop SHCI thread"]
-    pub fn ble_glue_thread_stop();
-}
-extern "C" {
     pub fn ble_glue_reinit_c2() -> bool;
 }
 pub const BleGlueCommandResult_BleGlueCommandResultUnknown: BleGlueCommandResult = 0;
@@ -7694,56 +7780,10 @@ extern "C" {
     #[doc = "Restart MCU to launch radio stack firmware if necessary\n\n # Returns\n\ntrue on radio stack start command"]
     pub fn ble_glue_force_c2_mode(mode: BleGlueC2Mode) -> BleGlueCommandResult;
 }
-extern "C" {
-    pub fn ble_app_init() -> bool;
-}
-extern "C" {
-    pub fn ble_app_get_key_storage_buff(addr: *mut *mut u8, size: *mut u16);
-}
-extern "C" {
-    pub fn ble_app_thread_stop();
-}
-pub const FuriHalBtSerialRpcStatus_FuriHalBtSerialRpcStatusNotActive: FuriHalBtSerialRpcStatus = 0;
-pub const FuriHalBtSerialRpcStatus_FuriHalBtSerialRpcStatusActive: FuriHalBtSerialRpcStatus = 1;
-pub type FuriHalBtSerialRpcStatus = core::ffi::c_uchar;
-#[doc = "Serial service callback type"]
-pub type FuriHalBtSerialCallback = SerialServiceEventCallback;
-extern "C" {
-    #[doc = "Start Serial Profile"]
-    pub fn furi_hal_bt_serial_start();
-}
-extern "C" {
-    #[doc = "Stop Serial Profile"]
-    pub fn furi_hal_bt_serial_stop();
-}
-extern "C" {
-    #[doc = "Set Serial service events callback\n\n # Arguments\n\n* `buffer_size` - Applicaition buffer size\n * `calback` - FuriHalBtSerialCallback instance\n * `context` - pointer to context"]
-    pub fn furi_hal_bt_serial_set_event_callback(
-        buff_size: u16,
-        callback: FuriHalBtSerialCallback,
-        context: *mut core::ffi::c_void,
-    );
-}
-extern "C" {
-    #[doc = "Set BLE RPC status\n\n # Arguments\n\n* `status` - FuriHalBtSerialRpcStatus instance"]
-    pub fn furi_hal_bt_serial_set_rpc_status(status: FuriHalBtSerialRpcStatus);
-}
-extern "C" {
-    #[doc = "Notify that application buffer is empty"]
-    pub fn furi_hal_bt_serial_notify_buffer_is_empty();
-}
-extern "C" {
-    #[doc = "Send data through BLE\n\n # Arguments\n\n* `data` - data buffer\n * `size` - data buffer size\n\n # Returns\n\ntrue on success"]
-    pub fn furi_hal_bt_serial_tx(data: *mut u8, size: u16) -> bool;
-}
 pub const FuriHalBtStack_FuriHalBtStackUnknown: FuriHalBtStack = 0;
 pub const FuriHalBtStack_FuriHalBtStackLight: FuriHalBtStack = 1;
 pub const FuriHalBtStack_FuriHalBtStackFull: FuriHalBtStack = 2;
 pub type FuriHalBtStack = core::ffi::c_uchar;
-pub const FuriHalBtProfile_FuriHalBtProfileSerial: FuriHalBtProfile = 0;
-pub const FuriHalBtProfile_FuriHalBtProfileHidKeyboard: FuriHalBtProfile = 1;
-pub const FuriHalBtProfile_FuriHalBtProfileNumber: FuriHalBtProfile = 2;
-pub type FuriHalBtProfile = core::ffi::c_uchar;
 extern "C" {
     #[doc = "Lock core2 state transition"]
     pub fn furi_hal_bt_lock_core2();
@@ -7762,31 +7802,40 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Check if radio stack supports BLE GAT/GAP\n\n # Returns\n\ntrue if supported"]
-    pub fn furi_hal_bt_is_ble_gatt_gap_supported() -> bool;
+    pub fn furi_hal_bt_is_gatt_gap_supported() -> bool;
 }
 extern "C" {
     #[doc = "Check if radio stack supports testing\n\n # Returns\n\ntrue if supported"]
     pub fn furi_hal_bt_is_testing_supported() -> bool;
 }
 extern "C" {
-    #[doc = "Start BLE app\n\n # Arguments\n\n* `profile` - FuriHalBtProfile instance\n * `event_cb` - GapEventCallback instance\n * `context` - pointer to context\n\n # Returns\n\ntrue on success"]
+    #[doc = "Check if particular instance of profile belongs to given type\n\n # Arguments\n\n* `profile` - FuriHalBtProfile instance. If NULL, uses current profile\n * `profile_template` - basic profile template to check against\n\n # Returns\n\ntrue on success"]
+    pub fn furi_hal_bt_check_profile_type(
+        profile: *mut FuriHalBleProfileBase,
+        profile_template: *const FuriHalBleProfileTemplate,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Start BLE app\n\n # Arguments\n\n* `profile_template` - FuriHalBleProfileTemplate instance\n * `params` - Parameters to pass to the profile. Can be NULL\n * `event_cb` - GapEventCallback instance\n * `context` - pointer to context\n\n # Returns\n\ninstance of profile, NULL on failure"]
     pub fn furi_hal_bt_start_app(
-        profile: FuriHalBtProfile,
+        profile_template: *const FuriHalBleProfileTemplate,
+        params: FuriHalBleProfileParams,
         event_cb: GapEventCallback,
         context: *mut core::ffi::c_void,
-    ) -> bool;
+    ) -> *mut FuriHalBleProfileBase;
 }
 extern "C" {
     #[doc = "Reinitialize core2\n\n Also can be used to prepare core2 for stop modes"]
     pub fn furi_hal_bt_reinit();
 }
 extern "C" {
-    #[doc = "Change BLE app\n Restarts 2nd core\n\n # Arguments\n\n* `profile` - FuriHalBtProfile instance\n * `event_cb` - GapEventCallback instance\n * `context` - pointer to context\n\n # Returns\n\ntrue on success"]
+    #[doc = "Change BLE app\n Restarts 2nd core\n\n # Arguments\n\n* `profile_template` - FuriHalBleProfileTemplate instance\n * `profile_params` - Parameters to pass to the profile. Can be NULL\n * `event_cb` - GapEventCallback instance\n * `context` - pointer to context\n\n # Returns\n\ninstance of profile, NULL on failure"]
     pub fn furi_hal_bt_change_app(
-        profile: FuriHalBtProfile,
+        profile_template: *const FuriHalBleProfileTemplate,
+        profile_params: FuriHalBleProfileParams,
         event_cb: GapEventCallback,
         context: *mut core::ffi::c_void,
-    ) -> bool;
+    ) -> *mut FuriHalBleProfileBase;
 }
 extern "C" {
     #[doc = "Update battery level\n\n # Arguments\n\n* `battery_level` - battery level"]
@@ -7794,7 +7843,7 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Update battery power state"]
-    pub fn furi_hal_bt_update_power_state();
+    pub fn furi_hal_bt_update_power_state(charging: bool);
 }
 extern "C" {
     #[doc = "Checks if BLE state is active\n\n # Returns\n\ntrue if device is connected or advertising, false otherwise"]
@@ -7878,6 +7927,34 @@ extern "C" {
 extern "C" {
     #[doc = "Check & switch C2 to given mode\n\n # Arguments\n\n* `mode` (direction in) - mode to switch into"]
     pub fn furi_hal_bt_ensure_c2_mode(mode: BleGlueC2Mode) -> bool;
+}
+extern "C" {
+    #[doc = "Set extra beacon data. Can be called in any state\n\n # Arguments\n\n* `data` (direction in) - data to set\n * `len` (direction in) - data length. Must be <= EXTRA_BEACON_MAX_DATA_SIZE\n\n # Returns\n\ntrue on success"]
+    pub fn furi_hal_bt_extra_beacon_set_data(data: *const u8, len: u8) -> bool;
+}
+extern "C" {
+    #[doc = "Get last configured extra beacon data\n\n # Arguments\n\n* `data` - data buffer to write to. Must be at least EXTRA_BEACON_MAX_DATA_SIZE bytes long\n\n # Returns\n\nvalid data length"]
+    pub fn furi_hal_bt_extra_beacon_get_data(data: *mut u8) -> u8;
+}
+extern "C" {
+    #[doc = "Configure extra beacon.\n\n # Arguments\n\n* `config` (direction in) - extra beacon config: interval, power, address, etc.\n\n # Returns\n\ntrue on success"]
+    pub fn furi_hal_bt_extra_beacon_set_config(config: *const GapExtraBeaconConfig) -> bool;
+}
+extern "C" {
+    #[doc = "Start extra beacon.\n Beacon must configured with furi_hal_bt_extra_beacon_set_config()\n and in stopped state before calling this function.\n\n # Returns\n\ntrue on success"]
+    pub fn furi_hal_bt_extra_beacon_start() -> bool;
+}
+extern "C" {
+    #[doc = "Stop extra beacon\n\n # Returns\n\ntrue on success"]
+    pub fn furi_hal_bt_extra_beacon_stop() -> bool;
+}
+extern "C" {
+    #[doc = "Check if extra beacon is active.\n\n # Returns\n\nextra beacon state"]
+    pub fn furi_hal_bt_extra_beacon_is_active() -> bool;
+}
+extern "C" {
+    #[doc = "Get last configured extra beacon config\n\n # Returns\n\nextra beacon config. NULL if beacon had never been configured."]
+    pub fn furi_hal_bt_extra_beacon_get_config() -> *const GapExtraBeaconConfig;
 }
 #[doc = "SPI Init structures definition"]
 #[repr(C)]
@@ -9368,46 +9445,185 @@ extern "C" {
 extern "C" {
     pub fn furi_hal_ccid_ccid_remove_smartcard();
 }
-pub const FuriHalUartId_FuriHalUartIdUSART1: FuriHalUartId = 0;
-pub const FuriHalUartId_FuriHalUartIdLPUART1: FuriHalUartId = 1;
+pub const FuriHalSerialId_FuriHalSerialIdUsart: FuriHalSerialId = 0;
+pub const FuriHalSerialId_FuriHalSerialIdLpuart: FuriHalSerialId = 1;
+pub const FuriHalSerialId_FuriHalSerialIdMax: FuriHalSerialId = 2;
 #[doc = "UART channels"]
-pub type FuriHalUartId = core::ffi::c_uchar;
-pub const UartIrqEvent_UartIrqEventRXNE: UartIrqEvent = 0;
-#[doc = "UART events"]
-pub type UartIrqEvent = core::ffi::c_uchar;
-extern "C" {
-    #[doc = "Init UART\n Configures GPIO to UART function, сonfigures UART hardware, enables UART hardware\n # Arguments\n\n* `channel` - UART channel\n * `baud` - baudrate"]
-    pub fn furi_hal_uart_init(channel: FuriHalUartId, baud: u32);
+pub type FuriHalSerialId = core::ffi::c_uchar;
+pub const FuriHalSerialDirection_FuriHalSerialDirectionTx: FuriHalSerialDirection = 0;
+pub const FuriHalSerialDirection_FuriHalSerialDirectionRx: FuriHalSerialDirection = 1;
+pub const FuriHalSerialDirection_FuriHalSerialDirectionMax: FuriHalSerialDirection = 2;
+pub type FuriHalSerialDirection = core::ffi::c_uchar;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FuriHalSerialHandle {
+    _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = "Deinit UART\n Configures GPIO to analog, clears callback and callback context, disables UART hardware\n # Arguments\n\n* `channel` - UART channel"]
-    pub fn furi_hal_uart_deinit(channel: FuriHalUartId);
+    #[doc = "Initialize Serial Control"]
+    pub fn furi_hal_serial_control_init();
 }
 extern "C" {
-    #[doc = "Suspend UART operation\n Disables UART hardware, settings and callbacks are preserved\n # Arguments\n\n* `channel` - UART channel"]
-    pub fn furi_hal_uart_suspend(channel: FuriHalUartId);
+    #[doc = "De-Initialize Serial Control"]
+    pub fn furi_hal_serial_control_deinit();
 }
 extern "C" {
-    #[doc = "Resume UART operation\n Resumes UART hardware from suspended state\n # Arguments\n\n* `channel` - UART channel"]
-    pub fn furi_hal_uart_resume(channel: FuriHalUartId);
+    #[doc = "Acquire Serial Interface Handler\n\n # Arguments\n\n* `serial_id` (direction in) - The serial transceiver identifier\n\n # Returns\n\nThe Serial Interface Handle or null if interfaces is in use"]
+    pub fn furi_hal_serial_control_acquire(serial_id: FuriHalSerialId) -> *mut FuriHalSerialHandle;
 }
 extern "C" {
-    #[doc = "Changes UART baudrate\n # Arguments\n\n* `channel` - UART channel\n * `baud` - baudrate"]
-    pub fn furi_hal_uart_set_br(channel: FuriHalUartId, baud: u32);
+    #[doc = "Release Serial Interface Handler\n\n # Arguments\n\n* `handle` - The handle"]
+    pub fn furi_hal_serial_control_release(handle: *mut FuriHalSerialHandle);
 }
 extern "C" {
-    #[doc = "Transmits data\n # Arguments\n\n* `channel` - UART channel\n * `buffer` - data\n * `buffer_size` - data size (in bytes)"]
-    pub fn furi_hal_uart_tx(channel: FuriHalUartId, buffer: *mut u8, buffer_size: usize);
+    #[doc = "Acquire Serial Interface Handler\n\n # Arguments\n\n* `serial_id` (direction in) - The serial transceiver identifier\n\n # Returns\n\ntrue if handle is acquired by someone"]
+    pub fn furi_hal_serial_control_is_busy(serial_id: FuriHalSerialId) -> bool;
 }
 extern "C" {
-    #[doc = "Sets UART event callback\n # Arguments\n\n* `channel` - UART channel\n * `callback` - callback pointer\n * `context` - callback context"]
-    pub fn furi_hal_uart_set_irq_cb(
-        channel: FuriHalUartId,
-        callback: ::core::option::Option<
-            unsafe extern "C" fn(event: UartIrqEvent, data: u8, context: *mut core::ffi::c_void),
-        >,
+    #[doc = "Acquire Serial Interface Handler\n\n # Arguments\n\n* `serial_id` (direction in) - The serial transceiver identifier. Use FuriHalSerialIdMax to disable logging.\n * `baud_rate` (direction in) - The baud rate\n\n # Returns\n\nThe Serial Interface Handle or null if interfaces is in use"]
+    pub fn furi_hal_serial_control_set_logging_config(serial_id: FuriHalSerialId, baud_rate: u32);
+}
+#[doc = "Expansion module detection callback type.\n\n # Arguments\n\n* `context` (direction in, out) - Pointer to the user-defined context object."]
+pub type FuriHalSerialControlExpansionCallback =
+    ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
+extern "C" {
+    #[doc = "Enable expansion module detection for a given serial interface.\n\n Passing NULL as the callback parameter disables external module detection.\n\n # Arguments\n\n* `serial_id` (direction in) - Identifier of the serial interface to be used.\n * `callback` (direction in) - Pointer to the callback function to be called upon module detection.\n * `context` (direction in, out) - Pointer to the user-defined context object. Will be passed to the callback function."]
+    pub fn furi_hal_serial_control_set_expansion_callback(
+        serial_id: FuriHalSerialId,
+        callback: FuriHalSerialControlExpansionCallback,
         context: *mut core::ffi::c_void,
     );
+}
+extern "C" {
+    #[doc = "Initialize Serial\n\n Configures GPIO, configures and enables transceiver.\n\n # Arguments\n\n* `handle` - Serial handle\n * `baud` - baud rate"]
+    pub fn furi_hal_serial_init(handle: *mut FuriHalSerialHandle, baud: u32);
+}
+extern "C" {
+    #[doc = "De-initialize Serial\n\n Configures GPIO to analog, clears callback and callback context, disables\n hardware\n\n # Arguments\n\n* `handle` - Serial handle"]
+    pub fn furi_hal_serial_deinit(handle: *mut FuriHalSerialHandle);
+}
+extern "C" {
+    #[doc = "Suspend operation\n\n Suspend hardware, settings and callbacks are preserved\n\n # Arguments\n\n* `handle` - Serial handle"]
+    pub fn furi_hal_serial_suspend(handle: *mut FuriHalSerialHandle);
+}
+extern "C" {
+    #[doc = "Resume operation\n\n Resumes hardware from suspended state\n\n # Arguments\n\n* `handle` - Serial handle"]
+    pub fn furi_hal_serial_resume(handle: *mut FuriHalSerialHandle);
+}
+extern "C" {
+    #[doc = "Determine whether a certain baud rate is supported\n\n # Arguments\n\n* `handle` - Serial handle\n * `baud` - baud rate to be checked\n # Returns\n\ntrue if baud rate is supported, false otherwise."]
+    pub fn furi_hal_serial_is_baud_rate_supported(
+        handle: *mut FuriHalSerialHandle,
+        baud: u32,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Changes baud rate\n\n # Arguments\n\n* `handle` - Serial handle\n * `baud` - baud rate"]
+    pub fn furi_hal_serial_set_br(handle: *mut FuriHalSerialHandle, baud: u32);
+}
+extern "C" {
+    #[doc = "Transmits data in semi-blocking mode\n\n Fills transmission pipe with data, returns as soon as all bytes from buffer\n are in the pipe.\n\n Real transmission will be completed later. Use\n `furi_hal_serial_tx_wait_complete` to wait for completion if you need it.\n\n # Arguments\n\n* `handle` - Serial handle\n * `buffer` - data\n * `buffer_size` - data size (in bytes)"]
+    pub fn furi_hal_serial_tx(
+        handle: *mut FuriHalSerialHandle,
+        buffer: *const u8,
+        buffer_size: usize,
+    );
+}
+extern "C" {
+    #[doc = "Wait until transmission is completed\n\n Ensures that all data has been sent.\n\n # Arguments\n\n* `handle` - Serial handle"]
+    pub fn furi_hal_serial_tx_wait_complete(handle: *mut FuriHalSerialHandle);
+}
+#[doc = "< Data: new data available"]
+pub const FuriHalSerialRxEvent_FuriHalSerialRxEventData: FuriHalSerialRxEvent = 1;
+#[doc = "< Idle: bus idle detected"]
+pub const FuriHalSerialRxEvent_FuriHalSerialRxEventIdle: FuriHalSerialRxEvent = 2;
+#[doc = "< Framing Error: incorrect frame detected"]
+pub const FuriHalSerialRxEvent_FuriHalSerialRxEventFrameError: FuriHalSerialRxEvent = 4;
+#[doc = "< Noise Error: noise on the line detected"]
+pub const FuriHalSerialRxEvent_FuriHalSerialRxEventNoiseError: FuriHalSerialRxEvent = 8;
+#[doc = "< Overrun Error: no space for received data"]
+pub const FuriHalSerialRxEvent_FuriHalSerialRxEventOverrunError: FuriHalSerialRxEvent = 16;
+#[doc = "Serial RX events"]
+pub type FuriHalSerialRxEvent = core::ffi::c_uchar;
+#[doc = "Receive callback\n\n Callback will be called in interrupt context, ensure thread\n safety on your side.\n # Arguments\n\n* `handle` - Serial handle\n * `event` - FuriHalSerialRxEvent\n * `context` - Callback context provided earlier"]
+pub type FuriHalSerialAsyncRxCallback = ::core::option::Option<
+    unsafe extern "C" fn(
+        handle: *mut FuriHalSerialHandle,
+        event: FuriHalSerialRxEvent,
+        context: *mut core::ffi::c_void,
+    ),
+>;
+extern "C" {
+    #[doc = "Start and sets Serial Receive callback\n\n Callback will be called in interrupt context, ensure thread\n safety on your side\n\n # Arguments\n\n* `handle` - Serial handle\n * `callback` - callback pointer\n * `context` - callback context\n * `report_errors` (direction in) - report RX error"]
+    pub fn furi_hal_serial_async_rx_start(
+        handle: *mut FuriHalSerialHandle,
+        callback: FuriHalSerialAsyncRxCallback,
+        context: *mut core::ffi::c_void,
+        report_errors: bool,
+    );
+}
+extern "C" {
+    #[doc = "Stop Serial Receive\n\n # Arguments\n\n* `handle` - Serial handle"]
+    pub fn furi_hal_serial_async_rx_stop(handle: *mut FuriHalSerialHandle);
+}
+extern "C" {
+    #[doc = "Check if there is data available for reading\n\n This function must be called only from the callback\n FuriHalSerialAsyncRxCallback\n\n # Arguments\n\n* `handle` - Serial handle\n # Returns\n\ntrue if data is available for reading, false otherwise"]
+    pub fn furi_hal_serial_async_rx_available(handle: *mut FuriHalSerialHandle) -> bool;
+}
+extern "C" {
+    #[doc = "Get data Serial receive\n\n This function must be called only from the callback\n FuriHalSerialAsyncRxCallback\n\n # Arguments\n\n* `handle` - Serial handle\n\n # Returns\n\ndata"]
+    pub fn furi_hal_serial_async_rx(handle: *mut FuriHalSerialHandle) -> u8;
+}
+#[doc = "Receive DMA callback\n\n DMA Callback will be called in interrupt context, ensure thread\n safety on your side.\n\n # Arguments\n\n* `handle` - Serial handle\n * `event` - FuriHalSerialDmaRxEvent\n * `data_len` - Received data\n * `context` - Callback context provided earlier"]
+pub type FuriHalSerialDmaRxCallback = ::core::option::Option<
+    unsafe extern "C" fn(
+        handle: *mut FuriHalSerialHandle,
+        event: FuriHalSerialRxEvent,
+        data_len: usize,
+        context: *mut core::ffi::c_void,
+    ),
+>;
+extern "C" {
+    #[doc = "Enable an input/output directon\n\n Takes over the respective pin by reconfiguring it to\n the appropriate alternative function.\n\n # Arguments\n\n* `handle` - Serial handle\n * `direction` - Direction to enable"]
+    pub fn furi_hal_serial_enable_direction(
+        handle: *mut FuriHalSerialHandle,
+        direction: FuriHalSerialDirection,
+    );
+}
+extern "C" {
+    #[doc = "Disable an input/output directon\n\n Releases the respective pin by reconfiguring it to\n initial state, making possible its use for other purposes.\n\n # Arguments\n\n* `handle` - Serial handle\n * `direction` - Direction to disable"]
+    pub fn furi_hal_serial_disable_direction(
+        handle: *mut FuriHalSerialHandle,
+        direction: FuriHalSerialDirection,
+    );
+}
+extern "C" {
+    #[doc = "Get the GPIO pin associated with a serial\n\n # Arguments\n\n* `handle` - Serial handle\n * `direction` - Direction to query\n # Returns\n\npointer to the respective pin instance"]
+    pub fn furi_hal_serial_get_gpio_pin(
+        handle: *mut FuriHalSerialHandle,
+        direction: FuriHalSerialDirection,
+    ) -> *const GpioPin;
+}
+extern "C" {
+    #[doc = "Start and sets Serial event callback receive DMA\n\n # Arguments\n\n* `handle` - Serial handle\n * `callback` - callback pointer\n * `context` - callback context\n * `report_errors` (direction in) - report RX error"]
+    pub fn furi_hal_serial_dma_rx_start(
+        handle: *mut FuriHalSerialHandle,
+        callback: FuriHalSerialDmaRxCallback,
+        context: *mut core::ffi::c_void,
+        report_errors: bool,
+    );
+}
+extern "C" {
+    #[doc = "Stop Serial receive DMA\n\n # Arguments\n\n* `handle` - Serial handle"]
+    pub fn furi_hal_serial_dma_rx_stop(handle: *mut FuriHalSerialHandle);
+}
+extern "C" {
+    #[doc = "Get data Serial receive DMA\n\n This function must be called only from the callback\n FuriHalSerialDmaRxCallback\n\n # Arguments\n\n* `handle` - Serial handle\n * `data` - pointer to data buffer\n * `len` - get data size (in bytes)\n\n # Returns\n\nsize actual data receive (in bytes)"]
+    pub fn furi_hal_serial_dma_rx(
+        handle: *mut FuriHalSerialHandle,
+        data: *mut u8,
+        len: usize,
+    ) -> usize;
 }
 extern "C" {
     pub fn furi_hal_info_get_api_version(major: *mut u16, minor: *mut u16);
@@ -9888,7 +10104,7 @@ extern "C" {
     pub fn furi_hal_nfc_poller_tx(tx_data: *const u8, tx_bits: usize) -> FuriHalNfcError;
 }
 extern "C" {
-    #[doc = "Receive data in poller mode.\n\n The receive buffer must be big enough to accomodate all of the expected data.\n\n # Arguments\n\n* `rx_data[out]` - pointer to a byte array to be filled with received data.\n * `rx_data_size[in]` - maximum received data size, in bytes.\n * `rx_bits[out]` - pointer to the variable to hold received data size, in bits.\n # Returns\n\nFuriHalNfcErrorNone on success, any other error code on failure."]
+    #[doc = "Receive data in poller mode.\n\n The receive buffer must be big enough to accomodate all of the expected data.\n\n # Arguments\n\n* `rx_data` (direction out) - pointer to a byte array to be filled with received data.\n * `rx_data_size` (direction in) - maximum received data size, in bytes.\n * `rx_bits` (direction out) - pointer to the variable to hold received data size, in bits.\n # Returns\n\nFuriHalNfcErrorNone on success, any other error code on failure."]
     pub fn furi_hal_nfc_poller_rx(
         rx_data: *mut u8,
         rx_data_size: usize,
@@ -9900,7 +10116,7 @@ extern "C" {
     pub fn furi_hal_nfc_listener_tx(tx_data: *const u8, tx_bits: usize) -> FuriHalNfcError;
 }
 extern "C" {
-    #[doc = "Receive data in listener mode.\n\n The receive buffer must be big enough to accomodate all of the expected data.\n\n # Arguments\n\n* `rx_data[out]` - pointer to a byte array to be filled with received data.\n * `rx_data_size[in]` - maximum received data size, in bytes.\n * `rx_bits[out]` - pointer to the variable to hold received data size, in bits.\n # Returns\n\nFuriHalNfcErrorNone on success, any other error code on failure."]
+    #[doc = "Receive data in listener mode.\n\n The receive buffer must be big enough to accomodate all of the expected data.\n\n # Arguments\n\n* `rx_data` (direction out) - pointer to a byte array to be filled with received data.\n * `rx_data_size` (direction in) - maximum received data size, in bytes.\n * `rx_bits` (direction out) - pointer to the variable to hold received data size, in bits.\n # Returns\n\nFuriHalNfcErrorNone on success, any other error code on failure."]
     pub fn furi_hal_nfc_listener_rx(
         rx_data: *mut u8,
         rx_data_size: usize,
@@ -9977,7 +10193,7 @@ extern "C" {
     ) -> FuriHalNfcError;
 }
 extern "C" {
-    #[doc = "Receive ISO14443 (Type A) SDD frame in poller mode.\n\n The receive buffer must be big enough to accomodate all of the expected data.\n\n # Arguments\n\n* `rx_data[out]` - pointer to a byte array to be filled with received data.\n * `rx_data_size[in]` - maximum received data size, in bytes.\n * `rx_bits[out]` - pointer to the variable to hold received data size, in bits.\n # Returns\n\nFuriHalNfcErrorNone on success, any other error code on failure."]
+    #[doc = "Receive ISO14443 (Type A) SDD frame in poller mode.\n\n The receive buffer must be big enough to accomodate all of the expected data.\n\n # Arguments\n\n* `rx_data` (direction in) - pointer to a byte array to be filled with received data.\n * `rx_data_size` (direction in) - maximum received data size, in bytes.\n * `rx_bits` (direction in) - pointer to the variable to hold received data size, in bits.\n # Returns\n\nFuriHalNfcErrorNone on success, any other error code on failure."]
     pub fn furi_hal_nfc_iso14443a_rx_sdd_frame(
         rx_data: *mut u8,
         rx_data_size: usize,
@@ -10787,7 +11003,7 @@ extern "C" {
     ) -> FS_Error;
 }
 extern "C" {
-    #[doc = "Create a directory.\n\n # Arguments\n\n* `storage` - pointer to a storage API instance.\n * `fs_path` - pointer to a zero-terminated string containing the directory path.\n # Returns\n\nFSE_OK if the directory has been successfully created, any other error code on failure."]
+    #[doc = "Create a directory.\n\n # Arguments\n\n* `storage` - pointer to a storage API instance.\n * `path` - pointer to a zero-terminated string containing the directory path.\n # Returns\n\nFSE_OK if the directory has been successfully created, any other error code on failure."]
     pub fn storage_common_mkdir(storage: *mut Storage, path: *const core::ffi::c_char) -> FS_Error;
 }
 extern "C" {
@@ -10800,7 +11016,7 @@ extern "C" {
     ) -> FS_Error;
 }
 extern "C" {
-    #[doc = "Parse aliases in a path and replace them with the real path.\n\n Necessary special directories will be created automatically if they did not exist.\n\n # Arguments\n\n* `storage` - pointer to a storage API instance.\n * `path` - pointer to a zero-terminated string containing the path in question.\n # Returns\n\ntrue if the path was successfully resolved, false otherwise."]
+    #[doc = "Parse aliases in a path and replace them with the real path.\n\n Necessary special directories will be created automatically if they did not exist.\n\n # Arguments\n\n* `storage` - pointer to a storage API instance.\n * `path` - pointer to a zero-terminated string containing the path in question."]
     pub fn storage_common_resolve_path_and_ensure_app_directory(
         storage: *mut Storage,
         path: *mut FuriString,
@@ -10870,7 +11086,7 @@ extern "C" {
 extern "C" {
     #[doc = "Restore the internal storage contents from a *.tar archive.\n\n # Arguments\n\n* `storage` - pointer to a storage API instance.\n * `dstname` - pointer to a zero-terminated string containing the archive file path.\n * `converter` - pointer to a filename conversion function (may be NULL).\n # Returns\n\nFSE_OK if the storage was successfully restored, any other error code on failure."]
     pub fn storage_int_restore(
-        api: *mut Storage,
+        storage: *mut Storage,
         dstname: *const core::ffi::c_char,
         converter: Storage_name_converter,
     ) -> FS_Error;
@@ -11451,14 +11667,19 @@ pub const BtStatus_BtStatusOff: BtStatus = 1;
 pub const BtStatus_BtStatusAdvertising: BtStatus = 2;
 pub const BtStatus_BtStatusConnected: BtStatus = 3;
 pub type BtStatus = core::ffi::c_uchar;
-pub const BtProfile_BtProfileSerial: BtProfile = 0;
-pub const BtProfile_BtProfileHidKeyboard: BtProfile = 1;
-pub type BtProfile = core::ffi::c_uchar;
 pub type BtStatusChangedCallback =
     ::core::option::Option<unsafe extern "C" fn(status: BtStatus, context: *mut core::ffi::c_void)>;
 extern "C" {
-    #[doc = "Change BLE Profile\n > **Note:** Call of this function leads to 2nd core restart\n\n # Arguments\n\n* `bt` - Bt instance\n * `profile` - BtProfile\n\n # Returns\n\ntrue on success"]
-    pub fn bt_set_profile(bt: *mut Bt, profile: BtProfile) -> bool;
+    #[doc = "Change BLE Profile\n > **Note:** Call of this function leads to 2nd core restart\n\n # Arguments\n\n* `bt` - Bt instance\n * `profile_template` - Profile template to change to\n * `params` - Profile parameters. Can be NULL\n\n # Returns\n\ntrue on success"]
+    pub fn bt_profile_start(
+        bt: *mut Bt,
+        profile_template: *const FuriHalBleProfileTemplate,
+        params: FuriHalBleProfileParams,
+    ) -> *mut FuriHalBleProfileBase;
+}
+extern "C" {
+    #[doc = "Stop current BLE Profile and restore default profile\n > **Note:** Call of this function leads to 2nd core restart\n\n # Arguments\n\n* `bt` - Bt instance\n\n # Returns\n\ntrue on success"]
+    pub fn bt_profile_restore_default(bt: *mut Bt) -> bool;
 }
 extern "C" {
     #[doc = "Disconnect from Central\n\n # Arguments\n\n* `bt` - Bt instance"]
@@ -11813,7 +12034,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Draw icon at position defined by x,y with rotation and flip.\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `icon` - Icon instance\n * `flip` - IconFlip\n * `rotation` - IconRotation"]
+    #[doc = "Draw icon at position defined by x,y with rotation and flip.\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `icon` - Icon instance\n * `rotation` - IconRotation"]
     pub fn canvas_draw_icon_ex(
         canvas: *mut Canvas,
         x: u8,
@@ -12063,25 +12284,25 @@ pub type ViewOrientation = core::ffi::c_uchar;
 pub struct View {
     _unused: [u8; 0],
 }
-#[doc = "View Draw callback\n # Arguments\n\n* `canvas,` - pointer to canvas\n * `view_model,` - pointer to context\n called from GUI thread"]
+#[doc = "View Draw callback\n # Arguments\n\n* `canvas` - pointer to canvas\n * `model` - pointer to model\n called from GUI thread"]
 pub type ViewDrawCallback = ::core::option::Option<
     unsafe extern "C" fn(canvas: *mut Canvas, model: *mut core::ffi::c_void),
 >;
-#[doc = "View Input callback\n # Arguments\n\n* `event,` - pointer to input event data\n * `context,` - pointer to context\n # Returns\n\ntrue if event handled, false if event ignored\n called from GUI thread"]
+#[doc = "View Input callback\n # Arguments\n\n* `event` - pointer to input event data\n * `context` - pointer to context\n # Returns\n\ntrue if event handled, false if event ignored\n called from GUI thread"]
 pub type ViewInputCallback = ::core::option::Option<
     unsafe extern "C" fn(event: *mut InputEvent, context: *mut core::ffi::c_void) -> bool,
 >;
-#[doc = "View Custom callback\n # Arguments\n\n* `event,` - number of custom event\n * `context,` - pointer to context\n # Returns\n\ntrue if event handled, false if event ignored"]
+#[doc = "View Custom callback\n # Arguments\n\n* `event` - number of custom event\n * `context` - pointer to context\n # Returns\n\ntrue if event handled, false if event ignored"]
 pub type ViewCustomCallback = ::core::option::Option<
     unsafe extern "C" fn(event: u32, context: *mut core::ffi::c_void) -> bool,
 >;
-#[doc = "View navigation callback\n # Arguments\n\n* `context,` - pointer to context\n # Returns\n\nnext view id\n called from GUI thread"]
+#[doc = "View navigation callback\n # Arguments\n\n* `context` - pointer to context\n # Returns\n\nnext view id\n called from GUI thread"]
 pub type ViewNavigationCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void) -> u32>;
-#[doc = "View callback\n # Arguments\n\n* `context,` - pointer to context\n called from GUI thread"]
+#[doc = "View callback\n # Arguments\n\n* `context` - pointer to context\n called from GUI thread"]
 pub type ViewCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
-#[doc = "View Update Callback Called upon model change, need to be propagated to GUI\n throw ViewPort update\n # Arguments\n\n* `view,` - pointer to view\n * `context,` - pointer to context\n called from GUI thread"]
+#[doc = "View Update Callback Called upon model change, need to be propagated to GUI\n throw ViewPort update\n # Arguments\n\n* `view` - pointer to view\n * `context` - pointer to context\n called from GUI thread"]
 pub type ViewUpdateCallback =
     ::core::option::Option<unsafe extern "C" fn(view: *mut View, context: *mut core::ffi::c_void)>;
 #[doc = "Model is not allocated"]
@@ -12566,6 +12787,23 @@ extern "C" {
 extern "C" {
     pub fn dolphin_get_pubsub(dolphin: *mut Dolphin) -> *mut FuriPubSub;
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Expansion {
+    _unused: [u8; 0],
+}
+extern "C" {
+    #[doc = "Enable support for expansion modules.\n\n Calling this function will load user settings and enable\n expansion module support on the serial port specified in said settings.\n\n If expansion module support was disabled in settings, this function\n does nothing.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the Expansion instance."]
+    pub fn expansion_enable(instance: *mut Expansion);
+}
+extern "C" {
+    #[doc = "Disable support for expansion modules.\n\n Calling this function will cease all communications with the\n expansion module (if any), release the serial handle and\n reset the respective pins to the default state.\n\n > **Note:** Applications requiring serial port access MUST call\n this function BEFORE calling furi_hal_serial_control_acquire().\n Similarly, an expansion_enable() call MUST be made right AFTER\n a call to furi_hal_serial_control_release() to ensure that\n the user settings are properly restored.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the Expansion instance."]
+    pub fn expansion_disable(instance: *mut Expansion);
+}
+extern "C" {
+    #[doc = "Enable support for expansion modules on designated serial port.\n\n Only one serial port can be used to communicate with an expansion\n module at a time.\n\n Calling this function when expansion module support is already enabled\n will first disable the previous setting, then enable the current one.\n\n This function does not respect user settings for expansion modules,\n so calling it might leave the system in inconsistent state. Avoid using it\n unless absolutely necessary.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the Expansion instance.\n * `serial_id` (direction in) - numerical identifier of the serial."]
+    pub fn expansion_set_listen_serial(instance: *mut Expansion, serial_id: FuriHalSerialId);
+}
 extern "C" {
     #[doc = "Draw progress bar.\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - progress bar position on X axis\n * `y` - progress bar position on Y axis\n * `width` - progress bar width\n * `progress` - progress (0.0 - 1.0)"]
     pub fn elements_progress_bar(canvas: *mut Canvas, x: u8, y: u8, width: u8, progress: f32);
@@ -12664,7 +12902,7 @@ extern "C" {
     pub fn elements_bubble(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8);
 }
 extern "C" {
-    #[doc = "Draw bubble frame for text with corner\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - left x coordinates\n * `y` - top y coordinate\n * `width` - bubble width\n * `height` - bubble height\n * `horizontal` - horizontal aligning\n * `vertical` - aligning"]
+    #[doc = "Draw bubble frame for text with corner\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - left x coordinates\n * `y` - top y coordinate\n * `text` - text to display\n * `horizontal` - horizontal aligning\n * `vertical` - aligning"]
     pub fn elements_bubble_str(
         canvas: *mut Canvas,
         x: u8,
@@ -13144,7 +13382,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Set dialog icon\n\n If x or y is negative, dialog icon will not be rendered\n\n # Arguments\n\n* `dialog_ex` - DialogEx instance\n * `x` - x position\n * `y` - y position\n * `icon` - The icon\n * `name` - icon to be shown"]
+    #[doc = "Set dialog icon\n\n If x or y is negative, dialog icon will not be rendered\n\n # Arguments\n\n* `dialog_ex` - DialogEx instance\n * `x` - x position\n * `y` - y position\n * `icon` - The icon"]
     pub fn dialog_ex_set_icon(dialog_ex: *mut DialogEx, x: u8, y: u8, icon: *const Icon);
 }
 extern "C" {
@@ -13224,7 +13462,7 @@ extern "C" {
     pub fn file_browser_worker_alloc(
         path: *mut FuriString,
         base_path: *const core::ffi::c_char,
-        filter_ext: *const core::ffi::c_char,
+        ext_filter: *const core::ffi::c_char,
         skip_assets: bool,
         hide_dot_files: bool,
     ) -> *mut BrowserWorker;
@@ -13266,7 +13504,7 @@ extern "C" {
     pub fn file_browser_worker_set_config(
         browser: *mut BrowserWorker,
         path: *mut FuriString,
-        filter_ext: *const core::ffi::c_char,
+        ext_filter: *const core::ffi::c_char,
         skip_assets: bool,
         hide_dot_files: bool,
     );
@@ -13926,7 +14164,7 @@ extern "C" {
     pub fn scene_manager_handle_back_event(scene_manager: *mut SceneManager) -> bool;
 }
 extern "C" {
-    #[doc = "Tick event handler\n\n Calls Scene event handler with Tick event parameter\n\n # Arguments\n\n* `scene_manager` - SceneManager instance\n # Returns\n\ntrue if event was consumed, false otherwise"]
+    #[doc = "Tick event handler\n\n Calls Scene event handler with Tick event parameter\n\n # Arguments\n\n* `scene_manager` - SceneManager instance"]
     pub fn scene_manager_handle_tick_event(scene_manager: *mut SceneManager);
 }
 extern "C" {
@@ -14096,11 +14334,11 @@ extern "C" {
     pub fn view_stack_get_view(view_stack: *mut ViewStack) -> *mut View;
 }
 extern "C" {
-    #[doc = "Add View to ViewStack.\n Adds View on top of ViewStack.\n\n # Arguments\n\n* `view_stack` - instance\n view view to add"]
+    #[doc = "Add View to ViewStack.\n Adds View on top of ViewStack.\n\n # Arguments\n\n* `view_stack` - instance\n * `view` - view to add"]
     pub fn view_stack_add_view(view_stack: *mut ViewStack, view: *mut View);
 }
 extern "C" {
-    #[doc = "Remove any View in ViewStack.\n If no View to remove found - ignore.\n\n # Arguments\n\n* `view_stack` - instance\n view view to remove"]
+    #[doc = "Remove any View in ViewStack.\n If no View to remove found - ignore.\n\n # Arguments\n\n* `view_stack` - instance\n * `view` - view to remove"]
     pub fn view_stack_remove_view(view_stack: *mut ViewStack, view: *mut View);
 }
 extern "C" {
@@ -14198,7 +14436,7 @@ extern "C" {
     #[doc = "Format time to furi string\n\n # Arguments\n\n* `out_str` (direction out) - The FuriString to store formatted time\n * `datetime` (direction in) - Pointer to the datetime\n * `format` (direction in) - The Locale Time Format\n * `show_seconds` (direction in) - The show seconds flag"]
     pub fn locale_format_time(
         out_str: *mut FuriString,
-        datetime: *const FuriHalRtcDateTime,
+        datetime: *const DateTime,
         format: LocaleTimeFormat,
         show_seconds: bool,
     );
@@ -14215,7 +14453,7 @@ extern "C" {
     #[doc = "Format date to furi string\n\n # Arguments\n\n* `out_str` (direction out) - The FuriString to store formatted date\n * `datetime` (direction in) - Pointer to the datetime\n * `format` (direction in) - The format\n * `separator` (direction in) - The separator"]
     pub fn locale_format_date(
         out_str: *mut FuriString,
-        datetime: *const FuriHalRtcDateTime,
+        datetime: *const DateTime,
         format: LocaleDateFormat,
         separator: *const core::ffi::c_char,
     );
@@ -15236,6 +15474,9 @@ extern "C" {
     pub static sequence_success: NotificationSequence;
 }
 extern "C" {
+    pub static sequence_semi_success: NotificationSequence;
+}
+extern "C" {
     pub static sequence_error: NotificationSequence;
 }
 extern "C" {
@@ -15489,7 +15730,8 @@ pub type RpcSessionTerminatedCallback =
 pub const RpcOwner_RpcOwnerUnknown: RpcOwner = 0;
 pub const RpcOwner_RpcOwnerBle: RpcOwner = 1;
 pub const RpcOwner_RpcOwnerUsb: RpcOwner = 2;
-pub const RpcOwner_RpcOwnerCount: RpcOwner = 3;
+pub const RpcOwner_RpcOwnerUart: RpcOwner = 3;
+pub const RpcOwner_RpcOwnerCount: RpcOwner = 4;
 #[doc = "RPC owner"]
 pub type RpcOwner = core::ffi::c_uchar;
 extern "C" {
@@ -15516,7 +15758,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Set callback to notify that buffer is empty\n\n # Arguments\n\n* `session` - pointer to RpcSession descriptor\n * `callback` - callback to notify client that buffer is empty (can be NULL)"]
+    #[doc = "Set callback to notify that buffer is empty\n\n # Arguments\n\n* `session` - pointer to RpcSession descriptor\n * `callback` - callback to notify client that buffer is empty (can be NULL)\n * `context` - context to pass to callback"]
     pub fn rpc_session_set_buffer_is_empty_callback(
         session: *mut RpcSession,
         callback: RpcBufferIsEmptyCallback,
@@ -15540,7 +15782,7 @@ extern "C" {
     #[doc = "Give bytes to RPC service to decode them and perform command\n\n # Arguments\n\n* `session` - pointer to RpcSession descriptor\n * `buffer` - buffer to provide to RPC service\n * `size` - size of buffer\n * `timeout` - max timeout to wait till all buffer will be consumed\n\n # Returns\n\nactually consumed bytes"]
     pub fn rpc_session_feed(
         session: *mut RpcSession,
-        buffer: *mut u8,
+        buffer: *const u8,
         size: usize,
         timeout: u32,
     ) -> usize;
@@ -15813,6 +16055,209 @@ extern "C" {
         data: *const u8,
         data_size: usize,
     );
+}
+pub const BitLibParity_BitLibParityEven: BitLibParity = 0;
+pub const BitLibParity_BitLibParityOdd: BitLibParity = 1;
+pub const BitLibParity_BitLibParityAlways0: BitLibParity = 2;
+pub const BitLibParity_BitLibParityAlways1: BitLibParity = 3;
+pub type BitLibParity = core::ffi::c_uchar;
+extern "C" {
+    #[doc = "Push a bit into a byte array.\n # Arguments\n\n* `data` - array to push bit into\n * `data_size` - array size\n * `bit` - bit to push"]
+    pub fn bit_lib_push_bit(data: *mut u8, data_size: usize, bit: bool);
+}
+extern "C" {
+    #[doc = "Set a bit in a byte array.\n # Arguments\n\n* `data` - array to set bit in\n * `position` - The position of the bit to set.\n * `bit` - bit value to set"]
+    pub fn bit_lib_set_bit(data: *mut u8, position: usize, bit: bool);
+}
+extern "C" {
+    #[doc = "Set the bit at the given position to the given value.\n # Arguments\n\n* `data` - The data to set the bit in.\n * `position` - The position of the bit to set.\n * `byte` - The data to set the bit to.\n * `length` - The length of the data."]
+    pub fn bit_lib_set_bits(data: *mut u8, position: usize, byte: u8, length: u8);
+}
+extern "C" {
+    #[doc = "Get the bit of a byte.\n # Arguments\n\n* `data` - The byte to get the bits from.\n * `position` - The position of the bit.\n # Returns\n\nThe bit."]
+    pub fn bit_lib_get_bit(data: *const u8, position: usize) -> bool;
+}
+extern "C" {
+    #[doc = "Get the bits of a data, as uint8_t.\n # Arguments\n\n* `data` - The data to get the bits from.\n * `position` - The position of the first bit.\n * `length` - The length of the bits.\n # Returns\n\nThe bits."]
+    pub fn bit_lib_get_bits(data: *const u8, position: usize, length: u8) -> u8;
+}
+extern "C" {
+    #[doc = "Get the bits of a data, as uint16_t.\n # Arguments\n\n* `data` - The data to get the bits from.\n * `position` - The position of the first bit.\n * `length` - The length of the bits.\n # Returns\n\nThe bits."]
+    pub fn bit_lib_get_bits_16(data: *const u8, position: usize, length: u8) -> u16;
+}
+extern "C" {
+    #[doc = "Get the bits of a data, as uint32_t.\n # Arguments\n\n* `data` - The data to get the bits from.\n * `position` - The position of the first bit.\n * `length` - The length of the bits.\n # Returns\n\nThe bits."]
+    pub fn bit_lib_get_bits_32(data: *const u8, position: usize, length: u8) -> u32;
+}
+extern "C" {
+    #[doc = "Get the bits of a data, as uint64_t.\n # Arguments\n\n* `data` - The data to get the bits from.\n * `position` - The position of the first bit.\n * `length` - The length of the bits.\n # Returns\n\nThe bits."]
+    pub fn bit_lib_get_bits_64(data: *const u8, position: usize, length: u8) -> u64;
+}
+extern "C" {
+    #[doc = "Test parity of given bits\n # Arguments\n\n* `bits` - Bits to test parity of\n * `parity` - Parity to test against\n # Returns\n\ntrue if parity is correct, false otherwise"]
+    pub fn bit_lib_test_parity_32(bits: u32, parity: BitLibParity) -> bool;
+}
+extern "C" {
+    #[doc = "Test parity of bit array, check parity for every parity_length block from start\n\n # Arguments\n\n* `data` - Bit array\n * `position` - Start position\n * `length` - Bit count\n * `parity` - Parity to test against\n * `parity_length` - Parity block length\n # Returns\n\ntrue\n false"]
+    pub fn bit_lib_test_parity(
+        data: *const u8,
+        position: usize,
+        length: u8,
+        parity: BitLibParity,
+        parity_length: u8,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Add parity to bit array\n\n # Arguments\n\n* `data` - Source bit array\n * `position` - Start position\n * `dest` - Destination bit array\n * `dest_position` - Destination position\n * `source_length` - Source bit count\n * `parity_length` - Parity block length\n * `parity` - Parity to test against\n # Returns\n\nsize_t"]
+    pub fn bit_lib_add_parity(
+        data: *const u8,
+        position: usize,
+        dest: *mut u8,
+        dest_position: usize,
+        source_length: u8,
+        parity_length: u8,
+        parity: BitLibParity,
+    ) -> usize;
+}
+extern "C" {
+    #[doc = "Remove bit every n in array and shift array left. Useful to remove parity.\n\n # Arguments\n\n* `data` - Bit array\n * `position` - Start position\n * `length` - Bit count\n * `n` - every n bit will be removed\n # Returns\n\nsize_t"]
+    pub fn bit_lib_remove_bit_every_nth(data: *mut u8, position: usize, length: u8, n: u8)
+        -> usize;
+}
+extern "C" {
+    #[doc = "Copy bits from source to destination.\n\n # Arguments\n\n* `data` - destination array\n * `position` - position in destination array\n * `length` - length of bits to copy\n * `source` - source array\n * `source_position` - position in source array"]
+    pub fn bit_lib_copy_bits(
+        data: *mut u8,
+        position: usize,
+        length: usize,
+        source: *const u8,
+        source_position: usize,
+    );
+}
+extern "C" {
+    #[doc = "Reverse bits in bit array\n\n # Arguments\n\n* `data` - Bit array\n * `position` - start position\n * `length` - length of bits to reverse"]
+    pub fn bit_lib_reverse_bits(data: *mut u8, position: usize, length: u8);
+}
+extern "C" {
+    #[doc = "Count 1 bits in data\n\n # Arguments\n\n* `data` -\n # Returns\n\nuint8_t set bit count"]
+    pub fn bit_lib_get_bit_count(data: u32) -> u8;
+}
+extern "C" {
+    #[doc = "Print data as bit array\n\n # Arguments\n\n* `data` -\n * `length` -"]
+    pub fn bit_lib_print_bits(data: *const u8, length: usize);
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct BitLibRegion {
+    pub mark: core::ffi::c_char,
+    pub start: usize,
+    pub length: usize,
+}
+#[test]
+fn bindgen_test_layout_BitLibRegion() {
+    const UNINIT: ::core::mem::MaybeUninit<BitLibRegion> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<BitLibRegion>(),
+        12usize,
+        concat!("Size of: ", stringify!(BitLibRegion))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<BitLibRegion>(),
+        4usize,
+        concat!("Alignment of ", stringify!(BitLibRegion))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).mark) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BitLibRegion),
+            "::",
+            stringify!(mark)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).start) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BitLibRegion),
+            "::",
+            stringify!(start)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).length) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BitLibRegion),
+            "::",
+            stringify!(length)
+        )
+    );
+}
+extern "C" {
+    #[doc = "Print data as bit array and mark regions. Regions needs to be sorted by start position.\n\n # Arguments\n\n* `regions` -\n * `region_count` -\n * `data` -\n * `length` -"]
+    pub fn bit_lib_print_regions(
+        regions: *const BitLibRegion,
+        region_count: usize,
+        data: *const u8,
+        length: usize,
+    );
+}
+extern "C" {
+    #[doc = "Reverse bits in uint16_t, faster than generic bit_lib_reverse_bits.\n\n # Arguments\n\n* `data` -\n # Returns\n\nuint16_t"]
+    pub fn bit_lib_reverse_16_fast(data: u16) -> u16;
+}
+extern "C" {
+    #[doc = "Reverse bits in uint8_t, faster than generic bit_lib_reverse_bits.\n\n # Arguments\n\n* `byte` - Byte\n # Returns\n\nuint8_t the reversed byte"]
+    pub fn bit_lib_reverse_8_fast(byte: u8) -> u8;
+}
+extern "C" {
+    #[doc = "Slow, but generic CRC8 implementation\n\n # Arguments\n\n* `data` -\n * `data_size` -\n * `polynom` - CRC polynom\n * `init` - init value\n * `ref_in` - true if the right bit is older\n * `ref_out` - true to reverse output\n * `xor_out` - xor output with this value\n # Returns\n\nuint8_t"]
+    pub fn bit_lib_crc8(
+        data: *const u8,
+        data_size: usize,
+        polynom: u8,
+        init: u8,
+        ref_in: bool,
+        ref_out: bool,
+        xor_out: u8,
+    ) -> u16;
+}
+extern "C" {
+    #[doc = "Slow, but generic CRC16 implementation\n\n # Arguments\n\n* `data` -\n * `data_size` -\n * `polynom` - CRC polynom\n * `init` - init value\n * `ref_in` - true if the right bit is older\n * `ref_out` - true to reverse output\n * `xor_out` - xor output with this value\n # Returns\n\nuint16_t"]
+    pub fn bit_lib_crc16(
+        data: *const u8,
+        data_size: usize,
+        polynom: u16,
+        init: u16,
+        ref_in: bool,
+        ref_out: bool,
+        xor_out: u16,
+    ) -> u16;
+}
+extern "C" {
+    #[doc = "Convert number to bytes in big endian order\n\n # Arguments\n\n* `src` - number to convert\n * `len` - max used bytes count\n * `dest` - destination\n # Returns\n\nvoid"]
+    pub fn bit_lib_num_to_bytes_be(src: u64, len: u8, dest: *mut u8);
+}
+extern "C" {
+    #[doc = "Convert number to bytes in little endian order\n\n # Arguments\n\n* `src` - number to convert\n * `len` - max used bytes count\n * `dest` - destination\n # Returns\n\nvoid"]
+    pub fn bit_lib_num_to_bytes_le(src: u64, len: u8, dest: *mut u8);
+}
+extern "C" {
+    #[doc = "Convert bytes to number in big endian order\n\n # Arguments\n\n* `src` - byte array\n * `len` - max used bytes count\n # Returns\n\nuint64_t"]
+    pub fn bit_lib_bytes_to_num_be(src: *const u8, len: u8) -> u64;
+}
+extern "C" {
+    #[doc = "Convert bytes to number in little endian order\n\n # Arguments\n\n* `src` - byte array\n * `len` - max used bytes count\n # Returns\n\nuint64_t"]
+    pub fn bit_lib_bytes_to_num_le(src: *const u8, len: u8) -> u64;
+}
+extern "C" {
+    #[doc = "Convert bytes in binary-coded decimal encoding to number\n\n # Arguments\n\n* `src` - byte array\n * `len` - max used bytes count\n * `is_bcd` - will be true if all processed bytes is BCD encoded (no A-F nibbles)\n # Returns\n\nuint64_t"]
+    pub fn bit_lib_bytes_to_num_bcd(src: *const u8, len: u8, is_bcd: *mut bool) -> u64;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -17300,11 +17745,11 @@ pub type FuriHalInfraredTxGetDataISRCallback = ::core::option::Option<
 #[doc = "Callback type called every time signal is sent by DMA to Timer.\n\n Actually, it means there are 2 timings left to send for this signal, which is\n almost end. Don't use this callback to stop transmission, as far as there are\n next signal is charged for transmission by DMA."]
 pub type FuriHalInfraredTxSignalSentISRCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
-#[doc = "Signature of callback function for receiving continuous INFRARED rx signal.\n\n # Arguments\n\n* `ctx[in]` - context to pass to callback\n * `level[in]` - level of input INFRARED rx signal\n * `duration[in]` - duration of continuous rx signal level in us"]
+#[doc = "Signature of callback function for receiving continuous INFRARED rx signal.\n\n # Arguments\n\n* `ctx` (direction in) - context to pass to callback\n * `level` (direction in) - level of input INFRARED rx signal\n * `duration` (direction in) - duration of continuous rx signal level in us"]
 pub type FuriHalInfraredRxCaptureCallback = ::core::option::Option<
     unsafe extern "C" fn(ctx: *mut core::ffi::c_void, level: bool, duration: u32),
 >;
-#[doc = "Signature of callback function for reaching silence timeout on INFRARED port.\n\n # Arguments\n\n* `ctx[in]` - context to pass to callback"]
+#[doc = "Signature of callback function for reaching silence timeout on INFRARED port.\n\n # Arguments\n\n* `ctx` (direction in) - context to pass to callback"]
 pub type FuriHalInfraredRxTimeoutCallback =
     ::core::option::Option<unsafe extern "C" fn(ctx: *mut core::ffi::c_void)>;
 extern "C" {
@@ -17904,6 +18349,7 @@ extern "C" {
 pub struct LFRFIDT5577 {
     pub block: [u32; 8usize],
     pub blocks_to_write: u32,
+    pub mask: u8,
 }
 #[test]
 fn bindgen_test_layout_LFRFIDT5577() {
@@ -17911,7 +18357,7 @@ fn bindgen_test_layout_LFRFIDT5577() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<LFRFIDT5577>(),
-        36usize,
+        40usize,
         concat!("Size of: ", stringify!(LFRFIDT5577))
     );
     assert_eq!(
@@ -17939,30 +18385,48 @@ fn bindgen_test_layout_LFRFIDT5577() {
             stringify!(blocks_to_write)
         )
     );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).mask) as usize - ptr as usize },
+        36usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LFRFIDT5577),
+            "::",
+            stringify!(mask)
+        )
+    );
 }
 extern "C" {
     #[doc = "Write T5577 tag data to tag\n\n # Arguments\n\n* `data` -"]
     pub fn t5577_write(data: *mut LFRFIDT5577);
 }
+extern "C" {
+    pub fn t5577_write_with_pass(data: *mut LFRFIDT5577, password: u32);
+}
+extern "C" {
+    pub fn t5577_write_with_mask(data: *mut LFRFIDT5577, page: u8, with_pass: bool, password: u32);
+}
 pub const LFRFIDProtocol_LFRFIDProtocolEM4100: LFRFIDProtocol = 0;
-pub const LFRFIDProtocol_LFRFIDProtocolH10301: LFRFIDProtocol = 1;
-pub const LFRFIDProtocol_LFRFIDProtocolIdteck: LFRFIDProtocol = 2;
-pub const LFRFIDProtocol_LFRFIDProtocolIndala26: LFRFIDProtocol = 3;
-pub const LFRFIDProtocol_LFRFIDProtocolIOProxXSF: LFRFIDProtocol = 4;
-pub const LFRFIDProtocol_LFRFIDProtocolAwid: LFRFIDProtocol = 5;
-pub const LFRFIDProtocol_LFRFIDProtocolFDXA: LFRFIDProtocol = 6;
-pub const LFRFIDProtocol_LFRFIDProtocolFDXB: LFRFIDProtocol = 7;
-pub const LFRFIDProtocol_LFRFIDProtocolHidGeneric: LFRFIDProtocol = 8;
-pub const LFRFIDProtocol_LFRFIDProtocolHidExGeneric: LFRFIDProtocol = 9;
-pub const LFRFIDProtocol_LFRFIDProtocolPyramid: LFRFIDProtocol = 10;
-pub const LFRFIDProtocol_LFRFIDProtocolViking: LFRFIDProtocol = 11;
-pub const LFRFIDProtocol_LFRFIDProtocolJablotron: LFRFIDProtocol = 12;
-pub const LFRFIDProtocol_LFRFIDProtocolParadox: LFRFIDProtocol = 13;
-pub const LFRFIDProtocol_LFRFIDProtocolPACStanley: LFRFIDProtocol = 14;
-pub const LFRFIDProtocol_LFRFIDProtocolKeri: LFRFIDProtocol = 15;
-pub const LFRFIDProtocol_LFRFIDProtocolGallagher: LFRFIDProtocol = 16;
-pub const LFRFIDProtocol_LFRFIDProtocolNexwatch: LFRFIDProtocol = 17;
-pub const LFRFIDProtocol_LFRFIDProtocolMax: LFRFIDProtocol = 18;
+pub const LFRFIDProtocol_LFRFIDProtocolEM410032: LFRFIDProtocol = 1;
+pub const LFRFIDProtocol_LFRFIDProtocolEM410016: LFRFIDProtocol = 2;
+pub const LFRFIDProtocol_LFRFIDProtocolH10301: LFRFIDProtocol = 3;
+pub const LFRFIDProtocol_LFRFIDProtocolIdteck: LFRFIDProtocol = 4;
+pub const LFRFIDProtocol_LFRFIDProtocolIndala26: LFRFIDProtocol = 5;
+pub const LFRFIDProtocol_LFRFIDProtocolIOProxXSF: LFRFIDProtocol = 6;
+pub const LFRFIDProtocol_LFRFIDProtocolAwid: LFRFIDProtocol = 7;
+pub const LFRFIDProtocol_LFRFIDProtocolFDXA: LFRFIDProtocol = 8;
+pub const LFRFIDProtocol_LFRFIDProtocolFDXB: LFRFIDProtocol = 9;
+pub const LFRFIDProtocol_LFRFIDProtocolHidGeneric: LFRFIDProtocol = 10;
+pub const LFRFIDProtocol_LFRFIDProtocolHidExGeneric: LFRFIDProtocol = 11;
+pub const LFRFIDProtocol_LFRFIDProtocolPyramid: LFRFIDProtocol = 12;
+pub const LFRFIDProtocol_LFRFIDProtocolViking: LFRFIDProtocol = 13;
+pub const LFRFIDProtocol_LFRFIDProtocolJablotron: LFRFIDProtocol = 14;
+pub const LFRFIDProtocol_LFRFIDProtocolParadox: LFRFIDProtocol = 15;
+pub const LFRFIDProtocol_LFRFIDProtocolPACStanley: LFRFIDProtocol = 16;
+pub const LFRFIDProtocol_LFRFIDProtocolKeri: LFRFIDProtocol = 17;
+pub const LFRFIDProtocol_LFRFIDProtocolGallagher: LFRFIDProtocol = 18;
+pub const LFRFIDProtocol_LFRFIDProtocolNexwatch: LFRFIDProtocol = 19;
+pub const LFRFIDProtocol_LFRFIDProtocolMax: LFRFIDProtocol = 20;
 pub type LFRFIDProtocol = core::ffi::c_uchar;
 extern "C" {
     pub static mut lfrfid_protocols: [*const ProtocolBase; 0usize];
@@ -18188,185 +18652,6 @@ extern "C" {
     #[doc = "Stop worker\n\n # Arguments\n\n* `worker` -"]
     pub fn lfrfid_raw_worker_stop(worker: *mut LFRFIDRawWorker);
 }
-pub const BitLibParity_BitLibParityEven: BitLibParity = 0;
-pub const BitLibParity_BitLibParityOdd: BitLibParity = 1;
-pub const BitLibParity_BitLibParityAlways0: BitLibParity = 2;
-pub const BitLibParity_BitLibParityAlways1: BitLibParity = 3;
-pub type BitLibParity = core::ffi::c_uchar;
-extern "C" {
-    #[doc = "Push a bit into a byte array.\n # Arguments\n\n* `data` - array to push bit into\n * `data_size` - array size\n * `bit` - bit to push"]
-    pub fn bit_lib_push_bit(data: *mut u8, data_size: usize, bit: bool);
-}
-extern "C" {
-    #[doc = "Set a bit in a byte array.\n # Arguments\n\n* `data` - array to set bit in\n * `position` - The position of the bit to set.\n * `bit` - bit value to set"]
-    pub fn bit_lib_set_bit(data: *mut u8, position: usize, bit: bool);
-}
-extern "C" {
-    #[doc = "Set the bit at the given position to the given value.\n # Arguments\n\n* `data` - The data to set the bit in.\n * `position` - The position of the bit to set.\n * `byte` - The data to set the bit to.\n * `length` - The length of the data."]
-    pub fn bit_lib_set_bits(data: *mut u8, position: usize, byte: u8, length: u8);
-}
-extern "C" {
-    #[doc = "Get the bit of a byte.\n # Arguments\n\n* `data` - The byte to get the bits from.\n * `position` - The position of the bit.\n # Returns\n\nThe bit."]
-    pub fn bit_lib_get_bit(data: *const u8, position: usize) -> bool;
-}
-extern "C" {
-    #[doc = "Get the bits of a data, as uint8_t.\n # Arguments\n\n* `data` - The data to get the bits from.\n * `position` - The position of the first bit.\n * `length` - The length of the bits.\n # Returns\n\nThe bits."]
-    pub fn bit_lib_get_bits(data: *const u8, position: usize, length: u8) -> u8;
-}
-extern "C" {
-    #[doc = "Get the bits of a data, as uint16_t.\n # Arguments\n\n* `data` - The data to get the bits from.\n * `position` - The position of the first bit.\n * `length` - The length of the bits.\n # Returns\n\nThe bits."]
-    pub fn bit_lib_get_bits_16(data: *const u8, position: usize, length: u8) -> u16;
-}
-extern "C" {
-    #[doc = "Get the bits of a data, as uint32_t.\n # Arguments\n\n* `data` - The data to get the bits from.\n * `position` - The position of the first bit.\n * `length` - The length of the bits.\n # Returns\n\nThe bits."]
-    pub fn bit_lib_get_bits_32(data: *const u8, position: usize, length: u8) -> u32;
-}
-extern "C" {
-    #[doc = "Test parity of given bits\n # Arguments\n\n* `bits` - Bits to test parity of\n * `parity` - Parity to test against\n # Returns\n\ntrue if parity is correct, false otherwise"]
-    pub fn bit_lib_test_parity_32(bits: u32, parity: BitLibParity) -> bool;
-}
-extern "C" {
-    #[doc = "Test parity of bit array, check parity for every parity_length block from start\n\n # Arguments\n\n* `data` - Bit array\n * `position` - Start position\n * `length` - Bit count\n * `parity` - Parity to test against\n * `parity_length` - Parity block length\n # Returns\n\ntrue\n false"]
-    pub fn bit_lib_test_parity(
-        data: *const u8,
-        position: usize,
-        length: u8,
-        parity: BitLibParity,
-        parity_length: u8,
-    ) -> bool;
-}
-extern "C" {
-    #[doc = "Add parity to bit array\n\n # Arguments\n\n* `data` - Source bit array\n * `position` - Start position\n * `dest` - Destination bit array\n * `dest_position` - Destination position\n * `source_length` - Source bit count\n * `parity_length` - Parity block length\n * `parity` - Parity to test against\n # Returns\n\nsize_t"]
-    pub fn bit_lib_add_parity(
-        data: *const u8,
-        position: usize,
-        dest: *mut u8,
-        dest_position: usize,
-        source_length: u8,
-        parity_length: u8,
-        parity: BitLibParity,
-    ) -> usize;
-}
-extern "C" {
-    #[doc = "Remove bit every n in array and shift array left. Useful to remove parity.\n\n # Arguments\n\n* `data` - Bit array\n * `position` - Start position\n * `length` - Bit count\n * `n` - every n bit will be removed\n # Returns\n\nsize_t"]
-    pub fn bit_lib_remove_bit_every_nth(data: *mut u8, position: usize, length: u8, n: u8)
-        -> usize;
-}
-extern "C" {
-    #[doc = "Copy bits from source to destination.\n\n # Arguments\n\n* `data` - destination array\n * `position` - position in destination array\n * `length` - length of bits to copy\n * `source` - source array\n * `source_position` - position in source array"]
-    pub fn bit_lib_copy_bits(
-        data: *mut u8,
-        position: usize,
-        length: usize,
-        source: *const u8,
-        source_position: usize,
-    );
-}
-extern "C" {
-    #[doc = "Reverse bits in bit array\n\n # Arguments\n\n* `data` - Bit array\n * `position` - start position\n * `length` - length of bits to reverse"]
-    pub fn bit_lib_reverse_bits(data: *mut u8, position: usize, length: u8);
-}
-extern "C" {
-    #[doc = "Count 1 bits in data\n\n # Arguments\n\n* `data` -\n # Returns\n\nuint8_t set bit count"]
-    pub fn bit_lib_get_bit_count(data: u32) -> u8;
-}
-extern "C" {
-    #[doc = "Print data as bit array\n\n # Arguments\n\n* `data` -\n * `length` -"]
-    pub fn bit_lib_print_bits(data: *const u8, length: usize);
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct BitLibRegion {
-    pub mark: core::ffi::c_char,
-    pub start: usize,
-    pub length: usize,
-}
-#[test]
-fn bindgen_test_layout_BitLibRegion() {
-    const UNINIT: ::core::mem::MaybeUninit<BitLibRegion> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<BitLibRegion>(),
-        12usize,
-        concat!("Size of: ", stringify!(BitLibRegion))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<BitLibRegion>(),
-        4usize,
-        concat!("Alignment of ", stringify!(BitLibRegion))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).mark) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(BitLibRegion),
-            "::",
-            stringify!(mark)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).start) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(BitLibRegion),
-            "::",
-            stringify!(start)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).length) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(BitLibRegion),
-            "::",
-            stringify!(length)
-        )
-    );
-}
-extern "C" {
-    #[doc = "Print data as bit array and mark regions. Regions needs to be sorted by start position.\n\n # Arguments\n\n* `regions` -\n * `region_count` -\n * `data` -\n * `length` -"]
-    pub fn bit_lib_print_regions(
-        regions: *const BitLibRegion,
-        region_count: usize,
-        data: *const u8,
-        length: usize,
-    );
-}
-extern "C" {
-    #[doc = "Reverse bits in uint16_t, faster than generic bit_lib_reverse_bits.\n\n # Arguments\n\n* `data` -\n # Returns\n\nuint16_t"]
-    pub fn bit_lib_reverse_16_fast(data: u16) -> u16;
-}
-extern "C" {
-    #[doc = "Reverse bits in uint8_t, faster than generic bit_lib_reverse_bits.\n\n # Arguments\n\n* `byte` - Byte\n # Returns\n\nuint8_t the reversed byte"]
-    pub fn bit_lib_reverse_8_fast(byte: u8) -> u8;
-}
-extern "C" {
-    #[doc = "Slow, but generic CRC8 implementation\n\n # Arguments\n\n* `data` -\n * `data_size` -\n * `polynom` - CRC polynom\n * `init` - init value\n * `ref_in` - true if the right bit is older\n * `ref_out` - true to reverse output\n * `xor_out` - xor output with this value\n # Returns\n\nuint8_t"]
-    pub fn bit_lib_crc8(
-        data: *const u8,
-        data_size: usize,
-        polynom: u8,
-        init: u8,
-        ref_in: bool,
-        ref_out: bool,
-        xor_out: u8,
-    ) -> u16;
-}
-extern "C" {
-    #[doc = "Slow, but generic CRC16 implementation\n\n # Arguments\n\n* `data` -\n * `data_size` -\n * `polynom` - CRC polynom\n * `init` - init value\n * `ref_in` - true if the right bit is older\n * `ref_out` - true to reverse output\n * `xor_out` - xor output with this value\n # Returns\n\nuint16_t"]
-    pub fn bit_lib_crc16(
-        data: *const u8,
-        data_size: usize,
-        polynom: u16,
-        init: u16,
-        ref_in: bool,
-        ref_out: bool,
-        xor_out: u16,
-    ) -> u16;
-}
 #[doc = "Line Coding Structure"]
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -18435,6 +18720,438 @@ fn bindgen_test_layout_usb_cdc_line_coding() {
             stringify!(bDataBits)
         )
     );
+}
+pub type mjs_val_t = u64;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct mjs {
+    _unused: [u8; 0],
+}
+pub const mjs_err_MJS_OK: mjs_err = 0;
+pub const mjs_err_MJS_SYNTAX_ERROR: mjs_err = 1;
+pub const mjs_err_MJS_REFERENCE_ERROR: mjs_err = 2;
+pub const mjs_err_MJS_TYPE_ERROR: mjs_err = 3;
+pub const mjs_err_MJS_OUT_OF_MEMORY: mjs_err = 4;
+pub const mjs_err_MJS_INTERNAL_ERROR: mjs_err = 5;
+pub const mjs_err_MJS_NOT_IMPLEMENTED_ERROR: mjs_err = 6;
+pub const mjs_err_MJS_FILE_READ_ERROR: mjs_err = 7;
+pub const mjs_err_MJS_BAD_ARGS_ERROR: mjs_err = 8;
+pub const mjs_err_MJS_NEED_EXIT: mjs_err = 9;
+pub const mjs_err_MJS_ERRS_CNT: mjs_err = 10;
+pub type mjs_err = core::ffi::c_uchar;
+pub use self::mjs_err as mjs_err_t;
+pub type mjs_flags_poller_t = ::core::option::Option<unsafe extern "C" fn(mjs: *mut mjs)>;
+extern "C" {
+    pub fn mjs_create(context: *mut core::ffi::c_void) -> *mut mjs;
+}
+extern "C" {
+    pub fn mjs_destroy(mjs: *mut mjs);
+}
+extern "C" {
+    pub fn mjs_get_global(mjs: *mut mjs) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_own(mjs: *mut mjs, v: *mut mjs_val_t);
+}
+extern "C" {
+    pub fn mjs_disown(mjs: *mut mjs, v: *mut mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_set_errorf(
+        mjs: *mut mjs,
+        err: mjs_err_t,
+        fmt: *const core::ffi::c_char,
+        ...
+    ) -> mjs_err_t;
+}
+extern "C" {
+    pub fn mjs_exit(mjs: *mut mjs);
+}
+extern "C" {
+    pub fn mjs_set_exec_flags_poller(mjs: *mut mjs, poller: mjs_flags_poller_t);
+}
+extern "C" {
+    pub fn mjs_get_context(mjs: *mut mjs) -> *mut core::ffi::c_void;
+}
+extern "C" {
+    pub fn mjs_prepend_errorf(
+        mjs: *mut mjs,
+        err: mjs_err_t,
+        fmt: *const core::ffi::c_char,
+        ...
+    ) -> mjs_err_t;
+}
+extern "C" {
+    pub fn mjs_strerror(mjs: *mut mjs, err: mjs_err) -> *const core::ffi::c_char;
+}
+extern "C" {
+    pub fn mjs_get_stack_trace(mjs: *mut mjs) -> *const core::ffi::c_char;
+}
+extern "C" {
+    pub fn mjs_nargs(mjs: *mut mjs) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_arg(mjs: *mut mjs, n: core::ffi::c_int) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_return(mjs: *mut mjs, v: mjs_val_t);
+}
+extern "C" {
+    pub fn mjs_is_array_buf(v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_is_data_view(v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_is_typed_array(v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_mk_array_buf(
+        mjs: *mut mjs,
+        data: *mut core::ffi::c_char,
+        buf_len: usize,
+    ) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_array_buf_get_ptr(
+        mjs: *mut mjs,
+        buf: mjs_val_t,
+        bytelen: *mut usize,
+    ) -> *mut core::ffi::c_char;
+}
+extern "C" {
+    pub fn mjs_dataview_get_buf(mjs: *mut mjs, obj: mjs_val_t) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_mk_array(mjs: *mut mjs) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_array_length(mjs: *mut mjs, arr: mjs_val_t) -> core::ffi::c_ulong;
+}
+extern "C" {
+    pub fn mjs_array_push(mjs: *mut mjs, arr: mjs_val_t, v: mjs_val_t) -> mjs_err_t;
+}
+extern "C" {
+    pub fn mjs_array_get(arg1: *mut mjs, arr: mjs_val_t, index: core::ffi::c_ulong) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_array_set(
+        mjs: *mut mjs,
+        arr: mjs_val_t,
+        index: core::ffi::c_ulong,
+        v: mjs_val_t,
+    ) -> mjs_err_t;
+}
+extern "C" {
+    pub fn mjs_is_array(v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_array_del(mjs: *mut mjs, arr: mjs_val_t, index: core::ffi::c_ulong);
+}
+extern "C" {
+    pub fn mjs_exec(
+        arg1: *mut mjs,
+        src: *const core::ffi::c_char,
+        res: *mut mjs_val_t,
+    ) -> mjs_err_t;
+}
+extern "C" {
+    pub fn mjs_exec_file(
+        mjs: *mut mjs,
+        path: *const core::ffi::c_char,
+        res: *mut mjs_val_t,
+    ) -> mjs_err_t;
+}
+extern "C" {
+    pub fn mjs_apply(
+        mjs: *mut mjs,
+        res: *mut mjs_val_t,
+        func: mjs_val_t,
+        this_val: mjs_val_t,
+        nargs: core::ffi::c_int,
+        args: *mut mjs_val_t,
+    ) -> mjs_err_t;
+}
+extern "C" {
+    pub fn mjs_call(
+        mjs: *mut mjs,
+        res: *mut mjs_val_t,
+        func: mjs_val_t,
+        this_val: mjs_val_t,
+        nargs: core::ffi::c_int,
+        ...
+    ) -> mjs_err_t;
+}
+extern "C" {
+    pub fn mjs_get_this(mjs: *mut mjs) -> mjs_val_t;
+}
+pub type mjs_ffi_resolver_t = ::core::option::Option<
+    unsafe extern "C" fn(
+        handle: *mut core::ffi::c_void,
+        symbol: *const core::ffi::c_char,
+    ) -> *mut core::ffi::c_void,
+>;
+extern "C" {
+    pub fn mjs_set_ffi_resolver(
+        mjs: *mut mjs,
+        dlsym: mjs_ffi_resolver_t,
+        handle: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    pub fn mjs_ffi_resolve(
+        mjs: *mut mjs,
+        symbol: *const core::ffi::c_char,
+    ) -> *mut core::ffi::c_void;
+}
+extern "C" {
+    pub fn mjs_is_object(v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_is_object_based(v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_mk_object(mjs: *mut mjs) -> mjs_val_t;
+}
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_INVALID: mjs_struct_field_type = 0;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_STRUCT: mjs_struct_field_type = 1;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_STRUCT_PTR: mjs_struct_field_type = 2;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_INT: mjs_struct_field_type = 3;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_BOOL: mjs_struct_field_type = 4;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_DOUBLE: mjs_struct_field_type = 5;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_FLOAT: mjs_struct_field_type = 6;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_CHAR_PTR: mjs_struct_field_type = 7;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_VOID_PTR: mjs_struct_field_type = 8;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_MG_STR_PTR: mjs_struct_field_type = 9;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_MG_STR: mjs_struct_field_type = 10;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_DATA: mjs_struct_field_type = 11;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_INT8: mjs_struct_field_type = 12;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_INT16: mjs_struct_field_type = 13;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_UINT8: mjs_struct_field_type = 14;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_UINT16: mjs_struct_field_type = 15;
+pub const mjs_struct_field_type_MJS_STRUCT_FIELD_TYPE_CUSTOM: mjs_struct_field_type = 16;
+pub type mjs_struct_field_type = core::ffi::c_uchar;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct mjs_c_struct_member {
+    pub name: *const core::ffi::c_char,
+    pub offset: core::ffi::c_int,
+    pub type_: mjs_struct_field_type,
+    pub arg: *const core::ffi::c_void,
+}
+#[test]
+fn bindgen_test_layout_mjs_c_struct_member() {
+    const UNINIT: ::core::mem::MaybeUninit<mjs_c_struct_member> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<mjs_c_struct_member>(),
+        16usize,
+        concat!("Size of: ", stringify!(mjs_c_struct_member))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<mjs_c_struct_member>(),
+        4usize,
+        concat!("Alignment of ", stringify!(mjs_c_struct_member))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(mjs_c_struct_member),
+            "::",
+            stringify!(name)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).offset) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(mjs_c_struct_member),
+            "::",
+            stringify!(offset)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(mjs_c_struct_member),
+            "::",
+            stringify!(type_)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).arg) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(mjs_c_struct_member),
+            "::",
+            stringify!(arg)
+        )
+    );
+}
+extern "C" {
+    pub fn mjs_struct_to_obj(
+        mjs: *mut mjs,
+        base: *const core::ffi::c_void,
+        members: *const mjs_c_struct_member,
+    ) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_get(
+        mjs: *mut mjs,
+        obj: mjs_val_t,
+        name: *const core::ffi::c_char,
+        name_len: usize,
+    ) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_get_v(mjs: *mut mjs, obj: mjs_val_t, name: mjs_val_t) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_get_v_proto(mjs: *mut mjs, obj: mjs_val_t, key: mjs_val_t) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_set(
+        mjs: *mut mjs,
+        obj: mjs_val_t,
+        name: *const core::ffi::c_char,
+        len: usize,
+        val: mjs_val_t,
+    ) -> mjs_err_t;
+}
+extern "C" {
+    pub fn mjs_set_v(mjs: *mut mjs, obj: mjs_val_t, name: mjs_val_t, val: mjs_val_t) -> mjs_err_t;
+}
+extern "C" {
+    pub fn mjs_del(
+        mjs: *mut mjs,
+        obj: mjs_val_t,
+        name: *const core::ffi::c_char,
+        len: usize,
+    ) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_next(mjs: *mut mjs, obj: mjs_val_t, iterator: *mut mjs_val_t) -> mjs_val_t;
+}
+pub type mjs_func_ptr_t = ::core::option::Option<unsafe extern "C" fn()>;
+extern "C" {
+    pub fn mjs_mk_null() -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_is_null(v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_mk_undefined() -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_is_undefined(v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_mk_number(mjs: *mut mjs, num: f64) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_get_double(mjs: *mut mjs, v: mjs_val_t) -> f64;
+}
+extern "C" {
+    pub fn mjs_get_int(mjs: *mut mjs, v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_get_int32(mjs: *mut mjs, v: mjs_val_t) -> i32;
+}
+extern "C" {
+    pub fn mjs_is_number(v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_mk_foreign(mjs: *mut mjs, ptr: *mut core::ffi::c_void) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_mk_foreign_func(mjs: *mut mjs, fn_: mjs_func_ptr_t) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_get_ptr(mjs: *mut mjs, v: mjs_val_t) -> *mut core::ffi::c_void;
+}
+extern "C" {
+    pub fn mjs_is_foreign(v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_mk_boolean(mjs: *mut mjs, v: core::ffi::c_int) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_get_bool(mjs: *mut mjs, v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_is_boolean(v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_mk_function(mjs: *mut mjs, off: usize) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_is_function(v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_mk_string(
+        mjs: *mut mjs,
+        str_: *const core::ffi::c_char,
+        len: usize,
+        copy: core::ffi::c_int,
+    ) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_is_string(v: mjs_val_t) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_get_string(
+        mjs: *mut mjs,
+        v: *mut mjs_val_t,
+        len: *mut usize,
+    ) -> *const core::ffi::c_char;
+}
+extern "C" {
+    pub fn mjs_get_cstring(mjs: *mut mjs, v: *mut mjs_val_t) -> *const core::ffi::c_char;
+}
+extern "C" {
+    pub fn mjs_strcmp(
+        mjs: *mut mjs,
+        a: *mut mjs_val_t,
+        b: *const core::ffi::c_char,
+        len: usize,
+    ) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_typeof(v: mjs_val_t) -> *const core::ffi::c_char;
+}
+extern "C" {
+    pub fn mjs_sprintf(v: mjs_val_t, mjs: *mut mjs, buf: *mut core::ffi::c_char, buflen: usize);
+}
+extern "C" {
+    pub fn mjs_get_lineno_by_offset(mjs: *mut mjs, offset: core::ffi::c_int) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_get_offset_by_call_frame_num(
+        mjs: *mut mjs,
+        cf_num: core::ffi::c_int,
+    ) -> core::ffi::c_int;
+}
+extern "C" {
+    pub fn mjs_to_string(
+        mjs: *mut mjs,
+        v: *mut mjs_val_t,
+        p: *mut *mut core::ffi::c_char,
+        sizep: *mut usize,
+        need_free: *mut core::ffi::c_int,
+    ) -> mjs_err_t;
+}
+extern "C" {
+    pub fn mjs_to_boolean_v(mjs: *mut mjs, v: mjs_val_t) -> mjs_val_t;
+}
+extern "C" {
+    pub fn mjs_is_truthy(mjs: *mut mjs, v: mjs_val_t) -> core::ffi::c_int;
 }
 pub type pb_type_t = uint_least8_t;
 pub type pb_size_t = uint_least16_t;
@@ -19347,15 +20064,6 @@ extern "C" {
     pub fn nfc_data_generator_fill_data(type_: NfcDataGeneratorType, nfc_device: *mut NfcDevice);
 }
 extern "C" {
-    pub fn nfc_util_num2bytes(src: u64, len: u8, dest: *mut u8);
-}
-extern "C" {
-    pub fn nfc_util_bytes2num(src: *const u8, len: u8) -> u64;
-}
-extern "C" {
-    pub fn nfc_util_bytes2num_little_endian(src: *const u8, len: u8) -> u64;
-}
-extern "C" {
     pub fn nfc_util_even_parity32(data: u32) -> u8;
 }
 extern "C" {
@@ -19532,7 +20240,7 @@ extern "C" {
     pub fn nfc_set_fdt_listen_fc(instance: *mut Nfc, fdt_listen_fc: u32);
 }
 extern "C" {
-    #[doc = "Set mask receive time.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be modified.\n * `mask_rx_time` (direction in) - mask receive time, in carrier cycles."]
+    #[doc = "Set mask receive time.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be modified.\n * `mask_rx_time_fc` (direction in) - mask receive time, in carrier cycles."]
     pub fn nfc_set_mask_receive_time_fc(instance: *mut Nfc, mask_rx_time_fc: u32);
 }
 extern "C" {
@@ -19934,11 +20642,11 @@ extern "C" {
     pub fn nfc_scanner_alloc(nfc: *mut Nfc) -> *mut NfcScanner;
 }
 extern "C" {
-    #[doc = "Delete an NfcScanner instance.\n\n # Arguments\n\n* `pointer` (direction in, out) - to the instance to be deleted."]
+    #[doc = "Delete an NfcScanner instance.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be deleted."]
     pub fn nfc_scanner_free(instance: *mut NfcScanner);
 }
 extern "C" {
-    #[doc = "Start an NfcScanner.\n\n # Arguments\n\n* `pointer` (direction in, out) - to the instance to be started.\n * `callback` (direction in) - pointer to the callback function (will be called upon a detection event).\n * `context` (direction in) - pointer to the caller-specific context (will be passed to the callback)."]
+    #[doc = "Start an NfcScanner.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be started.\n * `callback` (direction in) - pointer to the callback function (will be called upon a detection event).\n * `context` (direction in) - pointer to the caller-specific context (will be passed to the callback)."]
     pub fn nfc_scanner_start(
         instance: *mut NfcScanner,
         callback: NfcScannerCallback,
@@ -19946,7 +20654,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Stop an NfcScanner.\n\n # Arguments\n\n* `pointer` (direction in, out) - to the instance to be stopped."]
+    #[doc = "Stop an NfcScanner.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be stopped."]
     pub fn nfc_scanner_stop(instance: *mut NfcScanner);
 }
 pub const Iso14443_3aError_Iso14443_3aErrorNone: Iso14443_3aError = 0;
@@ -20702,7 +21410,8 @@ pub const MfClassicError_MfClassicErrorNone: MfClassicError = 0;
 pub const MfClassicError_MfClassicErrorNotPresent: MfClassicError = 1;
 pub const MfClassicError_MfClassicErrorProtocol: MfClassicError = 2;
 pub const MfClassicError_MfClassicErrorAuth: MfClassicError = 3;
-pub const MfClassicError_MfClassicErrorTimeout: MfClassicError = 4;
+pub const MfClassicError_MfClassicErrorPartialRead: MfClassicError = 4;
+pub const MfClassicError_MfClassicErrorTimeout: MfClassicError = 5;
 pub type MfClassicError = core::ffi::c_uchar;
 pub const MfClassicType_MfClassicTypeMini: MfClassicType = 0;
 pub const MfClassicType_MfClassicType1k: MfClassicType = 1;
@@ -24144,6 +24853,7 @@ pub const SlixType_SlixTypeSlixS: SlixType = 1;
 pub const SlixType_SlixTypeSlixL: SlixType = 2;
 pub const SlixType_SlixTypeSlix2: SlixType = 3;
 pub const SlixType_SlixTypeCount: SlixType = 4;
+pub const SlixType_SlixTypeUnknown: SlixType = 5;
 pub type SlixType = core::ffi::c_uchar;
 pub const SlixPasswordType_SlixPasswordTypeRead: SlixPasswordType = 0;
 pub const SlixPasswordType_SlixPasswordTypeWrite: SlixPasswordType = 1;
@@ -27703,19 +28413,924 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Get the index of a int32_t array element which is closest to the given value.\n\n Returned index corresponds to the first element found.\n If no suitable elements were found, the function returns 0.\n\n # Arguments\n\n* `value` - value to be searched.\n * `values` - pointer to the array to perform the search in.\n * `values_count` - array size.\n\n # Returns\n\nvalue's index."]
-    pub fn value_index_int32(value: i32, values: *const i32, values_count: u8) -> u8;
+    pub fn value_index_int32(value: i32, values: *const i32, values_count: usize) -> usize;
 }
 extern "C" {
     #[doc = "Get the index of a uint32_t array element which is closest to the given value.\n\n Returned index corresponds to the first element found.\n If no suitable elements were found, the function returns 0.\n\n # Arguments\n\n* `value` - value to be searched.\n * `values` - pointer to the array to perform the search in.\n * `values_count` - array size.\n\n # Returns\n\nvalue's index."]
-    pub fn value_index_uint32(value: u32, values: *const u32, values_count: u8) -> u8;
+    pub fn value_index_uint32(value: u32, values: *const u32, values_count: usize) -> usize;
 }
 extern "C" {
     #[doc = "Get the index of a float array element which is closest to the given value.\n\n Returned index corresponds to the first element found.\n If no suitable elements were found, the function returns 0.\n\n # Arguments\n\n* `value` - value to be searched.\n * `values` - pointer to the array to perform the search in.\n * `values_count` - array size.\n\n # Returns\n\nvalue's index."]
-    pub fn value_index_float(value: f32, values: *const f32, values_count: u8) -> u8;
+    pub fn value_index_float(value: f32, values: *const f32, values_count: usize) -> usize;
 }
 extern "C" {
     #[doc = "Get the index of a bool array element which is equal to the given value.\n\n Returned index corresponds to the first element found.\n If no suitable elements were found, the function returns 0.\n\n # Arguments\n\n* `value` - value to be searched.\n * `values` - pointer to the array to perform the search in.\n * `values_count` - array size.\n\n # Returns\n\nvalue's index."]
-    pub fn value_index_bool(value: bool, values: *const bool, values_count: u8) -> u8;
+    pub fn value_index_bool(value: bool, values: *const bool, values_count: usize) -> usize;
+}
+pub const BleEventAckStatus_BleEventNotAck: BleEventAckStatus = 0;
+pub const BleEventAckStatus_BleEventAckFlowEnable: BleEventAckStatus = 1;
+pub const BleEventAckStatus_BleEventAckFlowDisable: BleEventAckStatus = 2;
+pub type BleEventAckStatus = core::ffi::c_uchar;
+pub const BleEventFlowStatus_BleEventFlowDisable: BleEventFlowStatus = 0;
+pub const BleEventFlowStatus_BleEventFlowEnable: BleEventFlowStatus = 1;
+pub type BleEventFlowStatus = core::ffi::c_uchar;
+pub type BleSvcEventHandlerCb = ::core::option::Option<
+    unsafe extern "C" fn(
+        event: *mut core::ffi::c_void,
+        context: *mut core::ffi::c_void,
+    ) -> BleEventAckStatus,
+>;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct GapEventHandler {
+    _unused: [u8; 0],
+}
+pub type GapSvcEventHandler = GapEventHandler;
+extern "C" {
+    pub fn ble_event_dispatcher_process_event(
+        payload: *mut core::ffi::c_void,
+    ) -> BleEventFlowStatus;
+}
+extern "C" {
+    pub fn ble_event_dispatcher_register_svc_handler(
+        handler: BleSvcEventHandlerCb,
+        context: *mut core::ffi::c_void,
+    ) -> *mut GapSvcEventHandler;
+}
+extern "C" {
+    pub fn ble_event_dispatcher_unregister_svc_handler(handler: *mut GapSvcEventHandler);
+}
+#[repr(C, packed)]
+#[derive(Copy, Clone)]
+pub union Service_UUID_t {
+    #[doc = "16-bit UUID"]
+    pub Service_UUID_16: u16,
+    #[doc = "128-bit UUID"]
+    pub Service_UUID_128: [u8; 16usize],
+}
+#[test]
+fn bindgen_test_layout_Service_UUID_t() {
+    const UNINIT: ::core::mem::MaybeUninit<Service_UUID_t> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<Service_UUID_t>(),
+        16usize,
+        concat!("Size of: ", stringify!(Service_UUID_t))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<Service_UUID_t>(),
+        1usize,
+        concat!("Alignment of ", stringify!(Service_UUID_t))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Service_UUID_16) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Service_UUID_t),
+            "::",
+            stringify!(Service_UUID_16)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Service_UUID_128) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Service_UUID_t),
+            "::",
+            stringify!(Service_UUID_128)
+        )
+    );
+}
+#[repr(C, packed)]
+#[derive(Copy, Clone)]
+pub union Char_UUID_t {
+    #[doc = "16-bit UUID"]
+    pub Char_UUID_16: u16,
+    #[doc = "128-bit UUID"]
+    pub Char_UUID_128: [u8; 16usize],
+}
+#[test]
+fn bindgen_test_layout_Char_UUID_t() {
+    const UNINIT: ::core::mem::MaybeUninit<Char_UUID_t> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<Char_UUID_t>(),
+        16usize,
+        concat!("Size of: ", stringify!(Char_UUID_t))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<Char_UUID_t>(),
+        1usize,
+        concat!("Alignment of ", stringify!(Char_UUID_t))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Char_UUID_16) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Char_UUID_t),
+            "::",
+            stringify!(Char_UUID_16)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Char_UUID_128) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Char_UUID_t),
+            "::",
+            stringify!(Char_UUID_128)
+        )
+    );
+}
+#[repr(C, packed)]
+#[derive(Copy, Clone)]
+pub union Char_Desc_Uuid_t {
+    #[doc = "16-bit UUID"]
+    pub Char_UUID_16: u16,
+    #[doc = "128-bit UUID"]
+    pub Char_UUID_128: [u8; 16usize],
+}
+#[test]
+fn bindgen_test_layout_Char_Desc_Uuid_t() {
+    const UNINIT: ::core::mem::MaybeUninit<Char_Desc_Uuid_t> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<Char_Desc_Uuid_t>(),
+        16usize,
+        concat!("Size of: ", stringify!(Char_Desc_Uuid_t))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<Char_Desc_Uuid_t>(),
+        1usize,
+        concat!("Alignment of ", stringify!(Char_Desc_Uuid_t))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Char_UUID_16) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Char_Desc_Uuid_t),
+            "::",
+            stringify!(Char_UUID_16)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Char_UUID_128) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Char_Desc_Uuid_t),
+            "::",
+            stringify!(Char_UUID_128)
+        )
+    );
+}
+pub type cbBleGattCharacteristicData = ::core::option::Option<
+    unsafe extern "C" fn(
+        context: *const core::ffi::c_void,
+        data: *mut *const u8,
+        data_len: *mut u16,
+    ) -> bool,
+>;
+pub const BleGattCharacteristicDataType_FlipperGattCharacteristicDataFixed:
+    BleGattCharacteristicDataType = 0;
+pub const BleGattCharacteristicDataType_FlipperGattCharacteristicDataCallback:
+    BleGattCharacteristicDataType = 1;
+pub type BleGattCharacteristicDataType = core::ffi::c_uchar;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BleGattCharacteristicDescriptorParams {
+    pub uuid: Char_Desc_Uuid_t,
+    pub data_callback: BleGattCharacteristicDescriptorParams__bindgen_ty_1,
+    pub uuid_type: u8,
+    pub max_length: u8,
+    pub security_permissions: u8,
+    pub access_permissions: u8,
+    pub gatt_evt_mask: u8,
+    pub is_variable: u8,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct BleGattCharacteristicDescriptorParams__bindgen_ty_1 {
+    pub fn_: cbBleGattCharacteristicData,
+    pub context: *const core::ffi::c_void,
+}
+#[test]
+fn bindgen_test_layout_BleGattCharacteristicDescriptorParams__bindgen_ty_1() {
+    const UNINIT: ::core::mem::MaybeUninit<BleGattCharacteristicDescriptorParams__bindgen_ty_1> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<BleGattCharacteristicDescriptorParams__bindgen_ty_1>(),
+        8usize,
+        concat!(
+            "Size of: ",
+            stringify!(BleGattCharacteristicDescriptorParams__bindgen_ty_1)
+        )
+    );
+    assert_eq!(
+        ::core::mem::align_of::<BleGattCharacteristicDescriptorParams__bindgen_ty_1>(),
+        4usize,
+        concat!(
+            "Alignment of ",
+            stringify!(BleGattCharacteristicDescriptorParams__bindgen_ty_1)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).fn_) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicDescriptorParams__bindgen_ty_1),
+            "::",
+            stringify!(fn_)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).context) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicDescriptorParams__bindgen_ty_1),
+            "::",
+            stringify!(context)
+        )
+    );
+}
+#[test]
+fn bindgen_test_layout_BleGattCharacteristicDescriptorParams() {
+    const UNINIT: ::core::mem::MaybeUninit<BleGattCharacteristicDescriptorParams> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<BleGattCharacteristicDescriptorParams>(),
+        32usize,
+        concat!(
+            "Size of: ",
+            stringify!(BleGattCharacteristicDescriptorParams)
+        )
+    );
+    assert_eq!(
+        ::core::mem::align_of::<BleGattCharacteristicDescriptorParams>(),
+        4usize,
+        concat!(
+            "Alignment of ",
+            stringify!(BleGattCharacteristicDescriptorParams)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).uuid) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicDescriptorParams),
+            "::",
+            stringify!(uuid)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data_callback) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicDescriptorParams),
+            "::",
+            stringify!(data_callback)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).uuid_type) as usize - ptr as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicDescriptorParams),
+            "::",
+            stringify!(uuid_type)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).max_length) as usize - ptr as usize },
+        25usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicDescriptorParams),
+            "::",
+            stringify!(max_length)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).security_permissions) as usize - ptr as usize },
+        26usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicDescriptorParams),
+            "::",
+            stringify!(security_permissions)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).access_permissions) as usize - ptr as usize },
+        27usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicDescriptorParams),
+            "::",
+            stringify!(access_permissions)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).gatt_evt_mask) as usize - ptr as usize },
+        28usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicDescriptorParams),
+            "::",
+            stringify!(gatt_evt_mask)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).is_variable) as usize - ptr as usize },
+        29usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicDescriptorParams),
+            "::",
+            stringify!(is_variable)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BleGattCharacteristicParams {
+    pub name: *const core::ffi::c_char,
+    pub descriptor_params: *mut BleGattCharacteristicDescriptorParams,
+    pub data: BleGattCharacteristicParams__bindgen_ty_1,
+    pub uuid: Char_UUID_t,
+    pub _bitfield_align_1: [u8; 0],
+    pub _bitfield_1: __BindgenBitfieldUnit<[u8; 1usize]>,
+    pub char_properties: u8,
+    pub security_permissions: u8,
+    pub gatt_evt_mask: u8,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union BleGattCharacteristicParams__bindgen_ty_1 {
+    pub fixed: BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_1,
+    pub callback: BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_2,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_1 {
+    pub ptr: *const u8,
+    pub length: u16,
+}
+#[test]
+fn bindgen_test_layout_BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_1() {
+    const UNINIT: ::core::mem::MaybeUninit<
+        BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_1,
+    > = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_1>(),
+        8usize,
+        concat!(
+            "Size of: ",
+            stringify!(BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_1)
+        )
+    );
+    assert_eq!(
+        ::core::mem::align_of::<BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_1>(),
+        4usize,
+        concat!(
+            "Alignment of ",
+            stringify!(BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_1)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_1),
+            "::",
+            stringify!(ptr)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).length) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_1),
+            "::",
+            stringify!(length)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_2 {
+    pub fn_: cbBleGattCharacteristicData,
+    pub context: *const core::ffi::c_void,
+}
+#[test]
+fn bindgen_test_layout_BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_2() {
+    const UNINIT: ::core::mem::MaybeUninit<
+        BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_2,
+    > = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_2>(),
+        8usize,
+        concat!(
+            "Size of: ",
+            stringify!(BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_2)
+        )
+    );
+    assert_eq!(
+        ::core::mem::align_of::<BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_2>(),
+        4usize,
+        concat!(
+            "Alignment of ",
+            stringify!(BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_2)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).fn_) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_2),
+            "::",
+            stringify!(fn_)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).context) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicParams__bindgen_ty_1__bindgen_ty_2),
+            "::",
+            stringify!(context)
+        )
+    );
+}
+#[test]
+fn bindgen_test_layout_BleGattCharacteristicParams__bindgen_ty_1() {
+    const UNINIT: ::core::mem::MaybeUninit<BleGattCharacteristicParams__bindgen_ty_1> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<BleGattCharacteristicParams__bindgen_ty_1>(),
+        8usize,
+        concat!(
+            "Size of: ",
+            stringify!(BleGattCharacteristicParams__bindgen_ty_1)
+        )
+    );
+    assert_eq!(
+        ::core::mem::align_of::<BleGattCharacteristicParams__bindgen_ty_1>(),
+        4usize,
+        concat!(
+            "Alignment of ",
+            stringify!(BleGattCharacteristicParams__bindgen_ty_1)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).fixed) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicParams__bindgen_ty_1),
+            "::",
+            stringify!(fixed)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).callback) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicParams__bindgen_ty_1),
+            "::",
+            stringify!(callback)
+        )
+    );
+}
+#[test]
+fn bindgen_test_layout_BleGattCharacteristicParams() {
+    const UNINIT: ::core::mem::MaybeUninit<BleGattCharacteristicParams> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<BleGattCharacteristicParams>(),
+        36usize,
+        concat!("Size of: ", stringify!(BleGattCharacteristicParams))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<BleGattCharacteristicParams>(),
+        4usize,
+        concat!("Alignment of ", stringify!(BleGattCharacteristicParams))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicParams),
+            "::",
+            stringify!(name)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).descriptor_params) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicParams),
+            "::",
+            stringify!(descriptor_params)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicParams),
+            "::",
+            stringify!(data)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).uuid) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicParams),
+            "::",
+            stringify!(uuid)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).char_properties) as usize - ptr as usize },
+        33usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicParams),
+            "::",
+            stringify!(char_properties)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).security_permissions) as usize - ptr as usize },
+        34usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicParams),
+            "::",
+            stringify!(security_permissions)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).gatt_evt_mask) as usize - ptr as usize },
+        35usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicParams),
+            "::",
+            stringify!(gatt_evt_mask)
+        )
+    );
+}
+impl BleGattCharacteristicParams {
+    #[inline]
+    pub fn data_prop_type(&self) -> BleGattCharacteristicDataType {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 2u8) as u8) }
+    }
+    #[inline]
+    pub fn set_data_prop_type(&mut self, val: BleGattCharacteristicDataType) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(0usize, 2u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn is_variable(&self) -> u8 {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(2usize, 2u8) as u8) }
+    }
+    #[inline]
+    pub fn set_is_variable(&mut self, val: u8) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(2usize, 2u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn uuid_type(&self) -> u8 {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(4usize, 2u8) as u8) }
+    }
+    #[inline]
+    pub fn set_uuid_type(&mut self, val: u8) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(4usize, 2u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn new_bitfield_1(
+        data_prop_type: BleGattCharacteristicDataType,
+        is_variable: u8,
+        uuid_type: u8,
+    ) -> __BindgenBitfieldUnit<[u8; 1usize]> {
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize]> = Default::default();
+        __bindgen_bitfield_unit.set(0usize, 2u8, {
+            let data_prop_type: u8 = unsafe { ::core::mem::transmute(data_prop_type) };
+            data_prop_type as u64
+        });
+        __bindgen_bitfield_unit.set(2usize, 2u8, {
+            let is_variable: u8 = unsafe { ::core::mem::transmute(is_variable) };
+            is_variable as u64
+        });
+        __bindgen_bitfield_unit.set(4usize, 2u8, {
+            let uuid_type: u8 = unsafe { ::core::mem::transmute(uuid_type) };
+            uuid_type as u64
+        });
+        __bindgen_bitfield_unit
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct BleGattCharacteristicInstance {
+    pub characteristic: *const BleGattCharacteristicParams,
+    pub handle: u16,
+    pub descriptor_handle: u16,
+}
+#[test]
+fn bindgen_test_layout_BleGattCharacteristicInstance() {
+    const UNINIT: ::core::mem::MaybeUninit<BleGattCharacteristicInstance> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<BleGattCharacteristicInstance>(),
+        8usize,
+        concat!("Size of: ", stringify!(BleGattCharacteristicInstance))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<BleGattCharacteristicInstance>(),
+        4usize,
+        concat!("Alignment of ", stringify!(BleGattCharacteristicInstance))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).characteristic) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicInstance),
+            "::",
+            stringify!(characteristic)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicInstance),
+            "::",
+            stringify!(handle)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).descriptor_handle) as usize - ptr as usize },
+        6usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BleGattCharacteristicInstance),
+            "::",
+            stringify!(descriptor_handle)
+        )
+    );
+}
+extern "C" {
+    pub fn ble_gatt_characteristic_init(
+        svc_handle: u16,
+        char_descriptor: *const BleGattCharacteristicParams,
+        char_instance: *mut BleGattCharacteristicInstance,
+    );
+}
+extern "C" {
+    pub fn ble_gatt_characteristic_delete(
+        svc_handle: u16,
+        char_instance: *mut BleGattCharacteristicInstance,
+    );
+}
+extern "C" {
+    pub fn ble_gatt_characteristic_update(
+        svc_handle: u16,
+        char_instance: *mut BleGattCharacteristicInstance,
+        source: *const core::ffi::c_void,
+    ) -> bool;
+}
+extern "C" {
+    pub fn ble_gatt_service_add(
+        Service_UUID_Type: u8,
+        Service_UUID: *const Service_UUID_t,
+        Service_Type: u8,
+        Max_Attribute_Records: u8,
+        Service_Handle: *mut u16,
+    ) -> bool;
+}
+extern "C" {
+    pub fn ble_gatt_service_delete(svc_handle: u16) -> bool;
+}
+pub const SerialServiceEventType_SerialServiceEventTypeDataReceived: SerialServiceEventType = 0;
+pub const SerialServiceEventType_SerialServiceEventTypeDataSent: SerialServiceEventType = 1;
+pub const SerialServiceEventType_SerialServiceEventTypesBleResetRequest: SerialServiceEventType = 2;
+pub type SerialServiceEventType = core::ffi::c_uchar;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct SerialServiceData {
+    pub buffer: *mut u8,
+    pub size: u16,
+}
+#[test]
+fn bindgen_test_layout_SerialServiceData() {
+    const UNINIT: ::core::mem::MaybeUninit<SerialServiceData> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<SerialServiceData>(),
+        8usize,
+        concat!("Size of: ", stringify!(SerialServiceData))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<SerialServiceData>(),
+        4usize,
+        concat!("Alignment of ", stringify!(SerialServiceData))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).buffer) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SerialServiceData),
+            "::",
+            stringify!(buffer)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SerialServiceData),
+            "::",
+            stringify!(size)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct SerialServiceEvent {
+    pub event: SerialServiceEventType,
+    pub data: SerialServiceData,
+}
+#[test]
+fn bindgen_test_layout_SerialServiceEvent() {
+    const UNINIT: ::core::mem::MaybeUninit<SerialServiceEvent> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<SerialServiceEvent>(),
+        12usize,
+        concat!("Size of: ", stringify!(SerialServiceEvent))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<SerialServiceEvent>(),
+        4usize,
+        concat!("Alignment of ", stringify!(SerialServiceEvent))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).event) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SerialServiceEvent),
+            "::",
+            stringify!(event)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SerialServiceEvent),
+            "::",
+            stringify!(data)
+        )
+    );
+}
+pub type SerialServiceEventCallback = ::core::option::Option<
+    unsafe extern "C" fn(event: SerialServiceEvent, context: *mut core::ffi::c_void) -> u16,
+>;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct BleServiceSerial {
+    _unused: [u8; 0],
+}
+extern "C" {
+    pub fn ble_svc_serial_start() -> *mut BleServiceSerial;
+}
+extern "C" {
+    pub fn ble_svc_serial_stop(service: *mut BleServiceSerial);
+}
+extern "C" {
+    pub fn ble_svc_serial_set_callbacks(
+        service: *mut BleServiceSerial,
+        buff_size: u16,
+        callback: SerialServiceEventCallback,
+        context: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    pub fn ble_svc_serial_set_rpc_active(service: *mut BleServiceSerial, active: bool);
+}
+extern "C" {
+    pub fn ble_svc_serial_notify_buffer_is_empty(service: *mut BleServiceSerial);
+}
+extern "C" {
+    pub fn ble_svc_serial_update_tx(
+        service: *mut BleServiceSerial,
+        data: *mut u8,
+        data_len: u16,
+    ) -> bool;
+}
+#[doc = "Serial service callback type"]
+pub type FuriHalBtSerialCallback = SerialServiceEventCallback;
+extern "C" {
+    #[doc = "Send data through BLE\n\n # Arguments\n\n* `profile` - Profile instance\n * `data` - data buffer\n * `size` - data buffer size\n\n # Returns\n\ntrue on success"]
+    pub fn ble_profile_serial_tx(
+        profile: *mut FuriHalBleProfileBase,
+        data: *mut u8,
+        size: u16,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Set BLE RPC status\n\n # Arguments\n\n* `profile` - Profile instance\n * `active` - true if RPC is active"]
+    pub fn ble_profile_serial_set_rpc_active(profile: *mut FuriHalBleProfileBase, active: bool);
+}
+extern "C" {
+    #[doc = "Notify that application buffer is empty\n # Arguments\n\n* `profile` - Profile instance"]
+    pub fn ble_profile_serial_notify_buffer_is_empty(profile: *mut FuriHalBleProfileBase);
+}
+extern "C" {
+    #[doc = "Set Serial service events callback\n\n # Arguments\n\n* `profile` - Profile instance\n * `buffer_size` - Applicaition buffer size\n * `calback` - FuriHalBtSerialCallback instance\n * `context` - pointer to context"]
+    pub fn ble_profile_serial_set_event_callback(
+        profile: *mut FuriHalBleProfileBase,
+        buff_size: u16,
+        callback: FuriHalBtSerialCallback,
+        context: *mut core::ffi::c_void,
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct BleServiceBattery {
+    _unused: [u8; 0],
+}
+extern "C" {
+    pub fn ble_svc_battery_start(auto_update: bool) -> *mut BleServiceBattery;
+}
+extern "C" {
+    pub fn ble_svc_battery_stop(service: *mut BleServiceBattery);
+}
+extern "C" {
+    pub fn ble_svc_battery_update_level(service: *mut BleServiceBattery, battery_level: u8)
+        -> bool;
+}
+extern "C" {
+    pub fn ble_svc_battery_update_power_state(
+        service: *mut BleServiceBattery,
+        charging: bool,
+    ) -> bool;
+}
+extern "C" {
+    pub fn ble_svc_battery_state_update(battery_level: *mut u8, charging: *mut bool);
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct BleServiceDevInfo {
+    _unused: [u8; 0],
+}
+extern "C" {
+    pub fn ble_svc_dev_info_start() -> *mut BleServiceDevInfo;
+}
+extern "C" {
+    pub fn ble_svc_dev_info_stop(service: *mut BleServiceDevInfo);
 }
 pub const FuriHalPwmOutputId_FuriHalPwmOutputIdTim1PA7: FuriHalPwmOutputId = 0;
 pub const FuriHalPwmOutputId_FuriHalPwmOutputIdLptim2PA4: FuriHalPwmOutputId = 1;
@@ -27839,62 +29454,13 @@ extern "C" {
     pub fn __errno() -> *mut core::ffi::c_int;
 }
 extern "C" {
+    pub fn __cxa_pure_virtual();
+}
+extern "C" {
     pub fn __clear_cache(arg1: *mut core::ffi::c_void, arg2: *mut core::ffi::c_void);
 }
 extern "C" {
     pub fn __aeabi_uldivmod(arg1: u64, arg2: u64) -> *mut core::ffi::c_void;
-}
-extern "C" {
-    #[doc = "Start Hid Keyboard Profile"]
-    pub fn furi_hal_bt_hid_start();
-}
-extern "C" {
-    #[doc = "Stop Hid Keyboard Profile"]
-    pub fn furi_hal_bt_hid_stop();
-}
-extern "C" {
-    #[doc = "Press keyboard button\n\n # Arguments\n\n* `button` - button code from HID specification\n\n # Returns\n\ntrue on success"]
-    pub fn furi_hal_bt_hid_kb_press(button: u16) -> bool;
-}
-extern "C" {
-    #[doc = "Release keyboard button\n\n # Arguments\n\n* `button` - button code from HID specification\n\n # Returns\n\ntrue on success"]
-    pub fn furi_hal_bt_hid_kb_release(button: u16) -> bool;
-}
-extern "C" {
-    #[doc = "Release all keyboard buttons\n\n # Returns\n\ntrue on success"]
-    pub fn furi_hal_bt_hid_kb_release_all() -> bool;
-}
-extern "C" {
-    #[doc = "Set mouse movement and send HID report\n\n # Arguments\n\n* `dx` - x coordinate delta\n * `dy` - y coordinate delta"]
-    pub fn furi_hal_bt_hid_mouse_move(dx: i8, dy: i8) -> bool;
-}
-extern "C" {
-    #[doc = "Set mouse button to pressed state and send HID report\n\n # Arguments\n\n* `button` - key code"]
-    pub fn furi_hal_bt_hid_mouse_press(button: u8) -> bool;
-}
-extern "C" {
-    #[doc = "Set mouse button to released state and send HID report\n\n # Arguments\n\n* `button` - key code"]
-    pub fn furi_hal_bt_hid_mouse_release(button: u8) -> bool;
-}
-extern "C" {
-    #[doc = "Set mouse button to released state and send HID report\n\n # Arguments\n\n* `button` - key code"]
-    pub fn furi_hal_bt_hid_mouse_release_all() -> bool;
-}
-extern "C" {
-    #[doc = "Set mouse wheel position and send HID report\n\n # Arguments\n\n* `delta` - number of scroll steps"]
-    pub fn furi_hal_bt_hid_mouse_scroll(delta: i8) -> bool;
-}
-extern "C" {
-    #[doc = "Set the following consumer key to pressed state and send HID report\n\n # Arguments\n\n* `button` - key code"]
-    pub fn furi_hal_bt_hid_consumer_key_press(button: u16) -> bool;
-}
-extern "C" {
-    #[doc = "Set the following consumer key to released state and send HID report\n\n # Arguments\n\n* `button` - key code"]
-    pub fn furi_hal_bt_hid_consumer_key_release(button: u16) -> bool;
-}
-extern "C" {
-    #[doc = "Set consumer key to released state and send HID report\n\n # Arguments\n\n* `button` - key code"]
-    pub fn furi_hal_bt_hid_consumer_key_release_all() -> bool;
 }
 extern "C" {
     #[doc = "Init memory pool manager"]

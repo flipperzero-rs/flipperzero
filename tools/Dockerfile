@@ -2,7 +2,7 @@ FROM --platform=x86_64 debian:bookworm AS firmware-builder
 
 # FIRMWARE_GIT should be a git repo with the firmware source code
 ARG FIRMWARE_GIT=https://github.com/flipperdevices/flipperzero-firmware.git
-ARG BRANCH=0.97.1
+ARG BRANCH=0.99.1
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -57,6 +57,8 @@ WORKDIR /app/flipperzero-rs/tools
 RUN env LIBCLANG_PATH=/app/clang+llvm-17.0.6-x86_64-linux-gnu-ubuntu-22.04/lib \
     cargo run --bin generate-bindings /app/firmware/build/f7-firmware-D/sdk_headers/
 RUN cp bindings.rs ../crates/sys/src
+
+WORKDIR /app/flipperzero-rs/crates
 
 # test it builds
 # This step is skipped until the SDK is stabilized (i.e. version `1` is published)
