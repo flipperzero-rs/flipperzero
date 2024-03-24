@@ -1,0 +1,13 @@
+name: Regenerate SDK bindings
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out Repository
+      uses: actions/checkout@v4
+    - name: Build Docker image
+      run: |
+        cp crates/sys/src/bindings.rs{,.old}
+        docker run --rm $(docker build --build-arg BRANCH=release -q -f tools/Dockerfile .) > crates/sys/src/bindings.rs
+        diff -u crates/sys/src/bindings.rs{.old,}
