@@ -100,7 +100,7 @@ fn main() -> Result<(), Error> {
 
     // Upload the FAP to a temporary directory.
     let dest_dir =
-        storage::FlipperPath::from(format!("/ext/tmp-{:08x}", thread_rng().gen::<u32>()));
+        storage::FlipperPath::from(format!("/ext/.tmp/rs-{:08x}", thread_rng().gen::<u32>()));
     let dest_file = dest_dir.clone() + file_name;
     store
         .mkdir(&dest_dir)
