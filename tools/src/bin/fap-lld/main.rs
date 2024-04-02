@@ -1,5 +1,5 @@
 use std::{
-    env, io,
+    env, fmt, io,
     path::PathBuf,
     process::{self, Command},
 };
@@ -16,6 +16,18 @@ enum Error {
     NoSymbolTable,
     NoSectionHeaders,
     ObjcopyFailed,
+}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Error::Io(e) => write!(f, "IO error: {}", e),
+            Error::Parse(e) => write!(f, "Error while parsing ELF: {}", e),
+            Error::NoSymbolTable => write!(f, "No symbol table in ELF"),
+            Error::NoSectionHeaders => write!(f, "No section headers in ELF"),
+            Error::ObjcopyFailed => write!(f, "Error while running objcopy"),
+        }
+    }
 }
 
 impl From<io::Error> for Error {
