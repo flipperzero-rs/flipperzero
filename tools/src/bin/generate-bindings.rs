@@ -7,7 +7,7 @@ use std::{env, fs};
 
 use bindgen::callbacks::ParseCallbacks;
 use camino::{Utf8Path, Utf8PathBuf};
-use clap::{self, crate_authors, crate_description, crate_version, value_parser};
+use clap::{crate_authors, crate_description, crate_version, value_parser};
 use once_cell::sync::Lazy;
 use regex::{Captures, Regex, Replacer};
 use serde::Deserialize;

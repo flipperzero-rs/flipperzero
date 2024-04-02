@@ -134,6 +134,7 @@ impl FlipperStorage {
     pub fn receive_file(&mut self, from: &FlipperPath, to: impl AsRef<Path>) -> io::Result<()> {
         let mut file = fs::File::options()
             .create(true)
+            .truncate(true)
             .write(true)
             .open(to.as_ref())?;
 
