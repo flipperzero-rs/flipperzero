@@ -146,6 +146,7 @@ impl OpenOptions {
 }
 
 /// Basic, unbuffered file handle
+#[allow(dead_code)]
 pub struct File(NonNull<sys::File>, UnsafeRecord<sys::Storage>);
 
 impl File {
