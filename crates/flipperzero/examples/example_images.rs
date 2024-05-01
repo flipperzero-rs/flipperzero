@@ -31,8 +31,8 @@ static mut IMAGE_POSITION: ImagePosition = ImagePosition { x: 0, y: 0 };
 
 #[repr(C)]
 struct ImagePosition {
-    pub x: u8,
-    pub y: u8,
+    pub x: i32,
+    pub y: i32,
 }
 
 /// Internal icon representation.
@@ -51,8 +51,8 @@ extern "C" fn app_draw_callback(canvas: *mut sys::Canvas, _ctx: *mut c_void) {
         sys::canvas_clear(canvas);
         sys::canvas_draw_icon(
             canvas,
-            (IMAGE_POSITION.x % 128).into(),
-            (IMAGE_POSITION.y % 128).into(),
+            IMAGE_POSITION.x,
+            IMAGE_POSITION.y,
             &TARGET_ICON as *const Icon as *const c_void as *const sys::Icon,
         );
     }

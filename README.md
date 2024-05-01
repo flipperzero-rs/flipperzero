@@ -17,7 +17,7 @@ This means it's not possible to use anything in the [`std`](https://doc.rust-lan
 
 ## SDK version
 
-Currently supports SDK 61.2 ([flipperzero-firmware@0.99.1](https://github.com/flipperdevices/flipperzero-firmware/tree/0.99.1)).
+Currently supports SDK 61.2 ([flipperzero-firmware@0.101.2](https://github.com/flipperdevices/flipperzero-firmware/tree/0.101.2)).
 
 The crate major version number will be updated after a bump in [API version](https://github.com/flipperdevices/flipperzero-firmware/blob/release/targets/f7/api_symbols.csv) in the Flipper Zero firmware.
 
