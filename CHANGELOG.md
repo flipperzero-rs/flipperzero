@@ -16,7 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Migrated to SDK 58.0 (firmware 0.99.1).
+- Migrated to SDK 61.2 (firmware 0.101.2).
 - Bumped pinned nightly Rust version to `nightly-2023-12-09`.
 - `flipperzero_rt::entry` macro now requires a function with type signature
   `fn(Option<&CStr>) -> i32` instead of `fn(*mut u8) -> i32`.
@@ -60,9 +60,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Migrated to SDK API 28.2 (firmware 0.84.1).
 - `flipperzero::furi::sync` has been rewritten using the `lock_api` crate.
-  - `Mutex<T>` is now a type alias for `lock_api::Mutex<FuriMutex, T>`.
-  - `MutexGuard<'a, T>` is now a type alias for
-    `lock_api::MutexGuard<'a, FuriMutex, T>`.
+    - `Mutex<T>` is now a type alias for `lock_api::Mutex<FuriMutex, T>`.
+    - `MutexGuard<'a, T>` is now a type alias for
+      `lock_api::MutexGuard<'a, FuriMutex, T>`.
 - `flipperzero::{print, println}` macros now panic if they cannot write to
   stdout.
 
@@ -78,11 +78,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `flipperzero::furi::string`, providing the `FuriString` type that implements a
   `CString`-like string with a `String`-like API.
 - In `flipperzero::furi::thread`:
-  - `Builder, Thread, ThreadId, JoinHandle`
-  - `spawn, current, yield_now`
+    - `Builder, Thread, ThreadId, JoinHandle`
+    - `spawn, current, yield_now`
 - In `flipperzero::io`:
-  - `Error::description`
-  - `impl ufmt::uDisplay for Error`
+    - `Error::description`
+    - `impl ufmt::uDisplay for Error`
 - `flipperzero::notification`, providing constants for standard notification
   sequences, and APIs for running them.
 - `flipperzero::toolbox`, providing wrapper types around several tools from the
@@ -217,19 +217,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Initial release!
 
 [Unreleased]: https://github.com/flipperzero-rs/flipperzero/compare/v0.11.0...HEAD
+
 [0.11.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.11.0
+
 [0.10.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.10.0
+
 [0.9.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.9.0
+
 [0.8.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.8.0
+
 [0.7.2]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.7.2
+
 [0.7.1]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.7.1
+
 [0.7.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.7.0
+
 [0.6.1]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.6.1
+
 [0.6.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.6.0
+
 [0.5.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.5.0
+
 [0.4.1]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.4.1
+
 [0.4.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.4.0
+
 [0.3.1]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.3.1
+
 [0.3.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.3.0
+
 [0.2.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.2.0
+
 [0.1.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.1.0
