@@ -19,8 +19,7 @@ Prerequisites: [A recent version of libclang installed](https://rust-lang.github
 
 To update the SDK you require a checkout of [`flipperzero-firmware`] pointing at the target
 commit/tag and need to run `./fbt` to download the toolchain and build a local copy of the SDK.
-Alternatively you can download a prebuilt SDK from
-the [Flipper Zero Update Server](https://update.flipperzero.one/builds/firmware/).
+Alternatively you can download a prebuilt SDK from the [Flipper Zero Update Server](https://update.flipperzero.one/builds/firmware/).
 
 Once the SDK is built, run the [`generate-bindings`] script to build a new [`bindings.rs`]:
 
@@ -41,11 +40,7 @@ docker run --rm $(docker build --build-arg BRANCH=0.101.2 -q -f tools/Dockerfile
 ```
 
 [`bindings.rs`]: ../crates/sys/src/bindings.rs
-
 [`flipperzero-firmware`]: https://github.com/flipperdevices/flipperzero-firmware
-
 [`flipperzero-sys`]: https://crates.io/crates/flipperzero-sys
-
 [`generate-bindings`]: ../tools/src/bin/generate-bindings.rs
-
 [`README.md`]: ../README.md
