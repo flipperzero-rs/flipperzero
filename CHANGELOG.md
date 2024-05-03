@@ -16,7 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Migrated to SDK 58.0 (firmware 0.99.1).
+- Migrated to SDK 61.2 (firmware 0.101.2).
 - Bumped pinned nightly Rust version to `nightly-2023-12-09`.
 - `flipperzero_rt::entry` macro now requires a function with type signature
   `fn(Option<&CStr>) -> i32` instead of `fn(*mut u8) -> i32`.

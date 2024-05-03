@@ -4,15 +4,16 @@
 #![no_std]
 #![no_main]
 
+// Required for allocator
+extern crate flipperzero_alloc;
+
 use core::ffi::{c_void, CStr};
 use core::mem::{self, MaybeUninit};
 
-use flipperzero_rt as rt;
-use flipperzero_sys as sys;
 use flipperzero_sys::furi::UnsafeRecord;
 
-// Required for allocator
-extern crate flipperzero_alloc;
+use flipperzero_rt as rt;
+use flipperzero_sys as sys;
 
 rt::manifest!(name = "Example: Images");
 rt::entry!(main);
@@ -30,8 +31,8 @@ static mut IMAGE_POSITION: ImagePosition = ImagePosition { x: 0, y: 0 };
 
 #[repr(C)]
 struct ImagePosition {
-    pub x: u8,
-    pub y: u8,
+    pub x: i32,
+    pub y: i32,
 }
 
 /// Internal icon representation.
@@ -50,8 +51,8 @@ extern "C" fn app_draw_callback(canvas: *mut sys::Canvas, _ctx: *mut c_void) {
         sys::canvas_clear(canvas);
         sys::canvas_draw_icon(
             canvas,
-            IMAGE_POSITION.x % 128,
-            IMAGE_POSITION.y % 128,
+            IMAGE_POSITION.x,
+            IMAGE_POSITION.y,
             &TARGET_ICON as *const Icon as *const c_void as *const sys::Icon,
         );
     }

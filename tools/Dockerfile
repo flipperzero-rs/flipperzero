@@ -2,7 +2,7 @@ FROM --platform=x86_64 debian:bookworm AS firmware-builder
 
 # FIRMWARE_GIT should be a git repo with the firmware source code
 ARG FIRMWARE_GIT=https://github.com/flipperdevices/flipperzero-firmware.git
-ARG BRANCH=0.99.1
+ARG BRANCH=0.101.2
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
