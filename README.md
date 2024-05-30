@@ -1,7 +1,7 @@
 # Rust for Flipper Zero 🐬❤️🦀
 
 [![crates.io](https://img.shields.io/crates/v/flipperzero)](https://crates.io/crates/flipperzero)
-[![Flipper Zero API](https://img.shields.io/badge/Flipper%20Zero%20API-50.0-orange)](https://github.com/flipperdevices/flipperzero-firmware/blob/0.97.1/targets/f7/api_symbols.csv)
+[![Flipper Zero API](https://img.shields.io/badge/Flipper%20Zero%20API-62.3-orange)](https://github.com/flipperdevices/flipperzero-firmware/blob/0.102.3/targets/f7/api_symbols.csv)
 [![docs.rs](https://img.shields.io/docsrs/flipperzero)](https://docs.rs/flipperzero)
 [![MIT license](https://img.shields.io/crates/l/flipperzero)](LICENSE)
 
@@ -17,13 +17,13 @@ This means it's not possible to use anything in the [`std`](https://doc.rust-lan
 
 ## SDK version
 
-Currently supports SDK 61.2 ([flipperzero-firmware@0.101.2](https://github.com/flipperdevices/flipperzero-firmware/tree/0.101.2)).
+Currently supports SDK 62.3 ([flipperzero-firmware@0.102.3](https://github.com/flipperdevices/flipperzero-firmware/tree/0.102.3)).
 
 The crate major version number will be updated after a bump in [API version](https://github.com/flipperdevices/flipperzero-firmware/blob/release/targets/f7/api_symbols.csv) in the Flipper Zero firmware.
 
 | Crate version | API version |
 | ------------- | ----------- |
-| Unreleased    | 61.2        |
+| Unreleased    | 62.3        |
 | 0.11.x        | 35.0        |
 | 0.10.x        | 28.2        |
 | 0.9.x         | 23.0        |
