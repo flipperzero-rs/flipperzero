@@ -4,14 +4,16 @@
 #![deny(rustdoc::broken_intra_doc_links)]
 
 // Features that identify thumbv7em-none-eabihf.
-// Until target_abi is stable, this also permits thumbv7em-none-eabi.
-#[cfg(not(all(
-    target_arch = "arm",
-    target_feature = "thumb2",
-    target_feature = "v7",
-    target_feature = "dsp",
-    target_os = "none",
-    //target_abi = "eabihf",
+#[cfg(not(any(
+    all(
+        target_arch = "arm",
+        target_feature = "thumb2",
+        target_feature = "v7",
+        target_feature = "dsp",
+        target_os = "none",
+        target_abi = "eabihf",
+    ),
+    miri
 )))]
 core::compile_error!("This crate requires `--target thumbv7em-none-eabihf`");
 
