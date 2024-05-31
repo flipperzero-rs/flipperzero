@@ -9,6 +9,7 @@ extern crate flipperzero_alloc;
 
 use core::ffi::{c_void, CStr};
 use core::mem::{self, MaybeUninit};
+use core::ptr::addr_of;
 
 use flipperzero_sys::furi::UnsafeRecord;
 
@@ -53,7 +54,7 @@ extern "C" fn app_draw_callback(canvas: *mut sys::Canvas, _ctx: *mut c_void) {
             canvas,
             IMAGE_POSITION.x,
             IMAGE_POSITION.y,
-            &TARGET_ICON as *const Icon as *const c_void as *const sys::Icon,
+            addr_of!(TARGET_ICON) as *const Icon as *const c_void as *const sys::Icon,
         );
     }
 }

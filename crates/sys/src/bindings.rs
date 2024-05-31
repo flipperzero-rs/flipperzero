@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 3997698;
+pub const API_VERSION: u32 = 4063235;
 pub type wint_t = core::ffi::c_int;
 pub type __uint_least8_t = core::ffi::c_uchar;
 pub type __uint_least16_t = core::ffi::c_ushort;
@@ -430,6 +430,132 @@ fn bindgen_test_layout___tm() {
             stringify!(__tm),
             "::",
             stringify!(__tm_isdst)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _on_exit_args {
+    pub _fnargs: [*mut core::ffi::c_void; 32usize],
+    pub _dso_handle: [*mut core::ffi::c_void; 32usize],
+    pub _fntypes: __ULong,
+    pub _is_cxa: __ULong,
+}
+#[test]
+fn bindgen_test_layout__on_exit_args() {
+    const UNINIT: ::core::mem::MaybeUninit<_on_exit_args> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<_on_exit_args>(),
+        264usize,
+        concat!("Size of: ", stringify!(_on_exit_args))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_on_exit_args>(),
+        4usize,
+        concat!("Alignment of ", stringify!(_on_exit_args))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._fnargs) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_on_exit_args),
+            "::",
+            stringify!(_fnargs)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._dso_handle) as usize - ptr as usize },
+        128usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_on_exit_args),
+            "::",
+            stringify!(_dso_handle)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._fntypes) as usize - ptr as usize },
+        256usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_on_exit_args),
+            "::",
+            stringify!(_fntypes)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._is_cxa) as usize - ptr as usize },
+        260usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_on_exit_args),
+            "::",
+            stringify!(_is_cxa)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _atexit {
+    pub _next: *mut _atexit,
+    pub _ind: core::ffi::c_int,
+    pub _fns: [::core::option::Option<unsafe extern "C" fn()>; 32usize],
+    pub _on_exit_args: _on_exit_args,
+}
+#[test]
+fn bindgen_test_layout__atexit() {
+    const UNINIT: ::core::mem::MaybeUninit<_atexit> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<_atexit>(),
+        400usize,
+        concat!("Size of: ", stringify!(_atexit))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_atexit>(),
+        4usize,
+        concat!("Alignment of ", stringify!(_atexit))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._next) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_atexit),
+            "::",
+            stringify!(_next)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._ind) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_atexit),
+            "::",
+            stringify!(_ind)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._fns) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_atexit),
+            "::",
+            stringify!(_fns)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._on_exit_args) as usize - ptr as usize },
+        136usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_atexit),
+            "::",
+            stringify!(_on_exit_args)
         )
     );
 }
@@ -783,6 +909,58 @@ fn bindgen_test_layout___sFILE() {
 pub type __FILE = __sFILE;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+pub struct _glue {
+    pub _next: *mut _glue,
+    pub _niobs: core::ffi::c_int,
+    pub _iobs: *mut __FILE,
+}
+#[test]
+fn bindgen_test_layout__glue() {
+    const UNINIT: ::core::mem::MaybeUninit<_glue> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<_glue>(),
+        12usize,
+        concat!("Size of: ", stringify!(_glue))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_glue>(),
+        4usize,
+        concat!("Alignment of ", stringify!(_glue))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._next) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_glue),
+            "::",
+            stringify!(_next)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._niobs) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_glue),
+            "::",
+            stringify!(_niobs)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._iobs) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_glue),
+            "::",
+            stringify!(_iobs)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct _rand48 {
     pub _seed: [core::ffi::c_ushort; 3usize],
     pub _mult: [core::ffi::c_ushort; 3usize],
@@ -842,7 +1020,9 @@ pub struct _reent {
     pub _stderr: *mut __FILE,
     pub _inc: core::ffi::c_int,
     pub _emergency: [core::ffi::c_char; 25usize],
+    pub _unspecified_locale_info: core::ffi::c_int,
     pub _locale: *mut __locale_t,
+    pub __sdidinit: core::ffi::c_int,
     pub __cleanup: ::core::option::Option<unsafe extern "C" fn(arg1: *mut _reent)>,
     pub _result: *mut _Bigint,
     pub _result_k: core::ffi::c_int,
@@ -851,16 +1031,22 @@ pub struct _reent {
     pub _cvtlen: core::ffi::c_int,
     pub _cvtbuf: *mut core::ffi::c_char,
     pub _new: _reent__bindgen_ty_1,
+    pub _atexit: *mut _atexit,
+    pub _atexit0: _atexit,
     pub _sig_func: *mut ::core::option::Option<unsafe extern "C" fn(arg1: core::ffi::c_int)>,
+    pub __sglue: _glue,
+    pub __sf: [__FILE; 3usize],
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union _reent__bindgen_ty_1 {
     pub _reent: _reent__bindgen_ty_1__bindgen_ty_1,
+    pub _unused: _reent__bindgen_ty_1__bindgen_ty_2,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct _reent__bindgen_ty_1__bindgen_ty_1 {
+    pub _unused_rand: core::ffi::c_uint,
     pub _strtok_last: *mut core::ffi::c_char,
     pub _asctime_buf: [core::ffi::c_char; 26usize],
     pub _localtime_buf: __tm,
@@ -887,7 +1073,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<_reent__bindgen_ty_1__bindgen_ty_1>(),
-        200usize,
+        208usize,
         concat!("Size of: ", stringify!(_reent__bindgen_ty_1__bindgen_ty_1))
     );
     assert_eq!(
@@ -899,8 +1085,18 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._strtok_last) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr)._unused_rand) as usize - ptr as usize },
         0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
+            "::",
+            stringify!(_unused_rand)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._strtok_last) as usize - ptr as usize },
+        4usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -910,7 +1106,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._asctime_buf) as usize - ptr as usize },
-        4usize,
+        8usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -920,7 +1116,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._localtime_buf) as usize - ptr as usize },
-        32usize,
+        36usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -930,7 +1126,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._gamma_signgam) as usize - ptr as usize },
-        68usize,
+        72usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -940,7 +1136,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._rand_next) as usize - ptr as usize },
-        72usize,
+        80usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -950,7 +1146,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._r48) as usize - ptr as usize },
-        80usize,
+        88usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -960,7 +1156,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mblen_state) as usize - ptr as usize },
-        96usize,
+        104usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -970,7 +1166,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mbtowc_state) as usize - ptr as usize },
-        104usize,
+        112usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -980,7 +1176,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._wctomb_state) as usize - ptr as usize },
-        112usize,
+        120usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -990,7 +1186,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._l64a_buf) as usize - ptr as usize },
-        120usize,
+        128usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1000,7 +1196,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._signal_buf) as usize - ptr as usize },
-        128usize,
+        136usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1010,7 +1206,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._getdate_err) as usize - ptr as usize },
-        152usize,
+        160usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1020,7 +1216,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mbrlen_state) as usize - ptr as usize },
-        156usize,
+        164usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1030,7 +1226,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mbrtowc_state) as usize - ptr as usize },
-        164usize,
+        172usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1040,7 +1236,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mbsrtowcs_state) as usize - ptr as usize },
-        172usize,
+        180usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1050,7 +1246,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._wcrtomb_state) as usize - ptr as usize },
-        180usize,
+        188usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1060,7 +1256,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._wcsrtombs_state) as usize - ptr as usize },
-        188usize,
+        196usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1070,12 +1266,57 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._h_errno) as usize - ptr as usize },
-        196usize,
+        204usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
             "::",
             stringify!(_h_errno)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _reent__bindgen_ty_1__bindgen_ty_2 {
+    pub _nextf: [*mut core::ffi::c_uchar; 30usize],
+    pub _nmalloc: [core::ffi::c_uint; 30usize],
+}
+#[test]
+fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_2() {
+    const UNINIT: ::core::mem::MaybeUninit<_reent__bindgen_ty_1__bindgen_ty_2> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<_reent__bindgen_ty_1__bindgen_ty_2>(),
+        240usize,
+        concat!("Size of: ", stringify!(_reent__bindgen_ty_1__bindgen_ty_2))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_reent__bindgen_ty_1__bindgen_ty_2>(),
+        4usize,
+        concat!(
+            "Alignment of ",
+            stringify!(_reent__bindgen_ty_1__bindgen_ty_2)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._nextf) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent__bindgen_ty_1__bindgen_ty_2),
+            "::",
+            stringify!(_nextf)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._nmalloc) as usize - ptr as usize },
+        120usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent__bindgen_ty_1__bindgen_ty_2),
+            "::",
+            stringify!(_nmalloc)
         )
     );
 }
@@ -1086,7 +1327,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<_reent__bindgen_ty_1>(),
-        200usize,
+        240usize,
         concat!("Size of: ", stringify!(_reent__bindgen_ty_1))
     );
     assert_eq!(
@@ -1104,6 +1345,16 @@ fn bindgen_test_layout__reent__bindgen_ty_1() {
             stringify!(_reent)
         )
     );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent__bindgen_ty_1),
+            "::",
+            stringify!(_unused)
+        )
+    );
 }
 #[test]
 fn bindgen_test_layout__reent() {
@@ -1111,7 +1362,7 @@ fn bindgen_test_layout__reent() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<_reent>(),
-        288usize,
+        1064usize,
         concat!("Size of: ", stringify!(_reent))
     );
     assert_eq!(
@@ -1180,8 +1431,18 @@ fn bindgen_test_layout__reent() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._locale) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr)._unspecified_locale_info) as usize - ptr as usize },
         48usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent),
+            "::",
+            stringify!(_unspecified_locale_info)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._locale) as usize - ptr as usize },
+        52usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1190,8 +1451,18 @@ fn bindgen_test_layout__reent() {
         )
     );
     assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).__sdidinit) as usize - ptr as usize },
+        56usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent),
+            "::",
+            stringify!(__sdidinit)
+        )
+    );
+    assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).__cleanup) as usize - ptr as usize },
-        52usize,
+        60usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1201,7 +1472,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._result) as usize - ptr as usize },
-        56usize,
+        64usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1211,7 +1482,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._result_k) as usize - ptr as usize },
-        60usize,
+        68usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1221,7 +1492,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._p5s) as usize - ptr as usize },
-        64usize,
+        72usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1231,7 +1502,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._freelist) as usize - ptr as usize },
-        68usize,
+        76usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1241,7 +1512,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._cvtlen) as usize - ptr as usize },
-        72usize,
+        80usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1251,7 +1522,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._cvtbuf) as usize - ptr as usize },
-        76usize,
+        84usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1261,7 +1532,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._new) as usize - ptr as usize },
-        80usize,
+        88usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1270,8 +1541,28 @@ fn bindgen_test_layout__reent() {
         )
     );
     assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._atexit) as usize - ptr as usize },
+        328usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent),
+            "::",
+            stringify!(_atexit)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._atexit0) as usize - ptr as usize },
+        332usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent),
+            "::",
+            stringify!(_atexit0)
+        )
+    );
+    assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._sig_func) as usize - ptr as usize },
-        280usize,
+        732usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1279,12 +1570,29 @@ fn bindgen_test_layout__reent() {
             stringify!(_sig_func)
         )
     );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).__sglue) as usize - ptr as usize },
+        736usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent),
+            "::",
+            stringify!(__sglue)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).__sf) as usize - ptr as usize },
+        748usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent),
+            "::",
+            stringify!(__sf)
+        )
+    );
 }
 extern "C" {
     pub static mut _impure_ptr: *mut _reent;
-}
-extern "C" {
-    pub static mut _impure_data: _reent;
 }
 extern "C" {
     pub fn abort() -> !;
@@ -1482,8 +1790,7 @@ extern "C" {
         arg4: *const core::ffi::c_char,
     ) -> !;
 }
-pub type __gnuc_va_list = u32;
-pub type va_list = __gnuc_va_list;
+pub type va_list = u32;
 pub type FILE = __FILE;
 extern "C" {
     pub fn sscanf(
@@ -2090,6 +2397,10 @@ pub struct FuriPubSubSubscription {
 extern "C" {
     #[doc = "Allocate FuriPubSub\n\n Reentrable, Not threadsafe, one owner\n\n # Returns\n\npointer to FuriPubSub instance"]
     pub fn furi_pubsub_alloc() -> *mut FuriPubSub;
+}
+extern "C" {
+    #[doc = "Free FuriPubSub\n\n # Arguments\n\n* `pubsub` - FuriPubSub instance"]
+    pub fn furi_pubsub_free(pubsub: *mut FuriPubSub);
 }
 extern "C" {
     #[doc = "Subscribe to FuriPubSub\n\n Threadsafe, Reentrable\n\n # Arguments\n\n* `pubsub` - pointer to FuriPubSub instance\n * `callback` (direction in) - The callback\n * `callback_context` - The callback context\n\n # Returns\n\npointer to FuriPubSubSubscription instance"]
@@ -11875,6 +12186,40 @@ extern "C" {
     #[doc = "Set default keys storage file path\n\n # Arguments\n\n* `bt` - Bt instance"]
     pub fn bt_keys_storage_set_default_path(bt: *mut Bt);
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct BtKeysStorage {
+    _unused: [u8; 0],
+}
+extern "C" {
+    pub fn bt_keys_storage_alloc(keys_storage_path: *const core::ffi::c_char)
+        -> *mut BtKeysStorage;
+}
+extern "C" {
+    pub fn bt_keys_storage_free(instance: *mut BtKeysStorage);
+}
+extern "C" {
+    pub fn bt_keys_storage_set_file_path(
+        instance: *mut BtKeysStorage,
+        path: *const core::ffi::c_char,
+    );
+}
+extern "C" {
+    pub fn bt_keys_storage_set_ram_params(instance: *mut BtKeysStorage, buff: *mut u8, size: u16);
+}
+extern "C" {
+    pub fn bt_keys_storage_load(instance: *mut BtKeysStorage) -> bool;
+}
+extern "C" {
+    pub fn bt_keys_storage_update(
+        instance: *mut BtKeysStorage,
+        start_addr: *mut u8,
+        size: u32,
+    ) -> bool;
+}
+extern "C" {
+    pub fn bt_keys_storage_delete(instance: *mut BtKeysStorage) -> bool;
+}
 #[doc = "< Default, loader lock is used"]
 pub const CliCommandFlag_CliCommandFlagDefault: CliCommandFlag = 0;
 pub const CliCommandFlag_CliCommandFlagParallelSafe: CliCommandFlag = 1;
@@ -11955,15 +12300,23 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Get icon width\n\n # Arguments\n\n* `instance` (direction in) - pointer to Icon data\n\n # Returns\n\nwidth in pixels"]
-    pub fn icon_get_width(instance: *const Icon) -> u8;
+    pub fn icon_get_width(instance: *const Icon) -> u16;
 }
 extern "C" {
     #[doc = "Get icon height\n\n # Arguments\n\n* `instance` (direction in) - pointer to Icon data\n\n # Returns\n\nheight in pixels"]
-    pub fn icon_get_height(instance: *const Icon) -> u8;
+    pub fn icon_get_height(instance: *const Icon) -> u16;
 }
 extern "C" {
-    #[doc = "Get Icon XBM bitmap data\n\n # Arguments\n\n* `instance` (direction in) - pointer to Icon data\n\n # Returns\n\npointer to XBM bitmap data"]
+    #[doc = "Get Icon XBM bitmap data for the first frame\n\n # Arguments\n\n* `instance` (direction in) - pointer to Icon data\n\n # Returns\n\npointer to compressed XBM bitmap data"]
     pub fn icon_get_data(instance: *const Icon) -> *const u8;
+}
+extern "C" {
+    #[doc = "Get Icon frame count\n\n # Arguments\n\n* `instance` (direction in) - pointer to Icon data\n\n # Returns\n\nframe count"]
+    pub fn icon_get_frame_count(instance: *const Icon) -> u32;
+}
+extern "C" {
+    #[doc = "Get Icon XBM bitmap data for a particular frame\n\n # Arguments\n\n* `instance` (direction in) - pointer to Icon data\n * `frame` (direction in) - frame index\n\n # Returns\n\npointer to compressed XBM bitmap data"]
+    pub fn icon_get_frame_data(instance: *const Icon, frame: u32) -> *const u8;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -13050,7 +13403,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Draw multiline text\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x,` - y top left corner coordinates\n * `text` - string (possible multiline)"]
+    #[doc = "Draw multiline text\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - top left corner coordinates\n * `y` - top left corner coordinates\n * `text` - string (possible multiline)"]
     pub fn elements_multiline_text(
         canvas: *mut Canvas,
         x: i32,
@@ -13059,7 +13412,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Draw framed multiline text\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x,` - y top left corner coordinates\n * `text` - string (possible multiline)"]
+    #[doc = "Draw framed multiline text\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - top left corner coordinates\n * `y` - top left corner coordinates\n * `text` - string (possible multiline)"]
     pub fn elements_multiline_text_framed(
         canvas: *mut Canvas,
         x: i32,
@@ -13068,7 +13421,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Draw slightly rounded frame\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x,` - y top left corner coordinates\n * `width,` - height size of frame"]
+    #[doc = "Draw slightly rounded frame\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - top left corner coordinates\n * `y` - top left corner coordinates\n * `width` - width of frame\n * `height` - height of frame"]
     pub fn elements_slightly_rounded_frame(
         canvas: *mut Canvas,
         x: i32,
@@ -13078,7 +13431,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Draw slightly rounded box\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x,` - y top left corner coordinates\n * `width,` - height size of box"]
+    #[doc = "Draw slightly rounded box\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - top left corner coordinates\n * `y` - top left corner coordinates\n * `width` - height of box\n * `height` - height of box"]
     pub fn elements_slightly_rounded_box(
         canvas: *mut Canvas,
         x: i32,
@@ -13088,7 +13441,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Draw bold rounded frame\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x,` - y top left corner coordinates\n * `width,` - height size of frame"]
+    #[doc = "Draw bold rounded frame\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - top left corner coordinates\n * `y` - top left corner coordinates\n * `width` - width of frame\n * `height` - height of frame"]
     pub fn elements_bold_rounded_frame(
         canvas: *mut Canvas,
         x: i32,
@@ -13292,8 +13645,8 @@ extern "C" {
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct Icon {
-    pub width: u8,
-    pub height: u8,
+    pub width: u16,
+    pub height: u16,
     pub frame_count: u8,
     pub frame_rate: u8,
     pub frames: *const *const u8,
@@ -13304,7 +13657,7 @@ fn bindgen_test_layout_Icon() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<Icon>(),
-        8usize,
+        12usize,
         concat!("Size of: ", stringify!(Icon))
     );
     assert_eq!(
@@ -13324,7 +13677,7 @@ fn bindgen_test_layout_Icon() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).height) as usize - ptr as usize },
-        1usize,
+        2usize,
         concat!(
             "Offset of field: ",
             stringify!(Icon),
@@ -13334,7 +13687,7 @@ fn bindgen_test_layout_Icon() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).frame_count) as usize - ptr as usize },
-        2usize,
+        4usize,
         concat!(
             "Offset of field: ",
             stringify!(Icon),
@@ -13344,7 +13697,7 @@ fn bindgen_test_layout_Icon() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).frame_rate) as usize - ptr as usize },
-        3usize,
+        5usize,
         concat!(
             "Offset of field: ",
             stringify!(Icon),
@@ -13354,7 +13707,7 @@ fn bindgen_test_layout_Icon() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).frames) as usize - ptr as usize },
-        4usize,
+        8usize,
         concat!(
             "Offset of field: ",
             stringify!(Icon),
@@ -13884,11 +14237,23 @@ extern "C" {
     );
 }
 extern "C" {
+    #[doc = "Change label of an existing item\n\n # Arguments\n\n* `submenu` - Submenu instance\n * `index` - The index of the item\n * `label` - The new label"]
+    pub fn submenu_change_item_label(
+        submenu: *mut Submenu,
+        index: u32,
+        label: *const core::ffi::c_char,
+    );
+}
+extern "C" {
     #[doc = "Remove all items from submenu\n\n # Arguments\n\n* `submenu` - Submenu instance"]
     pub fn submenu_reset(submenu: *mut Submenu);
 }
 extern "C" {
-    #[doc = "Set submenu item selector\n\n # Arguments\n\n* `submenu` - Submenu instance\n * `index` - The index"]
+    #[doc = "Get submenu selected item index\n\n # Arguments\n\n* `submenu` - Submenu instance\n\n # Returns\n\nIndex of the selected item"]
+    pub fn submenu_get_selected_item(submenu: *mut Submenu) -> u32;
+}
+extern "C" {
+    #[doc = "Set submenu selected item by index\n\n # Arguments\n\n* `submenu` - Submenu instance\n * `index` - The index of the selected item"]
     pub fn submenu_set_selected_item(submenu: *mut Submenu, index: u32);
 }
 extern "C" {
@@ -14515,6 +14880,64 @@ extern "C" {
         gui: *mut Gui,
         type_: ViewDispatcherType,
     );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct ViewHolder {
+    _unused: [u8; 0],
+}
+#[doc = "Free callback type"]
+pub type FreeCallback =
+    ::core::option::Option<unsafe extern "C" fn(free_context: *mut core::ffi::c_void)>;
+#[doc = "Back callback type\n comes from GUI thread"]
+pub type BackCallback =
+    ::core::option::Option<unsafe extern "C" fn(back_context: *mut core::ffi::c_void)>;
+extern "C" {
+    #[doc = "Allocate ViewHolder\n # Returns\n\npointer to ViewHolder instance"]
+    pub fn view_holder_alloc() -> *mut ViewHolder;
+}
+extern "C" {
+    #[doc = "Free ViewHolder and call Free callback\n # Arguments\n\n* `view_holder` - pointer to ViewHolder"]
+    pub fn view_holder_free(view_holder: *mut ViewHolder);
+}
+extern "C" {
+    #[doc = "Set view for ViewHolder\n\n # Arguments\n\n* `view_holder` - ViewHolder instance\n * `view` - View instance"]
+    pub fn view_holder_set_view(view_holder: *mut ViewHolder, view: *mut View);
+}
+extern "C" {
+    #[doc = "Set Free callback\n\n # Arguments\n\n* `view_holder` - ViewHolder instance\n * `free_callback` - callback pointer\n * `free_context` - callback context"]
+    pub fn view_holder_set_free_callback(
+        view_holder: *mut ViewHolder,
+        free_callback: FreeCallback,
+        free_context: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = "Free callback context getter. Useful if your Free callback is a module destructor, so you can get an instance of the module using this method.\n\n # Arguments\n\n* `view_holder` - ViewHolder instance\n # Returns\n\nvoid* free callback context"]
+    pub fn view_holder_get_free_context(view_holder: *mut ViewHolder) -> *mut core::ffi::c_void;
+}
+extern "C" {
+    pub fn view_holder_set_back_callback(
+        view_holder: *mut ViewHolder,
+        back_callback: BackCallback,
+        back_context: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = "Attach ViewHolder to GUI\n\n # Arguments\n\n* `view_holder` - ViewHolder instance\n * `gui` - GUI instance to attach to"]
+    pub fn view_holder_attach_to_gui(view_holder: *mut ViewHolder, gui: *mut Gui);
+}
+extern "C" {
+    #[doc = "Enable view processing\n\n # Arguments\n\n* `view_holder` -"]
+    pub fn view_holder_start(view_holder: *mut ViewHolder);
+}
+extern "C" {
+    #[doc = "Disable view processing\n\n # Arguments\n\n* `view_holder` -"]
+    pub fn view_holder_stop(view_holder: *mut ViewHolder);
+}
+extern "C" {
+    #[doc = "View Update Handler\n\n # Arguments\n\n* `view` - View Instance\n * `context` - ViewHolder instance"]
+    pub fn view_holder_update(view: *mut View, context: *mut core::ffi::c_void);
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -18656,24 +19079,25 @@ extern "C" {
 pub const LFRFIDProtocol_LFRFIDProtocolEM4100: LFRFIDProtocol = 0;
 pub const LFRFIDProtocol_LFRFIDProtocolEM410032: LFRFIDProtocol = 1;
 pub const LFRFIDProtocol_LFRFIDProtocolEM410016: LFRFIDProtocol = 2;
-pub const LFRFIDProtocol_LFRFIDProtocolH10301: LFRFIDProtocol = 3;
-pub const LFRFIDProtocol_LFRFIDProtocolIdteck: LFRFIDProtocol = 4;
-pub const LFRFIDProtocol_LFRFIDProtocolIndala26: LFRFIDProtocol = 5;
-pub const LFRFIDProtocol_LFRFIDProtocolIOProxXSF: LFRFIDProtocol = 6;
-pub const LFRFIDProtocol_LFRFIDProtocolAwid: LFRFIDProtocol = 7;
-pub const LFRFIDProtocol_LFRFIDProtocolFDXA: LFRFIDProtocol = 8;
-pub const LFRFIDProtocol_LFRFIDProtocolFDXB: LFRFIDProtocol = 9;
-pub const LFRFIDProtocol_LFRFIDProtocolHidGeneric: LFRFIDProtocol = 10;
-pub const LFRFIDProtocol_LFRFIDProtocolHidExGeneric: LFRFIDProtocol = 11;
-pub const LFRFIDProtocol_LFRFIDProtocolPyramid: LFRFIDProtocol = 12;
-pub const LFRFIDProtocol_LFRFIDProtocolViking: LFRFIDProtocol = 13;
-pub const LFRFIDProtocol_LFRFIDProtocolJablotron: LFRFIDProtocol = 14;
-pub const LFRFIDProtocol_LFRFIDProtocolParadox: LFRFIDProtocol = 15;
-pub const LFRFIDProtocol_LFRFIDProtocolPACStanley: LFRFIDProtocol = 16;
-pub const LFRFIDProtocol_LFRFIDProtocolKeri: LFRFIDProtocol = 17;
-pub const LFRFIDProtocol_LFRFIDProtocolGallagher: LFRFIDProtocol = 18;
-pub const LFRFIDProtocol_LFRFIDProtocolNexwatch: LFRFIDProtocol = 19;
-pub const LFRFIDProtocol_LFRFIDProtocolMax: LFRFIDProtocol = 20;
+pub const LFRFIDProtocol_LFRFIDProtocolElectra: LFRFIDProtocol = 3;
+pub const LFRFIDProtocol_LFRFIDProtocolH10301: LFRFIDProtocol = 4;
+pub const LFRFIDProtocol_LFRFIDProtocolIdteck: LFRFIDProtocol = 5;
+pub const LFRFIDProtocol_LFRFIDProtocolIndala26: LFRFIDProtocol = 6;
+pub const LFRFIDProtocol_LFRFIDProtocolIOProxXSF: LFRFIDProtocol = 7;
+pub const LFRFIDProtocol_LFRFIDProtocolAwid: LFRFIDProtocol = 8;
+pub const LFRFIDProtocol_LFRFIDProtocolFDXA: LFRFIDProtocol = 9;
+pub const LFRFIDProtocol_LFRFIDProtocolFDXB: LFRFIDProtocol = 10;
+pub const LFRFIDProtocol_LFRFIDProtocolHidGeneric: LFRFIDProtocol = 11;
+pub const LFRFIDProtocol_LFRFIDProtocolHidExGeneric: LFRFIDProtocol = 12;
+pub const LFRFIDProtocol_LFRFIDProtocolPyramid: LFRFIDProtocol = 13;
+pub const LFRFIDProtocol_LFRFIDProtocolViking: LFRFIDProtocol = 14;
+pub const LFRFIDProtocol_LFRFIDProtocolJablotron: LFRFIDProtocol = 15;
+pub const LFRFIDProtocol_LFRFIDProtocolParadox: LFRFIDProtocol = 16;
+pub const LFRFIDProtocol_LFRFIDProtocolPACStanley: LFRFIDProtocol = 17;
+pub const LFRFIDProtocol_LFRFIDProtocolKeri: LFRFIDProtocol = 18;
+pub const LFRFIDProtocol_LFRFIDProtocolGallagher: LFRFIDProtocol = 19;
+pub const LFRFIDProtocol_LFRFIDProtocolNexwatch: LFRFIDProtocol = 20;
+pub const LFRFIDProtocol_LFRFIDProtocolMax: LFRFIDProtocol = 21;
 pub type LFRFIDProtocol = core::ffi::c_uchar;
 extern "C" {
     pub static mut lfrfid_protocols: [*const ProtocolBase; 0usize];
@@ -18972,7 +19396,6 @@ fn bindgen_test_layout_usb_cdc_line_coding() {
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct mbedtls_des3_context {
-    #[doc = "< 3DES subkeys"]
     pub private_sk: [u32; 96usize],
 }
 #[test]
@@ -25782,6 +26205,15 @@ extern "C" {
     pub fn iso15693_3_get_block_data(data: *const Iso15693_3Data, block_index: u8) -> *const u8;
 }
 pub type SlixTypeFeatures = u32;
+pub const SlixError_SlixErrorNone: SlixError = 0;
+pub const SlixError_SlixErrorTimeout: SlixError = 1;
+pub const SlixError_SlixErrorFormat: SlixError = 2;
+pub const SlixError_SlixErrorNotSupported: SlixError = 3;
+pub const SlixError_SlixErrorInternal: SlixError = 4;
+pub const SlixError_SlixErrorWrongPassword: SlixError = 5;
+pub const SlixError_SlixErrorUidMismatch: SlixError = 6;
+pub const SlixError_SlixErrorUnknown: SlixError = 7;
+pub type SlixError = core::ffi::c_uchar;
 pub const SlixType_SlixTypeSlix: SlixType = 0;
 pub const SlixType_SlixTypeSlixS: SlixType = 1;
 pub const SlixType_SlixTypeSlixL: SlixType = 2;
@@ -25799,6 +26231,7 @@ pub type SlixPasswordType = core::ffi::c_uchar;
 pub type SlixPassword = u32;
 pub type SlixSignature = [u8; 32usize];
 pub type SlixPrivacy = bool;
+pub type SlixRandomNumber = u16;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct SlixProtection {
@@ -25922,6 +26355,10 @@ fn bindgen_test_layout_SlixSystemInfo() {
         )
     );
 }
+pub const SlixCapabilities_SlixCapabilitiesDefault: SlixCapabilities = 0;
+pub const SlixCapabilities_SlixCapabilitiesAcceptAllPasswords: SlixCapabilities = 1;
+pub const SlixCapabilities_SlixCapabilitiesCount: SlixCapabilities = 2;
+pub type SlixCapabilities = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct SlixData {
@@ -25930,6 +26367,7 @@ pub struct SlixData {
     pub signature: SlixSignature,
     pub passwords: [SlixPassword; 5usize],
     pub privacy: SlixPrivacy,
+    pub capabilities: SlixCapabilities,
 }
 #[test]
 fn bindgen_test_layout_SlixData() {
@@ -25993,6 +26431,16 @@ fn bindgen_test_layout_SlixData() {
             stringify!(SlixData),
             "::",
             stringify!(privacy)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).capabilities) as usize - ptr as usize },
+        61usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SlixData),
+            "::",
+            stringify!(capabilities)
         )
     );
 }
@@ -26068,6 +26516,50 @@ extern "C" {
         slix_type: SlixType,
         password_type: SlixPasswordType,
     ) -> bool;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct SlixPoller {
+    _unused: [u8; 0],
+}
+extern "C" {
+    #[doc = "Transmit and receive Slix frames in poller mode.\n\n Must ONLY be used inside the callback function.\n\n The rx_buffer will be filled with any data received as a response to data\n sent from tx_buffer, with a timeout defined by the fwt parameter.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `tx_buffer` (direction in) - pointer to the buffer containing the data to be transmitted.\n * `rx_buffer` (direction out) - pointer to the buffer to be filled with received data.\n * `fwt` (direction in) - frame wait time (response timeout), in carrier cycles.\n # Returns\n\nSlixErrorNone on success, an error code on failure."]
+    pub fn slix_poller_send_frame(
+        instance: *mut SlixPoller,
+        tx_data: *const BitBuffer,
+        rx_data: *mut BitBuffer,
+        fwt: u32,
+    ) -> SlixError;
+}
+extern "C" {
+    #[doc = "Send get nxp system info command and parse response.\n\n Must ONLY be used inside the callback function.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `data` (direction out) - pointer to the SlixSystemInfo structure to be filled.\n # Returns\n\nSlixErrorNone on success, an error code on failure."]
+    pub fn slix_poller_get_nxp_system_info(
+        instance: *mut SlixPoller,
+        data: *mut SlixSystemInfo,
+    ) -> SlixError;
+}
+extern "C" {
+    #[doc = "Read signature from card.\n\n Must ONLY be used inside the callback function.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `data` (direction out) - pointer to the SlixSignature structure to be filled.\n # Returns\n\nSlixErrorNone on success, an error code on failure."]
+    pub fn slix_poller_read_signature(
+        instance: *mut SlixPoller,
+        data: *mut SlixSignature,
+    ) -> SlixError;
+}
+extern "C" {
+    #[doc = "Get random number from card.\n\n Must ONLY be used inside the callback function.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `data` (direction out) - pointer to the SlixRandomNumber structure to be filled.\n # Returns\n\nSlixErrorNone on success, an error code on failure."]
+    pub fn slix_poller_get_random_number(
+        instance: *mut SlixPoller,
+        data: *mut SlixRandomNumber,
+    ) -> SlixError;
+}
+extern "C" {
+    #[doc = "Set password to card.\n\n Must ONLY be used inside the callback function.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `type` (direction in) - SlixPasswordType instance.\n * `password` (direction in) - SlixPassword instance.\n * `random_number` (direction in) - SlixRandomNumber instance.\n # Returns\n\nSlixErrorNone on success, an error code on failure."]
+    pub fn slix_poller_set_password(
+        instance: *mut SlixPoller,
+        type_: SlixPasswordType,
+        password: SlixPassword,
+        random_number: SlixRandomNumber,
+    ) -> SlixError;
 }
 pub const St25tbError_St25tbErrorNone: St25tbError = 0;
 pub const St25tbError_St25tbErrorNotPresent: St25tbError = 1;
@@ -28449,6 +28941,51 @@ extern "C" {
         decoder_name: *const core::ffi::c_char,
     ) -> *mut SubGhzProtocolDecoderBase;
 }
+pub type SubGhzFileEncoderWorkerCallbackEnd =
+    ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct SubGhzFileEncoderWorker {
+    _unused: [u8; 0],
+}
+extern "C" {
+    #[doc = "End callback SubGhzWorker.\n # Arguments\n\n* `instance` - SubGhzFileEncoderWorker instance\n * `callback` - SubGhzFileEncoderWorkerCallbackEnd callback"]
+    pub fn subghz_file_encoder_worker_callback_end(
+        instance: *mut SubGhzFileEncoderWorker,
+        callback_end: SubGhzFileEncoderWorkerCallbackEnd,
+        context_end: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = "Allocate SubGhzFileEncoderWorker.\n # Returns\n\nSubGhzFileEncoderWorker* pointer to a SubGhzFileEncoderWorker instance"]
+    pub fn subghz_file_encoder_worker_alloc() -> *mut SubGhzFileEncoderWorker;
+}
+extern "C" {
+    #[doc = "Free SubGhzFileEncoderWorker.\n # Arguments\n\n* `instance` - Pointer to a SubGhzFileEncoderWorker instance"]
+    pub fn subghz_file_encoder_worker_free(instance: *mut SubGhzFileEncoderWorker);
+}
+extern "C" {
+    #[doc = "Getting the level and duration of the upload to be loaded into DMA.\n # Arguments\n\n* `context` - Pointer to a SubGhzFileEncoderWorker instance\n # Returns\n\nLevelDuration"]
+    pub fn subghz_file_encoder_worker_get_level_duration(
+        context: *mut core::ffi::c_void,
+    ) -> LevelDuration;
+}
+extern "C" {
+    #[doc = "Start SubGhzFileEncoderWorker.\n # Arguments\n\n* `instance` - Pointer to a SubGhzFileEncoderWorker instance\n * `file_path` - File path\n * `radio_device_name` - Radio device name\n # Returns\n\nbool - true if ok"]
+    pub fn subghz_file_encoder_worker_start(
+        instance: *mut SubGhzFileEncoderWorker,
+        file_path: *const core::ffi::c_char,
+        radio_device_name: *const core::ffi::c_char,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Stop SubGhzFileEncoderWorker\n # Arguments\n\n* `instance` - Pointer to a SubGhzFileEncoderWorker instance"]
+    pub fn subghz_file_encoder_worker_stop(instance: *mut SubGhzFileEncoderWorker);
+}
+extern "C" {
+    #[doc = "Check if worker is running\n # Arguments\n\n* `instance` - Pointer to a SubGhzFileEncoderWorker instance\n # Returns\n\nbool - true if running"]
+    pub fn subghz_file_encoder_worker_is_running(instance: *mut SubGhzFileEncoderWorker) -> bool;
+}
 extern "C" {
     pub static subghz_protocol_registry: SubGhzProtocolRegistry;
 }
@@ -28819,19 +29356,19 @@ pub struct CompressIcon {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = "Initialize icon compressor\n\n # Returns\n\nCompress Icon instance"]
-    pub fn compress_icon_alloc() -> *mut CompressIcon;
+    #[doc = "Initialize icon compressor\n\n # Arguments\n\n* `decode_buf_size` (direction in) - The icon buffer size for decoding. Ensure that\n it's big enough for any icons that you are\n planning to decode with it.\n\n # Returns\n\nCompress Icon instance"]
+    pub fn compress_icon_alloc(decode_buf_size: usize) -> *mut CompressIcon;
 }
 extern "C" {
     #[doc = "Free icon compressor\n\n # Arguments\n\n* `instance` - The Compress Icon instance"]
     pub fn compress_icon_free(instance: *mut CompressIcon);
 }
 extern "C" {
-    #[doc = "Decompress icon\n\n decoded_buff pointer set by this function is valid till next\n `compress_icon_decode` or `compress_icon_free` call\n\n # Arguments\n\n* `instance` - The Compress Icon instance\n * `icon_data` - pointer to icon data\n * `decoded_buff` (direction in) - pointer to decoded buffer pointer"]
+    #[doc = "Decompress icon\n\n output pointer set by this function is valid till next\n `compress_icon_decode` or `compress_icon_free` call\n\n # Arguments\n\n* `instance` - The Compress Icon instance\n * `icon_data` - pointer to icon data.\n * `output` (direction in) - pointer to decoded buffer pointer. Data in buffer is\n valid till next call. If icon data was not compressed,\n pointer within icon_data is returned"]
     pub fn compress_icon_decode(
         instance: *mut CompressIcon,
         icon_data: *const u8,
-        decoded_buff: *mut *mut u8,
+        output: *mut *mut u8,
     );
 }
 #[repr(C)]
@@ -29098,6 +29635,22 @@ extern "C" {
         -> ManchesterEncoderResult;
 }
 extern "C" {
+    pub fn md5_calc_file(
+        file: *mut File,
+        path: *const core::ffi::c_char,
+        output: *mut core::ffi::c_uchar,
+        file_error: *mut FS_Error,
+    ) -> bool;
+}
+extern "C" {
+    pub fn md5_string_calc_file(
+        file: *mut File,
+        path: *const core::ffi::c_char,
+        output: *mut FuriString,
+        file_error: *mut FS_Error,
+    ) -> bool;
+}
+extern "C" {
     #[doc = "Generates detailed/random name based on furi_hal flags\n\n # Arguments\n\n* `name` - buffer to write random name\n * `max_name_size` - length of given buffer\n * `prefix` (direction in) - The prefix of the name"]
     pub fn name_generator_make_auto(
         name: *mut core::ffi::c_char,
@@ -29166,6 +29719,26 @@ extern "C" {
         data: *const u8,
         data_size: usize,
     );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct PulseGlue {
+    _unused: [u8; 0],
+}
+extern "C" {
+    pub fn pulse_glue_alloc() -> *mut PulseGlue;
+}
+extern "C" {
+    pub fn pulse_glue_free(pulse_glue: *mut PulseGlue);
+}
+extern "C" {
+    pub fn pulse_glue_reset(pulse_glue: *mut PulseGlue);
+}
+extern "C" {
+    pub fn pulse_glue_push(pulse_glue: *mut PulseGlue, polarity: bool, length: u32) -> bool;
+}
+extern "C" {
+    pub fn pulse_glue_pop(pulse_glue: *mut PulseGlue, length: *mut u32, period: *mut u32);
 }
 extern "C" {
     #[doc = "Load data from the file in saved structure format\n\n # Arguments\n\n* `path` (direction in) - The path to the file\n * `data` (direction out) - Pointer to the memory where to load data\n * `size` (direction in) - The size of the data\n * `magic` (direction in) - The magic to embed into metadata\n * `version` (direction in) - The version to embed into metadata\n\n # Returns\n\ntrue on success, false otherwise"]
@@ -29363,6 +29936,26 @@ extern "C" {
 extern "C" {
     #[doc = "Get the index of a bool array element which is equal to the given value.\n\n Returned index corresponds to the first element found.\n If no suitable elements were found, the function returns 0.\n\n # Arguments\n\n* `value` - value to be searched.\n * `values` - pointer to the array to perform the search in.\n * `values_count` - array size.\n\n # Returns\n\nvalue's index."]
     pub fn value_index_bool(value: bool, values: *const bool, values_count: usize) -> usize;
+}
+extern "C" {
+    #[doc = "Pack uint32 to varint\n # Arguments\n\n* `value` - value from UINT32_MIN to UINT32_MAX\n * `output` - output array, need to be at least 5 bytes long\n # Returns\n\nsize_t"]
+    pub fn varint_uint32_pack(value: u32, output: *mut u8) -> usize;
+}
+extern "C" {
+    pub fn varint_uint32_unpack(value: *mut u32, input: *const u8, input_size: usize) -> usize;
+}
+extern "C" {
+    pub fn varint_uint32_length(value: u32) -> usize;
+}
+extern "C" {
+    #[doc = "Pack int32 to varint\n # Arguments\n\n* `value` - value from (INT32_MIN / 2 + 1) to INT32_MAX\n * `output` - output array, need to be at least 5 bytes long\n # Returns\n\nsize_t"]
+    pub fn varint_int32_pack(value: i32, output: *mut u8) -> usize;
+}
+extern "C" {
+    pub fn varint_int32_unpack(value: *mut i32, input: *const u8, input_size: usize) -> usize;
+}
+extern "C" {
+    pub fn varint_int32_length(value: i32) -> usize;
 }
 pub const BleEventAckStatus_BleEventNotAck: BleEventAckStatus = 0;
 pub const BleEventAckStatus_BleEventAckFlowEnable: BleEventAckStatus = 1;
