@@ -15,7 +15,7 @@ jobs:
       run:
         working-directory: ${{ inputs.target }}
     steps:
-    - uses: actions/checkout@v4.1.5
+    - uses: actions/checkout@v4.1.6
     - run: rustup component add llvm-tools
     - run: sudo apt install libudev-dev
     - name: Build
