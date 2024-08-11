@@ -66,4 +66,7 @@ WORKDIR /app/flipperzero-rs/crates
 #RUN cargo build --release
 
 ####################
-ENTRYPOINT [ "cat", "sys/src/bindings.rs" ]
+FROM alpine
+COPY --from=builder /app/flipperzero-rs/crates/sys/src/bindings.rs /app/bindings.rs
+WORKDIR /app
+ENTRYPOINT [ "cat", "bindings.rs" ]

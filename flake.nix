@@ -15,8 +15,12 @@
           inherit system;
           overlays = [ rust-overlay.overlays.default ];
         };
-        rust = pkgs.rust-bin.fromRustupToolchainFile ./crates/rust-toolchain.toml;
+        rust =
+          pkgs.rust-bin.fromRustupToolchainFile ./crates/rust-toolchain.toml;
       in {
-        devShells.default = pkgs.mkShell { nativeBuildInputs = [ rust pkgs.python3]; };
+        devShells = {
+          default = pkgs.mkShell { nativeBuildInputs = [ rust pkgs.python3 ]; };
+          github-actions = pkgs.mkShell { nativeBuildInputs = [ pkgs.act pkgs.actionlint ]; };
+        };
       });
 }

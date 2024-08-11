@@ -1,0 +1,78 @@
+name: Update Bindings
+
+on:
+  workflow_dispatch:
+    inputs:
+      sdk_version:
+        description: flipperzero-firmware SDK version
+        type: string
+        required: true
+
+jobs:
+  sdk:
+    name: Update SDK bindings
+    runs-on: ubuntu-latest
+    permissions:
+      # SAFETY: A commit authored by the Bot will be pushed
+      contents: write
+      # SAFETY: An update PR will be created by the Bot
+      pull-requests: write
+    steps:
+      -
+        name: Validate SDK version
+        run: echo '${{ github.event.inputs.sdk_version }}' | grep --perl-regexp '^\d+\.\d+\.\d+$'
+      -
+        name: Checkout sources
+        uses: actions/checkout@v4.1.2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.6.1
+      -
+        name: Create branch
+        run: git checkout -b'github-actions/update-bindings/sdk/${{ github.event.inputs.sdk_version }}'
+      -
+        name: Generate bindings
+        id: generate-bindings
+        uses: docker/build-push-action@v6.6.1
+        with:
+          tags: flipperzero-sdk-bindings:latest
+          context: .
+          load: true
+          build-args: 'BRANCH=${{ github.event.inputs.sdk_version }}'
+          file: tools/Dockerfile
+      -
+        name: Update bindings
+        run: docker run ${{ steps.generate-bindings.outputs.imageid }} > crates/sys/src/bindings.rs
+      -
+        name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git commit crates/sys/src/bindings.rs \
+            --message='build(bindings): bump SDK to `${{ github.event.inputs.sdk_version }}`'
+      -
+        name: Push changes
+        run: git push --set-upstream origin 'github-actions/update-bindings/sdk/${{ github.event.inputs.sdk_version }}'
+      -
+        name: Create update Pull Request
+        run: |
+          gh pr create \
+            --repo='flipperzero-rs/flipperzero' \
+            --base='main' \
+            --title='build(bindings): bump SDK to `${{ github.event.inputs.sdk_version }}`' \
+            --body="${PULL_REQUEST_DESCRIPTION}"
+            --label='sdk-update' \
+            --reviewer='flipperzero-rs/maintainers'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PULL_REQUEST_DESCRIPTION: >-
+            # Description
+
+            This updates SDK bindings to [`${{ github.event.inputs.sdk_version }}`][1].
+
+            This PR has been automatically created by user @${{ github.triggering_actor }}
+            via `${{ github.workflow }}` workflow.
+
+            Further changes may added to this pull request.
+
+            [1]: https://github.com/flipperdevices/flipperzero-firmware/releases/tag/${{ github.event.inputs.sdk_version }}
