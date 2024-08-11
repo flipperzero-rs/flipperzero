@@ -26,5 +26,4 @@ jobs:
       run: |
         cargo test --release --verbose 2>&1 | tee stderr.txt
     - name: Check that tests failed for the expected reason
-      run: |
-        cat stderr.txt | grep -q "Error: unable to find Flipper Zero"
+      run: '< stderr.txt grep -q "Error: unable to find Flipper Zero"'
