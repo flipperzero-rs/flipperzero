@@ -1,0 +1,2 @@
+files:
+  - pattern: "^\\.github/workflows/.*\\.ya?ml$"
