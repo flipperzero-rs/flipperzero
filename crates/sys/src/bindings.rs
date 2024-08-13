@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 3801088;
+pub const API_VERSION: u32 = 4063235;
 pub type wint_t = core::ffi::c_int;
 pub type __uint_least8_t = core::ffi::c_uchar;
 pub type __uint_least16_t = core::ffi::c_ushort;
@@ -430,6 +430,132 @@ fn bindgen_test_layout___tm() {
             stringify!(__tm),
             "::",
             stringify!(__tm_isdst)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _on_exit_args {
+    pub _fnargs: [*mut core::ffi::c_void; 32usize],
+    pub _dso_handle: [*mut core::ffi::c_void; 32usize],
+    pub _fntypes: __ULong,
+    pub _is_cxa: __ULong,
+}
+#[test]
+fn bindgen_test_layout__on_exit_args() {
+    const UNINIT: ::core::mem::MaybeUninit<_on_exit_args> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<_on_exit_args>(),
+        264usize,
+        concat!("Size of: ", stringify!(_on_exit_args))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_on_exit_args>(),
+        4usize,
+        concat!("Alignment of ", stringify!(_on_exit_args))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._fnargs) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_on_exit_args),
+            "::",
+            stringify!(_fnargs)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._dso_handle) as usize - ptr as usize },
+        128usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_on_exit_args),
+            "::",
+            stringify!(_dso_handle)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._fntypes) as usize - ptr as usize },
+        256usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_on_exit_args),
+            "::",
+            stringify!(_fntypes)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._is_cxa) as usize - ptr as usize },
+        260usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_on_exit_args),
+            "::",
+            stringify!(_is_cxa)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _atexit {
+    pub _next: *mut _atexit,
+    pub _ind: core::ffi::c_int,
+    pub _fns: [::core::option::Option<unsafe extern "C" fn()>; 32usize],
+    pub _on_exit_args: _on_exit_args,
+}
+#[test]
+fn bindgen_test_layout__atexit() {
+    const UNINIT: ::core::mem::MaybeUninit<_atexit> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<_atexit>(),
+        400usize,
+        concat!("Size of: ", stringify!(_atexit))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_atexit>(),
+        4usize,
+        concat!("Alignment of ", stringify!(_atexit))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._next) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_atexit),
+            "::",
+            stringify!(_next)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._ind) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_atexit),
+            "::",
+            stringify!(_ind)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._fns) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_atexit),
+            "::",
+            stringify!(_fns)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._on_exit_args) as usize - ptr as usize },
+        136usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_atexit),
+            "::",
+            stringify!(_on_exit_args)
         )
     );
 }
@@ -783,6 +909,58 @@ fn bindgen_test_layout___sFILE() {
 pub type __FILE = __sFILE;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+pub struct _glue {
+    pub _next: *mut _glue,
+    pub _niobs: core::ffi::c_int,
+    pub _iobs: *mut __FILE,
+}
+#[test]
+fn bindgen_test_layout__glue() {
+    const UNINIT: ::core::mem::MaybeUninit<_glue> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<_glue>(),
+        12usize,
+        concat!("Size of: ", stringify!(_glue))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_glue>(),
+        4usize,
+        concat!("Alignment of ", stringify!(_glue))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._next) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_glue),
+            "::",
+            stringify!(_next)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._niobs) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_glue),
+            "::",
+            stringify!(_niobs)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._iobs) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_glue),
+            "::",
+            stringify!(_iobs)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct _rand48 {
     pub _seed: [core::ffi::c_ushort; 3usize],
     pub _mult: [core::ffi::c_ushort; 3usize],
@@ -842,7 +1020,9 @@ pub struct _reent {
     pub _stderr: *mut __FILE,
     pub _inc: core::ffi::c_int,
     pub _emergency: [core::ffi::c_char; 25usize],
+    pub _unspecified_locale_info: core::ffi::c_int,
     pub _locale: *mut __locale_t,
+    pub __sdidinit: core::ffi::c_int,
     pub __cleanup: ::core::option::Option<unsafe extern "C" fn(arg1: *mut _reent)>,
     pub _result: *mut _Bigint,
     pub _result_k: core::ffi::c_int,
@@ -851,16 +1031,22 @@ pub struct _reent {
     pub _cvtlen: core::ffi::c_int,
     pub _cvtbuf: *mut core::ffi::c_char,
     pub _new: _reent__bindgen_ty_1,
+    pub _atexit: *mut _atexit,
+    pub _atexit0: _atexit,
     pub _sig_func: *mut ::core::option::Option<unsafe extern "C" fn(arg1: core::ffi::c_int)>,
+    pub __sglue: _glue,
+    pub __sf: [__FILE; 3usize],
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union _reent__bindgen_ty_1 {
     pub _reent: _reent__bindgen_ty_1__bindgen_ty_1,
+    pub _unused: _reent__bindgen_ty_1__bindgen_ty_2,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct _reent__bindgen_ty_1__bindgen_ty_1 {
+    pub _unused_rand: core::ffi::c_uint,
     pub _strtok_last: *mut core::ffi::c_char,
     pub _asctime_buf: [core::ffi::c_char; 26usize],
     pub _localtime_buf: __tm,
@@ -887,7 +1073,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<_reent__bindgen_ty_1__bindgen_ty_1>(),
-        200usize,
+        208usize,
         concat!("Size of: ", stringify!(_reent__bindgen_ty_1__bindgen_ty_1))
     );
     assert_eq!(
@@ -899,8 +1085,18 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._strtok_last) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr)._unused_rand) as usize - ptr as usize },
         0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
+            "::",
+            stringify!(_unused_rand)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._strtok_last) as usize - ptr as usize },
+        4usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -910,7 +1106,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._asctime_buf) as usize - ptr as usize },
-        4usize,
+        8usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -920,7 +1116,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._localtime_buf) as usize - ptr as usize },
-        32usize,
+        36usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -930,7 +1126,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._gamma_signgam) as usize - ptr as usize },
-        68usize,
+        72usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -940,7 +1136,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._rand_next) as usize - ptr as usize },
-        72usize,
+        80usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -950,7 +1146,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._r48) as usize - ptr as usize },
-        80usize,
+        88usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -960,7 +1156,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mblen_state) as usize - ptr as usize },
-        96usize,
+        104usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -970,7 +1166,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mbtowc_state) as usize - ptr as usize },
-        104usize,
+        112usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -980,7 +1176,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._wctomb_state) as usize - ptr as usize },
-        112usize,
+        120usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -990,7 +1186,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._l64a_buf) as usize - ptr as usize },
-        120usize,
+        128usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1000,7 +1196,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._signal_buf) as usize - ptr as usize },
-        128usize,
+        136usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1010,7 +1206,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._getdate_err) as usize - ptr as usize },
-        152usize,
+        160usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1020,7 +1216,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mbrlen_state) as usize - ptr as usize },
-        156usize,
+        164usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1030,7 +1226,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mbrtowc_state) as usize - ptr as usize },
-        164usize,
+        172usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1040,7 +1236,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._mbsrtowcs_state) as usize - ptr as usize },
-        172usize,
+        180usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1050,7 +1246,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._wcrtomb_state) as usize - ptr as usize },
-        180usize,
+        188usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1060,7 +1256,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._wcsrtombs_state) as usize - ptr as usize },
-        188usize,
+        196usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
@@ -1070,12 +1266,57 @@ fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_1() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._h_errno) as usize - ptr as usize },
-        196usize,
+        204usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent__bindgen_ty_1__bindgen_ty_1),
             "::",
             stringify!(_h_errno)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _reent__bindgen_ty_1__bindgen_ty_2 {
+    pub _nextf: [*mut core::ffi::c_uchar; 30usize],
+    pub _nmalloc: [core::ffi::c_uint; 30usize],
+}
+#[test]
+fn bindgen_test_layout__reent__bindgen_ty_1__bindgen_ty_2() {
+    const UNINIT: ::core::mem::MaybeUninit<_reent__bindgen_ty_1__bindgen_ty_2> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<_reent__bindgen_ty_1__bindgen_ty_2>(),
+        240usize,
+        concat!("Size of: ", stringify!(_reent__bindgen_ty_1__bindgen_ty_2))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_reent__bindgen_ty_1__bindgen_ty_2>(),
+        4usize,
+        concat!(
+            "Alignment of ",
+            stringify!(_reent__bindgen_ty_1__bindgen_ty_2)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._nextf) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent__bindgen_ty_1__bindgen_ty_2),
+            "::",
+            stringify!(_nextf)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._nmalloc) as usize - ptr as usize },
+        120usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent__bindgen_ty_1__bindgen_ty_2),
+            "::",
+            stringify!(_nmalloc)
         )
     );
 }
@@ -1086,7 +1327,7 @@ fn bindgen_test_layout__reent__bindgen_ty_1() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<_reent__bindgen_ty_1>(),
-        200usize,
+        240usize,
         concat!("Size of: ", stringify!(_reent__bindgen_ty_1))
     );
     assert_eq!(
@@ -1104,6 +1345,16 @@ fn bindgen_test_layout__reent__bindgen_ty_1() {
             stringify!(_reent)
         )
     );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent__bindgen_ty_1),
+            "::",
+            stringify!(_unused)
+        )
+    );
 }
 #[test]
 fn bindgen_test_layout__reent() {
@@ -1111,7 +1362,7 @@ fn bindgen_test_layout__reent() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<_reent>(),
-        288usize,
+        1064usize,
         concat!("Size of: ", stringify!(_reent))
     );
     assert_eq!(
@@ -1180,8 +1431,18 @@ fn bindgen_test_layout__reent() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr)._locale) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr)._unspecified_locale_info) as usize - ptr as usize },
         48usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent),
+            "::",
+            stringify!(_unspecified_locale_info)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._locale) as usize - ptr as usize },
+        52usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1190,8 +1451,18 @@ fn bindgen_test_layout__reent() {
         )
     );
     assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).__sdidinit) as usize - ptr as usize },
+        56usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent),
+            "::",
+            stringify!(__sdidinit)
+        )
+    );
+    assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).__cleanup) as usize - ptr as usize },
-        52usize,
+        60usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1201,7 +1472,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._result) as usize - ptr as usize },
-        56usize,
+        64usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1211,7 +1482,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._result_k) as usize - ptr as usize },
-        60usize,
+        68usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1221,7 +1492,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._p5s) as usize - ptr as usize },
-        64usize,
+        72usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1231,7 +1502,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._freelist) as usize - ptr as usize },
-        68usize,
+        76usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1241,7 +1512,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._cvtlen) as usize - ptr as usize },
-        72usize,
+        80usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1251,7 +1522,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._cvtbuf) as usize - ptr as usize },
-        76usize,
+        84usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1261,7 +1532,7 @@ fn bindgen_test_layout__reent() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._new) as usize - ptr as usize },
-        80usize,
+        88usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1270,8 +1541,28 @@ fn bindgen_test_layout__reent() {
         )
     );
     assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._atexit) as usize - ptr as usize },
+        328usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent),
+            "::",
+            stringify!(_atexit)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr)._atexit0) as usize - ptr as usize },
+        332usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent),
+            "::",
+            stringify!(_atexit0)
+        )
+    );
+    assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr)._sig_func) as usize - ptr as usize },
-        280usize,
+        732usize,
         concat!(
             "Offset of field: ",
             stringify!(_reent),
@@ -1279,12 +1570,29 @@ fn bindgen_test_layout__reent() {
             stringify!(_sig_func)
         )
     );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).__sglue) as usize - ptr as usize },
+        736usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent),
+            "::",
+            stringify!(__sglue)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).__sf) as usize - ptr as usize },
+        748usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_reent),
+            "::",
+            stringify!(__sf)
+        )
+    );
 }
 extern "C" {
     pub static mut _impure_ptr: *mut _reent;
-}
-extern "C" {
-    pub static mut _impure_data: _reent;
 }
 extern "C" {
     pub fn abort() -> !;
@@ -1350,6 +1658,12 @@ extern "C" {
 }
 pub type uint_least8_t = __uint_least8_t;
 pub type uint_least16_t = __uint_least16_t;
+extern "C" {
+    pub fn strcasecmp(
+        arg1: *const core::ffi::c_char,
+        arg2: *const core::ffi::c_char,
+    ) -> core::ffi::c_int;
+}
 extern "C" {
     pub fn strncasecmp(
         arg1: *const core::ffi::c_char,
@@ -1476,8 +1790,7 @@ extern "C" {
         arg4: *const core::ffi::c_char,
     ) -> !;
 }
-pub type __gnuc_va_list = u32;
-pub type va_list = __gnuc_va_list;
+pub type va_list = u32;
 pub type FILE = __FILE;
 extern "C" {
     pub fn sscanf(
@@ -1493,14 +1806,6 @@ extern "C" {
         arg3: *const core::ffi::c_char,
         ...
     ) -> core::ffi::c_int;
-}
-extern "C" {
-    #[doc = "Crash system"]
-    pub fn __furi_crash_implementation();
-}
-extern "C" {
-    #[doc = "Halt system"]
-    pub fn __furi_halt_implementation();
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -1559,6 +1864,14 @@ extern "C" {
 }
 extern "C" {
     pub fn __furi_critical_exit(info: __FuriCriticalInfo);
+}
+extern "C" {
+    #[doc = "Crash system"]
+    pub fn __furi_crash_implementation();
+}
+extern "C" {
+    #[doc = "Halt system"]
+    pub fn __furi_halt_implementation();
 }
 #[doc = "< Operation completed successfully."]
 pub const FuriStatus_FuriStatusOk: FuriStatus = 0;
@@ -2084,6 +2397,10 @@ pub struct FuriPubSubSubscription {
 extern "C" {
     #[doc = "Allocate FuriPubSub\n\n Reentrable, Not threadsafe, one owner\n\n # Returns\n\npointer to FuriPubSub instance"]
     pub fn furi_pubsub_alloc() -> *mut FuriPubSub;
+}
+extern "C" {
+    #[doc = "Free FuriPubSub\n\n # Arguments\n\n* `pubsub` - FuriPubSub instance"]
+    pub fn furi_pubsub_free(pubsub: *mut FuriPubSub);
 }
 extern "C" {
     #[doc = "Subscribe to FuriPubSub\n\n Threadsafe, Reentrable\n\n # Arguments\n\n* `pubsub` - pointer to FuriPubSub instance\n * `callback` (direction in) - The callback\n * `callback_context` - The callback context\n\n # Returns\n\npointer to FuriPubSubSubscription instance"]
@@ -4676,6 +4993,152 @@ extern "C" {
     #[doc = "Disable clock output on MCO pin"]
     pub fn furi_hal_clock_mco_disable();
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FuriHalAdcHandle {
+    _unused: [u8; 0],
+}
+#[doc = "< 2.048V scale"]
+pub const FuriHalAdcScale_FuriHalAdcScale2048: FuriHalAdcScale = 0;
+#[doc = "< 2.5V scale"]
+pub const FuriHalAdcScale_FuriHalAdcScale2500: FuriHalAdcScale = 1;
+pub type FuriHalAdcScale = core::ffi::c_uchar;
+#[doc = "< 16MHZ, synchronous"]
+pub const FuriHalAdcClock_FuriHalAdcClockSync16: FuriHalAdcClock = 0;
+#[doc = "< 32MHZ, synchronous"]
+pub const FuriHalAdcClock_FuriHalAdcClockSync32: FuriHalAdcClock = 1;
+#[doc = "< 64MHz, synchronous"]
+pub const FuriHalAdcClock_FuriHalAdcClockSync64: FuriHalAdcClock = 2;
+pub type FuriHalAdcClock = core::ffi::c_uchar;
+#[doc = "< ADC will take 2 samples per each value"]
+pub const FuriHalAdcOversample_FuriHalAdcOversample2: FuriHalAdcOversample = 0;
+#[doc = "< ADC will take 4 samples per each value"]
+pub const FuriHalAdcOversample_FuriHalAdcOversample4: FuriHalAdcOversample = 1;
+#[doc = "< ADC will take 8 samples per each value"]
+pub const FuriHalAdcOversample_FuriHalAdcOversample8: FuriHalAdcOversample = 2;
+#[doc = "< ADC will take 16 samples per each value"]
+pub const FuriHalAdcOversample_FuriHalAdcOversample16: FuriHalAdcOversample = 3;
+#[doc = "< ADC will take 32 samples per each value"]
+pub const FuriHalAdcOversample_FuriHalAdcOversample32: FuriHalAdcOversample = 4;
+#[doc = "< ADC will take 64 samples per each value"]
+pub const FuriHalAdcOversample_FuriHalAdcOversample64: FuriHalAdcOversample = 5;
+#[doc = "< ADC will take 128 samples per each value"]
+pub const FuriHalAdcOversample_FuriHalAdcOversample128: FuriHalAdcOversample = 6;
+#[doc = "< ADC will take 256 samples per each value"]
+pub const FuriHalAdcOversample_FuriHalAdcOversample256: FuriHalAdcOversample = 7;
+#[doc = "< disable oversampling"]
+pub const FuriHalAdcOversample_FuriHalAdcOversampleNone: FuriHalAdcOversample = 8;
+pub type FuriHalAdcOversample = core::ffi::c_uchar;
+#[doc = "< Sampling time 2.5 ADC clock"]
+pub const FuriHalAdcSamplingTime_FuriHalAdcSamplingtime2_5: FuriHalAdcSamplingTime = 0;
+#[doc = "< Sampling time 6.5 ADC clock"]
+pub const FuriHalAdcSamplingTime_FuriHalAdcSamplingtime6_5: FuriHalAdcSamplingTime = 1;
+#[doc = "< Sampling time 12.5 ADC clock"]
+pub const FuriHalAdcSamplingTime_FuriHalAdcSamplingtime12_5: FuriHalAdcSamplingTime = 2;
+#[doc = "< Sampling time 24.5 ADC clock"]
+pub const FuriHalAdcSamplingTime_FuriHalAdcSamplingtime24_5: FuriHalAdcSamplingTime = 3;
+#[doc = "< Sampling time 47.5 ADC clock"]
+pub const FuriHalAdcSamplingTime_FuriHalAdcSamplingtime47_5: FuriHalAdcSamplingTime = 4;
+#[doc = "< Sampling time 92.5 ADC clock"]
+pub const FuriHalAdcSamplingTime_FuriHalAdcSamplingtime92_5: FuriHalAdcSamplingTime = 5;
+#[doc = "< Sampling time 247.5 ADC clock"]
+pub const FuriHalAdcSamplingTime_FuriHalAdcSamplingtime247_5: FuriHalAdcSamplingTime = 6;
+#[doc = "< Sampling time 640.5 ADC clock"]
+pub const FuriHalAdcSamplingTime_FuriHalAdcSamplingtime640_5: FuriHalAdcSamplingTime = 7;
+pub type FuriHalAdcSamplingTime = core::ffi::c_uchar;
+#[doc = "< Internal channel, see `FuriHalAdcChannelVREFINT`."]
+pub const FuriHalAdcChannel_FuriHalAdcChannel0: FuriHalAdcChannel = 0;
+#[doc = "< Channel 1p"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel1: FuriHalAdcChannel = 1;
+#[doc = "< Channel 2p or 1n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel2: FuriHalAdcChannel = 2;
+#[doc = "< Channel 3p or 2n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel3: FuriHalAdcChannel = 3;
+#[doc = "< Channel 4p or 3n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel4: FuriHalAdcChannel = 4;
+#[doc = "< Channel 5p or 4n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel5: FuriHalAdcChannel = 5;
+#[doc = "< Channel 6p or 5n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel6: FuriHalAdcChannel = 6;
+#[doc = "< Channel 7p or 6n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel7: FuriHalAdcChannel = 7;
+#[doc = "< Channel 8p or 7n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel8: FuriHalAdcChannel = 8;
+#[doc = "< Channel 9p or 8n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel9: FuriHalAdcChannel = 9;
+#[doc = "< Channel 10p or 9n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel10: FuriHalAdcChannel = 10;
+#[doc = "< Channel 11p or 10n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel11: FuriHalAdcChannel = 11;
+#[doc = "< Channel 12p or 11n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel12: FuriHalAdcChannel = 12;
+#[doc = "< Channel 13p or 12n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel13: FuriHalAdcChannel = 13;
+#[doc = "< Channel 14p or 13n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel14: FuriHalAdcChannel = 14;
+#[doc = "< Channel 15p or 14n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel15: FuriHalAdcChannel = 15;
+#[doc = "< Channel 16p or 15n"]
+pub const FuriHalAdcChannel_FuriHalAdcChannel16: FuriHalAdcChannel = 16;
+#[doc = "< Internal channel, see `FuriHalAdcChannelTEMPSENSOR`."]
+pub const FuriHalAdcChannel_FuriHalAdcChannel17: FuriHalAdcChannel = 17;
+#[doc = "< Internal channel, see `FuriHalAdcChannelVBAT`."]
+pub const FuriHalAdcChannel_FuriHalAdcChannel18: FuriHalAdcChannel = 18;
+#[doc = "< Special channel for VREFINT, used for calibration and self test"]
+pub const FuriHalAdcChannel_FuriHalAdcChannelVREFINT: FuriHalAdcChannel = 19;
+#[doc = "< Special channel for on-die temperature sensor, requires at least 5us of sampling time"]
+pub const FuriHalAdcChannel_FuriHalAdcChannelTEMPSENSOR: FuriHalAdcChannel = 20;
+#[doc = "< Special channel for VBAT/3 voltage, requires at least 12us of sampling time"]
+pub const FuriHalAdcChannel_FuriHalAdcChannelVBAT: FuriHalAdcChannel = 21;
+#[doc = "< No channel"]
+pub const FuriHalAdcChannel_FuriHalAdcChannelNone: FuriHalAdcChannel = 22;
+pub type FuriHalAdcChannel = core::ffi::c_uchar;
+extern "C" {
+    #[doc = "Initialize ADC subsystem"]
+    pub fn furi_hal_adc_init();
+}
+extern "C" {
+    #[doc = "Acquire ADC handle\n\n Enables appropriate power and clocking domains\n\n # Returns\n\nFuriHalAdcHandle pointer"]
+    pub fn furi_hal_adc_acquire() -> *mut FuriHalAdcHandle;
+}
+extern "C" {
+    #[doc = "Release ADC handle\n\n # Arguments\n\n* `handle` - The ADC handle"]
+    pub fn furi_hal_adc_release(handle: *mut FuriHalAdcHandle);
+}
+extern "C" {
+    #[doc = "Configure with default parameters and enable ADC\n\n Parameters used:\n - FuriHalAdcScale2048 - 2.048V VREF Scale. Your signal should be in 0 -\n 2.048V range.\n - FuriHalAdcClockSync64 - Clocked from sysclk bus at 64MHz in synchronous\n mode. Fast, no delay on data bus access.\n - FuriHalAdcOversample64 - Going to acquire and average 64 samples. For\n circuits with slowly or not changing signal. Total time per one read:\n (1/64)*(12.5+247.5)*64 = 260us. The best results you'll get if your signal\n will stay on the same level all this time.\n - FuriHalAdcSamplingtime247_5 - Sampling(transfer from source to internal\n sampling capacitor) time is 247.5 ADC clocks: (1/64)*247.5 = 3.8671875us.\n For relatively high impedance circuits.\n\n Also keep your measurement circuit impedance under 10KOhm or oversampling\n results will be compromised. Verify your signal with oscilloscope(you may\n need fast oscilloscope: 200MHz bandwidth, 125MS/s), ensure that signal is not\n distorted by sampling.\n\n Those parameters were optimized for 0 - 2.048 voltage measurement with ~0.1%\n precision. You can get more, but it will require some magic.\n\n # Arguments\n\n* `handle` - The ADC handle"]
+    pub fn furi_hal_adc_configure(handle: *mut FuriHalAdcHandle);
+}
+extern "C" {
+    #[doc = "Configure with extended parameters and enable ADC\n\n General advice is to start with default parameters, figure out what exactly\n is not working for you and then tune it. Also in some cases changing\n circuit(adding caps, lowering impedance, adding opamp) may be better than changing\n parameters.\n\n In general ADC is a world of magic: make sure that you understand\n how your circuit and ADC works. Then carefully read STM32WB\n series reference manual. Setting incorrect parameters leads to\n very poor results. Also internal channels require special\n settings.\n\n # Arguments\n\n* `handle` - The ADC handle\n * `scale` (direction in) - The ADC voltage scale\n * `clock` (direction in) - The ADC clock\n * `oversample` (direction in) - The ADC oversample mode\n * `sampling_time` (direction in) - The ADC sampling time"]
+    pub fn furi_hal_adc_configure_ex(
+        handle: *mut FuriHalAdcHandle,
+        scale: FuriHalAdcScale,
+        clock: FuriHalAdcClock,
+        oversample: FuriHalAdcOversample,
+        sampling_time: FuriHalAdcSamplingTime,
+    );
+}
+extern "C" {
+    #[doc = "Read single ADC value\n\n # Arguments\n\n* `handle` - The ADC handle\n * `channel` (direction in) - The channel to sample\n\n # Returns\n\nvalue, 12 bits"]
+    pub fn furi_hal_adc_read(handle: *mut FuriHalAdcHandle, channel: FuriHalAdcChannel) -> u16;
+}
+extern "C" {
+    #[doc = "Convert sampled value to voltage\n\n # Arguments\n\n* `handle` - The ADC handle\n * `value` (direction in) - The value acquired with `furi_hal_adc_read`\n\n # Returns\n\nVoltage in mV"]
+    pub fn furi_hal_adc_convert_to_voltage(handle: *mut FuriHalAdcHandle, value: u16) -> f32;
+}
+extern "C" {
+    #[doc = "Convert sampled VREFINT value to voltage\n\n # Arguments\n\n* `handle` - The ADC handle\n * `value` (direction in) - The value acquired with `furi_hal_adc_read` for\n `FuriHalAdcChannelVREFINT` channel\n\n # Returns\n\nVoltage in mV"]
+    pub fn furi_hal_adc_convert_vref(handle: *mut FuriHalAdcHandle, value: u16) -> f32;
+}
+extern "C" {
+    #[doc = "Convert sampled TEMPSENSOR value to temperature\n\n # Arguments\n\n* `handle` - The ADC handle\n * `value` (direction in) - The value acquired with `furi_hal_adc_read` for\n `FuriHalAdcChannelTEMPSENSOR` channel\n\n # Returns\n\ntemperature in degree C"]
+    pub fn furi_hal_adc_convert_temp(handle: *mut FuriHalAdcHandle, value: u16) -> f32;
+}
+extern "C" {
+    #[doc = "Convert sampled VBAT value to voltage\n\n # Arguments\n\n* `handle` - The ADC handle\n * `value` (direction in) - The value acquired with `furi_hal_adc_read` for\n `FuriHalAdcChannelVBAT` channel\n\n # Returns\n\nVoltage in mV"]
+    pub fn furi_hal_adc_convert_vbat(handle: *mut FuriHalAdcHandle, value: u16) -> f32;
+}
 pub const FuriHalBus_FuriHalBusAHB1_GRP1: FuriHalBus = 0;
 pub const FuriHalBus_FuriHalBusDMA1: FuriHalBus = 1;
 pub const FuriHalBus_FuriHalBusDMA2: FuriHalBus = 2;
@@ -5747,6 +6210,7 @@ fn bindgen_test_layout_InputPin() {
 pub struct GpioPinRecord {
     pub pin: *const GpioPin,
     pub name: *const core::ffi::c_char,
+    pub channel: FuriHalAdcChannel,
     pub number: u8,
     pub debug: bool,
 }
@@ -5785,8 +6249,18 @@ fn bindgen_test_layout_GpioPinRecord() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).number) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).channel) as usize - ptr as usize },
         8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GpioPinRecord),
+            "::",
+            stringify!(channel)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).number) as usize - ptr as usize },
+        9usize,
         concat!(
             "Offset of field: ",
             stringify!(GpioPinRecord),
@@ -5796,7 +6270,7 @@ fn bindgen_test_layout_GpioPinRecord() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).debug) as usize - ptr as usize },
-        9usize,
+        10usize,
         concat!(
             "Offset of field: ",
             stringify!(GpioPinRecord),
@@ -5959,7 +6433,7 @@ extern "C" {
     pub static gpio_usb_dp: GpioPin;
 }
 extern "C" {
-    #[doc = "Get a corresponding external connector pin number for a gpio\n # Arguments\n\n* `gpio` - GpioPin\n # Returns\n\npin number or -1 if gpio is not on the external connector"]
+    #[doc = "Get a corresponding external connector pin number for a gpio\n\n # Arguments\n\n* `gpio` - GpioPin\n\n # Returns\n\npin number or -1 if gpio is not on the external connector"]
     pub fn furi_hal_resources_get_ext_pin_number(gpio: *const GpioPin) -> i32;
 }
 #[repr(C)]
@@ -9381,6 +9855,10 @@ extern "C" {
     #[doc = "Set the following consumer key to released state and send HID report\n\n # Arguments\n\n* `button` - key code"]
     pub fn furi_hal_hid_consumer_key_release(button: u16) -> bool;
 }
+extern "C" {
+    #[doc = "Clear all pressed consumer keys and send HID report\n"]
+    pub fn furi_hal_hid_consumer_key_release_all() -> bool;
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct CcidCallbacks {
@@ -9641,7 +10119,7 @@ extern "C" {
     pub fn furi_hal_random_init();
 }
 extern "C" {
-    #[doc = "Get random value\n\n # Returns\n\nrandom value"]
+    #[doc = "Get random value\n furi_hal_random_get() gives up to FURI_HAL_RANDOM_MAX\n rand() and random() give up to RAND_MAX\n\n # Returns\n\n32 bit random value (up to FURI_HAL_RANDOM_MAX)"]
     pub fn furi_hal_random_get() -> u32;
 }
 extern "C" {
@@ -11170,14 +11648,14 @@ extern "C" {
     pub fn flipper_application_free(app: *mut FlipperApplication);
 }
 extern "C" {
-    #[doc = "Validate elf file and load application metadata\n # Arguments\n\n* `app` - Application pointer\n # Returns\n\nPreload result code"]
+    #[doc = "Validate elf file and load application metadata\n\n # Arguments\n\n* `app` - Application pointer\n * `path` (direction in) - The path to fap file\n\n # Returns\n\nPreload result code"]
     pub fn flipper_application_preload(
         app: *mut FlipperApplication,
         path: *const core::ffi::c_char,
     ) -> FlipperApplicationPreloadStatus;
 }
 extern "C" {
-    #[doc = "Validate elf file and load application manifest\n # Arguments\n\n* `app` - Application pointer\n # Returns\n\nPreload result code"]
+    #[doc = "Validate elf file and load application manifest\n\n # Arguments\n\n* `app` - Application pointer\n * `path` (direction in) - The path to fap file\n\n # Returns\n\nPreload result code"]
     pub fn flipper_application_preload_manifest(
         app: *mut FlipperApplication,
         path: *const core::ffi::c_char,
@@ -11708,6 +12186,40 @@ extern "C" {
     #[doc = "Set default keys storage file path\n\n # Arguments\n\n* `bt` - Bt instance"]
     pub fn bt_keys_storage_set_default_path(bt: *mut Bt);
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct BtKeysStorage {
+    _unused: [u8; 0],
+}
+extern "C" {
+    pub fn bt_keys_storage_alloc(keys_storage_path: *const core::ffi::c_char)
+        -> *mut BtKeysStorage;
+}
+extern "C" {
+    pub fn bt_keys_storage_free(instance: *mut BtKeysStorage);
+}
+extern "C" {
+    pub fn bt_keys_storage_set_file_path(
+        instance: *mut BtKeysStorage,
+        path: *const core::ffi::c_char,
+    );
+}
+extern "C" {
+    pub fn bt_keys_storage_set_ram_params(instance: *mut BtKeysStorage, buff: *mut u8, size: u16);
+}
+extern "C" {
+    pub fn bt_keys_storage_load(instance: *mut BtKeysStorage) -> bool;
+}
+extern "C" {
+    pub fn bt_keys_storage_update(
+        instance: *mut BtKeysStorage,
+        start_addr: *mut u8,
+        size: u32,
+    ) -> bool;
+}
+extern "C" {
+    pub fn bt_keys_storage_delete(instance: *mut BtKeysStorage) -> bool;
+}
 #[doc = "< Default, loader lock is used"]
 pub const CliCommandFlag_CliCommandFlagDefault: CliCommandFlag = 0;
 pub const CliCommandFlag_CliCommandFlagParallelSafe: CliCommandFlag = 1;
@@ -11767,7 +12279,7 @@ extern "C" {
 }
 extern "C" {
     #[doc = "New line Send new ine sequence"]
-    pub fn cli_nl();
+    pub fn cli_nl(cli: *mut Cli);
 }
 extern "C" {
     pub fn cli_session_open(cli: *mut Cli, session: *mut core::ffi::c_void);
@@ -11788,15 +12300,23 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Get icon width\n\n # Arguments\n\n* `instance` (direction in) - pointer to Icon data\n\n # Returns\n\nwidth in pixels"]
-    pub fn icon_get_width(instance: *const Icon) -> u8;
+    pub fn icon_get_width(instance: *const Icon) -> u16;
 }
 extern "C" {
     #[doc = "Get icon height\n\n # Arguments\n\n* `instance` (direction in) - pointer to Icon data\n\n # Returns\n\nheight in pixels"]
-    pub fn icon_get_height(instance: *const Icon) -> u8;
+    pub fn icon_get_height(instance: *const Icon) -> u16;
 }
 extern "C" {
-    #[doc = "Get Icon XBM bitmap data\n\n # Arguments\n\n* `instance` (direction in) - pointer to Icon data\n\n # Returns\n\npointer to XBM bitmap data"]
+    #[doc = "Get Icon XBM bitmap data for the first frame\n\n # Arguments\n\n* `instance` (direction in) - pointer to Icon data\n\n # Returns\n\npointer to compressed XBM bitmap data"]
     pub fn icon_get_data(instance: *const Icon) -> *const u8;
+}
+extern "C" {
+    #[doc = "Get Icon frame count\n\n # Arguments\n\n* `instance` (direction in) - pointer to Icon data\n\n # Returns\n\nframe count"]
+    pub fn icon_get_frame_count(instance: *const Icon) -> u32;
+}
+extern "C" {
+    #[doc = "Get Icon XBM bitmap data for a particular frame\n\n # Arguments\n\n* `instance` (direction in) - pointer to Icon data\n * `frame` (direction in) - frame index\n\n # Returns\n\npointer to compressed XBM bitmap data"]
+    pub fn icon_get_frame_data(instance: *const Icon, frame: u32) -> *const u8;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -11960,15 +12480,15 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Get Canvas width\n\n # Arguments\n\n* `canvas` - Canvas instance\n\n # Returns\n\nwidth in pixels."]
-    pub fn canvas_width(canvas: *const Canvas) -> u8;
+    pub fn canvas_width(canvas: *const Canvas) -> usize;
 }
 extern "C" {
     #[doc = "Get Canvas height\n\n # Arguments\n\n* `canvas` - Canvas instance\n\n # Returns\n\nheight in pixels."]
-    pub fn canvas_height(canvas: *const Canvas) -> u8;
+    pub fn canvas_height(canvas: *const Canvas) -> usize;
 }
 extern "C" {
     #[doc = "Get current font height\n\n # Arguments\n\n* `canvas` - Canvas instance\n\n # Returns\n\nheight in pixels."]
-    pub fn canvas_current_font_height(canvas: *const Canvas) -> u8;
+    pub fn canvas_current_font_height(canvas: *const Canvas) -> usize;
 }
 extern "C" {
     #[doc = "Get font parameters\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `font` - Font\n\n # Returns\n\npointer to CanvasFontParameters structure"]
@@ -11984,7 +12504,7 @@ extern "C" {
     pub fn canvas_set_color(canvas: *mut Canvas, color: Color);
 }
 extern "C" {
-    #[doc = "Set font swap\n Argument String Rotation Description\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `dir` - Direction font"]
+    #[doc = "Set font swap Argument String Rotation Description\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `dir` - Direction font"]
     pub fn canvas_set_font_direction(canvas: *mut Canvas, dir: CanvasDirection);
 }
 extern "C" {
@@ -12001,14 +12521,14 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Draw string at position of baseline defined by x, y.\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - anchor point x coordinate\n * `y` - anchor point y coordinate\n * `str` - C-string"]
-    pub fn canvas_draw_str(canvas: *mut Canvas, x: u8, y: u8, str_: *const core::ffi::c_char);
+    pub fn canvas_draw_str(canvas: *mut Canvas, x: i32, y: i32, str_: *const core::ffi::c_char);
 }
 extern "C" {
     #[doc = "Draw aligned string defined by x, y.\n\n Align calculated from position of baseline, string width and ascent (height\n of the glyphs above the baseline)\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - anchor point x coordinate\n * `y` - anchor point y coordinate\n * `horizontal` - horizontal alignment\n * `vertical` - vertical alignment\n * `str` - C-string"]
     pub fn canvas_draw_str_aligned(
         canvas: *mut Canvas,
-        x: u8,
-        y: u8,
+        x: i32,
+        y: i32,
         horizontal: Align,
         vertical: Align,
         str_: *const core::ffi::c_char,
@@ -12020,16 +12540,16 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Get glyph width\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `symbol` (direction in) - character\n\n # Returns\n\nwidth in pixels"]
-    pub fn canvas_glyph_width(canvas: *mut Canvas, symbol: u16) -> u8;
+    pub fn canvas_glyph_width(canvas: *mut Canvas, symbol: u16) -> usize;
 }
 extern "C" {
     #[doc = "Draw bitmap picture at position defined by x,y.\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `width` - width of bitmap\n * `height` - height of bitmap\n * `compressed_bitmap_data` - compressed bitmap data"]
     pub fn canvas_draw_bitmap(
         canvas: *mut Canvas,
-        x: u8,
-        y: u8,
-        width: u8,
-        height: u8,
+        x: i32,
+        y: i32,
+        width: usize,
+        height: usize,
         compressed_bitmap_data: *const u8,
     );
 }
@@ -12037,8 +12557,8 @@ extern "C" {
     #[doc = "Draw icon at position defined by x,y with rotation and flip.\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `icon` - Icon instance\n * `rotation` - IconRotation"]
     pub fn canvas_draw_icon_ex(
         canvas: *mut Canvas,
-        x: u8,
-        y: u8,
+        x: i32,
+        y: i32,
         icon: *const Icon,
         rotation: IconRotation,
     );
@@ -12047,57 +12567,64 @@ extern "C" {
     #[doc = "Draw animation at position defined by x,y.\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `icon_animation` - IconAnimation instance"]
     pub fn canvas_draw_icon_animation(
         canvas: *mut Canvas,
-        x: u8,
-        y: u8,
+        x: i32,
+        y: i32,
         icon_animation: *mut IconAnimation,
     );
 }
 extern "C" {
     #[doc = "Draw icon at position defined by x,y.\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `icon` - Icon instance"]
-    pub fn canvas_draw_icon(canvas: *mut Canvas, x: u8, y: u8, icon: *const Icon);
+    pub fn canvas_draw_icon(canvas: *mut Canvas, x: i32, y: i32, icon: *const Icon);
 }
 extern "C" {
-    #[doc = "Draw XBM bitmap\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `w` - bitmap width\n * `h` - bitmap height\n * `bitmap` - pointer to XBM bitmap data"]
-    pub fn canvas_draw_xbm(canvas: *mut Canvas, x: u8, y: u8, w: u8, h: u8, bitmap: *const u8);
+    #[doc = "Draw XBM bitmap\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `width` (direction in) - bitmap width\n * `height` (direction in) - bitmap height\n * `bitmap` - pointer to XBM bitmap data"]
+    pub fn canvas_draw_xbm(
+        canvas: *mut Canvas,
+        x: i32,
+        y: i32,
+        width: usize,
+        height: usize,
+        bitmap: *const u8,
+    );
 }
 extern "C" {
     #[doc = "Draw dot at x,y\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate"]
-    pub fn canvas_draw_dot(canvas: *mut Canvas, x: u8, y: u8);
+    pub fn canvas_draw_dot(canvas: *mut Canvas, x: i32, y: i32);
 }
 extern "C" {
     #[doc = "Draw box of width, height at x,y\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `width` - box width\n * `height` - box height"]
-    pub fn canvas_draw_box(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8);
+    pub fn canvas_draw_box(canvas: *mut Canvas, x: i32, y: i32, width: usize, height: usize);
 }
 extern "C" {
     #[doc = "Draw frame of width, height at x,y\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `width` - frame width\n * `height` - frame height"]
-    pub fn canvas_draw_frame(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8);
+    pub fn canvas_draw_frame(canvas: *mut Canvas, x: i32, y: i32, width: usize, height: usize);
 }
 extern "C" {
     #[doc = "Draw line from x1,y1 to x2,y2\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x1` - x1 coordinate\n * `y1` - y1 coordinate\n * `x2` - x2 coordinate\n * `y2` - y2 coordinate"]
-    pub fn canvas_draw_line(canvas: *mut Canvas, x1: u8, y1: u8, x2: u8, y2: u8);
+    pub fn canvas_draw_line(canvas: *mut Canvas, x1: i32, y1: i32, x2: i32, y2: i32);
 }
 extern "C" {
-    #[doc = "Draw circle at x,y with radius r\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `r` - radius"]
-    pub fn canvas_draw_circle(canvas: *mut Canvas, x: u8, y: u8, r: u8);
+    #[doc = "Draw circle at x,y with radius r\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `radius` - radius"]
+    pub fn canvas_draw_circle(canvas: *mut Canvas, x: i32, y: i32, radius: usize);
 }
 extern "C" {
-    #[doc = "Draw disc at x,y with radius r\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `r` - radius"]
-    pub fn canvas_draw_disc(canvas: *mut Canvas, x: u8, y: u8, r: u8);
+    #[doc = "Draw disc at x,y with radius r\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `radius` - radius"]
+    pub fn canvas_draw_disc(canvas: *mut Canvas, x: i32, y: i32, radius: usize);
 }
 extern "C" {
-    #[doc = "Draw triangle with given base and height lengths and their intersection coordinate\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate of base and height intersection\n * `y` - y coordinate of base and height intersection\n * `base` - length of triangle side\n * `height` - length of triangle height\n * `dir` - CanvasDirection triangle orientation"]
+    #[doc = "Draw triangle with given base and height lengths and their intersection\n coordinate\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate of base and height intersection\n * `y` - y coordinate of base and height intersection\n * `base` - length of triangle side\n * `height` - length of triangle height\n * `dir` - CanvasDirection triangle orientation"]
     pub fn canvas_draw_triangle(
         canvas: *mut Canvas,
-        x: u8,
-        y: u8,
-        base: u8,
-        height: u8,
+        x: i32,
+        y: i32,
+        base: usize,
+        height: usize,
         dir: CanvasDirection,
     );
 }
 extern "C" {
     #[doc = "Draw glyph\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `ch` - character"]
-    pub fn canvas_draw_glyph(canvas: *mut Canvas, x: u8, y: u8, ch: u16);
+    pub fn canvas_draw_glyph(canvas: *mut Canvas, x: i32, y: i32, ch: u16);
 }
 extern "C" {
     #[doc = "Set transparency mode\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `alpha` - transparency mode"]
@@ -12105,11 +12632,25 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Draw rounded-corner frame of width, height at x,y, with round value radius\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `width` - frame width\n * `height` - frame height\n * `radius` - frame corner radius"]
-    pub fn canvas_draw_rframe(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8, radius: u8);
+    pub fn canvas_draw_rframe(
+        canvas: *mut Canvas,
+        x: i32,
+        y: i32,
+        width: usize,
+        height: usize,
+        radius: usize,
+    );
 }
 extern "C" {
     #[doc = "Draw rounded-corner box of width, height at x,y, with round value raduis\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `width` - box width\n * `height` - box height\n * `radius` - box corner radius"]
-    pub fn canvas_draw_rbox(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8, radius: u8);
+    pub fn canvas_draw_rbox(
+        canvas: *mut Canvas,
+        x: i32,
+        y: i32,
+        width: usize,
+        height: usize,
+        radius: usize,
+    );
 }
 #[doc = "< Press event, emitted after debounce"]
 pub const InputType_InputTypePress: InputType = 0;
@@ -12806,15 +13347,15 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Draw progress bar.\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - progress bar position on X axis\n * `y` - progress bar position on Y axis\n * `width` - progress bar width\n * `progress` - progress (0.0 - 1.0)"]
-    pub fn elements_progress_bar(canvas: *mut Canvas, x: u8, y: u8, width: u8, progress: f32);
+    pub fn elements_progress_bar(canvas: *mut Canvas, x: i32, y: i32, width: usize, progress: f32);
 }
 extern "C" {
     #[doc = "Draw progress bar with text.\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - progress bar position on X axis\n * `y` - progress bar position on Y axis\n * `width` - progress bar width\n * `progress` - progress (0.0 - 1.0)\n * `text` - text to draw"]
     pub fn elements_progress_bar_with_text(
         canvas: *mut Canvas,
-        x: u8,
-        y: u8,
-        width: u8,
+        x: i32,
+        y: i32,
+        width: usize,
         progress: f32,
         text: *const core::ffi::c_char,
     );
@@ -12823,20 +13364,20 @@ extern "C" {
     #[doc = "Draw scrollbar on canvas at specific position.\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - scrollbar position on X axis\n * `y` - scrollbar position on Y axis\n * `height` - scrollbar height\n * `pos` - current element\n * `total` - total elements"]
     pub fn elements_scrollbar_pos(
         canvas: *mut Canvas,
-        x: u8,
-        y: u8,
-        height: u8,
-        pos: u16,
-        total: u16,
+        x: i32,
+        y: i32,
+        height: usize,
+        pos: usize,
+        total: usize,
     );
 }
 extern "C" {
     #[doc = "Draw scrollbar on canvas.\n > **Note:** width 3px, height equal to canvas height\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `pos` - current element of total elements\n * `total` - total elements"]
-    pub fn elements_scrollbar(canvas: *mut Canvas, pos: u16, total: u16);
+    pub fn elements_scrollbar(canvas: *mut Canvas, pos: usize, total: usize);
 }
 extern "C" {
     #[doc = "Draw rounded frame\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x,` - y top left corner coordinates\n * `width,` - height frame width and height"]
-    pub fn elements_frame(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8);
+    pub fn elements_frame(canvas: *mut Canvas, x: i32, y: i32, width: usize, height: usize);
 }
 extern "C" {
     #[doc = "Draw button in left corner\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `str` - button text"]
@@ -12854,59 +13395,71 @@ extern "C" {
     #[doc = "Draw aligned multiline text\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x,` - y coordinates based on align param\n * `horizontal,` - vertical alignment of multiline text\n * `text` - string (possible multiline)"]
     pub fn elements_multiline_text_aligned(
         canvas: *mut Canvas,
-        x: u8,
-        y: u8,
+        x: i32,
+        y: i32,
         horizontal: Align,
         vertical: Align,
         text: *const core::ffi::c_char,
     );
 }
 extern "C" {
-    #[doc = "Draw multiline text\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x,` - y top left corner coordinates\n * `text` - string (possible multiline)"]
+    #[doc = "Draw multiline text\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - top left corner coordinates\n * `y` - top left corner coordinates\n * `text` - string (possible multiline)"]
     pub fn elements_multiline_text(
         canvas: *mut Canvas,
-        x: u8,
-        y: u8,
+        x: i32,
+        y: i32,
         text: *const core::ffi::c_char,
     );
 }
 extern "C" {
-    #[doc = "Draw framed multiline text\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x,` - y top left corner coordinates\n * `text` - string (possible multiline)"]
+    #[doc = "Draw framed multiline text\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - top left corner coordinates\n * `y` - top left corner coordinates\n * `text` - string (possible multiline)"]
     pub fn elements_multiline_text_framed(
         canvas: *mut Canvas,
-        x: u8,
-        y: u8,
+        x: i32,
+        y: i32,
         text: *const core::ffi::c_char,
     );
 }
 extern "C" {
-    #[doc = "Draw slightly rounded frame\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x,` - y top left corner coordinates\n * `width,` - height size of frame"]
+    #[doc = "Draw slightly rounded frame\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - top left corner coordinates\n * `y` - top left corner coordinates\n * `width` - width of frame\n * `height` - height of frame"]
     pub fn elements_slightly_rounded_frame(
         canvas: *mut Canvas,
-        x: u8,
-        y: u8,
-        width: u8,
-        height: u8,
+        x: i32,
+        y: i32,
+        width: usize,
+        height: usize,
     );
 }
 extern "C" {
-    #[doc = "Draw slightly rounded box\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x,` - y top left corner coordinates\n * `width,` - height size of box"]
-    pub fn elements_slightly_rounded_box(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8);
+    #[doc = "Draw slightly rounded box\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - top left corner coordinates\n * `y` - top left corner coordinates\n * `width` - height of box\n * `height` - height of box"]
+    pub fn elements_slightly_rounded_box(
+        canvas: *mut Canvas,
+        x: i32,
+        y: i32,
+        width: usize,
+        height: usize,
+    );
 }
 extern "C" {
-    #[doc = "Draw bold rounded frame\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x,` - y top left corner coordinates\n * `width,` - height size of frame"]
-    pub fn elements_bold_rounded_frame(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8);
+    #[doc = "Draw bold rounded frame\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - top left corner coordinates\n * `y` - top left corner coordinates\n * `width` - width of frame\n * `height` - height of frame"]
+    pub fn elements_bold_rounded_frame(
+        canvas: *mut Canvas,
+        x: i32,
+        y: i32,
+        width: usize,
+        height: usize,
+    );
 }
 extern "C" {
     #[doc = "Draw bubble frame for text\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - left x coordinates\n * `y` - top y coordinate\n * `width` - bubble width\n * `height` - bubble height"]
-    pub fn elements_bubble(canvas: *mut Canvas, x: u8, y: u8, width: u8, height: u8);
+    pub fn elements_bubble(canvas: *mut Canvas, x: i32, y: i32, width: usize, height: usize);
 }
 extern "C" {
     #[doc = "Draw bubble frame for text with corner\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - left x coordinates\n * `y` - top y coordinate\n * `text` - text to display\n * `horizontal` - horizontal aligning\n * `vertical` - aligning"]
     pub fn elements_bubble_str(
         canvas: *mut Canvas,
-        x: u8,
-        y: u8,
+        x: i32,
+        y: i32,
         text: *const core::ffi::c_char,
         horizontal: Align,
         vertical: Align,
@@ -12914,15 +13467,15 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Trim string buffer to fit width in pixels\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `string` - string to trim\n * `width` - max width"]
-    pub fn elements_string_fit_width(canvas: *mut Canvas, string: *mut FuriString, width: u8);
+    pub fn elements_string_fit_width(canvas: *mut Canvas, string: *mut FuriString, width: usize);
 }
 extern "C" {
     #[doc = "Draw scrollable text line\n\n # Arguments\n\n* `canvas` - The canvas\n * `x` (direction in) - X coordinate\n * `y` (direction in) - Y coordinate\n * `width` (direction in) - The width\n * `string` - The string\n * `scroll` (direction in) - The scroll counter: 0 - no scroll, any other number - scroll. Just count up, everything else will be calculated on the inside.\n * `ellipsis` (direction in) - The ellipsis flag: true to add ellipse"]
     pub fn elements_scrollable_text_line(
         canvas: *mut Canvas,
-        x: u8,
-        y: u8,
-        width: u8,
+        x: i32,
+        y: i32,
+        width: usize,
         string: *mut FuriString,
         scroll: usize,
         ellipsis: bool,
@@ -12932,10 +13485,10 @@ extern "C" {
     #[doc = "Draw text box element\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `width` - width to fit text\n * `height` - height to fit text\n * `horizontal` - Align instance\n * `vertical` - Align instance\n * `text` (direction in) - Formatted text. The following formats are available:\n \"text- bold font is used\n \"text- monospaced font is used\n \"text- white text on black background\n * `strip_to_dots` - Strip text to ... if does not fit to width"]
     pub fn elements_text_box(
         canvas: *mut Canvas,
-        x: u8,
-        y: u8,
-        width: u8,
-        height: u8,
+        x: i32,
+        y: i32,
+        width: usize,
+        height: usize,
         horizontal: Align,
         vertical: Align,
         text: *const core::ffi::c_char,
@@ -13092,8 +13645,8 @@ extern "C" {
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct Icon {
-    pub width: u8,
-    pub height: u8,
+    pub width: u16,
+    pub height: u16,
     pub frame_count: u8,
     pub frame_rate: u8,
     pub frames: *const *const u8,
@@ -13104,7 +13657,7 @@ fn bindgen_test_layout_Icon() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<Icon>(),
-        8usize,
+        12usize,
         concat!("Size of: ", stringify!(Icon))
     );
     assert_eq!(
@@ -13124,7 +13677,7 @@ fn bindgen_test_layout_Icon() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).height) as usize - ptr as usize },
-        1usize,
+        2usize,
         concat!(
             "Offset of field: ",
             stringify!(Icon),
@@ -13134,7 +13687,7 @@ fn bindgen_test_layout_Icon() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).frame_count) as usize - ptr as usize },
-        2usize,
+        4usize,
         concat!(
             "Offset of field: ",
             stringify!(Icon),
@@ -13144,7 +13697,7 @@ fn bindgen_test_layout_Icon() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).frame_rate) as usize - ptr as usize },
-        3usize,
+        5usize,
         concat!(
             "Offset of field: ",
             stringify!(Icon),
@@ -13154,7 +13707,7 @@ fn bindgen_test_layout_Icon() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).frames) as usize - ptr as usize },
-        4usize,
+        8usize,
         concat!(
             "Offset of field: ",
             stringify!(Icon),
@@ -13684,11 +14237,23 @@ extern "C" {
     );
 }
 extern "C" {
+    #[doc = "Change label of an existing item\n\n # Arguments\n\n* `submenu` - Submenu instance\n * `index` - The index of the item\n * `label` - The new label"]
+    pub fn submenu_change_item_label(
+        submenu: *mut Submenu,
+        index: u32,
+        label: *const core::ffi::c_char,
+    );
+}
+extern "C" {
     #[doc = "Remove all items from submenu\n\n # Arguments\n\n* `submenu` - Submenu instance"]
     pub fn submenu_reset(submenu: *mut Submenu);
 }
 extern "C" {
-    #[doc = "Set submenu item selector\n\n # Arguments\n\n* `submenu` - Submenu instance\n * `index` - The index"]
+    #[doc = "Get submenu selected item index\n\n # Arguments\n\n* `submenu` - Submenu instance\n\n # Returns\n\nIndex of the selected item"]
+    pub fn submenu_get_selected_item(submenu: *mut Submenu) -> u32;
+}
+extern "C" {
+    #[doc = "Set submenu selected item by index\n\n # Arguments\n\n* `submenu` - Submenu instance\n * `index` - The index of the selected item"]
     pub fn submenu_set_selected_item(submenu: *mut Submenu, index: u32);
 }
 extern "C" {
@@ -14318,6 +14883,64 @@ extern "C" {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+pub struct ViewHolder {
+    _unused: [u8; 0],
+}
+#[doc = "Free callback type"]
+pub type FreeCallback =
+    ::core::option::Option<unsafe extern "C" fn(free_context: *mut core::ffi::c_void)>;
+#[doc = "Back callback type\n comes from GUI thread"]
+pub type BackCallback =
+    ::core::option::Option<unsafe extern "C" fn(back_context: *mut core::ffi::c_void)>;
+extern "C" {
+    #[doc = "Allocate ViewHolder\n # Returns\n\npointer to ViewHolder instance"]
+    pub fn view_holder_alloc() -> *mut ViewHolder;
+}
+extern "C" {
+    #[doc = "Free ViewHolder and call Free callback\n # Arguments\n\n* `view_holder` - pointer to ViewHolder"]
+    pub fn view_holder_free(view_holder: *mut ViewHolder);
+}
+extern "C" {
+    #[doc = "Set view for ViewHolder\n\n # Arguments\n\n* `view_holder` - ViewHolder instance\n * `view` - View instance"]
+    pub fn view_holder_set_view(view_holder: *mut ViewHolder, view: *mut View);
+}
+extern "C" {
+    #[doc = "Set Free callback\n\n # Arguments\n\n* `view_holder` - ViewHolder instance\n * `free_callback` - callback pointer\n * `free_context` - callback context"]
+    pub fn view_holder_set_free_callback(
+        view_holder: *mut ViewHolder,
+        free_callback: FreeCallback,
+        free_context: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = "Free callback context getter. Useful if your Free callback is a module destructor, so you can get an instance of the module using this method.\n\n # Arguments\n\n* `view_holder` - ViewHolder instance\n # Returns\n\nvoid* free callback context"]
+    pub fn view_holder_get_free_context(view_holder: *mut ViewHolder) -> *mut core::ffi::c_void;
+}
+extern "C" {
+    pub fn view_holder_set_back_callback(
+        view_holder: *mut ViewHolder,
+        back_callback: BackCallback,
+        back_context: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = "Attach ViewHolder to GUI\n\n # Arguments\n\n* `view_holder` - ViewHolder instance\n * `gui` - GUI instance to attach to"]
+    pub fn view_holder_attach_to_gui(view_holder: *mut ViewHolder, gui: *mut Gui);
+}
+extern "C" {
+    #[doc = "Enable view processing\n\n # Arguments\n\n* `view_holder` -"]
+    pub fn view_holder_start(view_holder: *mut ViewHolder);
+}
+extern "C" {
+    #[doc = "Disable view processing\n\n # Arguments\n\n* `view_holder` -"]
+    pub fn view_holder_stop(view_holder: *mut ViewHolder);
+}
+extern "C" {
+    #[doc = "View Update Handler\n\n # Arguments\n\n* `view` - View Instance\n * `context` - ViewHolder instance"]
+    pub fn view_holder_update(view: *mut View, context: *mut core::ffi::c_void);
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct ViewStack {
     _unused: [u8; 0],
 }
@@ -14370,6 +14993,14 @@ extern "C" {
         name: *const core::ffi::c_char,
         args: *const core::ffi::c_char,
     ) -> LoaderStatus;
+}
+extern "C" {
+    #[doc = "Start application detached with GUI error message\n # Arguments\n\n* `instance` (direction in) - loader instance\n * `name` (direction in) - application name or id\n * `args` (direction in) - application arguments"]
+    pub fn loader_start_detached_with_gui_error(
+        loader: *mut Loader,
+        name: *const core::ffi::c_char,
+        args: *const core::ffi::c_char,
+    );
 }
 extern "C" {
     #[doc = "Lock application start\n # Arguments\n\n* `instance` (direction in) - loader instance\n # Returns\n\ntrue on success"]
@@ -16549,92 +17180,92 @@ pub struct FlipperFormat {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = "Allocate FlipperFormat as string.\n # Returns\n\nFlipperFormat* pointer to a FlipperFormat instance"]
+    #[doc = "Allocate FlipperFormat as string.\n\n # Returns\n\nFlipperFormat* pointer to a FlipperFormat instance"]
     pub fn flipper_format_string_alloc() -> *mut FlipperFormat;
 }
 extern "C" {
-    #[doc = "Allocate FlipperFormat as file.\n # Returns\n\nFlipperFormat* pointer to a FlipperFormat instance"]
+    #[doc = "Allocate FlipperFormat as file.\n\n # Arguments\n\n* `storage` - The storage\n\n # Returns\n\nFlipperFormat* pointer to a FlipperFormat instance"]
     pub fn flipper_format_file_alloc(storage: *mut Storage) -> *mut FlipperFormat;
 }
 extern "C" {
-    #[doc = "Allocate FlipperFormat as file, buffered mode.\n # Returns\n\nFlipperFormat* pointer to a FlipperFormat instance"]
+    #[doc = "Allocate FlipperFormat as file, buffered mode.\n\n # Arguments\n\n* `storage` - The storage\n\n # Returns\n\nFlipperFormat* pointer to a FlipperFormat instance"]
     pub fn flipper_format_buffered_file_alloc(storage: *mut Storage) -> *mut FlipperFormat;
 }
 extern "C" {
-    #[doc = "Open existing file.\n Use only if FlipperFormat allocated as a file.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `path` - File path\n # Returns\n\nTrue on success"]
+    #[doc = "Open existing file. Use only if FlipperFormat allocated as a file.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `path` - File path\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_file_open_existing(
         flipper_format: *mut FlipperFormat,
         path: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Open existing file, buffered mode.\n Use only if FlipperFormat allocated as a buffered file.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `path` - File path\n # Returns\n\nTrue on success"]
+    #[doc = "Open existing file, buffered mode. Use only if FlipperFormat allocated as a\n buffered file.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `path` - File path\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_buffered_file_open_existing(
         flipper_format: *mut FlipperFormat,
         path: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Open existing file for writing and add values to the end of file.\n Use only if FlipperFormat allocated as a file.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `path` - File path\n # Returns\n\nTrue on success"]
+    #[doc = "Open existing file for writing and add values to the end of file. Use only if\n FlipperFormat allocated as a file.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `path` - File path\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_file_open_append(
         flipper_format: *mut FlipperFormat,
         path: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Open file. Creates a new file, or deletes the contents of the file if it already exists.\n Use only if FlipperFormat allocated as a file.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `path` - File path\n # Returns\n\nTrue on success"]
+    #[doc = "Open file. Creates a new file, or deletes the contents of the file if it\n already exists. Use only if FlipperFormat allocated as a file.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `path` - File path\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_file_open_always(
         flipper_format: *mut FlipperFormat,
         path: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Open file. Creates a new file, or deletes the contents of the file if it already exists, buffered mode.\n Use only if FlipperFormat allocated as a buffered file.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `path` - File path\n # Returns\n\nTrue on success"]
+    #[doc = "Open file. Creates a new file, or deletes the contents of the file if it\n already exists, buffered mode. Use only if FlipperFormat allocated as a\n buffered file.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `path` - File path\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_buffered_file_open_always(
         flipper_format: *mut FlipperFormat,
         path: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Open file. Creates a new file, fails if file already exists.\n Use only if FlipperFormat allocated as a file.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `path` - File path\n # Returns\n\nTrue on success"]
+    #[doc = "Open file. Creates a new file, fails if file already exists. Use only if\n FlipperFormat allocated as a file.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `path` - File path\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_file_open_new(
         flipper_format: *mut FlipperFormat,
         path: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Closes the file, use only if FlipperFormat allocated as a file.\n # Arguments\n\n* `flipper_format` -\n # Returns\n\ntrue\n false"]
+    #[doc = "Closes the file, use only if FlipperFormat allocated as a file.\n\n # Arguments\n\n* `flipper_format` - The flipper format\n\n # Returns\n\ntrue\n false"]
     pub fn flipper_format_file_close(flipper_format: *mut FlipperFormat) -> bool;
 }
 extern "C" {
-    #[doc = "Closes the file, use only if FlipperFormat allocated as a buffered file.\n # Arguments\n\n* `flipper_format` -\n # Returns\n\ntrue\n false"]
+    #[doc = "Closes the file, use only if FlipperFormat allocated as a buffered file.\n\n # Arguments\n\n* `flipper_format` - The flipper format\n\n # Returns\n\ntrue\n false"]
     pub fn flipper_format_buffered_file_close(flipper_format: *mut FlipperFormat) -> bool;
 }
 extern "C" {
-    #[doc = "Free FlipperFormat.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance"]
+    #[doc = "Free FlipperFormat.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance"]
     pub fn flipper_format_free(flipper_format: *mut FlipperFormat);
 }
 extern "C" {
-    #[doc = "Set FlipperFormat mode.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `strict_mode` - True obligates not to skip valid fields. False by default."]
+    #[doc = "Set FlipperFormat mode.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `strict_mode` - True obligates not to skip valid fields. False by\n default."]
     pub fn flipper_format_set_strict_mode(flipper_format: *mut FlipperFormat, strict_mode: bool);
 }
 extern "C" {
-    #[doc = "Rewind the RW pointer.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n # Returns\n\nTrue on success"]
+    #[doc = "Rewind the RW pointer.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_rewind(flipper_format: *mut FlipperFormat) -> bool;
 }
 extern "C" {
-    #[doc = "Move the RW pointer at the end. Can be useful if you want to add some data after reading.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n # Returns\n\nTrue on success"]
+    #[doc = "Move the RW pointer at the end. Can be useful if you want to add some data\n after reading.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_seek_to_end(flipper_format: *mut FlipperFormat) -> bool;
 }
 extern "C" {
-    #[doc = "Check if the key exists.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n # Returns\n\ntrue key exists\n false key is not exists"]
+    #[doc = "Check if the key exists.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n\n # Returns\n\ntrue key exists\n false key is not exists"]
     pub fn flipper_format_key_exist(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Read the header (file type and version).\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `filetype` - File type string\n * `version` - Version Value\n # Returns\n\nTrue on success"]
+    #[doc = "Read the header (file type and version).\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `filetype` - File type string\n * `version` - Version Value\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_read_header(
         flipper_format: *mut FlipperFormat,
         filetype: *mut FuriString,
@@ -16642,7 +17273,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Write the header (file type and version).\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `filetype` - File type string\n * `version` - Version Value\n # Returns\n\nTrue on success"]
+    #[doc = "Write the header (file type and version).\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `filetype` - File type string\n * `version` - Version Value\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_write_header(
         flipper_format: *mut FlipperFormat,
         filetype: *mut FuriString,
@@ -16650,7 +17281,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Write the header (file type and version). Plain C string version.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `filetype` - File type string\n * `version` - Version Value\n # Returns\n\nTrue on success"]
+    #[doc = "Write the header (file type and version). Plain C string version.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `filetype` - File type string\n * `version` - Version Value\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_write_header_cstr(
         flipper_format: *mut FlipperFormat,
         filetype: *const core::ffi::c_char,
@@ -16658,7 +17289,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Get the count of values by key\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` -\n * `count` -\n # Returns\n\nbool"]
+    #[doc = "Get the count of values by key\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - The key\n * `count` - The count\n\n # Returns\n\nbool"]
     pub fn flipper_format_get_value_count(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16666,7 +17297,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Read a string by key\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Read a string by key\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_read_string(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16674,7 +17305,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Write key and string\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Write key and string\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_write_string(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16682,7 +17313,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Write key and string. Plain C string version.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Write key and string. Plain C string version.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_write_string_cstr(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16690,7 +17321,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Read array of uint64 in hex format by key\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n # Returns\n\nTrue on success"]
+    #[doc = "Read array of uint64 in hex format by key\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_read_hex_uint64(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16699,7 +17330,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Write key and array of uint64 in hex format\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n # Returns\n\nTrue on success"]
+    #[doc = "Write key and array of uint64 in hex format\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_write_hex_uint64(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16708,7 +17339,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Read array of uint32 by key\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n # Returns\n\nTrue on success"]
+    #[doc = "Read array of uint32 by key\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_read_uint32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16717,7 +17348,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Write key and array of uint32\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n # Returns\n\nTrue on success"]
+    #[doc = "Write key and array of uint32\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_write_uint32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16726,7 +17357,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Read array of int32 by key\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n # Returns\n\nTrue on success"]
+    #[doc = "Read array of int32 by key\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_read_int32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16735,7 +17366,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Write key and array of int32\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n # Returns\n\nTrue on success"]
+    #[doc = "Write key and array of int32\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_write_int32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16744,7 +17375,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Read array of bool by key\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n # Returns\n\nTrue on success"]
+    #[doc = "Read array of bool by key\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_read_bool(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16753,7 +17384,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Write key and array of bool\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n # Returns\n\nTrue on success"]
+    #[doc = "Write key and array of bool\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_write_bool(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16762,7 +17393,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Read array of float by key\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n # Returns\n\nTrue on success"]
+    #[doc = "Read array of float by key\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_read_float(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16771,7 +17402,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Write key and array of float\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n # Returns\n\nTrue on success"]
+    #[doc = "Write key and array of float\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_write_float(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16780,7 +17411,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Read array of hex-formatted bytes by key\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n # Returns\n\nTrue on success"]
+    #[doc = "Read array of hex-formatted bytes by key\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_read_hex(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16789,7 +17420,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Write key and array of hex-formatted bytes\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n # Returns\n\nTrue on success"]
+    #[doc = "Write key and array of hex-formatted bytes\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` - Values count\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_write_hex(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16798,28 +17429,28 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Write comment\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `data` - Comment text\n # Returns\n\nTrue on success"]
+    #[doc = "Write comment\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `data` - Comment text\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_write_comment(
         flipper_format: *mut FlipperFormat,
         data: *mut FuriString,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Write comment. Plain C string version.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `data` - Comment text\n # Returns\n\nTrue on success"]
+    #[doc = "Write comment. Plain C string version.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `data` - Comment text\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_write_comment_cstr(
         flipper_format: *mut FlipperFormat,
         data: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Removes the first matching key and its value. Sets the RW pointer to a position of deleted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n # Returns\n\nTrue on success"]
+    #[doc = "Removes the first matching key and its value. Sets the RW pointer to a\n position of deleted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_delete_key(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Updates the value of the first matching key to a string value. Sets the RW pointer to a position at the end of inserted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Updates the value of the first matching key to a string value. Sets the RW\n pointer to a position at the end of inserted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_update_string(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16827,7 +17458,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Updates the value of the first matching key to a string value. Plain C version. Sets the RW pointer to a position at the end of inserted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Updates the value of the first matching key to a string value. Plain C\n version. Sets the RW pointer to a position at the end of inserted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_update_string_cstr(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16835,7 +17466,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Updates the value of the first matching key to a uint32 array value. Sets the RW pointer to a position at the end of inserted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Updates the value of the first matching key to a uint32 array value. Sets the\n RW pointer to a position at the end of inserted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` (direction in) - The data size\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_update_uint32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16844,7 +17475,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Updates the value of the first matching key to a int32 array value. Sets the RW pointer to a position at the end of inserted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Updates the value of the first matching key to a int32 array value. Sets the\n RW pointer to a position at the end of inserted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` (direction in) - The data size\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_update_int32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16853,7 +17484,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Updates the value of the first matching key to a bool array value. Sets the RW pointer to a position at the end of inserted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Updates the value of the first matching key to a bool array value. Sets the\n RW pointer to a position at the end of inserted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` (direction in) - The data size\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_update_bool(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16862,7 +17493,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Updates the value of the first matching key to a float array value. Sets the RW pointer to a position at the end of inserted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Updates the value of the first matching key to a float array value. Sets the\n RW pointer to a position at the end of inserted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` (direction in) - The data size\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_update_float(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16871,7 +17502,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Updates the value of the first matching key to an array of hex-formatted bytes. Sets the RW pointer to a position at the end of inserted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Updates the value of the first matching key to an array of hex-formatted\n bytes. Sets the RW pointer to a position at the end of inserted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` (direction in) - The data size\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_update_hex(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16880,7 +17511,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Updates the value of the first matching key to a string value, or adds the key and value if the key did not exist.\n Sets the RW pointer to a position at the end of inserted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Updates the value of the first matching key to a string value, or adds the\n key and value if the key did not exist. Sets the RW pointer to a position at\n the end of inserted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_insert_or_update_string(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16888,7 +17519,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Updates the value of the first matching key to a string value, or adds the key and value if the key did not exist.\n Plain C version.\n Sets the RW pointer to a position at the end of inserted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Updates the value of the first matching key to a string value, or adds the\n key and value if the key did not exist. Plain C version. Sets the RW pointer\n to a position at the end of inserted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_insert_or_update_string_cstr(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16896,7 +17527,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Updates the value of the first matching key to a uint32 array value, or adds the key and value if the key did not exist.\n Sets the RW pointer to a position at the end of inserted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Updates the value of the first matching key to a uint32 array value, or adds\n the key and value if the key did not exist. Sets the RW pointer to a position\n at the end of inserted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` (direction in) - The data size\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_insert_or_update_uint32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16905,7 +17536,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Updates the value of the first matching key to a int32 array value, or adds the key and value if the key did not exist.\n Sets the RW pointer to a position at the end of inserted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Updates the value of the first matching key to a int32 array value, or adds\n the key and value if the key did not exist. Sets the RW pointer to a position\n at the end of inserted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` (direction in) - The data size\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_insert_or_update_int32(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16914,7 +17545,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Updates the value of the first matching key to a bool array value, or adds the key and value if the key did not exist.\n Sets the RW pointer to a position at the end of inserted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Updates the value of the first matching key to a bool array value, or adds\n the key and value if the key did not exist. Sets the RW pointer to a position\n at the end of inserted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` (direction in) - The data size\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_insert_or_update_bool(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16923,7 +17554,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Updates the value of the first matching key to a float array value, or adds the key and value if the key did not exist.\n Sets the RW pointer to a position at the end of inserted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Updates the value of the first matching key to a float array value, or adds\n the key and value if the key did not exist. Sets the RW pointer to a position\n at the end of inserted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` (direction in) - The data size\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_insert_or_update_float(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -16932,7 +17563,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Updates the value of the first matching key to an array of hex-formatted bytes, or adds the key and value if the key did not exist.\nSets the RW pointer to a position at the end of inserted data.\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n # Returns\n\nTrue on success"]
+    #[doc = "Updates the value of the first matching key to an array of hex-formatted\n bytes, or adds the key and value if the key did not exist. Sets the RW\n pointer to a position at the end of inserted data.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `key` - Key\n * `data` - Value\n * `data_size` (direction in) - The data size\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_insert_or_update_hex(
         flipper_format: *mut FlipperFormat,
         key: *const core::ffi::c_char,
@@ -17428,6 +18059,14 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
+    #[doc = "Format a string containing defice UID\n # Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n * `[in]` - key pointer to the key to be rendered\n * `[out]` - result pointer to the FuriString instance (must be initialized)"]
+    pub fn ibutton_protocols_render_uid(
+        protocols: *mut iButtonProtocols,
+        key: *const iButtonKey,
+        result: *mut FuriString,
+    );
+}
+extern "C" {
     #[doc = "Format a string containing device full data\n # Arguments\n\n* `[in]` - protocols pointer to an iButtonProtocols object\n * `[in]` - key pointer to the key to be rendered\n * `[out]` - result pointer to the FuriString instance (must be initialized)"]
     pub fn ibutton_protocols_render_data(
         protocols: *mut iButtonProtocols,
@@ -17571,7 +18210,8 @@ pub const InfraredProtocol_InfraredProtocolSIRC15: InfraredProtocol = 9;
 pub const InfraredProtocol_InfraredProtocolSIRC20: InfraredProtocol = 10;
 pub const InfraredProtocol_InfraredProtocolKaseikyo: InfraredProtocol = 11;
 pub const InfraredProtocol_InfraredProtocolRCA: InfraredProtocol = 12;
-pub const InfraredProtocol_InfraredProtocolMAX: InfraredProtocol = 13;
+pub const InfraredProtocol_InfraredProtocolPioneer: InfraredProtocol = 13;
+pub const InfraredProtocol_InfraredProtocolMAX: InfraredProtocol = 14;
 pub type InfraredProtocol = core::ffi::c_schar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -17724,6 +18364,10 @@ extern "C" {
     #[doc = "Get the minimum count of signal repeats for the selected protocol\n\n # Arguments\n\n* `protocol` (direction in) - - protocol to get the repeat count from\n\n # Returns\n\nrepeat count"]
     pub fn infrared_get_protocol_min_repeat_count(protocol: InfraredProtocol) -> usize;
 }
+pub const FuriHalInfraredTxPin_FuriHalInfraredTxPinInternal: FuriHalInfraredTxPin = 0;
+pub const FuriHalInfraredTxPin_FuriHalInfraredTxPinExtPA7: FuriHalInfraredTxPin = 1;
+pub const FuriHalInfraredTxPin_FuriHalInfraredTxPinMax: FuriHalInfraredTxPin = 2;
+pub type FuriHalInfraredTxPin = core::ffi::c_uchar;
 #[doc = "< New data obtained"]
 pub const FuriHalInfraredTxGetDataState_FuriHalInfraredTxGetDataStateOk:
     FuriHalInfraredTxGetDataState = 0;
@@ -17807,6 +18451,14 @@ extern "C" {
         callback: FuriHalInfraredTxSignalSentISRCallback,
         context: *mut core::ffi::c_void,
     );
+}
+extern "C" {
+    #[doc = "Detect which pin has an external IR module connected.\n\n External IR modules are detected by enabling a weak pull-up\n on supported pins and testing whether the input is still low.\n\n This method works best on modules that employ a FET with a\n strong pull-down or a BJT for driving IR LEDs.\n\n The module MUST pull the input voltage down to at least 0.9V\n or lower in order for it to be detected.\n\n If no module has been detected, FuriHalInfraredTxPinInternal is returned.\n\n # Returns\n\nnumeric identifier of the first pin with a module detected."]
+    pub fn furi_hal_infrared_detect_tx_output() -> FuriHalInfraredTxPin;
+}
+extern "C" {
+    #[doc = "Set which pin will be used to transmit infrared signals.\n\n # Arguments\n\n* `tx_pin` (direction in) - pin to be used for signal transmission."]
+    pub fn furi_hal_infrared_set_tx_output(tx_pin: FuriHalInfraredTxPin);
 }
 extern "C" {
     #[doc = "Send message over INFRARED.\n\n # Arguments\n\n* `message` (direction in) - - message to send.\n * `times` (direction in) - - number of times message should be sent."]
@@ -18078,6 +18730,7 @@ pub struct ProtocolBase {
     pub get_data: ProtocolGetData,
     pub decoder: ProtocolDecoder,
     pub encoder: ProtocolEncoder,
+    pub render_uid: ProtocolRenderData,
     pub render_data: ProtocolRenderData,
     pub render_brief_data: ProtocolRenderData,
     pub write_data: ProtocolWriteData,
@@ -18088,7 +18741,7 @@ fn bindgen_test_layout_ProtocolBase() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<ProtocolBase>(),
-        60usize,
+        64usize,
         concat!("Size of: ", stringify!(ProtocolBase))
     );
     assert_eq!(
@@ -18197,8 +18850,18 @@ fn bindgen_test_layout_ProtocolBase() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).render_data) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).render_uid) as usize - ptr as usize },
         48usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(ProtocolBase),
+            "::",
+            stringify!(render_uid)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).render_data) as usize - ptr as usize },
+        52usize,
         concat!(
             "Offset of field: ",
             stringify!(ProtocolBase),
@@ -18208,7 +18871,7 @@ fn bindgen_test_layout_ProtocolBase() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).render_brief_data) as usize - ptr as usize },
-        52usize,
+        56usize,
         concat!(
             "Offset of field: ",
             stringify!(ProtocolBase),
@@ -18218,7 +18881,7 @@ fn bindgen_test_layout_ProtocolBase() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).write_data) as usize - ptr as usize },
-        56usize,
+        60usize,
         concat!(
             "Offset of field: ",
             stringify!(ProtocolBase),
@@ -18315,6 +18978,13 @@ extern "C" {
     ) -> LevelDuration;
 }
 extern "C" {
+    pub fn protocol_dict_render_uid(
+        dict: *mut ProtocolDict,
+        result: *mut FuriString,
+        protocol_index: usize,
+    );
+}
+extern "C" {
     pub fn protocol_dict_render_data(
         dict: *mut ProtocolDict,
         result: *mut FuriString,
@@ -18409,24 +19079,25 @@ extern "C" {
 pub const LFRFIDProtocol_LFRFIDProtocolEM4100: LFRFIDProtocol = 0;
 pub const LFRFIDProtocol_LFRFIDProtocolEM410032: LFRFIDProtocol = 1;
 pub const LFRFIDProtocol_LFRFIDProtocolEM410016: LFRFIDProtocol = 2;
-pub const LFRFIDProtocol_LFRFIDProtocolH10301: LFRFIDProtocol = 3;
-pub const LFRFIDProtocol_LFRFIDProtocolIdteck: LFRFIDProtocol = 4;
-pub const LFRFIDProtocol_LFRFIDProtocolIndala26: LFRFIDProtocol = 5;
-pub const LFRFIDProtocol_LFRFIDProtocolIOProxXSF: LFRFIDProtocol = 6;
-pub const LFRFIDProtocol_LFRFIDProtocolAwid: LFRFIDProtocol = 7;
-pub const LFRFIDProtocol_LFRFIDProtocolFDXA: LFRFIDProtocol = 8;
-pub const LFRFIDProtocol_LFRFIDProtocolFDXB: LFRFIDProtocol = 9;
-pub const LFRFIDProtocol_LFRFIDProtocolHidGeneric: LFRFIDProtocol = 10;
-pub const LFRFIDProtocol_LFRFIDProtocolHidExGeneric: LFRFIDProtocol = 11;
-pub const LFRFIDProtocol_LFRFIDProtocolPyramid: LFRFIDProtocol = 12;
-pub const LFRFIDProtocol_LFRFIDProtocolViking: LFRFIDProtocol = 13;
-pub const LFRFIDProtocol_LFRFIDProtocolJablotron: LFRFIDProtocol = 14;
-pub const LFRFIDProtocol_LFRFIDProtocolParadox: LFRFIDProtocol = 15;
-pub const LFRFIDProtocol_LFRFIDProtocolPACStanley: LFRFIDProtocol = 16;
-pub const LFRFIDProtocol_LFRFIDProtocolKeri: LFRFIDProtocol = 17;
-pub const LFRFIDProtocol_LFRFIDProtocolGallagher: LFRFIDProtocol = 18;
-pub const LFRFIDProtocol_LFRFIDProtocolNexwatch: LFRFIDProtocol = 19;
-pub const LFRFIDProtocol_LFRFIDProtocolMax: LFRFIDProtocol = 20;
+pub const LFRFIDProtocol_LFRFIDProtocolElectra: LFRFIDProtocol = 3;
+pub const LFRFIDProtocol_LFRFIDProtocolH10301: LFRFIDProtocol = 4;
+pub const LFRFIDProtocol_LFRFIDProtocolIdteck: LFRFIDProtocol = 5;
+pub const LFRFIDProtocol_LFRFIDProtocolIndala26: LFRFIDProtocol = 6;
+pub const LFRFIDProtocol_LFRFIDProtocolIOProxXSF: LFRFIDProtocol = 7;
+pub const LFRFIDProtocol_LFRFIDProtocolAwid: LFRFIDProtocol = 8;
+pub const LFRFIDProtocol_LFRFIDProtocolFDXA: LFRFIDProtocol = 9;
+pub const LFRFIDProtocol_LFRFIDProtocolFDXB: LFRFIDProtocol = 10;
+pub const LFRFIDProtocol_LFRFIDProtocolHidGeneric: LFRFIDProtocol = 11;
+pub const LFRFIDProtocol_LFRFIDProtocolHidExGeneric: LFRFIDProtocol = 12;
+pub const LFRFIDProtocol_LFRFIDProtocolPyramid: LFRFIDProtocol = 13;
+pub const LFRFIDProtocol_LFRFIDProtocolViking: LFRFIDProtocol = 14;
+pub const LFRFIDProtocol_LFRFIDProtocolJablotron: LFRFIDProtocol = 15;
+pub const LFRFIDProtocol_LFRFIDProtocolParadox: LFRFIDProtocol = 16;
+pub const LFRFIDProtocol_LFRFIDProtocolPACStanley: LFRFIDProtocol = 17;
+pub const LFRFIDProtocol_LFRFIDProtocolKeri: LFRFIDProtocol = 18;
+pub const LFRFIDProtocol_LFRFIDProtocolGallagher: LFRFIDProtocol = 19;
+pub const LFRFIDProtocol_LFRFIDProtocolNexwatch: LFRFIDProtocol = 20;
+pub const LFRFIDProtocol_LFRFIDProtocolMax: LFRFIDProtocol = 21;
 pub type LFRFIDProtocol = core::ffi::c_uchar;
 extern "C" {
     pub static mut lfrfid_protocols: [*const ProtocolBase; 0usize];
@@ -18559,19 +19230,19 @@ extern "C" {
     pub fn lfrfid_worker_alloc(dict: *mut ProtocolDict) -> *mut LFRFIDWorker;
 }
 extern "C" {
-    #[doc = "Free LF-RFID worker\n # Arguments\n\n* `worker` -"]
+    #[doc = "Free LF-RFID worker\n\n # Arguments\n\n* `worker` - The worker"]
     pub fn lfrfid_worker_free(worker: *mut LFRFIDWorker);
 }
 extern "C" {
-    #[doc = "Start LF-RFID worker thread\n # Arguments\n\n* `worker` -"]
+    #[doc = "Start LF-RFID worker thread\n\n # Arguments\n\n* `worker` - The worker"]
     pub fn lfrfid_worker_start_thread(worker: *mut LFRFIDWorker);
 }
 extern "C" {
-    #[doc = "Stop LF-RFID worker thread\n # Arguments\n\n* `worker` -"]
+    #[doc = "Stop LF-RFID worker thread\n\n # Arguments\n\n* `worker` - The worker"]
     pub fn lfrfid_worker_stop_thread(worker: *mut LFRFIDWorker);
 }
 extern "C" {
-    #[doc = "Start read mode\n\n # Arguments\n\n* `worker` -\n * `type` -\n * `callback` -\n * `context` -"]
+    #[doc = "Start read mode\n\n # Arguments\n\n* `worker` - The worker\n * `type` - The type\n * `callback` - The callback\n * `context` - The context"]
     pub fn lfrfid_worker_read_start(
         worker: *mut LFRFIDWorker,
         type_: LFRFIDWorkerReadType,
@@ -18580,7 +19251,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Start write mode\n\n # Arguments\n\n* `worker` -\n * `protocol` -\n * `callback` -\n * `context` -"]
+    #[doc = "Start write mode\n\n # Arguments\n\n* `worker` - The worker\n * `protocol` - The protocol\n * `callback` - The callback\n * `context` - The context"]
     pub fn lfrfid_worker_write_start(
         worker: *mut LFRFIDWorker,
         protocol: LFRFIDProtocol,
@@ -18589,11 +19260,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Start emulate mode\n # Arguments\n\n* `worker` -"]
+    #[doc = "Start emulate mode\n\n # Arguments\n\n* `worker` - The worker\n * `protocol` (direction in) - The protocol"]
     pub fn lfrfid_worker_emulate_start(worker: *mut LFRFIDWorker, protocol: LFRFIDProtocol);
 }
 extern "C" {
-    #[doc = "Start raw read mode\n\n # Arguments\n\n* `worker` -\n * `filename` -\n * `type` -\n * `callback` -\n * `context` -"]
+    #[doc = "Start raw read mode\n\n # Arguments\n\n* `worker` - The worker\n * `filename` - The filename\n * `type` - The type\n * `callback` - The callback\n * `context` - The context"]
     pub fn lfrfid_worker_read_raw_start(
         worker: *mut LFRFIDWorker,
         filename: *const core::ffi::c_char,
@@ -18603,7 +19274,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Emulate raw read mode\n # Arguments\n\n* `worker` -\n * `filename` -\n * `callback` -\n * `context` -"]
+    #[doc = "Emulate raw read mode\n\n # Arguments\n\n* `worker` - The worker\n * `filename` - The filename\n * `callback` - The callback\n * `context` - The context"]
     pub fn lfrfid_worker_emulate_raw_start(
         worker: *mut LFRFIDWorker,
         filename: *const core::ffi::c_char,
@@ -18612,7 +19283,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Stop all modes\n # Arguments\n\n* `worker` -"]
+    #[doc = "Stop all modes\n\n # Arguments\n\n* `worker` - The worker"]
     pub fn lfrfid_worker_stop(worker: *mut LFRFIDWorker);
 }
 #[repr(C)]
@@ -18718,6 +19389,38 @@ fn bindgen_test_layout_usb_cdc_line_coding() {
             stringify!(usb_cdc_line_coding),
             "::",
             stringify!(bDataBits)
+        )
+    );
+}
+#[doc = "Triple-DES context structure\n\n DES/3DES are considered weak ciphers and their use constitutes a\n security risk. We recommend considering stronger ciphers\n instead."]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct mbedtls_des3_context {
+    pub private_sk: [u32; 96usize],
+}
+#[test]
+fn bindgen_test_layout_mbedtls_des3_context() {
+    const UNINIT: ::core::mem::MaybeUninit<mbedtls_des3_context> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<mbedtls_des3_context>(),
+        384usize,
+        concat!("Size of: ", stringify!(mbedtls_des3_context))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<mbedtls_des3_context>(),
+        4usize,
+        concat!("Alignment of ", stringify!(mbedtls_des3_context))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).private_sk) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(mbedtls_des3_context),
+            "::",
+            stringify!(private_sk)
         )
     );
 }
@@ -19882,6 +20585,93 @@ extern "C" {
     #[doc = "Append a bit to a BitBuffer instance.\n The destination capacity must be sufficient to accomodate the additional bit.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to be appended to\n * `[in]` - bit bit value to be appended"]
     pub fn bit_buffer_append_bit(buf: *mut BitBuffer, bit: bool);
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Crypto1 {
+    pub odd: u32,
+    pub even: u32,
+}
+#[test]
+fn bindgen_test_layout_Crypto1() {
+    const UNINIT: ::core::mem::MaybeUninit<Crypto1> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<Crypto1>(),
+        8usize,
+        concat!("Size of: ", stringify!(Crypto1))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<Crypto1>(),
+        4usize,
+        concat!("Alignment of ", stringify!(Crypto1))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).odd) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Crypto1),
+            "::",
+            stringify!(odd)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).even) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Crypto1),
+            "::",
+            stringify!(even)
+        )
+    );
+}
+extern "C" {
+    pub fn crypto1_alloc() -> *mut Crypto1;
+}
+extern "C" {
+    pub fn crypto1_free(instance: *mut Crypto1);
+}
+extern "C" {
+    pub fn crypto1_reset(crypto1: *mut Crypto1);
+}
+extern "C" {
+    pub fn crypto1_init(crypto1: *mut Crypto1, key: u64);
+}
+extern "C" {
+    pub fn crypto1_bit(crypto1: *mut Crypto1, in_: u8, is_encrypted: core::ffi::c_int) -> u8;
+}
+extern "C" {
+    pub fn crypto1_byte(crypto1: *mut Crypto1, in_: u8, is_encrypted: core::ffi::c_int) -> u8;
+}
+extern "C" {
+    pub fn crypto1_word(crypto1: *mut Crypto1, in_: u32, is_encrypted: core::ffi::c_int) -> u32;
+}
+extern "C" {
+    pub fn crypto1_decrypt(crypto: *mut Crypto1, buff: *const BitBuffer, out: *mut BitBuffer);
+}
+extern "C" {
+    pub fn crypto1_encrypt(
+        crypto: *mut Crypto1,
+        keystream: *mut u8,
+        buff: *const BitBuffer,
+        out: *mut BitBuffer,
+    );
+}
+extern "C" {
+    pub fn crypto1_encrypt_reader_nonce(
+        crypto: *mut Crypto1,
+        key: u64,
+        cuid: u32,
+        nt: *mut u8,
+        nr: *mut u8,
+        out: *mut BitBuffer,
+        is_nested: bool,
+    );
+}
+extern "C" {
+    pub fn prng_successor(x: u32, n: u32) -> u32;
+}
 pub const Iso13239CrcType_Iso13239CrcTypeDefault: Iso13239CrcType = 0;
 pub const Iso13239CrcType_Iso13239CrcTypePicopass: Iso13239CrcType = 1;
 pub type Iso13239CrcType = core::ffi::c_uchar;
@@ -20656,6 +21446,516 @@ extern "C" {
 extern "C" {
     #[doc = "Stop an NfcScanner.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be stopped."]
     pub fn nfc_scanner_stop(instance: *mut NfcScanner);
+}
+pub const FelicaError_FelicaErrorNone: FelicaError = 0;
+pub const FelicaError_FelicaErrorNotPresent: FelicaError = 1;
+pub const FelicaError_FelicaErrorColResFailed: FelicaError = 2;
+pub const FelicaError_FelicaErrorBufferOverflow: FelicaError = 3;
+pub const FelicaError_FelicaErrorCommunication: FelicaError = 4;
+pub const FelicaError_FelicaErrorFieldOff: FelicaError = 5;
+pub const FelicaError_FelicaErrorWrongCrc: FelicaError = 6;
+pub const FelicaError_FelicaErrorProtocol: FelicaError = 7;
+pub const FelicaError_FelicaErrorTimeout: FelicaError = 8;
+#[doc = "Type of possible Felica errors"]
+pub type FelicaError = core::ffi::c_uchar;
+#[doc = "Felica ID block"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FelicaIDm {
+    pub data: [u8; 8usize],
+}
+#[test]
+fn bindgen_test_layout_FelicaIDm() {
+    const UNINIT: ::core::mem::MaybeUninit<FelicaIDm> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FelicaIDm>(),
+        8usize,
+        concat!("Size of: ", stringify!(FelicaIDm))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FelicaIDm>(),
+        1usize,
+        concat!("Alignment of ", stringify!(FelicaIDm))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaIDm),
+            "::",
+            stringify!(data)
+        )
+    );
+}
+#[doc = "Felica PMm block"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FelicaPMm {
+    pub data: [u8; 8usize],
+}
+#[test]
+fn bindgen_test_layout_FelicaPMm() {
+    const UNINIT: ::core::mem::MaybeUninit<FelicaPMm> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FelicaPMm>(),
+        8usize,
+        concat!("Size of: ", stringify!(FelicaPMm))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FelicaPMm>(),
+        1usize,
+        concat!("Alignment of ", stringify!(FelicaPMm))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaPMm),
+            "::",
+            stringify!(data)
+        )
+    );
+}
+#[doc = "Felica block with status flags indicating last operation with it.\n See Felica manual for more details on status codes."]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FelicaBlock {
+    #[doc = "< Status flag 1, equals to 0 when success"]
+    pub SF1: u8,
+    #[doc = "< Status flag 2, equals to 0 when success"]
+    pub SF2: u8,
+    #[doc = "< Block data"]
+    pub data: [u8; 16usize],
+}
+#[test]
+fn bindgen_test_layout_FelicaBlock() {
+    const UNINIT: ::core::mem::MaybeUninit<FelicaBlock> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FelicaBlock>(),
+        18usize,
+        concat!("Size of: ", stringify!(FelicaBlock))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FelicaBlock>(),
+        1usize,
+        concat!("Alignment of ", stringify!(FelicaBlock))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).SF1) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaBlock),
+            "::",
+            stringify!(SF1)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).SF2) as usize - ptr as usize },
+        1usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaBlock),
+            "::",
+            stringify!(SF2)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        2usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaBlock),
+            "::",
+            stringify!(data)
+        )
+    );
+}
+#[doc = "Felica filesystem structure"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FelicaFileSystem {
+    pub spad: [FelicaBlock; 14usize],
+    pub reg: FelicaBlock,
+    pub rc: FelicaBlock,
+    pub mac: FelicaBlock,
+    pub id: FelicaBlock,
+    pub d_id: FelicaBlock,
+    pub ser_c: FelicaBlock,
+    pub sys_c: FelicaBlock,
+    pub ckv: FelicaBlock,
+    pub ck: FelicaBlock,
+    pub mc: FelicaBlock,
+    pub wcnt: FelicaBlock,
+    pub mac_a: FelicaBlock,
+    pub state: FelicaBlock,
+    pub crc_check: FelicaBlock,
+}
+#[test]
+fn bindgen_test_layout_FelicaFileSystem() {
+    const UNINIT: ::core::mem::MaybeUninit<FelicaFileSystem> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FelicaFileSystem>(),
+        504usize,
+        concat!("Size of: ", stringify!(FelicaFileSystem))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FelicaFileSystem>(),
+        1usize,
+        concat!("Alignment of ", stringify!(FelicaFileSystem))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).spad) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(spad)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).reg) as usize - ptr as usize },
+        252usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(reg)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).rc) as usize - ptr as usize },
+        270usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(rc)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).mac) as usize - ptr as usize },
+        288usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(mac)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        306usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(id)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).d_id) as usize - ptr as usize },
+        324usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(d_id)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).ser_c) as usize - ptr as usize },
+        342usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(ser_c)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).sys_c) as usize - ptr as usize },
+        360usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(sys_c)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).ckv) as usize - ptr as usize },
+        378usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(ckv)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).ck) as usize - ptr as usize },
+        396usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(ck)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).mc) as usize - ptr as usize },
+        414usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(mc)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).wcnt) as usize - ptr as usize },
+        432usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(wcnt)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).mac_a) as usize - ptr as usize },
+        450usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(mac_a)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).state) as usize - ptr as usize },
+        468usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(state)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).crc_check) as usize - ptr as usize },
+        486usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFileSystem),
+            "::",
+            stringify!(crc_check)
+        )
+    );
+}
+#[doc = "Union which represents filesystem in junction with plain data dump"]
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union FelicaFSUnion {
+    pub fs: FelicaFileSystem,
+    pub dump: [u8; 504usize],
+}
+#[test]
+fn bindgen_test_layout_FelicaFSUnion() {
+    const UNINIT: ::core::mem::MaybeUninit<FelicaFSUnion> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FelicaFSUnion>(),
+        504usize,
+        concat!("Size of: ", stringify!(FelicaFSUnion))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FelicaFSUnion>(),
+        1usize,
+        concat!("Alignment of ", stringify!(FelicaFSUnion))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).fs) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFSUnion),
+            "::",
+            stringify!(fs)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).dump) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaFSUnion),
+            "::",
+            stringify!(dump)
+        )
+    );
+}
+#[doc = "Structure used to store Felica data and additional values about reading"]
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct FelicaData {
+    pub idm: FelicaIDm,
+    pub pmm: FelicaPMm,
+    pub blocks_total: u8,
+    pub blocks_read: u8,
+    pub data: FelicaFSUnion,
+}
+#[test]
+fn bindgen_test_layout_FelicaData() {
+    const UNINIT: ::core::mem::MaybeUninit<FelicaData> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<FelicaData>(),
+        522usize,
+        concat!("Size of: ", stringify!(FelicaData))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<FelicaData>(),
+        1usize,
+        concat!("Alignment of ", stringify!(FelicaData))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).idm) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaData),
+            "::",
+            stringify!(idm)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).pmm) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaData),
+            "::",
+            stringify!(pmm)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).blocks_total) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaData),
+            "::",
+            stringify!(blocks_total)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).blocks_read) as usize - ptr as usize },
+        17usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaData),
+            "::",
+            stringify!(blocks_read)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        18usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(FelicaData),
+            "::",
+            stringify!(data)
+        )
+    );
+}
+extern "C" {
+    pub fn felica_alloc() -> *mut FelicaData;
+}
+extern "C" {
+    pub fn felica_free(data: *mut FelicaData);
+}
+extern "C" {
+    pub fn felica_reset(data: *mut FelicaData);
+}
+extern "C" {
+    pub fn felica_copy(data: *mut FelicaData, other: *const FelicaData);
+}
+extern "C" {
+    pub fn felica_verify(data: *mut FelicaData, device_type: *const FuriString) -> bool;
+}
+extern "C" {
+    pub fn felica_load(data: *mut FelicaData, ff: *mut FlipperFormat, version: u32) -> bool;
+}
+extern "C" {
+    pub fn felica_save(data: *const FelicaData, ff: *mut FlipperFormat) -> bool;
+}
+extern "C" {
+    pub fn felica_is_equal(data: *const FelicaData, other: *const FelicaData) -> bool;
+}
+extern "C" {
+    pub fn felica_get_device_name(
+        data: *const FelicaData,
+        name_type: NfcDeviceNameType,
+    ) -> *const core::ffi::c_char;
+}
+extern "C" {
+    pub fn felica_get_uid(data: *const FelicaData, uid_len: *mut usize) -> *const u8;
+}
+extern "C" {
+    pub fn felica_set_uid(data: *mut FelicaData, uid: *const u8, uid_len: usize) -> bool;
+}
+extern "C" {
+    pub fn felica_get_base_data(data: *const FelicaData) -> *mut FelicaData;
+}
+extern "C" {
+    pub fn felica_calculate_session_key(
+        ctx: *mut mbedtls_des3_context,
+        ck: *const u8,
+        rc: *const u8,
+        out: *mut u8,
+    );
+}
+extern "C" {
+    pub fn felica_check_mac(
+        ctx: *mut mbedtls_des3_context,
+        session_key: *const u8,
+        rc: *const u8,
+        blocks: *const u8,
+        block_count: u8,
+        data: *mut u8,
+    ) -> bool;
+}
+extern "C" {
+    pub fn felica_calculate_mac_write(
+        ctx: *mut mbedtls_des3_context,
+        session_key: *const u8,
+        rc: *const u8,
+        wcnt: *const u8,
+        data: *const u8,
+        mac: *mut u8,
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FelicaPoller {
+    _unused: [u8; 0],
+}
+extern "C" {
+    #[doc = "Perform collision resolution procedure.\n\n Must ONLY be used inside the callback function.\n\n Perfoms the collision resolution procedure as defined in FeliCa standars. The data\n field will be filled with Felica data on success.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `data` (direction out) - pointer to the Felica data structure to be filled.\n # Returns\n\nFelicaErrorNone on success, an error code on failure."]
+    pub fn felica_poller_activate(
+        instance: *mut FelicaPoller,
+        data: *mut FelicaData,
+    ) -> FelicaError;
 }
 pub const Iso14443_3aError_Iso14443_3aErrorNone: Iso14443_3aError = 0;
 pub const Iso14443_3aError_Iso14443_3aErrorNotPresent: Iso14443_3aError = 1;
@@ -22208,6 +23508,42 @@ extern "C" {
     ) -> MfClassicError;
 }
 extern "C" {
+    #[doc = "Transmit and receive Iso14443_3a standard frames in poller mode.\n\n Must ONLY be used inside the callback function.\n\n The rx_buffer will be filled with any data received as a response to data\n sent from tx_buffer, with a timeout defined by the fwt parameter.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `tx_buffer` (direction in) - pointer to the buffer containing the data to be transmitted.\n * `rx_buffer` (direction out) - pointer to the buffer to be filled with received data.\n * `fwt` (direction in) - frame wait time (response timeout), in carrier cycles.\n # Returns\n\nMfClassicErrorNone on success, an error code on failure."]
+    pub fn mf_classic_poller_send_standard_frame(
+        instance: *mut MfClassicPoller,
+        tx_buffer: *const BitBuffer,
+        rx_buffer: *mut BitBuffer,
+        fwt_fc: u32,
+    ) -> MfClassicError;
+}
+extern "C" {
+    #[doc = "Transmit and receive Iso14443_3a frames in poller mode.\n\n Must ONLY be used inside the callback function.\n\n The rx_buffer will be filled with any data received as a response to data\n sent from tx_buffer, with a timeout defined by the fwt parameter.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `tx_buffer` (direction in) - pointer to the buffer containing the data to be transmitted.\n * `rx_buffer` (direction out) - pointer to the buffer to be filled with received data.\n * `fwt` (direction in) - frame wait time (response timeout), in carrier cycles.\n # Returns\n\nMfClassicErrorNone on success, an error code on failure."]
+    pub fn mf_classic_poller_send_frame(
+        instance: *mut MfClassicPoller,
+        tx_buffer: *const BitBuffer,
+        rx_buffer: *mut BitBuffer,
+        fwt_fc: u32,
+    ) -> MfClassicError;
+}
+extern "C" {
+    #[doc = "Transmit and receive Iso14443_3a frames with custom parity bits in poller mode.\n\n Must ONLY be used inside the callback function.\n\n The rx_buffer will be filled with any data received as a response to data\n sent from tx_buffer, with a timeout defined by the fwt parameter.\n\n Custom parity bits must be set in the tx_buffer. The rx_buffer will contain\n the received data with the parity bits.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `tx_buffer` (direction in) - pointer to the buffer containing the data to be transmitted.\n * `rx_buffer` (direction out) - pointer to the buffer to be filled with received data.\n * `fwt` (direction in) - frame wait time (response timeout), in carrier cycles.\n # Returns\n\nMfClassicErrorNone on success, an error code on failure."]
+    pub fn mf_classic_poller_send_custom_parity_frame(
+        instance: *mut MfClassicPoller,
+        tx_buffer: *const BitBuffer,
+        rx_buffer: *mut BitBuffer,
+        fwt_fc: u32,
+    ) -> MfClassicError;
+}
+extern "C" {
+    #[doc = "Transmit and receive Mifare Classic encrypted frames with custom parity bits in poller mode.\n\n Must ONLY be used inside the callback function.\n\n The rx_buffer will be filled with any data received as a response to data\n sent from tx_buffer, with a timeout defined by the fwt parameter.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `tx_buffer` (direction in) - pointer to the buffer containing the plain data to be transmitted.\n * `rx_buffer` (direction out) - pointer to the buffer to be filled with decyphered received data.\n * `fwt` (direction in) - frame wait time (response timeout), in carrier cycles.\n # Returns\n\nMfClassicErrorNone on success, an error code on failure."]
+    pub fn mf_classic_poller_send_encrypted_frame(
+        instance: *mut MfClassicPoller,
+        tx_buffer: *const BitBuffer,
+        rx_buffer: *mut BitBuffer,
+        fwt_fc: u32,
+    ) -> MfClassicError;
+}
+extern "C" {
     pub fn mf_classic_poller_sync_collect_nt(
         nfc: *mut Nfc,
         block_num: u8,
@@ -22630,6 +23966,7 @@ fn bindgen_test_layout_MfDesfireKeySettings() {
         )
     );
 }
+pub type MfDesfireKeyVersion = u8;
 pub const MfDesfireFileType_MfDesfireFileTypeStandard: MfDesfireFileType = 0;
 pub const MfDesfireFileType_MfDesfireFileTypeBackup: MfDesfireFileType = 1;
 pub const MfDesfireFileType_MfDesfireFileTypeValue: MfDesfireFileType = 2;
@@ -22650,7 +23987,8 @@ pub type MfDesfireFileAccessRights = u16;
 pub struct MfDesfireFileSettings {
     pub type_: MfDesfireFileType,
     pub comm: MfDesfireFileCommunicationSettings,
-    pub access_rights: MfDesfireFileAccessRights,
+    pub access_rights: [MfDesfireFileAccessRights; 14usize],
+    pub access_rights_len: u8,
     pub __bindgen_anon_1: MfDesfireFileSettings__bindgen_ty_1,
 }
 #[repr(C)]
@@ -22882,7 +24220,7 @@ fn bindgen_test_layout_MfDesfireFileSettings() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<MfDesfireFileSettings>(),
-        20usize,
+        48usize,
         concat!("Size of: ", stringify!(MfDesfireFileSettings))
     );
     assert_eq!(
@@ -22918,6 +24256,16 @@ fn bindgen_test_layout_MfDesfireFileSettings() {
             stringify!(MfDesfireFileSettings),
             "::",
             stringify!(access_rights)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).access_rights_len) as usize - ptr as usize },
+        30usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfDesfireFileSettings),
+            "::",
+            stringify!(access_rights_len)
         )
     );
 }
@@ -23061,6 +24409,7 @@ pub const MfDesfireError_MfDesfireErrorNone: MfDesfireError = 0;
 pub const MfDesfireError_MfDesfireErrorNotPresent: MfDesfireError = 1;
 pub const MfDesfireError_MfDesfireErrorProtocol: MfDesfireError = 2;
 pub const MfDesfireError_MfDesfireErrorTimeout: MfDesfireError = 3;
+pub const MfDesfireError_MfDesfireErrorAuthentication: MfDesfireError = 4;
 pub type MfDesfireError = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -23247,6 +24596,14 @@ extern "C" {
     pub fn mf_desfire_poller_read_key_settings(
         instance: *mut MfDesfirePoller,
         data: *mut MfDesfireKeySettings,
+    ) -> MfDesfireError;
+}
+extern "C" {
+    #[doc = "Read key version on MfDesfire card.\n\n Must ONLY be used inside the callback function.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `key_num` (direction out) - key number.\n * `data` (direction in) - pointer to the MfDesfireKeyVersion structure to be filled with key version data.\n # Returns\n\nMfDesfireErrorNone on success, an error code on failure."]
+    pub fn mf_desfire_poller_read_key_version(
+        instance: *mut MfDesfirePoller,
+        key_num: u8,
+        data: *mut MfDesfireKeyVersion,
     ) -> MfDesfireError;
 }
 extern "C" {
@@ -24848,6 +26205,15 @@ extern "C" {
     pub fn iso15693_3_get_block_data(data: *const Iso15693_3Data, block_index: u8) -> *const u8;
 }
 pub type SlixTypeFeatures = u32;
+pub const SlixError_SlixErrorNone: SlixError = 0;
+pub const SlixError_SlixErrorTimeout: SlixError = 1;
+pub const SlixError_SlixErrorFormat: SlixError = 2;
+pub const SlixError_SlixErrorNotSupported: SlixError = 3;
+pub const SlixError_SlixErrorInternal: SlixError = 4;
+pub const SlixError_SlixErrorWrongPassword: SlixError = 5;
+pub const SlixError_SlixErrorUidMismatch: SlixError = 6;
+pub const SlixError_SlixErrorUnknown: SlixError = 7;
+pub type SlixError = core::ffi::c_uchar;
 pub const SlixType_SlixTypeSlix: SlixType = 0;
 pub const SlixType_SlixTypeSlixS: SlixType = 1;
 pub const SlixType_SlixTypeSlixL: SlixType = 2;
@@ -24865,6 +26231,7 @@ pub type SlixPasswordType = core::ffi::c_uchar;
 pub type SlixPassword = u32;
 pub type SlixSignature = [u8; 32usize];
 pub type SlixPrivacy = bool;
+pub type SlixRandomNumber = u16;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct SlixProtection {
@@ -24988,6 +26355,10 @@ fn bindgen_test_layout_SlixSystemInfo() {
         )
     );
 }
+pub const SlixCapabilities_SlixCapabilitiesDefault: SlixCapabilities = 0;
+pub const SlixCapabilities_SlixCapabilitiesAcceptAllPasswords: SlixCapabilities = 1;
+pub const SlixCapabilities_SlixCapabilitiesCount: SlixCapabilities = 2;
+pub type SlixCapabilities = core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct SlixData {
@@ -24996,6 +26367,7 @@ pub struct SlixData {
     pub signature: SlixSignature,
     pub passwords: [SlixPassword; 5usize],
     pub privacy: SlixPrivacy,
+    pub capabilities: SlixCapabilities,
 }
 #[test]
 fn bindgen_test_layout_SlixData() {
@@ -25059,6 +26431,16 @@ fn bindgen_test_layout_SlixData() {
             stringify!(SlixData),
             "::",
             stringify!(privacy)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).capabilities) as usize - ptr as usize },
+        61usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(SlixData),
+            "::",
+            stringify!(capabilities)
         )
     );
 }
@@ -25134,6 +26516,50 @@ extern "C" {
         slix_type: SlixType,
         password_type: SlixPasswordType,
     ) -> bool;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct SlixPoller {
+    _unused: [u8; 0],
+}
+extern "C" {
+    #[doc = "Transmit and receive Slix frames in poller mode.\n\n Must ONLY be used inside the callback function.\n\n The rx_buffer will be filled with any data received as a response to data\n sent from tx_buffer, with a timeout defined by the fwt parameter.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `tx_buffer` (direction in) - pointer to the buffer containing the data to be transmitted.\n * `rx_buffer` (direction out) - pointer to the buffer to be filled with received data.\n * `fwt` (direction in) - frame wait time (response timeout), in carrier cycles.\n # Returns\n\nSlixErrorNone on success, an error code on failure."]
+    pub fn slix_poller_send_frame(
+        instance: *mut SlixPoller,
+        tx_data: *const BitBuffer,
+        rx_data: *mut BitBuffer,
+        fwt: u32,
+    ) -> SlixError;
+}
+extern "C" {
+    #[doc = "Send get nxp system info command and parse response.\n\n Must ONLY be used inside the callback function.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `data` (direction out) - pointer to the SlixSystemInfo structure to be filled.\n # Returns\n\nSlixErrorNone on success, an error code on failure."]
+    pub fn slix_poller_get_nxp_system_info(
+        instance: *mut SlixPoller,
+        data: *mut SlixSystemInfo,
+    ) -> SlixError;
+}
+extern "C" {
+    #[doc = "Read signature from card.\n\n Must ONLY be used inside the callback function.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `data` (direction out) - pointer to the SlixSignature structure to be filled.\n # Returns\n\nSlixErrorNone on success, an error code on failure."]
+    pub fn slix_poller_read_signature(
+        instance: *mut SlixPoller,
+        data: *mut SlixSignature,
+    ) -> SlixError;
+}
+extern "C" {
+    #[doc = "Get random number from card.\n\n Must ONLY be used inside the callback function.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `data` (direction out) - pointer to the SlixRandomNumber structure to be filled.\n # Returns\n\nSlixErrorNone on success, an error code on failure."]
+    pub fn slix_poller_get_random_number(
+        instance: *mut SlixPoller,
+        data: *mut SlixRandomNumber,
+    ) -> SlixError;
+}
+extern "C" {
+    #[doc = "Set password to card.\n\n Must ONLY be used inside the callback function.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `type` (direction in) - SlixPasswordType instance.\n * `password` (direction in) - SlixPassword instance.\n * `random_number` (direction in) - SlixRandomNumber instance.\n # Returns\n\nSlixErrorNone on success, an error code on failure."]
+    pub fn slix_poller_set_password(
+        instance: *mut SlixPoller,
+        type_: SlixPasswordType,
+        password: SlixPassword,
+        random_number: SlixRandomNumber,
+    ) -> SlixError;
 }
 pub const St25tbError_St25tbErrorNone: St25tbError = 0;
 pub const St25tbError_St25tbErrorNotPresent: St25tbError = 1;
@@ -27515,6 +28941,51 @@ extern "C" {
         decoder_name: *const core::ffi::c_char,
     ) -> *mut SubGhzProtocolDecoderBase;
 }
+pub type SubGhzFileEncoderWorkerCallbackEnd =
+    ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct SubGhzFileEncoderWorker {
+    _unused: [u8; 0],
+}
+extern "C" {
+    #[doc = "End callback SubGhzWorker.\n # Arguments\n\n* `instance` - SubGhzFileEncoderWorker instance\n * `callback` - SubGhzFileEncoderWorkerCallbackEnd callback"]
+    pub fn subghz_file_encoder_worker_callback_end(
+        instance: *mut SubGhzFileEncoderWorker,
+        callback_end: SubGhzFileEncoderWorkerCallbackEnd,
+        context_end: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = "Allocate SubGhzFileEncoderWorker.\n # Returns\n\nSubGhzFileEncoderWorker* pointer to a SubGhzFileEncoderWorker instance"]
+    pub fn subghz_file_encoder_worker_alloc() -> *mut SubGhzFileEncoderWorker;
+}
+extern "C" {
+    #[doc = "Free SubGhzFileEncoderWorker.\n # Arguments\n\n* `instance` - Pointer to a SubGhzFileEncoderWorker instance"]
+    pub fn subghz_file_encoder_worker_free(instance: *mut SubGhzFileEncoderWorker);
+}
+extern "C" {
+    #[doc = "Getting the level and duration of the upload to be loaded into DMA.\n # Arguments\n\n* `context` - Pointer to a SubGhzFileEncoderWorker instance\n # Returns\n\nLevelDuration"]
+    pub fn subghz_file_encoder_worker_get_level_duration(
+        context: *mut core::ffi::c_void,
+    ) -> LevelDuration;
+}
+extern "C" {
+    #[doc = "Start SubGhzFileEncoderWorker.\n # Arguments\n\n* `instance` - Pointer to a SubGhzFileEncoderWorker instance\n * `file_path` - File path\n * `radio_device_name` - Radio device name\n # Returns\n\nbool - true if ok"]
+    pub fn subghz_file_encoder_worker_start(
+        instance: *mut SubGhzFileEncoderWorker,
+        file_path: *const core::ffi::c_char,
+        radio_device_name: *const core::ffi::c_char,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Stop SubGhzFileEncoderWorker\n # Arguments\n\n* `instance` - Pointer to a SubGhzFileEncoderWorker instance"]
+    pub fn subghz_file_encoder_worker_stop(instance: *mut SubGhzFileEncoderWorker);
+}
+extern "C" {
+    #[doc = "Check if worker is running\n # Arguments\n\n* `instance` - Pointer to a SubGhzFileEncoderWorker instance\n # Returns\n\nbool - true if running"]
+    pub fn subghz_file_encoder_worker_is_running(instance: *mut SubGhzFileEncoderWorker) -> bool;
+}
 extern "C" {
     pub static subghz_protocol_registry: SubGhzProtocolRegistry;
 }
@@ -27885,19 +29356,19 @@ pub struct CompressIcon {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = "Initialize icon compressor\n\n # Returns\n\nCompress Icon instance"]
-    pub fn compress_icon_alloc() -> *mut CompressIcon;
+    #[doc = "Initialize icon compressor\n\n # Arguments\n\n* `decode_buf_size` (direction in) - The icon buffer size for decoding. Ensure that\n it's big enough for any icons that you are\n planning to decode with it.\n\n # Returns\n\nCompress Icon instance"]
+    pub fn compress_icon_alloc(decode_buf_size: usize) -> *mut CompressIcon;
 }
 extern "C" {
     #[doc = "Free icon compressor\n\n # Arguments\n\n* `instance` - The Compress Icon instance"]
     pub fn compress_icon_free(instance: *mut CompressIcon);
 }
 extern "C" {
-    #[doc = "Decompress icon\n\n decoded_buff pointer set by this function is valid till next\n `compress_icon_decode` or `compress_icon_free` call\n\n # Arguments\n\n* `instance` - The Compress Icon instance\n * `icon_data` - pointer to icon data\n * `decoded_buff` (direction in) - pointer to decoded buffer pointer"]
+    #[doc = "Decompress icon\n\n output pointer set by this function is valid till next\n `compress_icon_decode` or `compress_icon_free` call\n\n # Arguments\n\n* `instance` - The Compress Icon instance\n * `icon_data` - pointer to icon data.\n * `output` (direction in) - pointer to decoded buffer pointer. Data in buffer is\n valid till next call. If icon data was not compressed,\n pointer within icon_data is returned"]
     pub fn compress_icon_decode(
         instance: *mut CompressIcon,
         icon_data: *const u8,
-        decoded_buff: *mut *mut u8,
+        output: *mut *mut u8,
     );
 }
 #[repr(C)]
@@ -27906,7 +29377,7 @@ pub struct Compress {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = "Allocate encoder and decoder\n\n # Arguments\n\n* `compress_buff_size` - size of decoder and encoder buffer to allocate\n\n # Returns\n\nCompress instance"]
+    #[doc = "Allocate encoder and decoder\n\n # Arguments\n\n* `compress_buff_size` - size of decoder and encoder buffer to\n allocate\n\n # Returns\n\nCompress instance"]
     pub fn compress_alloc(compress_buff_size: u16) -> *mut Compress;
 }
 extern "C" {
@@ -27914,7 +29385,7 @@ extern "C" {
     pub fn compress_free(compress: *mut Compress);
 }
 extern "C" {
-    #[doc = "Encode data\n\n # Arguments\n\n* `compress` - Compress instance\n * `data_in` - pointer to input data\n * `data_in_size` - size of input data\n * `data_out` - maximum size of output data\n * `data_res_size` - pointer to result output data size\n\n # Returns\n\ntrue on success"]
+    #[doc = "Encode data\n\n # Arguments\n\n* `compress` - Compress instance\n * `data_in` - pointer to input data\n * `data_in_size` - size of input data\n * `data_out` - maximum size of output data\n * `data_out_size` (direction in) - The data out size\n * `data_res_size` - pointer to result output data size\n\n # Returns\n\ntrue on success"]
     pub fn compress_encode(
         compress: *mut Compress,
         data_in: *mut u8,
@@ -27925,7 +29396,7 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Decode data\n\n # Arguments\n\n* `compress` - Compress instance\n * `data_in` - pointer to input data\n * `data_in_size` - size of input data\n * `data_out` - maximum size of output data\n * `data_res_size` - pointer to result output data size\n\n # Returns\n\ntrue on success"]
+    #[doc = "Decode data\n\n # Arguments\n\n* `compress` - Compress instance\n * `data_in` - pointer to input data\n * `data_in_size` - size of input data\n * `data_out` - maximum size of output data\n * `data_out_size` (direction in) - The data out size\n * `data_res_size` - pointer to result output data size\n\n # Returns\n\ntrue on success"]
     pub fn compress_decode(
         compress: *mut Compress,
         data_in: *mut u8,
@@ -28164,6 +29635,22 @@ extern "C" {
         -> ManchesterEncoderResult;
 }
 extern "C" {
+    pub fn md5_calc_file(
+        file: *mut File,
+        path: *const core::ffi::c_char,
+        output: *mut core::ffi::c_uchar,
+        file_error: *mut FS_Error,
+    ) -> bool;
+}
+extern "C" {
+    pub fn md5_string_calc_file(
+        file: *mut File,
+        path: *const core::ffi::c_char,
+        output: *mut FuriString,
+        file_error: *mut FS_Error,
+    ) -> bool;
+}
+extern "C" {
     #[doc = "Generates detailed/random name based on furi_hal flags\n\n # Arguments\n\n* `name` - buffer to write random name\n * `max_name_size` - length of given buffer\n * `prefix` (direction in) - The prefix of the name"]
     pub fn name_generator_make_auto(
         name: *mut core::ffi::c_char,
@@ -28233,7 +29720,28 @@ extern "C" {
         data_size: usize,
     );
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct PulseGlue {
+    _unused: [u8; 0],
+}
 extern "C" {
+    pub fn pulse_glue_alloc() -> *mut PulseGlue;
+}
+extern "C" {
+    pub fn pulse_glue_free(pulse_glue: *mut PulseGlue);
+}
+extern "C" {
+    pub fn pulse_glue_reset(pulse_glue: *mut PulseGlue);
+}
+extern "C" {
+    pub fn pulse_glue_push(pulse_glue: *mut PulseGlue, polarity: bool, length: u32) -> bool;
+}
+extern "C" {
+    pub fn pulse_glue_pop(pulse_glue: *mut PulseGlue, length: *mut u32, period: *mut u32);
+}
+extern "C" {
+    #[doc = "Load data from the file in saved structure format\n\n # Arguments\n\n* `path` (direction in) - The path to the file\n * `data` (direction out) - Pointer to the memory where to load data\n * `size` (direction in) - The size of the data\n * `magic` (direction in) - The magic to embed into metadata\n * `version` (direction in) - The version to embed into metadata\n\n # Returns\n\ntrue on success, false otherwise"]
     pub fn saved_struct_load(
         path: *const core::ffi::c_char,
         data: *mut core::ffi::c_void,
@@ -28243,19 +29751,21 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
+    #[doc = "Save data in saved structure format\n\n # Arguments\n\n* `path` (direction in) - The path to the file\n * `data` (direction in) - Pointer to the memory where data\n * `size` (direction in) - The size of the data\n * `magic` (direction in) - The magic to embed into metadata\n * `version` (direction in) - The version to embed into metadata\n\n # Returns\n\ntrue on success, false otherwise"]
     pub fn saved_struct_save(
         path: *const core::ffi::c_char,
-        data: *mut core::ffi::c_void,
+        data: *const core::ffi::c_void,
         size: usize,
         magic: u8,
         version: u8,
     ) -> bool;
 }
 extern "C" {
-    pub fn saved_struct_get_payload_size(
+    #[doc = "Get SavedStructure file metadata\n\n # Arguments\n\n* `path` (direction in) - The path to the file\n * `magic` (direction out) - Pointer to store magic or NULL if you don't need it\n * `version` (direction out) - Pointer to store version or NULL if you don't need\n it\n * `payload_size` (direction out) - Pointer to store payload size or NULL if you don't\n need it\n\n # Returns\n\ntrue on success, false otherwise"]
+    pub fn saved_struct_get_metadata(
         path: *const core::ffi::c_char,
-        magic: u8,
-        version: u8,
+        magic: *mut u8,
+        version: *mut u8,
         payload_size: *mut usize,
     ) -> bool;
 }
@@ -28427,13 +29937,30 @@ extern "C" {
     #[doc = "Get the index of a bool array element which is equal to the given value.\n\n Returned index corresponds to the first element found.\n If no suitable elements were found, the function returns 0.\n\n # Arguments\n\n* `value` - value to be searched.\n * `values` - pointer to the array to perform the search in.\n * `values_count` - array size.\n\n # Returns\n\nvalue's index."]
     pub fn value_index_bool(value: bool, values: *const bool, values_count: usize) -> usize;
 }
+extern "C" {
+    #[doc = "Pack uint32 to varint\n # Arguments\n\n* `value` - value from UINT32_MIN to UINT32_MAX\n * `output` - output array, need to be at least 5 bytes long\n # Returns\n\nsize_t"]
+    pub fn varint_uint32_pack(value: u32, output: *mut u8) -> usize;
+}
+extern "C" {
+    pub fn varint_uint32_unpack(value: *mut u32, input: *const u8, input_size: usize) -> usize;
+}
+extern "C" {
+    pub fn varint_uint32_length(value: u32) -> usize;
+}
+extern "C" {
+    #[doc = "Pack int32 to varint\n # Arguments\n\n* `value` - value from (INT32_MIN / 2 + 1) to INT32_MAX\n * `output` - output array, need to be at least 5 bytes long\n # Returns\n\nsize_t"]
+    pub fn varint_int32_pack(value: i32, output: *mut u8) -> usize;
+}
+extern "C" {
+    pub fn varint_int32_unpack(value: *mut i32, input: *const u8, input_size: usize) -> usize;
+}
+extern "C" {
+    pub fn varint_int32_length(value: i32) -> usize;
+}
 pub const BleEventAckStatus_BleEventNotAck: BleEventAckStatus = 0;
 pub const BleEventAckStatus_BleEventAckFlowEnable: BleEventAckStatus = 1;
 pub const BleEventAckStatus_BleEventAckFlowDisable: BleEventAckStatus = 2;
 pub type BleEventAckStatus = core::ffi::c_uchar;
-pub const BleEventFlowStatus_BleEventFlowDisable: BleEventFlowStatus = 0;
-pub const BleEventFlowStatus_BleEventFlowEnable: BleEventFlowStatus = 1;
-pub type BleEventFlowStatus = core::ffi::c_uchar;
 pub type BleSvcEventHandlerCb = ::core::option::Option<
     unsafe extern "C" fn(
         event: *mut core::ffi::c_void,
@@ -28446,11 +29973,6 @@ pub struct GapEventHandler {
     _unused: [u8; 0],
 }
 pub type GapSvcEventHandler = GapEventHandler;
-extern "C" {
-    pub fn ble_event_dispatcher_process_event(
-        payload: *mut core::ffi::c_void,
-    ) -> BleEventFlowStatus;
-}
 extern "C" {
     pub fn ble_event_dispatcher_register_svc_handler(
         handler: BleSvcEventHandlerCb,

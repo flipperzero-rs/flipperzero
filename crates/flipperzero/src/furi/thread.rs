@@ -206,6 +206,7 @@ pub fn sleep(duration: core::time::Duration) {
 /// A unique identifier for a running thread.
 #[cfg(feature = "alloc")]
 #[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
+#[allow(dead_code)]
 pub struct ThreadId(sys::FuriThreadId);
 
 /// A handle to a thread.
