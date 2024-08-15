@@ -65,8 +65,7 @@ jobs:
             --base='main' \
             --title='build(bindings): bump SDK to `${{ github.event.inputs.sdk_version }}`' \
             --body="${PULL_REQUEST_DESCRIPTION}" \
-            --label='sdk-update' \
-            --reviewer='flipperzero-rs/maintainers'
+            --label='sdk-update'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PULL_REQUEST_DESCRIPTION: >-
