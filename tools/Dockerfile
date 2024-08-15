@@ -67,6 +67,6 @@ RUN cp ./tools/bindings.rs ./crates/sys/src
 
 ####################
 FROM scratch
-COPY --from=builder /app/flipperzero-rs/crates/sys/src/bindings.rs /bindings.rs
+COPY --from=builder /app/flipperzero-rs/crates/sys/src/bindings.rs /
 # Formal entrypoint to simplify the usage of `docker container create`
 ENTRYPOINT /
