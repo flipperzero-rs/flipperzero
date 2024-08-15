@@ -21,6 +21,9 @@ jobs:
       -
         name: Validate SDK version
         run: echo '${{ github.event.inputs.sdk_version }}' | grep --perl-regexp '^\d+\.\d+\.\d+$'
+      # Workaround for `generate-bindings` step failing on load due to `no space left on device` error
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
       -
         name: Checkout sources
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
