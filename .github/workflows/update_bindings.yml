@@ -42,8 +42,11 @@ jobs:
           build-args: 'BRANCH=${{ github.event.inputs.sdk_version }}'
           file: tools/Dockerfile
       -
-        name: Update bindings
-        run: docker run ${{ steps.generate-bindings.outputs.imageid }} > crates/sys/src/bindings.rs
+        name: Copy bindings
+        run: |
+          container="$(docker container create ${{ steps.generate-bindings.outputs.imageid }} --read-only)"
+          docker container cp "${container}":bindings.rs ./crates/sys/src/bindings.rs
+          docker container rm "${container}"
       -
         name: Commit changes
         run: |

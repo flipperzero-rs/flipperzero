@@ -58,15 +58,13 @@ RUN env LIBCLANG_PATH=/app/clang+llvm-17.0.6-x86_64-linux-gnu-ubuntu-22.04/lib \
     cargo run --bin generate-bindings /app/firmware/build/f7-firmware-D/sdk_headers/
 RUN cp bindings.rs ../crates/sys/src
 
-WORKDIR /app/flipperzero-rs/crates
-
 # test it builds
 # This step is skipped until the SDK is stabilized (i.e. version `1` is published)
 #WORKDIR /app/flipperzero-rs/crates
 #RUN cargo build --release
 
 ####################
-FROM alpine
-COPY --from=builder /app/flipperzero-rs/crates/sys/src/bindings.rs /app/bindings.rs
-WORKDIR /app
-ENTRYPOINT [ "cat", "bindings.rs" ]
+FROM scratch
+COPY --from=builder /app/flipperzero-rs/crates/sys/src/bindings.rs /bindings.rs
+# Formal entrypoint to simplify the usage of `docker container create`
+ENTRYPOINT /
