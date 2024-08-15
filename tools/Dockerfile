@@ -56,7 +56,9 @@ WORKDIR /app/flipperzero-rs/tools
 # We don't use debian's libclang. For details see https://github.com/flipperzero-rs/flipperzero/pull/70#discussion_r1199723419
 RUN env LIBCLANG_PATH=/app/clang+llvm-17.0.6-x86_64-linux-gnu-ubuntu-22.04/lib \
     cargo run --bin generate-bindings /app/firmware/build/f7-firmware-D/sdk_headers/
-RUN cp bindings.rs ../crates/sys/src
+
+WORKDIR /app/flipperzero-rs
+RUN cp ./tools/bindings.rs ./crates/sys/src
 
 # test it builds
 # This step is skipped until the SDK is stabilized (i.e. version `1` is published)
