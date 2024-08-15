@@ -21,12 +21,9 @@ jobs:
       -
         name: Validate SDK version
         run: echo '${{ github.event.inputs.sdk_version }}' | grep --perl-regexp '^\d+\.\d+\.\d+$'
-      # Workaround for `generate-bindings` step failing on load due to `no space left on device` error
       -
         name: Checkout sources
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-        with:
-          ref: main
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@988b5a0280414f521da01fcc63a27aeeb4b104db # v3.6.1
@@ -42,6 +39,8 @@ jobs:
           load: true
           build-args: 'BRANCH=${{ github.event.inputs.sdk_version }}'
           file: tools/Dockerfile
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       -
         name: Copy bindings
         run: |
