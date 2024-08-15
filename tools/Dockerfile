@@ -55,7 +55,7 @@ RUN mkdir src && \
 WORKDIR /app/flipperzero-rs/tools
 COPY ./tools .
 RUN cargo build --bin=generate-bindings
-RUN find /app/firmware/; cargo run --bin=generate-bindings /app/firmware/build/f7-firmware-D/sdk_headers
+RUN cargo run --bin=generate-bindings /app/firmware/build/f7-firmware-D/sdk_headers
 
 ####################
 FROM scratch
