@@ -31,6 +31,8 @@
             nativeBuildInputs = [
               rust
               pkgs.python3
+              pkgs.pkg-config
+              pkgs.systemd
             ];
           };
           github-actions = pkgs.mkShell {

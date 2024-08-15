@@ -1,8 +1,9 @@
+# syntax=docker/dockerfile:1
 FROM --platform=x86_64 debian:bookworm AS firmware-builder
 
 # FIRMWARE_GIT should be a git repo with the firmware source code
-ARG FIRMWARE_GIT=https://github.com/flipperdevices/flipperzero-firmware.git
-ARG BRANCH=0.102.3
+ARG FIRMWARE_GIT="https://github.com/flipperdevices/flipperzero-firmware.git"
+ARG BRANCH="0.102.3"
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -13,16 +14,16 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
-RUN git clone --branch $BRANCH --recursive $FIRMWARE_GIT firmware
+ADD --keep-git-dir=true "${FIRMWARE_GIT}#${BRANCH}" firmware
 
 WORKDIR /app/firmware
-
 RUN ./fbt
 
 ####################
 # bindgen
 FROM --platform=x86_64 rust:bookworm AS builder
+
+ARG CLANG_URL="https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/clang+llvm-17.0.6-x86_64-linux-gnu-ubuntu-22.04.tar.xz"
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -33,11 +34,13 @@ RUN apt-get update && apt-get install -y \
 
 RUN rustup component add rustfmt
 
-WORKDIR /app
+# We don't use debian's libclang. For details see https://github.com/flipperzero-rs/flipperzero/pull/70#discussion_r1199723419
+RUN mkdir --parents /lib/clang
+RUN curl --location "${CLANG_URL}" | tar --extract --xz --directory=/lib/clang --strip-components=1
+ENV LIBCLANG_PATH="/lib/clang/lib"
 
-RUN curl -L https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/clang+llvm-17.0.6-x86_64-linux-gnu-ubuntu-22.04.tar.xz | tar -x --xz
-
-COPY --from=firmware-builder /app/firmware /app/firmware
+COPY --from=firmware-builder /app/firmware/toolchain/ /app/firmware/toolchain/
+COPY --from=firmware-builder /app/firmware/build/f7-firmware-D/sdk_headers/ /app/firmware/build/f7-firmware-D/sdk_headers/
 
 WORKDIR /app/flipperzero-rs/
 
@@ -49,24 +52,13 @@ RUN mkdir src && \
     cargo build
 
 # Now copy the rest of the files
-WORKDIR /app/flipperzero-rs/
-COPY . .
-
 WORKDIR /app/flipperzero-rs/tools
-# We don't use debian's libclang. For details see https://github.com/flipperzero-rs/flipperzero/pull/70#discussion_r1199723419
-RUN env LIBCLANG_PATH=/app/clang+llvm-17.0.6-x86_64-linux-gnu-ubuntu-22.04/lib \
-    cargo run --bin generate-bindings /app/firmware/build/f7-firmware-D/sdk_headers/
-
-WORKDIR /app/flipperzero-rs
-RUN cp ./tools/bindings.rs ./crates/sys/src
-
-# test it builds
-# This step is skipped until the SDK is stabilized (i.e. version `1` is published)
-#WORKDIR /app/flipperzero-rs/crates
-#RUN cargo build --release
+COPY ./tools .
+RUN cargo build --bin=generate-bindings
+RUN find /app/firmware/; cargo run --bin=generate-bindings /app/firmware/build/f7-firmware-D/sdk_headers
 
 ####################
 FROM scratch
-COPY --from=builder /app/flipperzero-rs/crates/sys/src/bindings.rs /
+COPY --from=builder /app/flipperzero-rs/tools/bindings.rs /
 # Formal entrypoint to simplify the usage of `docker container create`
-ENTRYPOINT /
+ENTRYPOINT ["/"]
