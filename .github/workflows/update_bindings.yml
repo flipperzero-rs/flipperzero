@@ -41,6 +41,8 @@ jobs:
           load: true
           build-args: 'BRANCH=${{ github.event.inputs.sdk_version }}'
           file: tools/Dockerfile
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       -
         name: Copy bindings
         run: |
