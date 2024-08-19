@@ -1,6 +1,108 @@
 use core::ffi::CStr;
 
-use flipperzero_sys::{self as sys};
+use flipperzero_sys as sys;
+
+#[derive(Debug)]
+struct ThreadItem {
+    inner: sys::FuriThreadListItem,
+}
+
+impl ThreadItem {
+    fn new(inner: sys::FuriThreadListItem) -> Self {
+        Self { inner }
+    }
+
+    /// Get the thread ID
+    fn id(&self) -> sys::FuriThreadId {
+        unsafe { sys::furi_thread_get_id(self.inner.thread) }
+    }
+
+    /// Get the thread name
+    fn name(&self) -> &CStr {
+        unsafe { CStr::from_ptr(self.inner.name) }
+    }
+
+    /// Get the app ID
+    fn app_id(&self) -> &CStr {
+        unsafe { CStr::from_ptr(self.inner.app_id) }
+    }
+}
+
+#[derive(Debug)]
+struct ThreadList {
+    inner: *mut sys::FuriThreadList,
+}
+
+impl ThreadList {
+    /// Create a new thread list
+    fn new() -> Self {
+        let inner = unsafe { sys::furi_thread_list_alloc() };
+        Self { inner }
+    }
+
+    /// Get the number of threads in the list
+    fn size(&self) -> usize {
+        unsafe { sys::furi_thread_list_size(self.inner) }
+    }
+
+    /// Get the thread at the given index
+    fn get_at(&self, index: usize) -> Option<sys::FuriThreadListItem> {
+        let thread = unsafe { sys::furi_thread_list_get_at(self.inner, index) };
+        if thread.is_null() {
+            None
+        } else {
+            Some(unsafe { *thread })
+        }
+    }
+
+    /// Load the list of threads
+    fn load(&self) {
+        unsafe {
+            sys::furi_thread_enumerate(self.inner);
+        }
+    }
+
+    /// Get an iterator over the threads in the list
+    fn iter(&self) -> ThreadListIterator {
+        ThreadListIterator {
+            list: self,
+            size: self.size(),
+            index: 0,
+        }
+    }
+}
+
+/// Iterator over the threads in a thread list
+#[derive(Debug)]
+struct ThreadListIterator<'a> {
+    list: &'a ThreadList,
+    index: usize,
+    size: usize,
+}
+
+impl<'a> Iterator for ThreadListIterator<'a> {
+    type Item = ThreadItem;
+
+    /// Get the next thread in the list
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.index < self.size {
+            let item = self.list.get_at(self.index)?;
+            self.index += 1;
+            return Some(ThreadItem::new(item));
+        }
+
+        None
+    }
+}
+
+impl Drop for ThreadList {
+    /// Free the thread list
+    fn drop(&mut self) {
+        unsafe {
+            sys::furi_thread_list_free(self.inner);
+        }
+    }
+}
 
 /// Wait for threads with the same app ID as the current thread to finish.
 ///
@@ -17,30 +119,19 @@ pub fn wait_for_completion() {
 
     let cur_thread_id = unsafe { sys::furi_thread_get_current_id() };
     let app_id = unsafe { CStr::from_ptr(sys::furi_thread_get_appid(cur_thread_id)) };
-    let furi_thread_list = unsafe { sys::furi_thread_list_alloc() };
+
+    let thread_list = ThreadList::new();
+
+    thread_list.load();
 
     'outer: loop {
-        let thread_count = unsafe { sys::furi_thread_list_size(furi_thread_list) };
-
-        for thread_index in 0..thread_count {
-            let thread = unsafe { sys::furi_thread_list_get_at(furi_thread_list, thread_index) };
-
-            if thread.is_null() {
-                break;
-            }
-
-            let thread_item = unsafe { *(thread) };
-            let thread_app_id = unsafe { CStr::from_ptr(thread_item.app_id) };
-            let thread_id = unsafe { sys::furi_thread_get_id(thread_item.thread) };
-
-            if thread_id == cur_thread_id || thread_app_id != app_id {
+        for thread_item in thread_list.iter() {
+            if thread_item.id() == cur_thread_id || thread_item.app_id() != app_id {
                 // Ignore this thread or the threads of other apps
                 continue;
             }
 
-            let thread_name = unsafe { CStr::from_ptr(thread_item.name) };
-
-            if thread_name.to_bytes().ends_with(b"Srv") {
+            if thread_item.name().to_bytes().ends_with(b"Srv") {
                 // This is a workaround for an issue where the current appid matches one
                 // of the built-in service names (e.g. "gui"). Otherwise we will see the
                 // service thread (e.g. "GuiSrv") and assume that it's one of our threads
