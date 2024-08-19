@@ -1,6 +1,9 @@
 use core::ffi::CStr;
+use flipperzero_sys as sys;
 
-use flipperzero_sys::{self as sys};
+pub use self::list::ThreadList;
+
+mod list;
 
 /// Wait for threads with the same app ID as the current thread to finish.
 ///
@@ -17,28 +20,27 @@ pub fn wait_for_completion() {
 
     let cur_thread_id = unsafe { sys::furi_thread_get_current_id() };
     let app_id = unsafe { CStr::from_ptr(sys::furi_thread_get_appid(cur_thread_id)) };
-    let furi_thread_list = unsafe { sys::furi_thread_list_alloc() };
+    let mut thread_list = ThreadList::new();
 
     'outer: loop {
-        let thread_count = unsafe { sys::furi_thread_list_size(furi_thread_list) };
+        // FIXME: handle error
+        let _ = thread_list.try_enumerate_into();
 
-        for thread_index in 0..thread_count {
-            let thread = unsafe { sys::furi_thread_list_get_at(furi_thread_list, thread_index) };
-
-            if thread.is_null() {
-                break;
-            }
-
-            let thread_item = unsafe { *(thread) };
-            let thread_app_id = unsafe { CStr::from_ptr(thread_item.app_id) };
-            let thread_id = unsafe { sys::furi_thread_get_id(thread_item.thread) };
-
-            if thread_id == cur_thread_id || thread_app_id != app_id {
-                // Ignore this thread or the threads of other apps
+        for thread in &thread_list {
+            // SAFETY: the thread should be alive at this point
+            let thread_id = unsafe { thread.id() };
+            if thread_id == cur_thread_id {
                 continue;
             }
 
-            let thread_name = unsafe { CStr::from_ptr(thread_item.name) };
+            // SAFETY: the thread should be alive at this point
+            let thread_app_id = unsafe { thread.app_id() };
+            if thread_app_id != app_id {
+                continue;
+            }
+
+            // SAFETY: the thread should be alive at this point
+            let thread_name = unsafe { thread.name() };
 
             if thread_name.to_bytes().ends_with(b"Srv") {
                 // This is a workaround for an issue where the current appid matches one
@@ -65,5 +67,13 @@ pub fn wait_for_completion() {
             c"flipperzero-rt".as_ptr(),
             c"All FAP threads completed".as_ptr(),
         );
+    }
+}
+
+pub fn enumerate() -> Option<ThreadList> {
+    let mut thread_list = ThreadList::new();
+    match thread_list.try_enumerate_into() {
+        Ok(()) => Some(thread_list),
+        Err(()) => None,
     }
 }
