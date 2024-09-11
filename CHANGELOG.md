@@ -9,7 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `flipperzero::dialogs::DialogFileBrowserOptions`
+
 ### Changed
+
+- `flipperzero::dialogs::DialogFileBrowserOptions` now uses native initialization function.
 
 ### Removed
 
