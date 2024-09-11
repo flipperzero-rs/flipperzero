@@ -1,7 +1,6 @@
 use core::ffi::CStr;
-use core::ptr;
 
-use flipperzero_sys as sys;
+use flipperzero_sys::{self as sys, furi_thread_get_id, furi_thread_list_get_at};
 
 /// Wait for threads with the same app ID as the current thread to finish.
 ///
@@ -16,18 +15,18 @@ pub fn wait_for_completion() {
         );
     }
 
-    const MAX_THREADS: usize = 32;
     let cur_thread_id = unsafe { sys::furi_thread_get_current_id() };
     let app_id = unsafe { CStr::from_ptr(sys::furi_thread_get_appid(cur_thread_id)) };
-    let mut thread_ids: [sys::FuriThreadId; MAX_THREADS] = [ptr::null_mut(); MAX_THREADS];
+    let thread_list = unsafe { sys::furi_thread_list_alloc() };
+
+    unsafe { sys::furi_thread_enumerate(thread_list) };
+    let n_threads = unsafe { sys::furi_thread_list_size(thread_list) };
 
     'outer: loop {
-        let thread_count =
-            unsafe { sys::furi_thread_enumerate(thread_ids.as_mut_ptr(), MAX_THREADS as u32) }
-                as usize;
-
-        for &thread_id in thread_ids[..thread_count].iter() {
-            let thread_app_id = unsafe { CStr::from_ptr(sys::furi_thread_get_appid(thread_id)) };
+        for i in 0..n_threads {
+            let item = unsafe { furi_thread_list_get_at(thread_list, i) };
+            let thread_id = unsafe { furi_thread_get_id((*item).thread) };
+            let thread_app_id = unsafe { CStr::from_ptr((*item).app_id) };
 
             if thread_id == cur_thread_id || thread_app_id != app_id {
                 // Ignore this thread or the threads of other apps
@@ -54,6 +53,8 @@ pub fn wait_for_completion() {
 
         break;
     }
+
+    unsafe { sys::furi_thread_list_free(thread_list) };
 
     unsafe {
         sys::furi_log_print_format(
