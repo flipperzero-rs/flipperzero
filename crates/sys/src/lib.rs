@@ -4,12 +4,13 @@
 #![deny(rustdoc::broken_intra_doc_links)]
 
 // Features that identify thumbv7em-none-eabihf.
+// NOTE: `arm_target_feature` is currently unstable (see rust-lang/rust#44839)
 #[cfg(not(any(
     all(
         target_arch = "arm",
-        target_feature = "thumb2",
-        target_feature = "v7",
-        target_feature = "dsp",
+        //target_feature = "thumb2",
+        //target_feature = "v7",
+        //target_feature = "dsp",
         target_os = "none",
         target_abi = "eabihf",
     ),

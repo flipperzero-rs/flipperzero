@@ -104,8 +104,8 @@ impl Bus {
         // will be using it while we have a raw pointer to it. We don't convert this to a
         // `&'static mut` reference because this will be disallowed in Rust 2024 edition.
         BusHandle::acquire(match self.0 {
-            BusKind::Internal => unsafe { addr_of_mut!(sys::furi_hal_i2c_handle_power) },
-            BusKind::External => unsafe { addr_of_mut!(sys::furi_hal_i2c_handle_external) },
+            BusKind::Internal => addr_of_mut!(sys::furi_hal_i2c_handle_power),
+            BusKind::External => addr_of_mut!(sys::furi_hal_i2c_handle_external),
         })
     }
 

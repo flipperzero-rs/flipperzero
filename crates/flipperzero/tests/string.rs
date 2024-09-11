@@ -466,7 +466,7 @@ mod tests {
         let c: String = [t, u].into_iter().collect();
         assert_eq!(s, c);
 
-        #[cfg(alloc)]
+        #[cfg(feature = "alloc")]
         {
             let mut d = String::from(t);
             d.extend(alloc::vec![u]);

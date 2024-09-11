@@ -158,9 +158,7 @@ impl ufmt::uDisplay for Level {
     }
 }
 
-#[cfg(feature = "std")]
-#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
-impl std::error::Error for ParseLevelError {}
+impl core::error::Error for ParseLevelError {}
 
 impl FromStr for Level {
     type Err = ParseLevelError;
@@ -465,9 +463,7 @@ impl ufmt::uDisplay for ParseLevelFilterError {
     }
 }
 
-#[cfg(feature = "std")]
-#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
-impl std::error::Error for ParseLevelFilterError {}
+impl core::error::Error for ParseLevelFilterError {}
 
 #[repr(usize)]
 #[derive(Copy, Clone, Debug, uDebug, Hash, Eq, PartialEq, PartialOrd, Ord)]

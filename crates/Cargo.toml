@@ -1,19 +1,12 @@
 [workspace]
-members = [
-    "alloc",
-    "flipperzero",
-    "sys",
-    "rt",
-    "test",
-    "test/macros",
-]
+members = ["alloc", "flipperzero", "sys", "rt", "test", "test/macros"]
 resolver = "2"
 
 [workspace.package]
 version = "0.11.0"
 description = "Rust for Flipper Zero"
 edition = "2021"
-rust-version = "1.70.0"
+rust-version = "1.81.0"
 repository = "https://github.com/dcoles/flipperzero-rs"
 readme = "../README.md"
 license = "MIT"
