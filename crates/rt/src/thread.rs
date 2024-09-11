@@ -26,10 +26,16 @@ pub fn wait_for_completion() {
         for i in 0..n_threads {
             let item = unsafe { furi_thread_list_get_at(thread_list, i) };
             let thread_id = unsafe { furi_thread_get_id((*item).thread) };
+
+            if thread_id == cur_thread_id {
+                // Ignore current thread
+                continue;
+            }
+
             let thread_app_id = unsafe { CStr::from_ptr((*item).app_id) };
 
-            if thread_id == cur_thread_id || thread_app_id != app_id {
-                // Ignore this thread or the threads of other apps
+            if thread_app_id != app_id {
+                // Ignore threads of other apps
                 continue;
             }
 
