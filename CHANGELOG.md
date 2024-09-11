@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   `fn(Option<&CStr>) -> i32` instead of `fn(*mut u8) -> i32`.
 - `flipperzero::furi::string::FuriString::as_mut_ptr` is now public to allow for
   it to be used with low-level C APIs (e.g. `furi_string_printf`).
+- `flipperzero::dialogs::DialogFileBrowserOptions` now uses native initialization function.
 
 ### Removed
 
@@ -37,6 +38,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `flipperzero::furi::time::{Duration, Instant}` implementations.
 - `impl Default for flipperzero::dialogs::DialogMessage`
 - `impl Default for flipperzero::toolbox::Crc32`
+- `flipperzero::dialogs::DialogFileBrowserOptions`
 
 ### Changed
 
