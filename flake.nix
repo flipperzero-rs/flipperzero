@@ -8,15 +8,41 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { nixpkgs, flake-utils, rust-overlay, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      nixpkgs,
+      flake-utils,
+      rust-overlay,
+      ...
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = import nixpkgs {
           inherit system;
           overlays = [ rust-overlay.overlays.default ];
         };
         rust = pkgs.rust-bin.fromRustupToolchainFile ./crates/rust-toolchain.toml;
-      in {
-        devShells.default = pkgs.mkShell { nativeBuildInputs = [ rust pkgs.python3]; };
-      });
+      in
+      {
+        formatter = pkgs.nixfmt-rfc-style;
+        devShells = {
+          default = pkgs.mkShell {
+            nativeBuildInputs = [
+              rust
+              pkgs.python3
+              pkgs.pkg-config
+              pkgs.systemd
+            ];
+          };
+          github-actions = pkgs.mkShell {
+            nativeBuildInputs = [
+              pkgs.act
+              pkgs.actionlint
+              pkgs.pinact
+            ];
+          };
+        };
+      }
+    );
 }

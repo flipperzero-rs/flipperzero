@@ -36,7 +36,10 @@ Alternatively, you can generate `binding.rs` in an isolated env using Docker and
 From the root of the repository, to build the binding for the branch/tag `0.102.3` of the official SDK:
 
 ```shell
-docker run --rm $(docker build --build-arg BRANCH=0.102.3 -q -f tools/Dockerfile .) > crates/sys/src/bindings.rs
+image="$(docker build --build-arg BRANCH=0.102.3 --quiet --file tools/Dockerfile .)"
+container="$(docker container create --read-only "${image}")"
+docker container cp "${container}":bindings.rs ./crates/sys/src/bindings.rs
+docker container rm "${container}"
 ```
 
 [`bindings.rs`]: ../crates/sys/src/bindings.rs

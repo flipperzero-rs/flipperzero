@@ -15,7 +15,7 @@ jobs:
       run:
         working-directory: ${{ inputs.target }}
     steps:
-    - uses: actions/checkout@v4.1.7
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
     - run: rustup component add llvm-tools
     - run: sudo apt install libudev-dev
     - name: Build
@@ -26,5 +26,4 @@ jobs:
       run: |
         cargo test --release --verbose 2>&1 | tee stderr.txt
     - name: Check that tests failed for the expected reason
-      run: |
-        cat stderr.txt | grep -q "Error: unable to find Flipper Zero"
+      run: '< stderr.txt grep -q "Error: unable to find Flipper Zero"'
