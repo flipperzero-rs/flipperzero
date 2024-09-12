@@ -9,6 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+### Changed
+
+### Removed
+
+## [0.12.0]
+
+### Added
+
 - `flipperzero::gpio::i2c`, providing a Rust interface to the external 3.3V I2C
   bus over GPIO pins C0 and C1, as well as the internal (power) I2C bus.
 - `flipperzero::furi::string::FuriString::into_raw`, allowing ownership
@@ -216,7 +224,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Initial release!
 
-[Unreleased]: https://github.com/flipperzero-rs/flipperzero/compare/v0.11.0...HEAD
+[Unreleased]: https://github.com/flipperzero-rs/flipperzero/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.12.0
 [0.11.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.11.0
 [0.10.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.10.0
 [0.9.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.9.0
