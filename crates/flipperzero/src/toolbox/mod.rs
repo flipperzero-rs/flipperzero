@@ -13,13 +13,3 @@
 
 pub(crate) mod crc32;
 pub use self::crc32::Crc32;
-
-#[cfg(feature = "__unsupported_md5")]
-pub(crate) mod md5;
-#[cfg(feature = "__unsupported_md5")]
-pub use self::md5::Md5;
-
-#[cfg(feature = "__unsupported_sha256")]
-pub(crate) mod sha256;
-#[cfg(feature = "__unsupported_sha256")]
-pub use sha256::Sha256;

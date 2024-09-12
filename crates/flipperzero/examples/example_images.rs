@@ -16,6 +16,8 @@ use flipperzero_sys::furi::UnsafeRecord;
 use flipperzero_rt as rt;
 use flipperzero_sys as sys;
 
+use sys::Icon;
+
 rt::manifest!(name = "Example: Images");
 rt::entry!(main);
 
@@ -34,16 +36,6 @@ static mut IMAGE_POSITION: ImagePosition = ImagePosition { x: 0, y: 0 };
 struct ImagePosition {
     pub x: i32,
     pub y: i32,
-}
-
-/// Internal icon representation.
-#[repr(C)]
-struct Icon {
-    width: u8,
-    height: u8,
-    frame_count: u8,
-    frame_rate: u8,
-    frames: *const *const u8,
 }
 
 // Screen is 128x64 px

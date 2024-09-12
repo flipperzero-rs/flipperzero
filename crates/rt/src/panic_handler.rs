@@ -3,7 +3,6 @@
 
 use core::ffi::c_char;
 use core::panic::PanicInfo;
-use core::str;
 
 use flipperzero_sys as sys;
 
@@ -21,7 +20,7 @@ pub fn panic(panic_info: &PanicInfo<'_>) -> ! {
 
         sys::__wrap_printf(c"\x1b[0;31mthread: '%s' paniced".as_ptr(), thread_name);
 
-        if let Some(s) = panic_info.payload().downcast_ref::<&str>() {
+        if let Some(s) = panic_info.message().as_str() {
             sys::__wrap_printf(c" at '%*s'".as_ptr(), s.len(), s.as_ptr() as *const c_char);
         }
 
