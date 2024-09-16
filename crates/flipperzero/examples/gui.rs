@@ -14,16 +14,15 @@ extern crate flipperzero_rt;
 #[cfg(feature = "alloc")]
 extern crate flipperzero_alloc;
 
-use core::ffi::{c_char, c_void};
+use core::ffi::{c_void, CStr};
 use core::ptr;
 use core::time::Duration;
 
 use flipperzero::furi::thread::sleep;
 use flipperzero_rt::{entry, manifest};
 use flipperzero_sys as sys;
+use flipperzero_sys::furi::UnsafeRecord;
 
-// GUI record
-const RECORD_GUI: *const c_char = sys::c_string!("gui");
 const FULLSCREEN: sys::GuiLayer = sys::GuiLayer_GuiLayerFullscreen;
 
 manifest!(name = "Rust GUI example");
@@ -32,25 +31,26 @@ entry!(main);
 /// View draw handler.
 pub unsafe extern "C" fn draw_callback(canvas: *mut sys::Canvas, _context: *mut c_void) {
     unsafe {
-        sys::canvas_draw_str(canvas, 39, 31, sys::c_string!("Hello, Rust!"));
+        sys::canvas_draw_str(canvas, 39, 31, c"Hello, Rust!".as_ptr());
     }
 }
 
-fn main(_args: *mut u8) -> i32 {
+fn main(_args: Option<&CStr>) -> i32 {
     // Currently there is no high level GUI bindings,
     // so this all has to be done using the `sys` bindings.
     unsafe {
         let view_port = sys::view_port_alloc();
         sys::view_port_draw_callback_set(view_port, Some(draw_callback), ptr::null_mut());
 
-        let gui = sys::furi_record_open(RECORD_GUI) as *mut sys::Gui;
-        sys::gui_add_view_port(gui, view_port, FULLSCREEN);
+        {
+            let gui = UnsafeRecord::open(c"gui".as_ptr());
+            sys::gui_add_view_port(gui.as_ptr(), view_port, FULLSCREEN);
 
-        sleep(Duration::from_secs(1));
+            sleep(Duration::from_secs(1));
 
-        sys::view_port_enabled_set(view_port, false);
-        sys::gui_remove_view_port(gui, view_port);
-        sys::furi_record_close(RECORD_GUI);
+            sys::view_port_enabled_set(view_port, false);
+            sys::gui_remove_view_port(gui.as_ptr(), view_port);
+        }
         sys::view_port_free(view_port);
     }
 

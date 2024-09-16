@@ -5,19 +5,44 @@ file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## Unreleased
+## [Unreleased]
 
 ### Added
 
-- `flipperzero::gpio`:
-  - `i2c` module, providing a Rust interface to the external 3.3V I2C bus over
-    GPIO pins `C0` and `C1`, as well as the internal (power) I2C bus.
-  - `spi` module, providing a Rust interface to the external 3.3V SPI bus over
-    GPIO pins `(B3, A4, A6, A7)`, as well as the internal SPI sub devices.
+- `flipperzero::dialogs::DialogFileBrowserOptions`
+- `flipperzero::gpio::spi` module, providing a Rust interface to the external 3.3V SPI bus over
+  GPIO pins `(B3, A4, A6, A7)`, as well as the internal SPI sub devices.
 
 ### Changed
 
-- Migrated to SDK 39.1 (firmware 0.92.2).
+- `flipperzero::dialogs::DialogFileBrowserOptions` now uses native initialization function.
+
+### Removed
+
+## [0.12.0]
+
+### Added
+
+- `flipperzero::gpio::i2c`, providing a Rust interface to the external 3.3V I2C
+  bus over GPIO pins C0 and C1, as well as the internal (power) I2C bus.
+- `flipperzero::furi::string::FuriString::into_raw`, allowing ownership
+  of the string to be able to be handed over to C code.
+
+### Changed
+
+- Updated to SDK 73 (firmware 1.0.1🥳).
+- Switched to `nightly-2024-09-10` compiler
+- `flipperzero_rt::entry` macro now requires a function with type signature
+  `fn(Option<&CStr>) -> i32` instead of `fn(*mut u8) -> i32`.
+- `flipperzero::furi::string::FuriString::as_mut_ptr` is now public to allow for
+  it to be used with low-level C APIs (e.g. `furi_string_printf`).
+
+### Removed
+
+- `flipperzero::toolbox::{Md5, Sha256}` (due to their removal from the Flipper
+  Zero SDK API).
+- `flipperzero_sys::c_string!`, since `CStr` literals are stable now
+  and the macro did not provide any validations.
 
 ## [0.11.0]
 
@@ -205,7 +230,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Initial release!
 
-[Unreleased]: https://github.com/flipperzero-rs/flipperzero/compare/v0.11.0...HEAD
+[Unreleased]: https://github.com/flipperzero-rs/flipperzero/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.12.0
 [0.11.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.11.0
 [0.10.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.10.0
 [0.9.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.9.0

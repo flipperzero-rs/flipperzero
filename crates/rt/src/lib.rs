@@ -11,6 +11,7 @@ pub mod panic_handler;
 mod thread;
 
 /// The C entry point.
+///
 /// This just delegates to the user's Rust entry point.
 ///
 /// # Safety
@@ -25,17 +26,27 @@ pub unsafe extern "C" fn _start(args: *mut u8) -> i32 {
     main(args)
 }
 
-/// Define the entry point.
-/// Must have the following signature: `fn(*mut u8) -> i32`.
+/// Defines the entry point.
+///
+/// Must have the following signature: `fn(Option<&CStr>) -> i32`.
 #[macro_export]
 macro_rules! entry {
     ($path:path) => {
         // Force the section to `.text` instead of `.text.main`.
         // lld seems not to automatically rename `.rel.text.main` properly.
+        #[cfg(not(miri))]
         #[export_name = "main"]
         pub unsafe fn __main(args: *mut u8) -> i32 {
             // type check the entry function
-            let f: fn(*mut u8) -> i32 = $path;
+            let f: fn(Option<&::core::ffi::CStr>) -> i32 = $path;
+
+            let args = if args.is_null() {
+                None
+            } else {
+                // SAFETY: Flipper Zero passes arguments to FAPs as a C string.
+                let args = unsafe { core::ffi::CStr::from_ptr(args.cast_const().cast()) };
+                Some(args)
+            };
 
             let ret = f(args);
 

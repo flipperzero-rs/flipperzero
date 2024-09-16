@@ -87,6 +87,7 @@ impl Builder {
             stack_size,
             heap_trace_enabled,
         } = self;
+        #[allow(clippy::arc_with_non_send_sync)] // TODO: is using `Arc` neccessary/sound here?
         let thread = Arc::new(Thread::new(name, stack_size, heap_trace_enabled));
 
         // We need to box twice because trait objects are fat pointers, so we need the
@@ -205,6 +206,7 @@ pub fn sleep(duration: core::time::Duration) {
 /// A unique identifier for a running thread.
 #[cfg(feature = "alloc")]
 #[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
+#[allow(dead_code)]
 pub struct ThreadId(sys::FuriThreadId);
 
 /// A handle to a thread.

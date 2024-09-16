@@ -22,30 +22,20 @@ use flipperzero_rt::{entry, manifest};
 manifest!(name = "Rust dialog example");
 entry!(main);
 
-fn main(_args: *mut u8) -> i32 {
+fn main(_args: Option<&CStr>) -> i32 {
     // To customize the dialog, use the DialogMessage API:
     let mut dialogs = DialogsApp::open();
     let mut message = DialogMessage::new();
 
-    message.set_header(
-        CStr::from_bytes_with_nul(b"Make your move!\0").unwrap(),
-        0,
-        0,
-        Align::Left,
-        Align::Top,
-    );
+    message.set_header(c"Make your move!", 0, 0, Align::Left, Align::Top);
     message.set_text(
-        CStr::from_bytes_with_nul(b"Choose one of the following:\0").unwrap(),
+        c"Choose one of the following:",
         0,
         26,
         Align::Left,
         Align::Top,
     );
-    message.set_buttons(
-        Some(CStr::from_bytes_with_nul(b"Rock\0").unwrap()),
-        Some(CStr::from_bytes_with_nul(b"Paper\0").unwrap()),
-        Some(CStr::from_bytes_with_nul(b"Scissor\0").unwrap()),
-    );
+    message.set_buttons(Some(c"Rock"), Some(c"Paper"), Some(c"Scissor"));
 
     let button = dialogs.show_message(&message);
 

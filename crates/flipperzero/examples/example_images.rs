@@ -4,19 +4,22 @@
 #![no_std]
 #![no_main]
 
-use core::ffi::{c_char, c_void};
+// Required for allocator
+extern crate flipperzero_alloc;
+
+use core::ffi::{c_void, CStr};
 use core::mem::{self, MaybeUninit};
+use core::ptr::addr_of;
+
+use flipperzero_sys::furi::UnsafeRecord;
 
 use flipperzero_rt as rt;
 use flipperzero_sys as sys;
 
-// Required for allocator
-extern crate flipperzero_alloc;
+use sys::Icon;
 
 rt::manifest!(name = "Example: Images");
 rt::entry!(main);
-
-const RECORD_GUI: *const c_char = sys::c_string!("gui");
 
 static mut TARGET_ICON: Icon = Icon {
     width: 48,
@@ -31,18 +34,8 @@ static mut IMAGE_POSITION: ImagePosition = ImagePosition { x: 0, y: 0 };
 
 #[repr(C)]
 struct ImagePosition {
-    pub x: u8,
-    pub y: u8,
-}
-
-/// Internal icon representation.
-#[repr(C)]
-struct Icon {
-    width: u8,
-    height: u8,
-    frame_count: u8,
-    frame_rate: u8,
-    frames: *const *const u8,
+    pub x: i32,
+    pub y: i32,
 }
 
 // Screen is 128x64 px
@@ -51,9 +44,9 @@ extern "C" fn app_draw_callback(canvas: *mut sys::Canvas, _ctx: *mut c_void) {
         sys::canvas_clear(canvas);
         sys::canvas_draw_icon(
             canvas,
-            IMAGE_POSITION.x % 128,
-            IMAGE_POSITION.y % 128,
-            &TARGET_ICON as *const Icon as *const c_void as *const sys::Icon,
+            IMAGE_POSITION.x,
+            IMAGE_POSITION.y,
+            addr_of!(TARGET_ICON) as *const Icon as *const c_void as *const sys::Icon,
         );
     }
 }
@@ -65,7 +58,7 @@ extern "C" fn app_input_callback(input_event: *mut sys::InputEvent, ctx: *mut c_
     }
 }
 
-fn main(_args: *mut u8) -> i32 {
+fn main(_args: Option<&CStr>) -> i32 {
     unsafe {
         let event_queue = sys::furi_message_queue_alloc(8, mem::size_of::<sys::InputEvent>() as u32)
             as *mut sys::FuriMessageQueue;
@@ -84,18 +77,15 @@ fn main(_args: *mut u8) -> i32 {
         );
 
         // Register view port in GUI
-        let gui = sys::furi_record_open(RECORD_GUI) as *mut sys::Gui;
-        sys::gui_add_view_port(gui, view_port, sys::GuiLayer_GuiLayerFullscreen);
+        let gui = UnsafeRecord::open(c"gui".as_ptr());
+        sys::gui_add_view_port(gui.as_ptr(), view_port, sys::GuiLayer_GuiLayerFullscreen);
 
         let mut event: MaybeUninit<sys::InputEvent> = MaybeUninit::uninit();
 
         let mut running = true;
         while running {
-            if sys::furi_message_queue_get(
-                event_queue,
-                event.as_mut_ptr() as *mut sys::InputEvent as *mut c_void,
-                100,
-            ) == sys::FuriStatus_FuriStatusOk
+            if sys::furi_message_queue_get(event_queue, event.as_mut_ptr() as *mut c_void, 100)
+                == sys::FuriStatus_FuriStatusOk
             {
                 let event = event.assume_init();
                 if event.type_ == sys::InputType_InputTypePress
@@ -114,11 +104,9 @@ fn main(_args: *mut u8) -> i32 {
         }
 
         sys::view_port_enabled_set(view_port, false);
-        sys::gui_remove_view_port(gui, view_port);
+        sys::gui_remove_view_port(gui.as_ptr(), view_port);
         sys::view_port_free(view_port);
         sys::furi_message_queue_free(event_queue);
-
-        sys::furi_record_close(RECORD_GUI);
     }
 
     0

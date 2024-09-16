@@ -280,10 +280,10 @@ mod tests {
         assert_eq!(s, "");
 
         let mut s = String::from("12345");
-        let p = s.as_c_str().as_ptr();
+        let p = s.as_c_ptr();
         s.truncate(3);
         s.push_str("6");
-        let p_ = s.as_c_str().as_ptr();
+        let p_ = s.as_c_ptr();
         assert_eq!(p_, p);
     }
 
@@ -466,7 +466,7 @@ mod tests {
         let c: String = [t, u].into_iter().collect();
         assert_eq!(s, c);
 
-        #[cfg(alloc)]
+        #[cfg(feature = "alloc")]
         {
             let mut d = String::from(t);
             d.extend(alloc::vec![u]);
@@ -2658,7 +2658,7 @@ mod str_tests {
                 #[allow(unused_imports)]
                 mod $name {
                     use std::str::pattern::SearchStep::{Match, Reject};
-                    use super::{cmp_search_to_vec};
+                    use super::cmp_search_to_vec;
                     #[test]
                     fn fwd() {
                         cmp_search_to_vec(false, $p, $h, vec![$($e),*]);
