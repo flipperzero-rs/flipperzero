@@ -3,12 +3,13 @@
 #[cfg(feature = "alloc")]
 use alloc::ffi::CString;
 
-use core::ffi::{c_char, c_void, CStr};
+use core::ffi::{c_void, CStr};
 use core::marker::PhantomData;
+use core::mem::MaybeUninit;
 use core::ptr::{self, NonNull};
 
 use flipperzero_sys as sys;
-use sys::{c_string, furi::UnsafeRecord};
+use sys::furi::UnsafeRecord;
 
 use crate::furi::string::FuriString;
 use crate::gui::canvas::Align;
@@ -25,6 +26,7 @@ pub struct DialogMessage<'a> {
 }
 
 /// A dialog file browser options.
+#[repr(transparent)]
 pub struct DialogFileBrowserOptions<'a> {
     data: sys::DialogsFileBrowserOptions,
     _phantom: PhantomData<&'a ()>,
@@ -39,12 +41,10 @@ pub enum DialogMessageButton {
 }
 
 impl DialogsApp {
-    const RECORD_DIALOGS: *const c_char = sys::c_string!("dialogs");
-
     /// Obtains a handle to the Dialogs app.
     pub fn open() -> Self {
         Self {
-            data: unsafe { UnsafeRecord::open(Self::RECORD_DIALOGS) },
+            data: unsafe { UnsafeRecord::open(c"dialogs".as_ptr()) },
         }
     }
 
@@ -97,6 +97,7 @@ impl<'a> DialogMessage<'a> {
     /// Sets the labels of the buttons.
     pub fn set_buttons(
         &mut self,
+        // FIXME: these are unsound for non-UTF8 string
         left: Option<&'a CStr>,
         center: Option<&'a CStr>,
         right: Option<&'a CStr>,
@@ -113,6 +114,7 @@ impl<'a> DialogMessage<'a> {
     /// Sets the header text.
     pub fn set_header(
         &mut self,
+        // FIXME: this is unsound for non-UTF8 string
         header: &'a CStr,
         x: u8,
         y: u8,
@@ -132,7 +134,15 @@ impl<'a> DialogMessage<'a> {
     }
 
     /// Sets the body text.
-    pub fn set_text(&mut self, text: &'a CStr, x: u8, y: u8, horizontal: Align, vertical: Align) {
+    pub fn set_text(
+        &mut self,
+        // FIXME: this is unsound for non-UTF8 string
+        text: &'a CStr,
+        x: u8,
+        y: u8,
+        horizontal: Align,
+        vertical: Align,
+    ) {
         unsafe {
             sys::dialog_message_set_text(
                 self.data.as_ptr(),
@@ -207,32 +217,108 @@ impl<'a> Default for DialogFileBrowserOptions<'a> {
 }
 
 impl<'a> DialogFileBrowserOptions<'a> {
-    /// Creates a new dialog file browser options and initializes to default values.
     pub fn new() -> Self {
+        // SAFETY: the string is a valid UTF-8
+        unsafe { Self::with_extension(c"*") }
+    }
+
+    /// Creates a new dialog file browser options and initializes to default values.
+    ///
+    /// # Safety
+    ///
+    /// `extension` should be a valid UTF-8 string
+    ///
+    /// # Compatibility
+    ///
+    /// This function's signature may change in the future to make it safe.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use flipperzero::dialogs::DialogFileBrowserOptions;
+    /// let options = DialogFileBrowserOptions::new(c"*");
+    /// ```
+    ///
+    /// ## Lifetime covariance:
+    ///
+    /// Even if `'static` lifetime is involved in the creation of options,
+    /// the resulting lifetime will be the most applicable one:
+    ///
+    /// ```
+    /// # use core::ffi::CStr;
+    /// # use flipperzero::dialogs::DialogFileBrowserOptions;
+    /// // has `'static` lifetime
+    /// const EXTENSION: &CStr = c"txt";
+    /// // has "local" lifetime, aka `'a`
+    /// let base_path_bytes = [b'/', b'r', b'o', b'o', b't'];
+    /// let base_path = CStr::from_bytes_with_nul(&base_path_bytes).unwrap();
+    /// // the most appropriate lifetime `'a` is used
+    /// // SAFETY: `EXTENSION` is a valid UTF-8 string
+    /// let mut options = unsafe { DialogFileBrowserOptions::new(EXTENSION) }
+    ///     .set_base_path(base_path);
+    /// ```
+    ///
+    /// Still this should not allow the options to outlive its components:
+    ///
+    /// ```compile_fail
+    /// # use core::ffi::CStr;
+    /// # use flipperzero::dialogs::DialogFileBrowserOptions;
+    /// # use flipperzero_sys::{cstr, DialogsFileBrowserOptions};
+    /// const EXTENSION: &CStr = cstr!("*");
+    /// // SAFETY: `EXTENSION` is a valid UTF-8 string
+    /// let mut options = unsafe { DialogFileBrowserOptions::new(EXTENSION) };
+    /// {
+    ///     let base_path_bytes = [b'/', b'r', b'o', b'o', b't'];
+    ///     let base_path = CStr::from_bytes_with_nul(&base_path_bytes).unwrap();
+    ///     options = options.set_base_path(base_path);
+    /// }
+    /// ```
+    pub unsafe fn with_extension(extension: &'a CStr) -> Self {
+        let mut options = MaybeUninit::<sys::DialogsFileBrowserOptions>::uninit();
+        let uninit_options = options.as_mut_ptr();
+        let extension = extension.as_ptr();
+        // TODO: as for now, we stick to default (NULL) icon,
+        //  although we may want to make it customizable via this function's parameter
+        //  once there are safe Icon-related APIs
+        let icon = ptr::null();
+        // SAFETY: all pointers are valid (`icon` is allowed to be NULL)
+        // and options is intentionally uninitialized
+        // since it is the called function's job to do it
+        unsafe { sys::dialog_file_browser_set_basic_options(uninit_options, extension, icon) };
         Self {
-            // default values from sys::dialog_file_browser_set_basic_options()
-            data: sys::DialogsFileBrowserOptions {
-                extension: c_string!("*"),
-                base_path: ptr::null(),
-                skip_assets: true,
-                hide_dot_files: false,
-                icon: ptr::null(),
-                hide_ext: true,
-                item_loader_callback: None,
-                item_loader_context: ptr::null_mut(),
-            },
+            // SAFETY: data has just been initialized fully
+            // as guaranteed by the previously called function's contract
+            data: unsafe { options.assume_init() },
             _phantom: PhantomData,
         }
     }
 
     /// Set file extension to be offered for selection.
-    pub fn set_extension(mut self, extension: &'a CStr) -> Self {
+    ///
+    /// # Safety
+    ///
+    /// `extension` should be a valid UTF-8 string
+    ///
+    /// # Compatibility
+    ///
+    /// This function's signature may change in the future to make it safe.
+    pub unsafe fn set_extension(mut self, extension: &'a CStr) -> Self {
         self.data.extension = extension.as_ptr();
         self
     }
 
     /// Set root folder path for navigation with back key.
-    pub fn set_base_path(mut self, base_path: &'a CStr) -> Self {
+    ///
+    /// # Safety
+    ///
+    /// `base_path` should be a valid UTF-8 string
+    ///
+    /// # Compatibility
+    ///
+    /// This function's signature may change in the future to make it safe.
+    pub unsafe fn set_base_path(mut self, base_path: &'a CStr) -> Self {
         self.data.base_path = base_path.as_ptr();
         self
     }
@@ -277,15 +363,13 @@ impl<'a> DialogFileBrowserOptions<'a> {
 #[cfg(feature = "alloc")]
 #[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
 pub fn alert(text: &str) {
-    const BUTTON_OK: &CStr = unsafe { CStr::from_bytes_with_nul_unchecked(b"OK\0") };
-
     let text = CString::new(text.as_bytes()).unwrap();
 
     let mut dialogs = DialogsApp::open();
     let mut message = DialogMessage::new();
 
     message.set_text(&text, 0, 0, Align::Left, Align::Top);
-    message.set_buttons(None, Some(BUTTON_OK), None);
+    message.set_buttons(None, Some(c"OK"), None);
 
     dialogs.show_message(&message);
 }

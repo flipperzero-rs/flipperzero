@@ -33,7 +33,11 @@ lock_api = "0.4"
 
 # Toolbox
 digest = "0.10"
-bitflags = "1.0"
+bitflags = "2.4"
+
+# Embedded-hal
+embedded-hal = { version = "1.0.0-rc.1", optional = true }
+embedded-hal-0 = { package = "embedded-hal", version = "0.2.7", features = ["unproven"], optional = true }
 
 # Docs
 document-features = { workspace = true, optional = true }
@@ -44,8 +48,10 @@ flipperzero-rt.workspace = true
 
 # Toolbox
 crc32fast = { version = "1", default-features = false }
-md-5 = { version = "0.10", default-features = false }
-sha2 = { version = "0.10", default-features = false }
+
+# Not needed as for now since the corresponsing APIs have been made private in flipperzero-firmware
+#md-5 = { version = "0.10", default-features = false }
+#sha2 = { version = "0.10", default-features = false }
 
 [features]
 

@@ -18,7 +18,7 @@ use flipperzero_rt::{entry, manifest};
 manifest!(name = "SPI GC9A01 Example");
 entry!(main);
 
-fn main(_args: *mut u8) -> i32 {
+fn main(_args: Option<&::core::ffi::CStr>) -> i32 {
     let mut bus = spi::EXTERNAL.acquire();
     let timeout = Duration::from_millis(50);
 

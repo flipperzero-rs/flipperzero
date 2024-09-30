@@ -4,14 +4,17 @@
 #![deny(rustdoc::broken_intra_doc_links)]
 
 // Features that identify thumbv7em-none-eabihf.
-// Until target_abi is stable, this also permits thumbv7em-none-eabi.
-#[cfg(not(all(
-    target_arch = "arm",
-    target_feature = "thumb2",
-    target_feature = "v7",
-    target_feature = "dsp",
-    target_os = "none",
-    //target_abi = "eabihf",
+// NOTE: `arm_target_feature` is currently unstable (see rust-lang/rust#44839)
+#[cfg(not(any(
+    all(
+        target_arch = "arm",
+        //target_feature = "thumb2",
+        //target_feature = "v7",
+        //target_feature = "dsp",
+        target_os = "none",
+        target_abi = "eabihf",
+    ),
+    miri
 )))]
 core::compile_error!("This crate requires `--target thumbv7em-none-eabihf`");
 
@@ -29,28 +32,40 @@ mod inlines;
 )]
 mod bindings;
 
-/// Create a static C string.
-/// Will automatically add a NUL terminator.
-#[macro_export]
-macro_rules! c_string {
-    ($str:expr $(,)?) => {{
-        concat!($str, "\0").as_ptr() as *const core::ffi::c_char
-    }};
-}
-
 /// Crash the system.
+///
+/// The only argument is a message with which the system should crash
+/// which should contain no NULs. The following will not compile:
+///
+/// ```compile_fail
+/// flipperzero_sys::crash!("Has a \0 NUL");
+/// ```
+///
+/// # Examples
+///
+/// Crash the system with a *"Hello world!"* message:
+///
+/// ```
+/// flipperzero_sys::crash!("Hello world!");
+/// ```
 #[macro_export]
 macro_rules! crash {
-    ($msg:expr $(,)?) => {
+    ($msg:expr $(,)?) => {{
+        const MESSAGE: *const ::core::primitive::i8 =
+            match ::core::ffi::CStr::from_bytes_with_nul(
+                ::core::concat!($msg, "\0").as_bytes(),
+            ) {
+                Ok(cstr) => cstr.as_ptr(),
+                Err(error) => panic!("message contains NULs"),
+            };
         unsafe {
             // Crash message is passed via r12
-            let msg = $crate::c_string!($msg);
-            core::arch::asm!("", in("r12") msg, options(nomem, nostack));
+            ::core::arch::asm!("", in("r12") MESSAGE, options(nomem, nostack));
 
-            $crate::__furi_crash();
-            core::hint::unreachable_unchecked();
+            $crate::__furi_crash_implementation();
+            ::core::hint::unreachable_unchecked();
         }
-    };
+    }};
 }
 
 // Re-export bindings

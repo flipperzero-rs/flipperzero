@@ -2,11 +2,14 @@
 //!
 //! Usage: `generate-bindings flipperzero-firmware/build/f7-firmware-D/sdk/`
 
+use std::borrow::Cow;
 use std::{env, fs};
 
 use bindgen::callbacks::ParseCallbacks;
 use camino::{Utf8Path, Utf8PathBuf};
-use clap::{self, crate_authors, crate_description, crate_version, value_parser};
+use clap::{crate_authors, crate_description, crate_version, value_parser};
+use once_cell::sync::Lazy;
+use regex::{Captures, Regex, Replacer};
 use serde::Deserialize;
 
 const TARGET: &str = "thumbv7em-none-eabihf";
@@ -124,9 +127,38 @@ fn parse_args() -> clap::ArgMatches {
 #[derive(Debug)]
 struct Cb;
 
+impl Cb {
+    fn preprocess_doxygen_comments(comment: &str) -> Cow<str> {
+        //
+        static PARAM_IN_OUT: Lazy<Regex> = Lazy::new(|| {
+            Regex::new(r"(\n\s*[@\\])param\[(?:\s*(in)\s*,\s*(out)\s*|\s*(out)\s*,\s*(in)\s*)]")
+                .unwrap()
+        });
+
+        struct ParamReplacer;
+        impl Replacer for ParamReplacer {
+            fn replace_append(&mut self, caps: &Captures<'_>, dst: &mut String) {
+                let (prefix, first, second) = (&caps[1], &caps[2], &caps[3]);
+                dst.reserve(8 + prefix.len() + first.len() + second.len());
+
+                dst.push_str(prefix);
+                dst.push_str("param[");
+                dst.push_str(first);
+                dst.push(',');
+                dst.push_str(second);
+                dst.push(']');
+            }
+        }
+
+        PARAM_IN_OUT.replace_all(comment, ParamReplacer)
+    }
+}
+
 impl ParseCallbacks for Cb {
     fn process_comment(&self, comment: &str) -> Option<String> {
-        Some(doxygen_rs::transform(comment))
+        Some(doxygen_rs::transform(&Self::preprocess_doxygen_comments(
+            comment,
+        )))
     }
 }
 
@@ -164,10 +196,10 @@ fn main() {
     };
 
     // Load SDK compiler flags
-    let sdk_opts = load_sdk_opts(&sdk.join(SDK_OPTS));
+    let sdk_opts = load_sdk_opts(sdk.join(SDK_OPTS));
 
     // Load SDK symbols
-    let symbols = load_symbols(&sdk.join(&replace_sdk_root_dir(&sdk_opts.sdk_symbols)));
+    let symbols = load_symbols(sdk.join(replace_sdk_root_dir(&sdk_opts.sdk_symbols)));
     let bindings_header = generate_bindings_header(&symbols);
 
     // Some of the values are shell-quoted
@@ -190,7 +222,7 @@ fn main() {
         .clang_args(["-working-directory", sdk.as_str()])
         .clang_args(["--system-header-prefix=f7_sdk/"])
         .clang_args(["-isystem", toolchain.as_str()])
-        .clang_args(&cc_flags)
+        .clang_args(cc_flags)
         .clang_arg("-Wno-error")
         .clang_arg("-fshort-enums")
         .clang_arg("-fvisibility=default")
@@ -224,4 +256,49 @@ fn main() {
     bindings
         .write_to_file(outfile)
         .expect("failed to write bindings");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use bindgen::callbacks::ParseCallbacks;
+
+    #[test]
+    fn doxygen_comments_simple_adhoc_fix() {
+        let unsupported_comment = "Foo bar baz\n@param[in, out] foo bar baz";
+
+        let processed_comment = Cb::preprocess_doxygen_comments(unsupported_comment);
+
+        assert_eq!(processed_comment, "Foo bar baz\n@param[in,out] foo bar baz");
+
+        Cb.process_comment(unsupported_comment)
+            .expect("The comment should get parsed normally");
+    }
+
+    #[test]
+    fn doxygen_comments_real_life_adhoc_fix() {
+        let unsupported_comment = " @brief Perform authentication with password.
+
+ Must ONLY be used inside the callback function.
+
+ @param[in, out] instance pointer to the instance to be used in the transaction.
+ @param[in, out] data pointer to the authentication context.
+ @return MfUltralightErrorNone on success, an error code on failure.";
+
+        let processed_comment = Cb::preprocess_doxygen_comments(unsupported_comment);
+
+        assert_eq!(
+            processed_comment,
+            " @brief Perform authentication with password.
+
+ Must ONLY be used inside the callback function.
+
+ @param[in,out] instance pointer to the instance to be used in the transaction.
+ @param[in,out] data pointer to the authentication context.
+ @return MfUltralightErrorNone on success, an error code on failure."
+        );
+
+        Cb.process_comment(unsupported_comment)
+            .expect("The comment should get parsed normally");
+    }
 }
