@@ -1,6 +1,6 @@
 //! Safe wrapper utilizing the API provided in `lib/subghz/devices/devices.h`
 
-use super::{error::SubGhzError, preset::SubGhzBuiltinPreset};
+use super::{error::SubGhzError, preset::SubGhzPreset};
 use core::{ffi::CStr, ptr::null_mut};
 use flipperzero_sys::{
     subghz_devices_begin, subghz_devices_end, subghz_devices_flush_rx, subghz_devices_flush_tx,
@@ -11,9 +11,6 @@ use flipperzero_sys::{
     subghz_devices_set_tx, subghz_devices_sleep, subghz_devices_write_packet, SubGhzDevice,
 };
 use uom::si::{frequency::hertz, u32::Frequency};
-
-#[cfg(feature = "alloc")]
-use super::preset::SubGhzPreset;
 
 pub struct SubGhz {
     device: &'static SubGhzDevice,
@@ -68,28 +65,20 @@ impl SubGhz {
         }
     }
 
-    #[cfg(feature = "alloc")]
     pub fn load_preset(&mut self, preset: SubGhzPreset) {
         let furi_preset = preset.into_furi_preset();
 
         let preset_data = if let SubGhzPreset::Custom(data) = preset {
-            data.as_mut_ptr()
+            data.as_ptr() as *mut u8
         } else {
             null_mut::<u8>()
         };
 
         // Safety: Type enforcement of the builtin presets, so a valid pointer is passed based on the input Preset.
+        // Further, there is a cast to a mutable pointer, it looks like the chain of callback eventually calls a
+        // function that takes a const pointer, so I don't believe that the data in the pointer get mutated.
         unsafe {
             subghz_devices_load_preset(self.device, furi_preset, preset_data);
-        }
-    }
-
-    pub fn load_builtin_preset(&mut self, preset: SubGhzBuiltinPreset) {
-        let furi_preset = preset.into_furi_preset();
-
-        // Safety: Type enforcement of the builtin presets, so it is Ok to pass in the null pointer here.
-        unsafe {
-            subghz_devices_load_preset(self.device, furi_preset, null_mut::<u8>());
         }
     }
 
