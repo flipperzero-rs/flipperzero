@@ -3,12 +3,13 @@
 use super::{error::SubGhzError, preset::SubGhzPreset};
 use core::{ffi::CStr, ptr::null_mut};
 use flipperzero_sys::{
-    subghz_devices_begin, subghz_devices_end, subghz_devices_flush_rx, subghz_devices_flush_tx,
-    subghz_devices_get_by_name, subghz_devices_idle, subghz_devices_is_connect,
-    subghz_devices_is_frequency_valid, subghz_devices_is_rx_data_crc_valid,
-    subghz_devices_load_preset, subghz_devices_read_packet, subghz_devices_reset,
-    subghz_devices_rx_pipe_not_empty, subghz_devices_set_frequency, subghz_devices_set_rx,
-    subghz_devices_set_tx, subghz_devices_sleep, subghz_devices_write_packet, SubGhzDevice,
+    subghz_devices_begin, subghz_devices_deinit, subghz_devices_end, subghz_devices_flush_rx,
+    subghz_devices_flush_tx, subghz_devices_get_by_name, subghz_devices_idle, subghz_devices_init,
+    subghz_devices_is_connect, subghz_devices_is_frequency_valid,
+    subghz_devices_is_rx_data_crc_valid, subghz_devices_load_preset, subghz_devices_read_packet,
+    subghz_devices_reset, subghz_devices_rx_pipe_not_empty, subghz_devices_set_frequency,
+    subghz_devices_set_rx, subghz_devices_set_tx, subghz_devices_sleep,
+    subghz_devices_write_packet, SubGhzDevice,
 };
 use uom::si::{frequency::hertz, u32::Frequency};
 
@@ -17,7 +18,10 @@ pub struct SubGhz {
 }
 
 impl SubGhz {
+    /// For the internal device use "cc1101_int" (From `lib/subghz/devices/cc1101_int/cc1101_int_interconnect.c`)
     pub fn subghz_devices_get_by_name(name: &CStr) -> Option<SubGhz> {
+        unsafe { subghz_devices_init() }
+
         // Safety: input type enforeced by CStr type.
         let dev = unsafe { subghz_devices_get_by_name(name.as_ptr()) };
         // Safety: This pointer should either be null or return a reference, I don't see how it could not.
@@ -183,6 +187,7 @@ impl Drop for SubGhz {
         // Safety: self.device is not Null so this will not crash when furi_check is invoked.
         unsafe {
             subghz_devices_end(self.device);
+            subghz_devices_deinit();
         }
     }
 }
