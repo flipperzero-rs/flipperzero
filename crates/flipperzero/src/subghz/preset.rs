@@ -41,6 +41,7 @@ pub struct CustomSubGhzPreset<'a>(&'a [u8]);
 
 impl<'a> CustomSubGhzPreset<'a> {
     /// # Safety
+    ///
     /// Read the manual for the CC1101 chip and review the [`furi_hal_subghz_load_custom_preset()`](https://github.com/flipperdevices/flipperzero-firmware/blob/0eaad8bf64f01a6f932647a9cda5475dd9ea1524/targets/f7/furi_hal/furi_hal_subghz.c#L162) function provided by the flipper API
     pub unsafe fn from_raw(raw_config: &[u8]) -> CustomSubGhzPreset {
         CustomSubGhzPreset(raw_config)
