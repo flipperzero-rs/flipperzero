@@ -22,7 +22,7 @@ impl SubGhz {
         // Further, the reference should be static as it relates to the variable:
         // `static SubGhzDeviceRegistry* subghz_device_registry = NULL;` in `lib/subghz/devices/registry.c``
         let dev = unsafe { dev.as_ref() }?;
-        Some(Self { device: dev })
+        Some(Self { device })
     }
 
     // No clue what sort of error may occur, if using the internal device, it will always return Ok()
