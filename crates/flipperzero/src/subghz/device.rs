@@ -28,10 +28,10 @@ impl SubGhz {
     // No clue what sort of error may occur, if using the internal device, it will always return Ok()
     pub fn begin(&mut self) -> Result<(), SubGhzError> {
         // Safety: self.device is not Null so this will not crash when furi_check is invoked.
-        let result = unsafe { sys::subghz_devices_begin(self.device) };
+        let failed = unsafe { sys::subghz_devices_begin(self.device) };
 
         // False indicates Ok
-        if result {
+        if failed {
             Err(SubGhzError::UnableToOpenDevice)
         } else {
             Ok(())
