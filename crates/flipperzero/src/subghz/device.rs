@@ -17,11 +17,11 @@ impl SubGhz {
         unsafe { sys::subghz_devices_init() }
 
         // Safety: input type enforeced by CStr type.
-        let dev = unsafe { sys::subghz_devices_get_by_name(name.as_ptr()) };
+        let device = unsafe { sys::subghz_devices_get_by_name(name.as_ptr()) };
         // Safety: This pointer should either be null or return a reference, I don't see how it could not.
         // Further, the reference should be static as it relates to the variable:
         // `static SubGhzDeviceRegistry* subghz_device_registry = NULL;` in `lib/subghz/devices/registry.c``
-        let dev = unsafe { dev.as_ref() }?;
+        let device = unsafe { device.as_ref() }?;
         Some(Self { device })
     }
 
