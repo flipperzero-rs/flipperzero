@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - `flipperzero::dialogs::DialogFileBrowserOptions`
+- `flipperzero::gpio::spi` module, providing a Rust interface to the external 3.3V SPI bus over
+  GPIO pins `(B3, A4, A6, A7)`, as well as the internal SPI sub devices.
 
 ### Changed
 
