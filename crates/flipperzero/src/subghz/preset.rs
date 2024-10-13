@@ -31,18 +31,18 @@ pub enum SubGhzPreset<'a> {
 impl<'a> SubGhzPreset<'a> {
     pub fn into_furi_preset(self) -> FuriHalSubGhzPreset {
         match self {
-            SubGhzPreset::IDLE => FuriHalSubGhzPreset_FuriHalSubGhzPresetIDLE,
-            SubGhzPreset::Ook270Async => FuriHalSubGhzPreset_FuriHalSubGhzPresetOok270Async,
-            SubGhzPreset::Ook650Async => FuriHalSubGhzPreset_FuriHalSubGhzPresetOok650Async,
-            SubGhzPreset::_2FSKDev238Async => {
+            Self::IDLE => FuriHalSubGhzPreset_FuriHalSubGhzPresetIDLE,
+            Self::Ook270Async => FuriHalSubGhzPreset_FuriHalSubGhzPresetOok270Async,
+            Self::Ook650Async => FuriHalSubGhzPreset_FuriHalSubGhzPresetOok650Async,
+            Self::_2FSKDev238Async => {
                 FuriHalSubGhzPreset_FuriHalSubGhzPreset2FSKDev238Async
             }
-            SubGhzPreset::_2FSKDev476Async => {
+            Self::_2FSKDev476Async => {
                 FuriHalSubGhzPreset_FuriHalSubGhzPreset2FSKDev476Async
             }
-            SubGhzPreset::MSK99_97KbAsync => FuriHalSubGhzPreset_FuriHalSubGhzPresetMSK99_97KbAsync,
-            SubGhzPreset::GFSK9_99KbAsync => FuriHalSubGhzPreset_FuriHalSubGhzPresetGFSK9_99KbAsync,
-            SubGhzPreset::Custom(_) => FuriHalSubGhzPreset_FuriHalSubGhzPresetCustom,
+            Self::MSK99_97KbAsync => FuriHalSubGhzPreset_FuriHalSubGhzPresetMSK99_97KbAsync,
+            Self::GFSK9_99KbAsync => FuriHalSubGhzPreset_FuriHalSubGhzPresetGFSK9_99KbAsync,
+            Self::Custom(_) => FuriHalSubGhzPreset_FuriHalSubGhzPresetCustom,
         }
     }
 }
