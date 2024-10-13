@@ -164,7 +164,7 @@ impl SubGhz {
 
     pub fn write_packet(&mut self, buf: &[u8]) -> Result<(), SubGhzError> {
         if buf.len() > 255 {
-            return Err(SubGhzError::PacketTooLong);
+            return Err(SubGhzError::PacketTooLong { len: buf.len() });
         }
 
         let size = buf.len() as u8;
