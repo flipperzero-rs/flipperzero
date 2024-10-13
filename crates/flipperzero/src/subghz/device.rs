@@ -3,8 +3,9 @@
 use super::{error::SubGhzError, preset::SubGhzPreset};
 use core::{ffi::CStr, ptr::null_mut};
 use flipperzero_sys::{
-    subghz_devices_begin, subghz_devices_deinit, subghz_devices_end, subghz_devices_flush_rx,
-    subghz_devices_flush_tx, subghz_devices_get_by_name, subghz_devices_idle, subghz_devices_init,
+    furi_hal_region_is_frequency_allowed, subghz_devices_begin, subghz_devices_deinit,
+    subghz_devices_end, subghz_devices_flush_rx, subghz_devices_flush_tx,
+    subghz_devices_get_by_name, subghz_devices_idle, subghz_devices_init,
     subghz_devices_is_connect, subghz_devices_is_frequency_valid,
     subghz_devices_is_rx_data_crc_valid, subghz_devices_load_preset, subghz_devices_read_packet,
     subghz_devices_reset, subghz_devices_rx_pipe_not_empty, subghz_devices_set_frequency,
@@ -88,11 +89,11 @@ impl SubGhz {
 
     // If the returned frequency from the internal API function call is 0, this function returns an error.
     pub fn set_frequency(&mut self, freq: Frequency) -> Result<Frequency, SubGhzError> {
-        let freq_u32 = freq.value;
-        let actual_freq = unsafe { subghz_devices_set_frequency(self.device, freq_u32) };
+        let actual_freq = unsafe { subghz_devices_set_frequency(self.device, freq.value) };
 
         if actual_freq != 0 {
             Ok(Frequency::new::<hertz>(actual_freq))
+            // Ok(actual_freq)
         } else {
             Err(SubGhzError::UnableToSetFrequency)
         }
@@ -100,6 +101,10 @@ impl SubGhz {
 
     pub fn is_frequency_valid(&mut self, freq: Frequency) -> bool {
         unsafe { subghz_devices_is_frequency_valid(self.device, freq.value) }
+    }
+
+    pub fn is_frequency_allowed(&self, freq: Frequency) -> bool {
+        unsafe { furi_hal_region_is_frequency_allowed(freq.value) }
     }
 
     pub fn set_async_mirror_pin(&mut self) {
