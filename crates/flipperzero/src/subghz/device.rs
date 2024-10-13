@@ -154,11 +154,7 @@ impl SubGhz {
     }
 
     pub fn read_packet(&mut self, buf: &mut [u8]) -> usize {
-        let mut size = if buf.len() > 255 {
-            255_u8
-        } else {
-            buf.len() as u8
-        };
+        let mut size = u8::try_from(buf.len()).unwrap_or(u8::MAX);
 
         unsafe {
             sys::subghz_devices_read_packet(self.device, buf.as_mut_ptr(), &mut size);
