@@ -9,7 +9,7 @@ use flipperzero_sys::{
     FuriHalSubGhzPreset_FuriHalSubGhzPresetOok650Async,
 };
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub enum SubGhzPreset<'a> {
     /// default configuration
     IDLE,
@@ -29,7 +29,7 @@ pub enum SubGhzPreset<'a> {
 }
 
 impl<'a> SubGhzPreset<'a> {
-    pub fn into_furi_preset(&self) -> FuriHalSubGhzPreset {
+    pub fn into_furi_preset(self) -> FuriHalSubGhzPreset {
         match self {
             SubGhzPreset::IDLE => FuriHalSubGhzPreset_FuriHalSubGhzPresetIDLE,
             SubGhzPreset::Ook270Async => FuriHalSubGhzPreset_FuriHalSubGhzPresetOok270Async,
@@ -47,7 +47,7 @@ impl<'a> SubGhzPreset<'a> {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 /// This struct is defined for creating custom configurations. It enforces the null padding needed at the end. along with the power amplifier config?
 pub struct CustomSubGhzPreset<'a>(&'a [u8]);
 
