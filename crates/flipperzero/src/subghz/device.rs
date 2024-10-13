@@ -2,29 +2,20 @@
 
 use super::{error::SubGhzError, preset::SubGhzPreset};
 use core::{ffi::CStr, ptr::null_mut};
-use flipperzero_sys::{
-    furi_hal_region_is_frequency_allowed, subghz_devices_begin, subghz_devices_deinit,
-    subghz_devices_end, subghz_devices_flush_rx, subghz_devices_flush_tx,
-    subghz_devices_get_by_name, subghz_devices_idle, subghz_devices_init,
-    subghz_devices_is_connect, subghz_devices_is_frequency_valid,
-    subghz_devices_is_rx_data_crc_valid, subghz_devices_load_preset, subghz_devices_read_packet,
-    subghz_devices_reset, subghz_devices_rx_pipe_not_empty, subghz_devices_set_frequency,
-    subghz_devices_set_rx, subghz_devices_set_tx, subghz_devices_sleep,
-    subghz_devices_write_packet, SubGhzDevice,
-};
+use flipperzero_sys as sys;
 use uom::si::{frequency::hertz, u32::Frequency};
 
 pub struct SubGhz {
-    device: &'static SubGhzDevice,
+    device: &'static sys::SubGhzDevice,
 }
 
 impl SubGhz {
     /// For the internal device use "cc1101_int" (From `lib/subghz/devices/cc1101_int/cc1101_int_interconnect.c`)
     pub fn subghz_devices_get_by_name(name: &CStr) -> Option<SubGhz> {
-        unsafe { subghz_devices_init() }
+        unsafe { sys::subghz_devices_init() }
 
         // Safety: input type enforeced by CStr type.
-        let dev = unsafe { subghz_devices_get_by_name(name.as_ptr()) };
+        let dev = unsafe { sys::subghz_devices_get_by_name(name.as_ptr()) };
         // Safety: This pointer should either be null or return a reference, I don't see how it could not.
         // Further, the reference should be static as it relates to the variable:
         // `static SubGhzDeviceRegistry* subghz_device_registry = NULL;` in `lib/subghz/devices/registry.c``
@@ -35,7 +26,7 @@ impl SubGhz {
     // No clue what sort of error may occur, if using the internal device, it will always return Ok()
     pub fn begin(&mut self) -> Result<(), SubGhzError> {
         // Safety: self.device is not Null so this will not crash when furi_check is invoked.
-        let result = unsafe { subghz_devices_begin(self.device) };
+        let result = unsafe { sys::subghz_devices_begin(self.device) };
 
         // False indicates Ok
         if result {
@@ -47,26 +38,26 @@ impl SubGhz {
 
     pub fn is_connect(&mut self) -> bool {
         // Safety: self.device is not Null so this will not crash when furi_check is invoked.
-        unsafe { subghz_devices_is_connect(self.device) }
+        unsafe { sys::subghz_devices_is_connect(self.device) }
     }
 
     pub fn reset(&mut self) {
         // Safety: self.device is not Null so this will not crash when furi_check is invoked.
         unsafe {
-            subghz_devices_reset(self.device);
+            sys::subghz_devices_reset(self.device);
         }
     }
 
     pub fn sleep(&mut self) {
         // Safety: self.device is not Null so this will not crash when furi_check is invoked.
         unsafe {
-            subghz_devices_sleep(self.device);
+            sys::subghz_devices_sleep(self.device);
         }
     }
 
     pub fn idle(&mut self) {
         unsafe {
-            subghz_devices_idle(self.device);
+            sys::subghz_devices_idle(self.device);
         }
     }
 
@@ -83,13 +74,13 @@ impl SubGhz {
         // Further, there is a cast to a mutable pointer, it looks like the chain of callback eventually calls a
         // function that takes a const pointer, so I don't believe that the data in the pointer get mutated.
         unsafe {
-            subghz_devices_load_preset(self.device, furi_preset, preset_data);
+            sys::subghz_devices_load_preset(self.device, furi_preset, preset_data);
         }
     }
 
     // If the returned frequency from the internal API function call is 0, this function returns an error.
     pub fn set_frequency(&mut self, freq: Frequency) -> Result<Frequency, SubGhzError> {
-        let actual_freq = unsafe { subghz_devices_set_frequency(self.device, freq.value) };
+        let actual_freq = unsafe { sys::subghz_devices_set_frequency(self.device, freq.value) };
 
         if actual_freq != 0 {
             Ok(Frequency::new::<hertz>(actual_freq))
@@ -100,11 +91,11 @@ impl SubGhz {
     }
 
     pub fn is_frequency_valid(&mut self, freq: Frequency) -> bool {
-        unsafe { subghz_devices_is_frequency_valid(self.device, freq.value) }
+        unsafe { sys::subghz_devices_is_frequency_valid(self.device, freq.value) }
     }
 
     pub fn is_frequency_allowed(&self, freq: Frequency) -> bool {
-        unsafe { furi_hal_region_is_frequency_allowed(freq.value) }
+        unsafe { sys::furi_hal_region_is_frequency_allowed(freq.value) }
     }
 
     pub fn set_async_mirror_pin(&mut self) {
@@ -116,7 +107,7 @@ impl SubGhz {
     }
 
     pub fn set_tx(&mut self) -> Result<(), SubGhzError> {
-        let result = unsafe { subghz_devices_set_tx(self.device) };
+        let result = unsafe { sys::subghz_devices_set_tx(self.device) };
 
         // Returns true if Ok
         if result {
@@ -127,18 +118,18 @@ impl SubGhz {
     }
 
     pub fn flush_tx(&mut self) {
-        unsafe { subghz_devices_flush_tx(self.device) };
+        unsafe { sys::subghz_devices_flush_tx(self.device) };
     }
 
     pub fn set_rx(&mut self) {
         unsafe {
-            subghz_devices_set_rx(self.device);
+            sys::subghz_devices_set_rx(self.device);
         }
     }
 
     pub fn flush_rx(&mut self) {
         unsafe {
-            subghz_devices_flush_rx(self.device);
+            sys::subghz_devices_flush_rx(self.device);
         }
     }
 
@@ -153,11 +144,11 @@ impl SubGhz {
     }
 
     pub fn rx_pipe_not_empty(&mut self) -> bool {
-        unsafe { subghz_devices_rx_pipe_not_empty(self.device) }
+        unsafe { sys::subghz_devices_rx_pipe_not_empty(self.device) }
     }
 
     pub fn is_rx_crc_valid(&mut self) -> bool {
-        unsafe { subghz_devices_is_rx_data_crc_valid(self.device) }
+        unsafe { sys::subghz_devices_is_rx_data_crc_valid(self.device) }
     }
 
     pub fn read_packet(&mut self, buf: &mut [u8]) -> usize {
@@ -168,7 +159,7 @@ impl SubGhz {
         };
 
         unsafe {
-            subghz_devices_read_packet(self.device, buf.as_mut_ptr(), &mut size);
+            sys::subghz_devices_read_packet(self.device, buf.as_mut_ptr(), &mut size);
         };
         size as usize
     }
@@ -181,7 +172,7 @@ impl SubGhz {
         let size = buf.len() as u8;
 
         unsafe {
-            subghz_devices_write_packet(self.device, buf.as_ptr(), size);
+            sys::subghz_devices_write_packet(self.device, buf.as_ptr(), size);
         }
         Ok(())
     }
@@ -191,8 +182,8 @@ impl Drop for SubGhz {
     fn drop(&mut self) {
         // Safety: self.device is not Null so this will not crash when furi_check is invoked.
         unsafe {
-            subghz_devices_end(self.device);
-            subghz_devices_deinit();
+            sys::subghz_devices_end(self.device);
+            sys::subghz_devices_deinit();
         }
     }
 }
