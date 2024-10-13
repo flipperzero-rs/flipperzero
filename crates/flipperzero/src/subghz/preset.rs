@@ -1,13 +1,4 @@
-use flipperzero_sys::{
-    FuriHalSubGhzPreset, FuriHalSubGhzPreset_FuriHalSubGhzPreset2FSKDev238Async,
-    FuriHalSubGhzPreset_FuriHalSubGhzPreset2FSKDev476Async,
-    FuriHalSubGhzPreset_FuriHalSubGhzPresetCustom,
-    FuriHalSubGhzPreset_FuriHalSubGhzPresetGFSK9_99KbAsync,
-    FuriHalSubGhzPreset_FuriHalSubGhzPresetIDLE,
-    FuriHalSubGhzPreset_FuriHalSubGhzPresetMSK99_97KbAsync,
-    FuriHalSubGhzPreset_FuriHalSubGhzPresetOok270Async,
-    FuriHalSubGhzPreset_FuriHalSubGhzPresetOok650Async,
-};
+use flipperzero_sys as sys;
 
 #[derive(Clone, Copy, Debug)]
 pub enum SubGhzPreset<'a> {
@@ -29,20 +20,16 @@ pub enum SubGhzPreset<'a> {
 }
 
 impl<'a> SubGhzPreset<'a> {
-    pub fn into_furi_preset(self) -> FuriHalSubGhzPreset {
+    pub fn into_furi_preset(self) -> sys::FuriHalSubGhzPreset {
         match self {
-            Self::IDLE => FuriHalSubGhzPreset_FuriHalSubGhzPresetIDLE,
-            Self::Ook270Async => FuriHalSubGhzPreset_FuriHalSubGhzPresetOok270Async,
-            Self::Ook650Async => FuriHalSubGhzPreset_FuriHalSubGhzPresetOok650Async,
-            Self::_2FSKDev238Async => {
-                FuriHalSubGhzPreset_FuriHalSubGhzPreset2FSKDev238Async
-            }
-            Self::_2FSKDev476Async => {
-                FuriHalSubGhzPreset_FuriHalSubGhzPreset2FSKDev476Async
-            }
-            Self::MSK99_97KbAsync => FuriHalSubGhzPreset_FuriHalSubGhzPresetMSK99_97KbAsync,
-            Self::GFSK9_99KbAsync => FuriHalSubGhzPreset_FuriHalSubGhzPresetGFSK9_99KbAsync,
-            Self::Custom(_) => FuriHalSubGhzPreset_FuriHalSubGhzPresetCustom,
+            Self::IDLE => sys::FuriHalSubGhzPreset_FuriHalSubGhzPresetIDLE,
+            Self::Ook270Async => sys::FuriHalSubGhzPreset_FuriHalSubGhzPresetOok270Async,
+            Self::Ook650Async => sys::FuriHalSubGhzPreset_FuriHalSubGhzPresetOok650Async,
+            Self::_2FSKDev238Async => sys::FuriHalSubGhzPreset_FuriHalSubGhzPreset2FSKDev238Async,
+            Self::_2FSKDev476Async => sys::FuriHalSubGhzPreset_FuriHalSubGhzPreset2FSKDev476Async,
+            Self::MSK99_97KbAsync => sys::FuriHalSubGhzPreset_FuriHalSubGhzPresetMSK99_97KbAsync,
+            Self::GFSK9_99KbAsync => sys::FuriHalSubGhzPreset_FuriHalSubGhzPresetGFSK9_99KbAsync,
+            Self::Custom(_) => sys::FuriHalSubGhzPreset_FuriHalSubGhzPresetCustom,
         }
     }
 }
