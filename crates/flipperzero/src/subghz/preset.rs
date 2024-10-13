@@ -35,8 +35,8 @@ impl<'a> SubGhzPreset<'a> {
     }
 }
 
-#[derive(Clone, Copy, Debug, uDebug)]
 /// This struct is defined for creating custom configurations. It enforces the null padding needed at the end. along with the power amplifier config?
+#[derive(Clone, Copy, Debug, uDebug)]
 pub struct CustomSubGhzPreset<'a>(&'a [u8]);
 
 impl<'a> CustomSubGhzPreset<'a> {
