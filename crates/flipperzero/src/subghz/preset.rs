@@ -1,6 +1,7 @@
 use flipperzero_sys as sys;
+use ufmt::derive::uDebug;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, uDebug)]
 pub enum SubGhzPreset<'a> {
     /// default configuration
     IDLE,
@@ -34,7 +35,7 @@ impl<'a> SubGhzPreset<'a> {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, uDebug)]
 /// This struct is defined for creating custom configurations. It enforces the null padding needed at the end. along with the power amplifier config?
 pub struct CustomSubGhzPreset<'a>(&'a [u8]);
 

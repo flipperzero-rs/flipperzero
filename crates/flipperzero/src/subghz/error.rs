@@ -1,6 +1,8 @@
 use core::{error::Error, fmt::Display};
 
-#[derive(Clone, Copy, Debug)]
+use ufmt::derive::uDebug;
+
+#[derive(Clone, Copy, Debug, uDebug)]
 pub enum SubGhzError {
     UnableToSetFrequency,
     PacketTooLong,
