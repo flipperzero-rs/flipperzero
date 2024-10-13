@@ -10,7 +10,9 @@ pub struct SubGhz {
 }
 
 impl SubGhz {
-    /// For the internal device use "cc1101_int" (From `lib/subghz/devices/cc1101_int/cc1101_int_interconnect.c`)
+    /// For the internal device use [`cc1101_int`]
+    ///
+    /// [`cc1101_int`]: https://github.com/flipperdevices/flipperzero-firmware/blob/dev/lib/subghz/devices/cc1101_int/cc1101_int_interconnect.c
     pub fn subghz_devices_get_by_name(name: &CStr) -> Option<SubGhz> {
         unsafe { sys::subghz_devices_init() }
 
