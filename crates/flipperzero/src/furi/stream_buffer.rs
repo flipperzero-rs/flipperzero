@@ -86,7 +86,7 @@ impl StreamBuffer {
     }
 
     fn spaces_available(&self) -> usize {
-        unsafe { sys::furi_stream_buffer_bytes_available(self.0.as_ptr()) }
+        unsafe { sys::furi_stream_buffer_spaces_available(self.0.as_ptr()) }
     }
 
     fn is_full(&self) -> bool {
