@@ -280,7 +280,7 @@ unsafe impl Send for Receiver {}
 impl Receiver {
     /// Receive bytes without blocking.
     ///
-    /// Tries to receive bytes immediately. It will either receive all available bytes or fill the 
+    /// Tries to receive bytes immediately. It will either receive all available bytes or fill the
     /// buffer, whichever happens first.
     /// Returns the number of bytes successfully received.
     pub fn recv(&self, data: &mut [u8]) -> usize {
@@ -290,10 +290,10 @@ impl Receiver {
     /// Receive bytes, blocking if necessary.
     ///
     /// Waits until the buffer is filled or the [trigger level](Self::set_trigger_level) is reached.
-    /// More bytes than the trigger level may be received if a large enough chunk arrives at once, 
+    /// More bytes than the trigger level may be received if a large enough chunk arrives at once,
     /// though it may still be less than the full buffer.
     /// Returns the number of bytes successfully received.
-    /// 
+    ///
     /// # Interrupt Routines
     ///
     /// If called in an interrupt routine, this behaves like [`recv`](Self::recv).
@@ -303,7 +303,7 @@ impl Receiver {
 
     /// Receive bytes with a timeout.
     ///
-    /// Waits until the buffer is filled, the [trigger level](Self::set_trigger_level) is reached, 
+    /// Waits until the buffer is filled, the [trigger level](Self::set_trigger_level) is reached,
     /// or the timeout expires, whichever happens first.
     /// Returns the number of bytes successfully received.
     ///
