@@ -4,7 +4,7 @@ pub mod io;
 pub mod log;
 pub mod message_queue;
 pub mod rng;
-#[cfg(feature = "alloc")]
+#[cfg(feature = "stream-buffer")]
 pub mod stream_buffer;
 pub mod string;
 pub mod sync;

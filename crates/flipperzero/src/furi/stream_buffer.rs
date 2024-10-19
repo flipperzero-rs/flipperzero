@@ -1,8 +1,9 @@
-use core::{fmt::Debug, num::NonZeroUsize, ptr::NonNull};
+use core::{ffi::c_void, fmt::Debug, num::NonZeroUsize, ops::Deref, ptr::NonNull};
 
 use alloc::sync::Arc;
 
 use flipperzero_sys::{self as sys, furi::Status};
+use ufmt::{derive::uDebug, uDebug};
 
 /// Basic Result which only indicates whether something succeeded or not.
 type EmptyResult = Result<(), ()>;
@@ -48,53 +49,54 @@ impl StreamBuffer {
     ///
     /// Further user reference is explained at the [`stream_buffer`] function.
     fn new(size: NonZeroUsize, trigger_level: usize) -> Self {
-        unsafe {
-            Self(NonNull::new_unchecked(sys::furi_stream_buffer_alloc(
-                size.into(),
-                trigger_level,
-            )))
-        }
+        let size: usize = size.into();
+        let ptr =
+            unsafe { NonNull::new_unchecked(sys::furi_stream_buffer_alloc(size, trigger_level)) };
+        Self(ptr)
     }
 
     fn set_trigger_level(&self, trigger_level: usize) -> EmptyResult {
-        let updated = unsafe { sys::furi_stream_set_trigger_level(self.0.as_ptr(), trigger_level) };
-        match updated {
-            true => Ok(()),
-            false => Err(()),
+        let self_ptr = self.0.as_ptr();
+        let updated = unsafe { sys::furi_stream_set_trigger_level(self_ptr, trigger_level) };
+        if updated {
+            Ok(())
+        } else {
+            Err(())
         }
     }
 
     fn send(&self, data: &[u8], timeout: u32) -> usize {
-        unsafe {
-            sys::furi_stream_buffer_send(self.0.as_ptr(), data.as_ptr().cast(), data.len(), timeout)
-        }
+        let self_ptr = self.0.as_ptr();
+        let data_ptr: *const c_void = data.as_ptr().cast();
+        let data_len = data.len();
+        unsafe { sys::furi_stream_buffer_send(self_ptr, data_ptr, data_len, timeout) }
     }
 
     fn receive(&self, data: &mut [u8], timeout: u32) -> usize {
-        unsafe {
-            sys::furi_stream_buffer_receive(
-                self.0.as_ptr(),
-                data.as_mut_ptr().cast(),
-                data.len(),
-                timeout,
-            )
-        }
+        let self_ptr = self.0.as_ptr();
+        let data_ptr: *mut c_void = data.as_mut_ptr().cast();
+        let data_len = data.len();
+        unsafe { sys::furi_stream_buffer_receive(self_ptr, data_ptr, data_len, timeout) }
     }
 
     fn bytes_available(&self) -> usize {
-        unsafe { sys::furi_stream_buffer_bytes_available(self.0.as_ptr()) }
+        let self_ptr = self.0.as_ptr();
+        unsafe { sys::furi_stream_buffer_bytes_available(self_ptr) }
     }
 
     fn spaces_available(&self) -> usize {
-        unsafe { sys::furi_stream_buffer_spaces_available(self.0.as_ptr()) }
+        let self_ptr = self.0.as_ptr();
+        unsafe { sys::furi_stream_buffer_spaces_available(self_ptr) }
     }
 
     fn is_full(&self) -> bool {
-        unsafe { sys::furi_stream_buffer_is_full(self.0.as_ptr()) }
+        let self_ptr = self.0.as_ptr();
+        unsafe { sys::furi_stream_buffer_is_full(self_ptr) }
     }
 
     fn is_empty(&self) -> bool {
-        unsafe { sys::furi_stream_buffer_is_empty(self.0.as_ptr()) }
+        let self_ptr = self.0.as_ptr();
+        unsafe { sys::furi_stream_buffer_is_empty(self_ptr) }
     }
 
     fn reset(&self) -> EmptyResult {
@@ -136,6 +138,19 @@ impl Debug for Sender {
         f.debug_struct("Sender")
             .field("buffer_ref", &self.buffer_ref)
             .field("receiver_alive", &self.is_receiver_alive())
+            .finish()
+    }
+}
+
+impl uDebug for Sender {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: ufmt::uWrite + ?Sized,
+    {
+        // the receiver_alive field is not real but a nice debug information
+        f.debug_struct("Sender")?
+            .field("buffer_ref", &self.buffer_ref.0.as_ptr())?
+            .field("receiver_alive", &self.is_receiver_alive())?
             .finish()
     }
 }
@@ -268,6 +283,19 @@ impl Debug for Receiver {
     }
 }
 
+impl uDebug for Receiver {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: ufmt::uWrite + ?Sized,
+    {
+        // the sender_alive field is not real but a nice debug information
+        f.debug_struct("Receiver")?
+            .field("buffer_ref", &self.buffer_ref.0.as_ptr())?
+            .field("sender_alive", &self.is_sender_alive())?
+            .finish()
+    }
+}
+
 unsafe impl Send for Receiver {}
 
 /// Receive data using the `Receiver`.
@@ -384,7 +412,6 @@ impl Receiver {
 ///
 /// The `trigger_level` defines the number of bytes that must be present in the stream buffer
 /// before any blocked tasks waiting for data can proceed.
-// TODO: investigate what happens when we set the trigger level to high here
 ///
 /// The Furi stream buffer is designed for single-task or single-interrupt access for both
 /// writing and reading operations.
@@ -406,7 +433,7 @@ pub fn stream_buffer(size: NonZeroUsize, trigger_level: usize) -> (Sender, Recei
         buffer_ref: stream_buffer.clone(),
     };
     let receiver = Receiver {
-        buffer_ref: stream_buffer.clone(),
+        buffer_ref: stream_buffer,
     };
     (sender, receiver)
 }

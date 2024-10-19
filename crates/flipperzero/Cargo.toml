@@ -68,6 +68,12 @@ crc32fast = { version = "1", default-features = false }
 ## ```
 alloc = []
 
+## Allows using the safe abstraction for stream buffers.
+##
+## This requires the `alloc` feature and therefore requires everything it 
+## requires.
+stream-buffer = ["alloc"]
+
 [[test]]
 name = "dolphin"
 harness = false
