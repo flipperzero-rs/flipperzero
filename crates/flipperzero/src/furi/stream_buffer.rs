@@ -51,7 +51,7 @@ unsafe impl Send for StreamBuffer {}
 // SAFETY:
 // The furi api only requires users to ensure that only one writer and one reader exists at the same
 // time, they may be moved between threads.
-// Using this data structure between threads remotely is therefore fine.
+// Using this data structure between threads remotely is therefore safe.
 // The safety guarantee for sending and receiving data is therefore shifted to the send and receive
 // methods.
 unsafe impl Sync for StreamBuffer {}
