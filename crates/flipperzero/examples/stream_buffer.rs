@@ -11,10 +11,13 @@ extern crate flipperzero_alloc;
 
 extern crate alloc;
 
-use core::{ffi::CStr, num::NonZeroUsize, time::Duration};
+use core::{ffi::CStr, num::NonZeroUsize};
 
 use flipperzero::{furi, println};
 use flipperzero_rt::{entry, manifest};
+
+use core::time::Duration as CoreDuration;
+use furi::time::Duration as FuriDuration;
 
 // Define the FAP Manifest for this application
 manifest!(name = "Stream buffer example");
@@ -27,17 +30,18 @@ fn main(_args: Option<&CStr>) -> i32 {
     // Create a stream buffer pair
     let size = NonZeroUsize::new(1024).unwrap();
     let trigger_level = 16;
-    let (tx, rx) = furi::stream_buffer::stream_buffer(size, trigger_level);
+    let stream_buffer = furi::stream_buffer::StreamBuffer::new(size, trigger_level);
+    let (tx, rx) = stream_buffer.into_stream();
+
+    let stream_buffer = tx.as_stream_buffer();
 
     // Stream buffer is empty
-    assert_eq!(tx.spaces_available(), size.into());
-    assert_eq!(rx.spaces_available(), size.into());
-    assert_eq!(tx.bytes_available(), 0);
-    assert_eq!(rx.bytes_available(), 0);
+    assert_eq!(stream_buffer.spaces_available(), size.into());
+    assert_eq!(stream_buffer.bytes_available(), 0);
 
     // Sending 4 bytes immediately
     assert_eq!(tx.send(&[1, 2, 3, 4]), 4);
-    assert_eq!(tx.bytes_available(), 4);
+    assert_eq!(stream_buffer.bytes_available(), 4);
 
     // Receive bytes
     let mut recv_buf = [0; 32];
@@ -47,12 +51,12 @@ fn main(_args: Option<&CStr>) -> i32 {
     // Move sender to another thread
     let tx_thread = furi::thread::spawn(move || {
         // Wait 2 seconds before we send some bytes
-        furi::thread::sleep(Duration::from_secs(2));
+        furi::thread::sleep(CoreDuration::from_secs(2));
         assert_eq!(tx.send(&[5; 20]), 20);
 
         // Send some bytes in a loop to see how the receiver handles them
         for i in 4..20 {
-            furi::thread::sleep(Duration::from_millis(200));
+            furi::thread::sleep(CoreDuration::from_millis(200));
             tx.send(&[i as u8; 3]);
         }
 
@@ -71,7 +75,7 @@ fn main(_args: Option<&CStr>) -> i32 {
 
         // Try to receive bytes as long as the sender is alive
         while rx.is_sender_alive() {
-            let n = rx.recv_with_timeout(&mut buf, Duration::from_secs(2));
+            let n = rx.recv_with_timeout(&mut buf, FuriDuration::from_secs(2));
             println!("got {} bytes: {:?}", n, buf[0..n]);
         }
 
