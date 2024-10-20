@@ -115,7 +115,7 @@ impl StreamBuffer {
     #[cfg_attr(feature = "alloc", doc = "[`Sender`],")]
     /// available using the `alloc` feature.
     ///
-    /// # Interrupt Routine
+    /// # Interrupt Routines
     ///
     /// Inside of an interrupt routine the `timeout` is ignored.
     pub unsafe fn send(&self, data: &[u8], timeout: furi::time::Duration) -> usize {
@@ -148,7 +148,7 @@ impl StreamBuffer {
     #[cfg_attr(feature = "alloc", doc = "[`Receiver`],")]
     /// available using the `alloc` feature.
     ///
-    /// # Interrupt Routine
+    /// # Interrupt Routines
     ///
     /// Inside of an interrupt routine the `timeout` is ignored.
     pub unsafe fn receive(&self, data: &mut [u8], timeout: furi::time::Duration) -> usize {
