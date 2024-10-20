@@ -1,3 +1,5 @@
+//! Furi stream buffer primitive.
+
 use core::{
     cell::Cell, ffi::c_void, fmt::Debug, marker::PhantomData, num::NonZeroUsize, ptr::NonNull,
 };
