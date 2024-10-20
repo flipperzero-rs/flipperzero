@@ -1,15 +1,14 @@
-use core::{ffi::c_void, fmt::Debug, num::NonZeroUsize, ops::Deref, ptr::NonNull};
+use core::{
+    cell::Cell, ffi::c_void, fmt::Debug, marker::PhantomData, num::NonZeroUsize, ptr::NonNull,
+};
 
-use alloc::sync::Arc;
+use crate::furi;
 
 use flipperzero_sys::{self as sys, furi::Status};
-use ufmt::{derive::uDebug, uDebug};
+use ufmt::uDebug;
 
-/// Basic Result which only indicates whether something succeeded or not.
-type EmptyResult = Result<(), ()>;
-
-// https://github.com/flipperdevices/flipperzero-firmware/blob/b723d463afccf628712475e11a3d4579f0331f5c/furi/core/base.h#L13
-const FURI_WAIT_FOREVER: u32 = 0xFFFFFFFF;
+/// Zero size type to mark types as not Sync.
+type PhantomUnsync = PhantomData<Cell<()>>;
 
 /// Furi stream buffer primitive.
 ///
@@ -17,45 +16,76 @@ const FURI_WAIT_FOREVER: u32 = 0xFFFFFFFF;
 /// Their implementation is light weight, making them particularly suited for interrupt to task and
 /// core to core communication scenarios.
 ///
-/// # Note
+/// # Safety
 ///
 /// Stream buffer implementation assumes there is only one task or interrupt that will write to the
 /// buffer (the writer), and only one task or interrupt that will read from the buffer (the reader).
+/// This behavior has to be carefully ensured when using [`send`](Self::send) and
+/// [`receive`](Self::receive) directly.
 ///
-/// # Visibility and Safety
-///
-/// Since the stream buffer's implementation assumes that only one task or interrupt will write to
-/// the buffer and only one task or interrupt will read from the buffer, we have to ensure this
-/// behavior in the type system to make sound safe abstractions.
-///
-/// To achieve this, the `StreamBuffer` itself is not public.
-/// To send and receive data, we use the [`Sender`] and [`Receiver`], both of them own a reference
-/// to the `StreamBuffer` to perform any actions on it.
-/// Both are not [`Clone`], making sure we don't have any more senders and receivers on the same
-/// stream buffer.
-/// Also both are [`Send`] to send them to other threads but not [`Sync`] to ensure that only one
-/// thread can use them at any time respectively.
+/// For easy safe abstractions use the
+#[cfg_attr(not(feature = "alloc"), doc = "`Sender`")]
+#[cfg_attr(feature = "alloc", doc = "[`Sender`]")]
+/// and
+#[cfg_attr(not(feature = "alloc"), doc = "`Receiver`,")]
+#[cfg_attr(feature = "alloc", doc = "[`Receiver`],")]
+/// available via the `alloc` feature, to send and receive data.
 #[derive(Debug)]
-struct StreamBuffer(NonNull<sys::FuriStreamBuffer>);
+pub struct StreamBuffer(NonNull<sys::FuriStreamBuffer>);
 
-/// Direct implementation of the `furi_stream_buffer` api.
-///
-/// The [`Sender`] and [`Receiver`] have some more sugar to use that api.
+impl uDebug for StreamBuffer {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: ufmt::uWrite + ?Sized,
+    {
+        f.debug_tuple("StreamBuffer")?
+            .field(&self.0.as_ptr())?
+            .finish()
+    }
+}
+
+// SAFETY:
+// The furi api doesn't impose any restrictions to having a stream buffer moved between threads.
+unsafe impl Send for StreamBuffer {}
+
+// SAFETY:
+// The furi api only requires users to ensure that only one writer and one reader exists at the same
+// time, they may be moved between threads.
+// Using this data structure between threads remotely is therefore fine.
+// The safety guarantee for sending and receiving data is therefore shifted to the send and receive
+// methods.
+unsafe impl Sync for StreamBuffer {}
+
 impl StreamBuffer {
     /// Create a new instance of a `StreamBuffer`.
     ///
-    /// The `furi_stream_buffer_alloc` function checks that the size is not 0, to always fulfill
-    /// this requirement the `size` is a `NonZeroUsize`.
+    /// The `trigger_level` defines the number of bytes that must be present in the stream buffer
+    /// before any blocked tasks waiting for data can proceed.
     ///
-    /// Further user reference is explained at the [`stream_buffer`] function.
-    fn new(size: NonZeroUsize, trigger_level: usize) -> Self {
+    /// For sending and receiving data safely use
+    #[cfg_attr(not(feature = "alloc"), doc = "`into_stream`")]
+    #[cfg_attr(feature = "alloc", doc = "[`into_stream`](Self::into_stream)")]
+    /// which is available using the `alloc` feature.
+    pub fn new(size: NonZeroUsize, trigger_level: usize) -> Self {
         let size: usize = size.into();
+
+        // SAFETY:
+        // The furi api guarantees a valid non-null pointer.
+        // The `furi_stream_buffer_alloc` function checks that the size is not 0, we always
+        // fulfill that using the NonZeroUsize type.
         let ptr =
             unsafe { NonNull::new_unchecked(sys::furi_stream_buffer_alloc(size, trigger_level)) };
+
         Self(ptr)
     }
 
-    fn set_trigger_level(&self, trigger_level: usize) -> EmptyResult {
+    /// Set the trigger level.
+    ///
+    /// The trigger level is the number of bytes that must be present in the stream buffer before
+    /// any blocked tasks waiting for data can proceed.
+    ///
+    /// If the specified trigger level exceeds the buffer's length, an [`Err`] is returned.
+    pub fn set_trigger_level(&self, trigger_level: usize) -> Result<(), ()> {
         let self_ptr = self.0.as_ptr();
         let updated = unsafe { sys::furi_stream_set_trigger_level(self_ptr, trigger_level) };
         if updated {
@@ -65,375 +95,359 @@ impl StreamBuffer {
         }
     }
 
-    fn send(&self, data: &[u8], timeout: u32) -> usize {
+    /// Send bytes.
+    ///
+    /// The bytes are copied into the stream buffer, the amount of sent bytes is returned.
+    /// The function blocks if not enough space is available in the stream buffer until either the
+    /// data is successfully sent or the timeout runs out.
+    /// Passing [`Duration::ZERO`](furi::time::Duration::ZERO) returns immediately after sending as
+    /// many bytes as the stream buffer could fit while
+    /// [`Duration::WAIT_FOREVER`](furi::time::Duration::WAIT_FOREVER) waits indefinitely.
+    ///
+    /// # Safety
+    ///
+    /// The stream buffer requires that only one writer and reader may at exist at any given time.
+    /// Since [`StreamBuffer`] is [`Send`] and [`Sync`], you have to ensure you only ever have one
+    /// writer at the same time calling `send`.
+    ///
+    /// A safe alternative is using the
+    #[cfg_attr(not(feature = "alloc"), doc = "`Sender`,")]
+    #[cfg_attr(feature = "alloc", doc = "[`Sender`],")]
+    /// available using the `alloc` feature.
+    ///
+    /// # Interrupt Routine
+    ///
+    /// Inside of an interrupt routine the `timeout` is ignored.
+    pub unsafe fn send(&self, data: &[u8], timeout: furi::time::Duration) -> usize {
         let self_ptr = self.0.as_ptr();
-        let data_ptr: *const c_void = data.as_ptr().cast();
+        let data_ptr = data.as_ptr().cast();
         let data_len = data.len();
+        let timeout = timeout.0;
         unsafe { sys::furi_stream_buffer_send(self_ptr, data_ptr, data_len, timeout) }
     }
 
-    fn receive(&self, data: &mut [u8], timeout: u32) -> usize {
+    /// Receive bytes.
+    ///
+    /// The received bytes will be copied into the provided buffer, returning how many bytes were
+    /// successfully received.
+    /// The function blocks until either the [trigger level](Self::set_trigger_level) is reached,
+    /// the passed buffer is filled or the timeout ends.
+    /// Passing [`Duration::ZERO`](furi::time::Duration::ZERO) returns immediately after receiving as
+    /// many bytes as possible and available in the stream buffer while
+    /// [`Duration::WAIT_FOREVER`](furi::time::Duration::WAIT_FOREVER) waits indefinitely if the
+    /// buffer not fills or the trigger level not reaches.
+    ///
+    /// # Safety
+    ///
+    /// The stream buffer requires that only one writer and reader may at exist at any given time.
+    /// Since [`StreamBuffer`] is [`Send`] and [`Sync`], you have to ensure you only ever have one
+    /// reader at the same time calling `receive`.
+    ///
+    /// A safe alternative is using the
+    #[cfg_attr(not(feature = "alloc"), doc = "`Receiver`,")]
+    #[cfg_attr(feature = "alloc", doc = "[`Receiver`],")]
+    /// available using the `alloc` feature.
+    ///
+    /// # Interrupt Routine
+    ///
+    /// Inside of an interrupt routine the `timeout` is ignored.
+    pub unsafe fn receive(&self, data: &mut [u8], timeout: furi::time::Duration) -> usize {
         let self_ptr = self.0.as_ptr();
         let data_ptr: *mut c_void = data.as_mut_ptr().cast();
         let data_len = data.len();
+        let timeout = timeout.0;
         unsafe { sys::furi_stream_buffer_receive(self_ptr, data_ptr, data_len, timeout) }
     }
 
-    fn bytes_available(&self) -> usize {
+    /// Get the number of bytes currently available.
+    pub fn bytes_available(&self) -> usize {
         let self_ptr = self.0.as_ptr();
         unsafe { sys::furi_stream_buffer_bytes_available(self_ptr) }
     }
 
-    fn spaces_available(&self) -> usize {
+    /// Get the number of bytes that can still fit.
+    pub fn spaces_available(&self) -> usize {
         let self_ptr = self.0.as_ptr();
         unsafe { sys::furi_stream_buffer_spaces_available(self_ptr) }
     }
 
-    fn is_full(&self) -> bool {
+    /// Check if the buffer is full.
+    pub fn is_full(&self) -> bool {
         let self_ptr = self.0.as_ptr();
         unsafe { sys::furi_stream_buffer_is_full(self_ptr) }
     }
 
-    fn is_empty(&self) -> bool {
+    /// Check if the buffer is empty.
+    pub fn is_empty(&self) -> bool {
         let self_ptr = self.0.as_ptr();
         unsafe { sys::furi_stream_buffer_is_empty(self_ptr) }
     }
 
-    fn reset(&self) -> EmptyResult {
+    /// Attempt to reset the stream buffer.
+    ///
+    /// This will clear the buffer, discarding any data it contains and returning it to its
+    /// initial empty state.
+    /// The reset can only occur if there are no tasks blocked waiting to send to or receive from
+    /// the stream buffer; attempting to reset during this time will result in an [`Err`].
+    pub fn reset(&self) -> furi::Result<()> {
         let status = unsafe { sys::furi_stream_buffer_reset(self.0.as_ptr()) };
         let status = Status(status);
-        match status {
-            Status::OK => Ok(()),
-            Status::ERR => Err(()),
-            _ => unreachable!("furi_stream_buffer_reset only returns Ok or Error"),
-        }
+        status.err_or(())
     }
 }
 
 impl Drop for StreamBuffer {
     fn drop(&mut self) {
-        // SAFETY:
-        // Since we keep an Arc in both, the sender and receiver, we know we only drop when both of
-        // them are dropped too.
         unsafe {
             sys::furi_stream_buffer_free(self.0.as_ptr());
         }
     }
 }
 
-/// Sender side of a furi stream buffer.
-///
-/// An instance can be obtained using the [`stream_buffer`] function.
-///
-/// This struct allows sending data through the stream buffer, checking its state, or resetting it.
-/// Use the [`is_receiver_alive`](Self::is_receiver_alive) method to verify if the associated
-/// [`Receiver`] is still alive, helping to avoid sending data that will not be read.
-pub struct Sender {
-    buffer_ref: Arc<StreamBuffer>,
-}
+#[cfg(feature = "alloc")]
+pub use stream::*;
 
-impl Debug for Sender {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        // the receiver_alive field is not real but a nice debug information
-        f.debug_struct("Sender")
-            .field("buffer_ref", &self.buffer_ref)
-            .field("receiver_alive", &self.is_receiver_alive())
-            .finish()
+#[cfg(feature = "alloc")]
+mod stream {
+    use crate::furi;
+
+    use super::*;
+
+    use alloc::sync::Arc;
+
+    impl StreamBuffer {
+        /// Convert a stream buffer into a pair of [`Sender`] and [`Receiver`].
+        ///
+        /// As a safe abstraction this splitting the stream buffer into a pair of sender (writer)
+        /// and receiver (reader) makes sending and receiving bytes safe as both types purposefully
+        /// do not implement [`Clone`] nor [`Sync`] and can therefore only be used from one thread
+        /// at a time, fulfilling the safety constraints of the stream buffer.
+        ///
+        /// Both types implement a `as_stream_buffer` method to still get access to all the methods
+        /// exposed by the `StreamBuffer`.
+        pub fn into_stream(self) -> (Sender, Receiver) {
+            let stream_buffer = Arc::new(self);
+
+            let sender = Sender {
+                buffer_ref: stream_buffer.clone(),
+                _unsync: PhantomUnsync::default(),
+            };
+
+            let receiver = Receiver {
+                buffer_ref: stream_buffer,
+                _unsync: PhantomUnsync::default(),
+            };
+
+            (sender, receiver)
+        }
     }
-}
 
-impl uDebug for Sender {
-    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
-    where
-        W: ufmt::uWrite + ?Sized,
-    {
-        // the receiver_alive field is not real but a nice debug information
-        f.debug_struct("Sender")?
-            .field("buffer_ref", &self.buffer_ref.0.as_ptr())?
-            .field("receiver_alive", &self.is_receiver_alive())?
-            .finish()
-    }
-}
-
-unsafe impl Send for Sender {}
-
-/// Sends data using the `Sender`.
-///
-/// Data is sent only when the amount of bytes reaches the trigger level in the underlying stream
-/// buffer, which wakes up the listening [`Receiver`] if applicable.
-///
-/// Returns the number of bytes that were successfully sent.
-///
-/// # Interrupt Routines
-///
-/// When used in an interrupt routine, the timeout will be ignored.
-impl Sender {
-    /// Sends bytes without blocking.
+    /// Sender side of a furi stream buffer.
     ///
-    /// Attempts to send the specified bytes immediately.
-    /// If the underlying stream buffer does not have enough free space, it sends only the bytes
-    /// that fit and returns immediately.
-    pub fn send(&self, data: &[u8]) -> usize {
-        self.buffer_ref.send(data, 0)
-    }
-
-    /// Sends bytes in a blocking manner.
+    /// An instance can be obtained using the [`StreamBuffer::into_stream`] method.
     ///
-    /// Blocks until all bytes are sent.
+    /// This struct allows sending data through the stream buffer in a safe manner.
+    /// Use the [`is_receiver_alive`](Self::is_receiver_alive) method to verify if the associated
+    /// [`Receiver`] is still alive, helping to avoid sending data that will not be read.
+    pub struct Sender {
+        buffer_ref: Arc<StreamBuffer>,
+        _unsync: PhantomUnsync,
+    }
+
+    impl Debug for Sender {
+        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+            // the receiver_alive field is not real but a nice debug information
+            f.debug_struct("Sender")
+                .field("buffer_ref", &self.buffer_ref)
+                .field("receiver_alive", &self.is_receiver_alive())
+                .finish()
+        }
+    }
+
+    impl uDebug for Sender {
+        fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+        where
+            W: ufmt::uWrite + ?Sized,
+        {
+            // the receiver_alive field is not real but a nice debug information
+            f.debug_struct("Sender")?
+                .field("buffer_ref", &self.buffer_ref.0.as_ptr())?
+                .field("receiver_alive", &self.is_receiver_alive())?
+                .finish()
+        }
+    }
+
+    /// Sends data using the `Sender`.
     ///
-    /// # Interrupt Routines
+    /// Data is sent only when the amount of bytes reaches the trigger level in the underlying
+    /// stream buffer, which wakes up the listening [`Receiver`] if applicable.
     ///
-    /// In an interrupt routine, this method behaves like [`send`](Self::send).
-    pub fn send_blocking(&self, data: &[u8]) -> usize {
-        self.buffer_ref.send(data, FURI_WAIT_FOREVER)
-    }
-
-    /// Sends bytes with a timeout.
-    ///
-    /// Attempts to send as many bytes as possible within the specified timeout duration.
-    /// It may wait until the timeout is reached if necessary, but it returns immediately once all
-    /// bytes are sent or the timeout expires.
-    ///
-    /// # Interrupt Routines
-    ///
-    /// In an interrupt routine, this method behaves like [`send`](Self::send).
-    pub fn send_with_timeout(&self, data: &[u8], timeout: core::time::Duration) -> usize {
-        let timeout = sys::furi::duration_to_ticks(timeout);
-        self.buffer_ref.send(data, timeout)
-    }
-}
-
-/// Check or modify the underlying furi stream buffer.
-impl Sender {
-    /// Set the trigger level for the underlying stream buffer.
-    ///
-    /// The trigger level is the number of bytes that must be present in the stream buffer before
-    /// any blocked tasks waiting for data can proceed.
-    ///
-    /// If the specified trigger level exceeds the buffer's length, an [`Err`] is returned.
-    pub fn set_trigger_level(&mut self, trigger_level: usize) -> EmptyResult {
-        self.buffer_ref.set_trigger_level(trigger_level)
-    }
-
-    /// Get the number of bytes currently available in the underlying stream buffer.
-    pub fn bytes_available(&self) -> usize {
-        self.buffer_ref.bytes_available()
-    }
-
-    /// Get the number of bytes that can still fit in the underlying stream buffer.
-    pub fn spaces_available(&self) -> usize {
-        self.buffer_ref.spaces_available()
-    }
-
-    /// Check if the underlying stream buffer is full.
-    pub fn is_full(&self) -> bool {
-        self.buffer_ref.is_full()
-    }
-
-    /// Check if the underlying stream buffer is empty.
-    pub fn is_empty(&self) -> bool {
-        self.buffer_ref.is_empty()
-    }
-
-    /// Attempt to reset the underlying stream buffer.
-    ///
-    /// This will clear the buffer, discarding any data it contains and returning it to its initial
-    /// empty state.
-    /// The reset can only occur if there are no tasks blocked waiting to send to or receive from
-    /// the stream buffer; attempting to reset during this time will result in an [`Err`].
-    pub fn reset(&mut self) -> EmptyResult {
-        self.buffer_ref.reset()
-    }
-}
-
-/// Pure additional methods to work with the `Sender` and [`Receiver`].
-impl Sender {
-    /// Check if the associated receiver is still alive.
-    ///
-    /// This method helps prevent unnecessary data transmission when the [`Receiver`] is no longer
-    /// available.
-    pub fn is_receiver_alive(&self) -> bool {
-        // SAFETY:
-        // Since both Receiver and Sender are not Clone, the only Arcs are those created by the
-        // stream_buffer function.
-        // If the strong count of the Arc referencing the buffer is 2, it indicates that
-        // the Receiver and the related Sender are still alive.
-        Arc::strong_count(&self.buffer_ref) == 2
-    }
-}
-
-/// Receiver side of a furi stream buffer.
-///
-/// An instance can be obtained using the [`stream_buffer`] function.
-///
-/// This struct allows receiving data through the stream buffer, checking its state, or resetting it.
-/// Use the [`is_sender_alive`](Self::is_sender_alive) method to verify if the associated
-/// [`Sender`] is still alive, helping to avoid trying to receive data that will never be sent.
-pub struct Receiver {
-    buffer_ref: Arc<StreamBuffer>,
-}
-
-impl Debug for Receiver {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        // the sender_alive field is not real but a nice debug information
-        f.debug_struct("Receiver")
-            .field("buffer_ref", &self.buffer_ref)
-            .field("sender_alive", &self.is_sender_alive())
-            .finish()
-    }
-}
-
-impl uDebug for Receiver {
-    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
-    where
-        W: ufmt::uWrite + ?Sized,
-    {
-        // the sender_alive field is not real but a nice debug information
-        f.debug_struct("Receiver")?
-            .field("buffer_ref", &self.buffer_ref.0.as_ptr())?
-            .field("sender_alive", &self.is_sender_alive())?
-            .finish()
-    }
-}
-
-unsafe impl Send for Receiver {}
-
-/// Receive data using the `Receiver`.
-///
-/// Returns the number of bytes that were successfully received.
-///
-/// # Interrupt Routines
-///
-/// When used in an interrupt routine, the timeout will be ignored.
-impl Receiver {
-    /// Receive bytes without blocking.
-    ///
-    /// Tries to receive bytes immediately. It will either receive all available bytes or fill the
-    /// buffer, whichever happens first.
-    /// Returns the number of bytes successfully received.
-    pub fn recv(&self, data: &mut [u8]) -> usize {
-        self.buffer_ref.receive(data, 0)
-    }
-
-    /// Receive bytes, blocking if necessary.
-    ///
-    /// Waits until the buffer is filled or the [trigger level](Self::set_trigger_level) is reached.
-    /// More bytes than the trigger level may be received if a large enough chunk arrives at once,
-    /// though it may still be less than the full buffer.
-    /// Returns the number of bytes successfully received.
+    /// Returns the number of bytes that were successfully sent.
     ///
     /// # Interrupt Routines
     ///
-    /// If called in an interrupt routine, this behaves like [`recv`](Self::recv).
-    pub fn recv_blocking(&self, data: &mut [u8]) -> usize {
-        self.buffer_ref.receive(data, FURI_WAIT_FOREVER)
+    /// When used in an interrupt routine, the timeout will be ignored.
+    impl Sender {
+        /// Sends bytes without blocking.
+        ///
+        /// Attempts to send the specified bytes immediately.
+        /// If the underlying stream buffer does not have enough free space, it sends only the bytes
+        /// that fit and returns immediately.
+        pub fn send(&self, data: &[u8]) -> usize {
+            unsafe { self.buffer_ref.send(data, furi::time::Duration::ZERO) }
+        }
+
+        /// Sends bytes in a blocking manner.
+        ///
+        /// Blocks until all bytes are sent.
+        ///
+        /// # Interrupt Routines
+        ///
+        /// In an interrupt routine, this method behaves like [`send`](Self::send).
+        pub fn send_blocking(&self, data: &[u8]) -> usize {
+            unsafe {
+                self.buffer_ref
+                    .send(data, furi::time::Duration::WAIT_FOREVER)
+            }
+        }
+
+        /// Sends bytes with a timeout.
+        ///
+        /// Attempts to send as many bytes as possible within the specified timeout duration.
+        /// It may wait until the timeout is reached if necessary, but it returns immediately once
+        /// all bytes are sent or the timeout expires.
+        ///
+        /// # Interrupt Routines
+        ///
+        /// In an interrupt routine, this method behaves like [`send`](Self::send).
+        pub fn send_with_timeout(&self, data: &[u8], timeout: furi::time::Duration) -> usize {
+            unsafe { self.buffer_ref.send(data, timeout) }
+        }
     }
 
-    /// Receive bytes with a timeout.
+    /// Pure additional methods to work with the `Sender` and [`Receiver`].
+    impl Sender {
+        /// Get a reference to the underlying [`StreamBuffer`].
+        pub fn as_stream_buffer(&self) -> &StreamBuffer {
+            &self.buffer_ref
+        }
+
+        /// Check if the associated receiver is still alive.
+        ///
+        /// This method helps prevent unnecessary data transmission when the [`Receiver`] is no
+        /// longer available.
+        pub fn is_receiver_alive(&self) -> bool {
+            // SAFETY:
+            // Since both Receiver and Sender are not Clone, the only Arcs are those created by the
+            // into_stream method.
+            // If the strong count of the Arc referencing the buffer is 2, it indicates that
+            // the Receiver and the related Sender are still alive.
+            Arc::strong_count(&self.buffer_ref) == 2
+        }
+    }
+
+    /// Receiver side of a furi stream buffer.
     ///
-    /// Waits until the buffer is filled, the [trigger level](Self::set_trigger_level) is reached,
-    /// or the timeout expires, whichever happens first.
-    /// Returns the number of bytes successfully received.
+    /// An instance can be obtained using the [`StreamBuffer::into_stream`] method.
+    ///
+    /// This struct allows receiving data through the stream buffer in a safe manner.
+    /// Use the [`is_sender_alive`](Self::is_sender_alive) method to verify if the associated
+    /// [`Sender`] is still alive, helping to avoid trying to receive data that will never be sent.
+    pub struct Receiver {
+        buffer_ref: Arc<StreamBuffer>,
+        _unsync: PhantomUnsync,
+    }
+
+    impl Debug for Receiver {
+        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+            // the sender_alive field is not real but a nice debug information
+            f.debug_struct("Receiver")
+                .field("buffer_ref", &self.buffer_ref)
+                .field("sender_alive", &self.is_sender_alive())
+                .finish()
+        }
+    }
+
+    impl uDebug for Receiver {
+        fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+        where
+            W: ufmt::uWrite + ?Sized,
+        {
+            // the sender_alive field is not real but a nice debug information
+            f.debug_struct("Receiver")?
+                .field("buffer_ref", &self.buffer_ref.0.as_ptr())?
+                .field("sender_alive", &self.is_sender_alive())?
+                .finish()
+        }
+    }
+
+    /// Receive data using the `Receiver`.
+    ///
+    /// Returns the number of bytes that were successfully received.
     ///
     /// # Interrupt Routines
     ///
-    /// In an interrupt routine, this method behaves like [`recv`](Self::recv).
-    pub fn recv_with_timeout(&self, data: &mut [u8], timeout: core::time::Duration) -> usize {
-        let timeout = sys::furi::duration_to_ticks(timeout);
-        self.buffer_ref.receive(data, timeout)
-    }
-}
+    /// When used in an interrupt routine, the timeout will be ignored.
+    impl Receiver {
+        /// Receive bytes without blocking.
+        ///
+        /// Tries to receive bytes immediately.
+        /// It will either receive all available bytes or fill the buffer, whichever happens first.
+        /// Returns the number of bytes successfully received.
+        pub fn recv(&self, data: &mut [u8]) -> usize {
+            unsafe { self.buffer_ref.receive(data, furi::time::Duration::ZERO) }
+        }
 
-/// Check or modify the underlying furi stream buffer.
-impl Receiver {
-    /// Set the trigger level for the underlying stream buffer.
-    ///
-    /// The trigger level is the number of bytes that must be present in the stream buffer
-    /// before blocked tasks waiting to receive data can proceed.
-    /// If the specified trigger level exceeds the buffer's length, an [`Err`] is returned.
-    pub fn set_trigger_level(&mut self, trigger_level: usize) -> EmptyResult {
-        self.buffer_ref.set_trigger_level(trigger_level)
+        /// Receive bytes, blocking if necessary.
+        ///
+        /// Waits until the buffer is filled or the [trigger level](StreamBuffer::set_trigger_level) 
+        /// is reached.
+        /// More bytes than the trigger level may be received if a large enough chunk arrives at
+        /// once, though it may still be less than the full buffer.
+        /// Returns the number of bytes successfully received.
+        ///
+        /// # Interrupt Routines
+        ///
+        /// If called in an interrupt routine, this behaves like [`recv`](Self::recv).
+        pub fn recv_blocking(&self, data: &mut [u8]) -> usize {
+            unsafe {
+                self.buffer_ref
+                    .receive(data, furi::time::Duration::WAIT_FOREVER)
+            }
+        }
+
+        /// Receive bytes with a timeout.
+        ///
+        /// Waits until the buffer is filled, the [trigger level](StreamBuffer::set_trigger_level) 
+        /// is reached, or the timeout expires, whichever happens first.
+        /// Returns the number of bytes successfully received.
+        ///
+        /// # Interrupt Routines
+        ///
+        /// In an interrupt routine, this method behaves like [`recv`](Self::recv).
+        pub fn recv_with_timeout(&self, data: &mut [u8], timeout: furi::time::Duration) -> usize {
+            unsafe { self.buffer_ref.receive(data, timeout) }
+        }
     }
 
-    /// Get the number of bytes currently available in the underlying stream buffer.
-    pub fn bytes_available(&self) -> usize {
-        self.buffer_ref.bytes_available()
-    }
+    /// Pure additional methods to work with the [`Sender`] and `Receiver`.
+    impl Receiver {
+        /// Get a reference to the underlying [`StreamBuffer`].
+        pub fn as_stream_buffer(&self) -> &StreamBuffer {
+            &self.buffer_ref
+        }
 
-    /// Get the number of bytes that can still fit in the underlying stream buffer.
-    pub fn spaces_available(&self) -> usize {
-        self.buffer_ref.spaces_available()
+        /// Check if the associated sender is still alive.
+        ///
+        /// This method helps prevent unnecessary data reception when the sender is no longer
+        /// available.
+        pub fn is_sender_alive(&self) -> bool {
+            // SAFETY:
+            // Since both Receiver and Sender are not Clone, the only Arcs are those created by the
+            // into_stream method.
+            // If the strong count of the Arc referencing the buffer is 2, it indicates that
+            // the Receiver and the related Sender are still alive.
+            Arc::strong_count(&self.buffer_ref) == 2
+        }
     }
-
-    /// Check if the underlying stream buffer is full.
-    pub fn is_full(&self) -> bool {
-        self.buffer_ref.is_full()
-    }
-
-    /// Check if the underlying stream buffer is empty.
-    pub fn is_empty(&self) -> bool {
-        self.buffer_ref.is_empty()
-    }
-
-    /// Attempt to reset the underlying stream buffer.
-    ///
-    /// This will clear the buffer, discarding any data it contains and returning it to its
-    /// initial empty state.
-    /// The reset can only occur if there are no tasks blocked waiting to send to or receive from
-    /// the stream buffer; attempting to reset during this time will result in an [`Err`].
-    pub fn reset(&mut self) -> EmptyResult {
-        self.buffer_ref.reset()
-    }
-}
-
-/// Pure additional methods to work with the [`Sender`] and `Receiver`.
-impl Receiver {
-    /// Check if the associated sender is still alive.
-    ///
-    /// This method helps prevent unnecessary data reception when the sender is no longer available.
-    pub fn is_sender_alive(&self) -> bool {
-        // SAFETY:
-        // Since both Receiver and Sender are not Clone, the only Arcs are those created by the
-        // stream_buffer function.
-        // If the strong count of the Arc referencing the buffer is 2, it indicates that
-        // the Receiver and the related Sender are still alive.
-        Arc::strong_count(&self.buffer_ref) == 2
-    }
-}
-
-/// Create a [`Sender`]/[`Receiver`] pair for a furi stream buffer.
-///
-/// This function initializes a furi stream buffer and provides access through the returned
-/// [`Sender`] and [`Receiver`] instances.
-///
-/// The `size` parameter must be a non-zero value, as the stream buffer requires a valid size
-/// to allocate memory.
-/// The `furi_stream_buffer_alloc` function enforces this constraint by rejecting zero sizes.
-///
-/// The `trigger_level` defines the number of bytes that must be present in the stream buffer
-/// before any blocked tasks waiting for data can proceed.
-///
-/// The Furi stream buffer is designed for single-task or single-interrupt access for both
-/// writing and reading operations.
-/// To enforce this, it splits the buffer into two parts, similar to the `mpsc::Sender` and
-/// `mpsc::Receiver` from the standard library.
-/// Both the sender and receiver maintain an owned reference to the stream buffer, ensuring it
-/// remains alive as long as either one exists.
-/// They can verify if their corresponding pair is still alive using [`Sender::is_receiver_alive`]
-/// and [`Receiver::is_sender_alive`] respectively.
-///
-/// Additionally, both the sender and receiver implement [`Send`] to allow transfer between
-/// threads.
-/// However, they explicitly do not implement [`Sync`] or [`Clone`] to guarantee that only one
-/// writer and one reader can exist at any given time per task.
-pub fn stream_buffer(size: NonZeroUsize, trigger_level: usize) -> (Sender, Receiver) {
-    let stream_buffer = StreamBuffer::new(size, trigger_level);
-    let stream_buffer = Arc::new(stream_buffer);
-    let sender = Sender {
-        buffer_ref: stream_buffer.clone(),
-    };
-    let receiver = Receiver {
-        buffer_ref: stream_buffer,
-    };
-    (sender, receiver)
 }

@@ -211,6 +211,13 @@ impl Duration {
     /// practice on stock firmware.
     pub const MAX: Duration = Duration(MAX_DURATION_TICKS);
 
+    /// Wait forever.
+    ///
+    /// This constant may be used for all cases where a operation should block indefinitely.
+    /// The value is originally defined in the
+    /// [flipper zero firmware](https://github.com/flipperdevices/flipperzero-firmware/blob/b723d463afccf628712475e11a3d4579f0331f5c/furi/core/base.h#L13).
+    pub const WAIT_FOREVER: Duration = Duration(0xFFFFFFFF);
+
     /// Creates a new `Duration` from the specified number of whole seconds.
     ///
     /// # Panics
