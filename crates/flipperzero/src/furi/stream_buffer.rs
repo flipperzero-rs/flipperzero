@@ -327,11 +327,6 @@ mod stream {
 
     /// Pure additional methods to work with the `Sender` and [`Receiver`].
     impl Sender {
-        /// Get a reference to the underlying [`StreamBuffer`].
-        pub fn as_stream_buffer(&self) -> &StreamBuffer {
-            &self.buffer_ref
-        }
-
         /// Check if the associated receiver is still alive.
         ///
         /// This method helps prevent unnecessary data transmission when the [`Receiver`] is no
@@ -344,6 +339,20 @@ mod stream {
             // the Receiver and the related Sender are still alive.
             Arc::strong_count(&self.buffer_ref) == 2
         }
+
+        /// Get a reference to the underlying [`StreamBuffer`].
+        pub fn as_stream_buffer(&self) -> &StreamBuffer {
+            &self.buffer_ref
+        }
+
+        /// Try to get the underlying stream buffer.
+        /// 
+        /// This method tries to get underlying stream buffer, which is only possible if the 
+        /// [`Receiver`] is already dropped.
+        /// If the `Receiver` is still alive, this will return [`None`].
+        pub fn into_stream_buffer(self) -> Option<StreamBuffer> {
+            Arc::into_inner(self.buffer_ref)
+        } 
     }
 
     /// Receiver side of a furi stream buffer.
@@ -432,11 +441,6 @@ mod stream {
 
     /// Pure additional methods to work with the [`Sender`] and `Receiver`.
     impl Receiver {
-        /// Get a reference to the underlying [`StreamBuffer`].
-        pub fn as_stream_buffer(&self) -> &StreamBuffer {
-            &self.buffer_ref
-        }
-
         /// Check if the associated sender is still alive.
         ///
         /// This method helps prevent unnecessary data reception when the sender is no longer
@@ -449,5 +453,19 @@ mod stream {
             // the Receiver and the related Sender are still alive.
             Arc::strong_count(&self.buffer_ref) == 2
         }
+
+        /// Get a reference to the underlying [`StreamBuffer`].
+        pub fn as_stream_buffer(&self) -> &StreamBuffer {
+            &self.buffer_ref
+        }
+
+        /// Try to get the underlying stream buffer.
+        /// 
+        /// This method tries to get underlying stream buffer, which is only possible if the 
+        /// [`Sender`] is already dropped.
+        /// If the `Sender` is still alive, this will return [`None`].
+        pub fn into_stream_buffer(self) -> Option<StreamBuffer> {
+            Arc::into_inner(self.buffer_ref)
+        } 
     }
 }
