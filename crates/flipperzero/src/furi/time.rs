@@ -2,8 +2,9 @@ use core::cmp::Ordering;
 use core::iter::Sum;
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
 
-use flipperzero_sys as sys;
 use ufmt::derive::uDebug;
+
+use crate::furi;
 
 /// Maximum number of ticks a [`Duration`] can contain to be usable with [`Instant`].
 const MAX_INTERVAL_DURATION_TICKS: u32 = u32::MAX / 2;
@@ -16,7 +17,7 @@ const MILLIS_PER_SEC: u32 = 1_000;
 
 /// Converts the given number of nanoseconds to ticks.
 fn ns_to_ticks(nanos: u64) -> u64 {
-    let rate = unsafe { sys::furi_kernel_get_tick_frequency() };
+    let rate = furi::kernel::get_tick_frequency();
     if rate == MILLIS_PER_SEC {
         // This can be up to around 2^45 ticks.
         nanos / NANOS_PER_MILLI
@@ -31,7 +32,7 @@ fn ns_to_ticks(nanos: u64) -> u64 {
 ///
 /// The upper 2 bits of the return value will always be zero.
 fn ticks_to_ns(ticks: u32) -> u64 {
-    let rate = unsafe { sys::furi_kernel_get_tick_frequency() };
+    let rate = furi::kernel::get_tick_frequency();
     if rate == MILLIS_PER_SEC {
         // This can be up to around 2^52 nanoseconds.
         (ticks as u64) * NANOS_PER_MILLI
@@ -49,7 +50,7 @@ impl Instant {
     /// Returns an instant corresponding to "now".
     #[must_use]
     pub fn now() -> Instant {
-        Instant(unsafe { sys::furi_get_tick() })
+        Instant(furi::kernel::get_tick())
     }
 
     /// Returns the amount of time elapsed from another instant to this one.
