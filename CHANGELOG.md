@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - `flipperzero::dialogs::DialogFileBrowserOptions` now uses native initialization function.
+- `flipperzero::time::Duration::MAX` is now the maximum duration representable.
 
 ### Removed
 
