@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - `flipperzero::dialogs::DialogFileBrowserOptions`
+- `as_ticks()` method to `flipperzero::furi::time::Duration`
+- `flipperzero::furi::thread::sleep_ticks` function to sleep for exact duration
+- `TryFrom<core::time::Duration>` for `flipperzero::furi::time::Duration`
 
 ### Changed
 
@@ -17,6 +20,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `flipperzero::time::Duration::MAX` is now the maximum duration representable.
 
 ### Removed
+
+- `flipperzero::furi::duration_to_ticks` in favour of `TryFrom` traits
 
 ## [0.12.0]
 

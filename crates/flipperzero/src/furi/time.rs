@@ -1,6 +1,9 @@
 use core::cmp::Ordering;
+use core::error;
+use core::fmt;
 use core::iter::Sum;
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
+use core::time;
 
 use flipperzero_sys as sys;
 use ufmt::derive::uDebug;
@@ -269,6 +272,12 @@ impl Duration {
         self.0 == 0
     }
 
+    /// Duration as Furi Kernel ticks.
+    #[inline]
+    pub const fn as_ticks(&self) -> u32 {
+        self.0
+    }
+
     /// Returns the total number of whole seconds contained by this `Duration`.
     #[inline]
     #[must_use]
@@ -464,9 +473,36 @@ impl<'a> Sum<&'a Duration> for Duration {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, PartialOrd, uDebug)]
+pub struct TryFromDurationError;
+
+impl error::Error for TryFromDurationError {}
+
+impl fmt::Display for TryFromDurationError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str("duration exceeds supported representation")
+    }
+}
+
+impl TryFrom<time::Duration> for Duration {
+    type Error = TryFromDurationError;
+
+    fn try_from(value: time::Duration) -> Result<Self, Self::Error> {
+        let nanos: u64 = value
+            .as_nanos()
+            .try_into()
+            .map_err(|_| TryFromDurationError)?;
+        let ticks: u32 = ns_to_ticks(nanos)
+            .try_into()
+            .map_err(|_| TryFromDurationError)?;
+
+        Ok(Duration(ticks))
+    }
+}
+
 #[flipperzero_test::tests]
 mod tests {
-    use super::{ticks_to_ns, Duration, Instant, MAX_INTERVAL_DURATION_TICKS};
+    use super::*;
     use crate::println;
 
     #[cfg(feature = "alloc")]
@@ -602,7 +638,7 @@ mod tests {
         // Check that the same result occurs when adding/subtracting each duration one at a time as when
         // adding/subtracting them all at once.
         #[track_caller]
-        fn check<T: Eq + Copy + core::fmt::Debug>(
+        fn check<T: Eq + Copy + fmt::Debug>(
             start: Option<T>,
             op: impl Fn(&T, Duration) -> Option<T>,
         ) {
@@ -621,5 +657,15 @@ mod tests {
         check(instant.checked_sub(Duration::MAX), Instant::checked_add);
         check(instant.checked_add(Duration(100)), Instant::checked_sub);
         check(instant.checked_add(Duration::MAX), Instant::checked_sub);
+    }
+
+    #[test]
+    fn duration_try_from() {
+        assert_eq!(Duration::try_from(time::Duration::ZERO), Ok(Duration(0)));
+
+        assert_eq!(
+            Duration::try_from(time::Duration::MAX),
+            Err(TryFromDurationError)
+        )
     }
 }

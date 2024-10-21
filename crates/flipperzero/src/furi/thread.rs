@@ -7,6 +7,7 @@ use core::{
     ptr::NonNull,
     str,
 };
+use core::{time, u32};
 
 #[cfg(feature = "alloc")]
 use alloc::{
@@ -17,6 +18,8 @@ use alloc::{
 };
 
 use flipperzero_sys as sys;
+
+use crate::furi::time::Duration;
 
 #[cfg(feature = "alloc")]
 const MIN_STACK_SIZE: usize = 1024;
@@ -191,15 +194,37 @@ pub fn yield_now() {
     unsafe { sys::furi_thread_yield() };
 }
 
-/// Puts the current thread to sleep for at least the specified amount of time.
+/// Puts the current thread to sleep for at least `duration`.
+///
+/// Durations under 1 hour are accurate to microseconds, while durations of
+/// 1 hour or more are only accurate to milliseconds.
+///
+/// Will panic if requested to sleep for durations more than `2^32` microseconds (~49 days).
+///
+/// See [`sleep_ticks`] to sleep based on system timer ticks.
 pub fn sleep(duration: core::time::Duration) {
+    if duration > time::Duration::from_millis(u32::MAX as u64) {
+        panic!("sleep exceeds maximum supported duration")
+    }
+
     unsafe {
         // For durations of 1h+, use delay_ms so uint32_t doesn't overflow
-        if duration < core::time::Duration::from_secs(3600) {
+        if duration < time::Duration::from_secs(3600) {
             sys::furi_delay_us(duration.as_micros() as u32);
         } else {
             sys::furi_delay_ms(duration.as_millis() as u32);
         }
+    }
+}
+
+/// Puts the current thread to sleep for at least `duration`.
+///
+/// The maximum supported duration is `2^32` ticks (system timer dependent).
+///
+/// See [`sleep`] to sleep based on arbitary duration.
+pub fn sleep_ticks(duration: Duration) {
+    unsafe {
+        sys::furi_delay_tick(duration.as_ticks());
     }
 }
 

@@ -2,7 +2,6 @@
 
 use core::ffi::c_char;
 use core::fmt::Display;
-use core::time::Duration;
 
 /// Operation status.
 /// The Furi API switches between using `enum FuriStatus`, `int32_t` and `uint32_t`.
@@ -126,13 +125,4 @@ impl<T> Drop for UnsafeRecord<T> {
             crate::furi_record_close(self.name);
         }
     }
-}
-
-/// Convert [`Duration`] to ticks.
-#[inline]
-pub fn duration_to_ticks(duration: Duration) -> u32 {
-    // This maxes out at about 50 days
-    let duration_ms: u32 = duration.as_millis().try_into().unwrap_or(u32::MAX);
-
-    unsafe { crate::furi_ms_to_ticks(duration_ms) }
 }
