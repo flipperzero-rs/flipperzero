@@ -1,16 +1,16 @@
 //! Furi stream buffer primitive.
 
 use core::{
-    cell::Cell, ffi::c_void, fmt::Debug, marker::PhantomData, num::NonZeroUsize, ptr::NonNull,
+    ffi::c_void,
+    fmt::{Debug, Display},
+    num::NonZeroUsize,
+    ptr::NonNull,
 };
 
 use crate::furi;
 
 use flipperzero_sys::{self as sys, furi::Status};
-use ufmt::uDebug;
-
-/// A zero-sized type used to mark types as `!Sync`.
-type PhantomUnsync = PhantomData<Cell<()>>;
+use ufmt::{derive::uDebug, uDebug, uDisplay, uwrite};
 
 /// Furi stream buffer primitive.
 ///
@@ -89,13 +89,13 @@ impl StreamBuffer {
     /// any blocked tasks waiting for data can proceed.
     ///
     /// If the specified trigger level exceeds the buffer's length, an [`Err`] is returned.
-    pub fn set_trigger_level(&self, trigger_level: usize) -> Result<(), ()> {
+    pub fn set_trigger_level(&self, trigger_level: usize) -> Result<(), SetTriggerLevelError> {
         let self_ptr = self.0.as_ptr();
         let updated = unsafe { sys::furi_stream_set_trigger_level(self_ptr, trigger_level) };
         if updated {
             Ok(())
         } else {
-            Err(())
+            Err(SetTriggerLevelError)
         }
     }
 
@@ -207,6 +207,28 @@ impl Drop for StreamBuffer {
     }
 }
 
+/// Error when setting a too large [trigger level](StreamBuffer::set_trigger_level) on
+/// [`StreamBuffer`].
+#[derive(Debug, uDebug)]
+pub struct SetTriggerLevelError;
+
+impl Display for SetTriggerLevelError {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "specified trigger level exceeds the buffer's length")
+    }
+}
+
+impl uDisplay for SetTriggerLevelError {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: ufmt::uWrite + ?Sized,
+    {
+        uwrite!(f, "specified trigger level exceeds the buffer's length")
+    }
+}
+
+impl core::error::Error for SetTriggerLevelError {}
+
 #[cfg(feature = "alloc")]
 pub use stream::*;
 
@@ -217,6 +239,10 @@ mod stream {
     use super::*;
 
     use alloc::sync::Arc;
+    use core::{cell::Cell, marker::PhantomData};
+
+    /// A zero-sized type used to mark types as `!Sync`.
+    type PhantomUnsync = PhantomData<Cell<()>>;
 
     impl StreamBuffer {
         /// Converts the stream buffer into a pair of [`Sender`] and [`Receiver`].
