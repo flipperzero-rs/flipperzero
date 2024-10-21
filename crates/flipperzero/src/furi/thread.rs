@@ -17,7 +17,9 @@ use alloc::{
     sync::Arc,
 };
 
-use flipperzero_sys as sys;
+use flipperzero_sys::{
+    self as sys, FuriFlag_FuriFlagNoClear, FuriFlag_FuriFlagWaitAll, FuriFlag_FuriFlagWaitAny,
+};
 
 use crate::furi::time::Duration;
 
@@ -233,10 +235,98 @@ pub fn sleep_ticks(duration: Duration) {
 }
 
 /// A unique identifier for a running thread.
-#[cfg(feature = "alloc")]
-#[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
-#[allow(dead_code)]
+#[derive(Copy, Clone, PartialEq, Eq)]
+#[repr(transparent)]
 pub struct ThreadId(sys::FuriThreadId);
+
+impl ThreadId {
+    /// Get the `ThreadId` for the current thread.
+    pub fn current() -> Self {
+        ThreadId(unsafe { sys::furi_thread_get_current_id() })
+    }
+
+    /// Get the `ThreadId` for a specific C `FuriThread`.
+    ///
+    /// # Safety
+    ///
+    /// The thread pointer must be non-null and point to a valid `FuriThread`.
+    pub unsafe fn from_furi_thread(thread: *mut sys::FuriThread) -> ThreadId {
+        ThreadId(sys::furi_thread_get_id(thread))
+    }
+}
+
+/// Set one-or-more notification flags on a thread.
+///
+/// Returns the value of the thread's notification flags after the specified `flags` have been set.
+pub fn set_flags(thread_id: ThreadId, flags: u32) -> Result<u32, sys::furi::Status> {
+    let result = unsafe { sys::furi_thread_flags_set(thread_id.0, flags) };
+
+    if result & sys::FuriFlag_FuriFlagError != 0 {
+        return Err((result as i32).into());
+    }
+
+    Ok(result)
+}
+
+/// Clear one-or-more of the current thread's notification flags.
+///
+/// Returns the value of the current thread's notification flags after the specified `flags` have been cleared.
+pub fn clear_flags(flags: u32) -> Result<u32, sys::furi::Status> {
+    let result = unsafe { sys::furi_thread_flags_clear(flags) };
+
+    if result & sys::FuriFlag_FuriFlagError != 0 {
+        return Err((result as i32).into());
+    }
+
+    Ok(result)
+}
+
+/// Get the value of the current thread's notification flags.
+pub fn get_flags() -> Result<u32, sys::furi::Status> {
+    let result = unsafe { sys::furi_thread_flags_get() };
+
+    if result & sys::FuriFlag_FuriFlagError != 0 {
+        return Err((result as i32).into());
+    }
+
+    Ok(result)
+}
+
+/// Wait for up-to `timeout` for a change to any of the specified notification `flags` for the current thread.
+///
+/// If `clear`, then the specified flags will be cleared after a notification is received.
+pub fn wait_any_flags(
+    flags: u32,
+    clear: bool,
+    timeout: Duration,
+) -> Result<u32, sys::furi::Status> {
+    let options = FuriFlag_FuriFlagWaitAny | (if clear { 0 } else { FuriFlag_FuriFlagNoClear });
+    let result = unsafe { sys::furi_thread_flags_wait(flags, options, timeout.0) };
+
+    if result & sys::FuriFlag_FuriFlagError != 0 {
+        return Err((result as i32).into());
+    }
+
+    Ok(result)
+}
+
+/// Wait for up-to `timeout` for a change to all of the specified notification `flags` for the current thread.
+///
+/// If `clear`, then the specified flags will be cleared after a notification is received.
+pub fn wait_all_flags(
+    flags: u32,
+    clear: bool,
+    timeout: Duration,
+) -> Result<u32, sys::furi::Status> {
+    let options = FuriFlag_FuriFlagWaitAll | (if clear { 0 } else { FuriFlag_FuriFlagNoClear });
+    let result = unsafe { sys::furi_thread_flags_wait(flags, options, timeout.0) };
+
+    if result & sys::FuriFlag_FuriFlagError != 0 {
+        return Err((result as i32).into());
+    }
+
+    Ok(result)
+}
 
 /// A handle to a thread.
 #[cfg(feature = "alloc")]
