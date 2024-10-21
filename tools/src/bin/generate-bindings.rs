@@ -26,6 +26,7 @@ const TOOLCHAIN: &str = "../../../toolchain/x86_64-linux/arm-none-eabi/include";
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
 const TOOLCHAIN: &str = "../../../toolchain/x86_64-darwin/arm-none-eabi/include";
 const VISIBILITY_PUBLIC: &str = "+";
+const ALLOWLIST_EXTRAS: &[&str] = &["FuriWait", "FuriFlag", "FuriStatus", "FuriSignal"];
 
 #[derive(Debug)]
 struct ApiSymbols {
@@ -238,6 +239,10 @@ fn main() {
 
     for variable in &symbols.variables {
         bindings = bindings.allowlist_var(variable);
+    }
+
+    for type_ in ALLOWLIST_EXTRAS {
+        bindings = bindings.allowlist_item(type_);
     }
 
     let bindings = match bindings.generate() {
