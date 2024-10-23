@@ -5,6 +5,7 @@ pub mod kernel;
 pub mod log;
 pub mod message_queue;
 pub mod rng;
+pub mod stream_buffer;
 pub mod string;
 pub mod sync;
 pub mod thread;
