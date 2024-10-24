@@ -1,5 +1,6 @@
 //! Furi Thread API.
 
+use core::time;
 #[cfg(feature = "alloc")]
 use core::{
     ffi::{c_void, CStr},
@@ -7,7 +8,6 @@ use core::{
     ptr::NonNull,
     str,
 };
-use core::{time, u32};
 
 #[cfg(feature = "alloc")]
 use alloc::{
