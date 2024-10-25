@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `flipperzero::dialogs::DialogFileBrowserOptions` now uses native initialization function.
 - `flipperzero::time::Duration::MAX` is now the maximum duration representable.
+- `sys::furi::Status::err_or_else` now takes a `Fn(i32) -> T` closure.
 
 ### Removed
 

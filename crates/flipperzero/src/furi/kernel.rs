@@ -49,7 +49,7 @@ impl From<LockState> for i32 {
 pub fn lock() -> furi::Result<LockState> {
     let status = sys::furi::Status::from(unsafe { sys::furi_kernel_lock() });
 
-    status.err_or_else(|status| status.0.into())
+    status.err_or_else(LockState::from)
 }
 
 /// Unlock kernel, resume process scheduling.
@@ -60,7 +60,7 @@ pub fn lock() -> furi::Result<LockState> {
 pub fn unlock() -> furi::Result<LockState> {
     let status = sys::furi::Status::from(unsafe { sys::furi_kernel_unlock() });
 
-    status.err_or_else(|status| status.0.into())
+    status.err_or_else(LockState::from)
 }
 
 /// Restore kernel lock state.
@@ -71,7 +71,7 @@ pub fn unlock() -> furi::Result<LockState> {
 pub fn restore_lock(state: LockState) -> furi::Result<LockState> {
     let status = sys::furi::Status::from(unsafe { sys::furi_kernel_restore_lock(state.into()) });
 
-    status.err_or_else(|status| status.0.into())
+    status.err_or_else(LockState::from)
 }
 
 /// Return kernel tick frequency in hertz.
