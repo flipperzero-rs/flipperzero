@@ -3,6 +3,88 @@
 use core::ffi::c_char;
 use core::fmt::Display;
 
+use crate::FuriStatus;
+
+/// The error type for Furi kernel operations.
+#[derive(Clone, Copy, Debug, ufmt::derive::uDebug, Eq, PartialEq)]
+pub enum Error {
+    Unspecified,
+    TimedOut,
+    ResourceBusy,
+    InvalidParameter,
+    OutOfMemory,
+    ForbiddenInISR,
+    Other(i32),
+}
+
+impl Error {
+    /// Describe the kind of error.
+    pub fn description(&self) -> &str {
+        match self {
+            Self::Unspecified => "Unspecified RTOS error",
+            Self::TimedOut => "Operation not completed within the timeout period",
+            Self::ResourceBusy => "Resource not available",
+            Self::InvalidParameter => "Parameter error",
+            Self::OutOfMemory => "System is out of memory",
+            Self::ForbiddenInISR => "Not allowed in ISR context",
+            _ => "Unknown",
+        }
+    }
+}
+
+/// Create [`Error`] from [`FuriStatus`].
+impl TryFrom<FuriStatus> for Error {
+    type Error = i32;
+
+    fn try_from(status: crate::FuriStatus) -> core::result::Result<Self, Self::Error> {
+        match status {
+            crate::FuriStatus_FuriStatusError => Ok(Self::Unspecified),
+            crate::FuriStatus_FuriStatusErrorTimeout => Ok(Self::TimedOut),
+            crate::FuriStatus_FuriStatusErrorResource => Ok(Self::ResourceBusy),
+            crate::FuriStatus_FuriStatusErrorParameter => Ok(Self::InvalidParameter),
+            crate::FuriStatus_FuriStatusErrorNoMemory => Ok(Self::OutOfMemory),
+            crate::FuriStatus_FuriStatusErrorISR => Ok(Self::ForbiddenInISR),
+            x => {
+                if x < 0 {
+                    Ok(Self::Other(x))
+                } else {
+                    Err(x)
+                }
+            }
+        }
+    }
+}
+
+/// Create [`FuriStatus`] from [`Error`].
+impl From<Error> for FuriStatus {
+    fn from(error: Error) -> Self {
+        match error {
+            Error::Unspecified => crate::FuriStatus_FuriStatusError,
+            Error::TimedOut => crate::FuriStatus_FuriStatusErrorTimeout,
+            Error::ResourceBusy => crate::FuriStatus_FuriStatusErrorResource,
+            Error::InvalidParameter => crate::FuriStatus_FuriStatusErrorParameter,
+            Error::OutOfMemory => crate::FuriStatus_FuriStatusErrorNoMemory,
+            Error::ForbiddenInISR => crate::FuriStatus_FuriStatusErrorISR,
+            Error::Other(x) => x as crate::FuriStatus,
+        }
+    }
+}
+
+impl Display for Error {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "{} ({})", self.description(), FuriStatus::from(*self))
+    }
+}
+
+impl ufmt::uDisplay for Error {
+    fn fmt<W>(&self, f: &mut ufmt::Formatter<'_, W>) -> Result<(), W::Error>
+    where
+        W: ufmt::uWrite + ?Sized,
+    {
+        ufmt::uwrite!(f, "{} ({})", self.description(), FuriStatus::from(*self))
+    }
+}
+
 /// Operation status.
 /// The Furi API switches between using `enum FuriStatus`, `int32_t` and `uint32_t`.
 /// Since these all use the same bit representation, we can just "cast" the returns to this type.
@@ -40,31 +122,16 @@ impl Status {
         }
     }
 
-    /// Was the operation successful?
-    pub fn is_ok(self) -> bool {
-        self == Self::OK
-    }
-
-    /// Did the operation error?
+    /// Check if this is an error status.
     pub fn is_err(self) -> bool {
         self != Self::OK
     }
 
-    /// Returns `Err(Status)` if [`Status`] is an error, otherwise `Ok(ok)`.
-    pub fn err_or<T>(self, ok: T) -> Result<T, Self> {
-        if self.is_err() {
-            Err(self)
-        } else {
-            Ok(ok)
-        }
-    }
-
-    /// Returns `Err(Status)` if [`Status`] is an error, otherwise `Ok(or_else(Status))`.
-    pub fn err_or_else<T>(self, or_else: impl Fn(i32) -> T) -> Result<T, Self> {
-        if self.is_err() {
-            Err(self)
-        } else {
-            Ok(or_else(self.0))
+    /// Convert into [`Result`] type.
+    pub fn into_result(self) -> Result<i32, Error> {
+        match Error::try_from(self.0) {
+            Err(x) => Ok(x),
+            Ok(err) => Err(err),
         }
     }
 }
@@ -84,9 +151,15 @@ impl ufmt::uDisplay for Status {
     }
 }
 
-impl From<i32> for Status {
-    fn from(code: i32) -> Self {
+impl From<crate::FuriStatus> for Status {
+    fn from(code: FuriStatus) -> Self {
         Status(code)
+    }
+}
+
+impl From<Status> for Result<i32, Error> {
+    fn from(status: Status) -> Self {
+        status.into_result()
     }
 }
 

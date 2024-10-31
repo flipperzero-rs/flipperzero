@@ -14,12 +14,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `as_ticks()` method to `flipperzero::furi::time::Duration`
 - `flipperzero::furi::thread::sleep_ticks` function to sleep for exact duration
 - `TryFrom<core::time::Duration>` for `flipperzero::furi::time::Duration`
+- `sys::furi::Error` as error type for Kernel operations.
 
 ### Changed
 
 - `flipperzero::dialogs::DialogFileBrowserOptions` now uses native initialization function.
 - `flipperzero::time::Duration::MAX` is now the maximum duration representable.
-- `sys::furi::Status::err_or_else` now takes a `Fn(i32) -> T` closure.
+- `sys::furi::Status::err_or_else` has been replaced by `sys::furi::Status::into_result`.
 
 ### Removed
 
