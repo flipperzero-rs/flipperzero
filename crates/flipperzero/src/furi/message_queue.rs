@@ -40,7 +40,9 @@ impl<M: Sized> MessageQueue<M> {
             .into()
         };
 
-        status.err_or(())
+        let _ = status.into_result()?;
+
+        Ok(())
     }
 
     // Attempts to read a message from the front of the queue within timeout ticks.
@@ -55,11 +57,9 @@ impl<M: Sized> MessageQueue<M> {
             .into()
         };
 
-        if status.is_ok() {
-            Ok(unsafe { out.assume_init() })
-        } else {
-            Err(status)
-        }
+        let _ = status.into_result()?;
+
+        Ok(unsafe { out.assume_init() })
     }
 
     /// Returns the capacity of the queue.
@@ -102,8 +102,6 @@ impl<M: Sized> Drop for MessageQueue<M> {
 mod tests {
     use super::*;
 
-    use flipperzero_sys::furi::Status;
-
     use super::MessageQueue;
 
     #[test]
@@ -129,7 +127,7 @@ mod tests {
         // Attempting to add another message should time out.
         assert_eq!(
             queue.put(7, Duration::from_millis(1)),
-            Err(Status::ERR_TIMEOUT),
+            Err(furi::Error::TimedOut),
         );
 
         // Removing a message from the queue frees up capacity.

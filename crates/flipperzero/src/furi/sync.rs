@@ -48,7 +48,8 @@ impl FuriMutex {
     /// `timeout` is zero.
     fn try_acquire(&self, timeout: u32) -> bool {
         let status: Status = unsafe { sys::furi_mutex_acquire(self.get(), timeout).into() };
-        status.is_ok()
+
+        !status.is_err()
     }
 }
 
