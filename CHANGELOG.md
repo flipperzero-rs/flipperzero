@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Updated to SDK 78 (firmware 1.1.2)
 - `flipperzero::dialogs::DialogFileBrowserOptions` now uses native initialization function.
 - `flipperzero::time::Duration::MAX` is now the maximum duration representable.
 - `sys::furi::Status::err_or_else` has been replaced by `sys::furi::Status::into_result`.
