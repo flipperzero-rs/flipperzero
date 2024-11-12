@@ -104,7 +104,11 @@ impl Builder {
         let callback: sys::FuriThreadCallback = Some(run_thread_body);
         let context = Box::into_raw(thread_body);
 
-        unsafe extern "C" fn run_state_callback(state: sys::FuriThreadState, context: *mut c_void) {
+        unsafe extern "C" fn run_state_callback(
+            _thread: *mut sys::FuriThread,
+            state: sys::FuriThreadState,
+            context: *mut c_void,
+        ) {
             if state == sys::FuriThreadState_FuriThreadStateStopped {
                 // SAFETY: We can drop the `Arc<Thread>` at the end of this function call,
                 // because:
