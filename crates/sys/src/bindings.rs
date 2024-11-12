@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 4784128;
+pub const API_VERSION: u32 = 5111809;
 pub type wint_t = core::ffi::c_int;
 pub type __uint_least8_t = core::ffi::c_uchar;
 pub type __uint_least16_t = core::ffi::c_ushort;
@@ -1674,10 +1674,25 @@ extern "C" {
     );
 }
 pub type FuriEventLoopObject = core::ffi::c_void;
-#[doc = "Callback type for event loop events\n\n # Arguments\n\n* `object` - The object that triggered the event\n * `context` - The context that was provided upon subscription\n\n # Returns\n\ntrue if event was processed, false if we need to delay processing"]
+#[doc = "Callback type for event loop events\n\n # Arguments\n\n* `object` - The object that triggered the event\n * `context` - The context that was provided upon subscription"]
 pub type FuriEventLoopEventCallback = ::core::option::Option<
-    unsafe extern "C" fn(object: *mut FuriEventLoopObject, context: *mut core::ffi::c_void) -> bool,
+    unsafe extern "C" fn(object: *mut FuriEventLoopObject, context: *mut core::ffi::c_void),
 >;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct FuriEventFlag {
+    _unused: [u8; 0],
+}
+extern "C" {
+    #[doc = "Subscribe to event flag events\n\n you can only have one subscription for one event type.\n\n # Arguments\n\n* `instance` - The Event Loop instance\n * `event_flag` - The event flag to add\n * `event` (direction in) - The Event Loop event to trigger on\n * `callback` (direction in) - The callback to call on event\n * `context` - The context for callback"]
+    pub fn furi_event_loop_subscribe_event_flag(
+        instance: *mut FuriEventLoop,
+        event_flag: *mut FuriEventFlag,
+        event: FuriEventLoopEvent,
+        callback: FuriEventLoopEventCallback,
+        context: *mut core::ffi::c_void,
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FuriMessageQueue {
@@ -1745,6 +1760,13 @@ extern "C" {
         object: *mut FuriEventLoopObject,
     );
 }
+extern "C" {
+    #[doc = "Checks if the loop is subscribed to an object of any kind\n\n # Arguments\n\n* `instance` - Event Loop instance\n * `object` - Object to check"]
+    pub fn furi_event_loop_is_subscribed(
+        instance: *mut FuriEventLoop,
+        object: *mut FuriEventLoopObject,
+    ) -> bool;
+}
 #[doc = "< One-shot timer."]
 pub const FuriEventLoopTimerType_FuriEventLoopTimerTypeOnce: FuriEventLoopTimerType = 0;
 #[doc = "< Repeating timer."]
@@ -1795,11 +1817,6 @@ extern "C" {
 extern "C" {
     #[doc = "Check if the timer is currently running.\n\n A timer is considered running if it has not expired yet.\n # Arguments\n\n* `timer` (direction in) - pointer to the timer to be queried\n # Returns\n\ntrue if the timer is running, false otherwise"]
     pub fn furi_event_loop_timer_is_running(timer: *const FuriEventLoopTimer) -> bool;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct FuriEventFlag {
-    _unused: [u8; 0],
 }
 extern "C" {
     #[doc = "Allocate FuriEventFlag\n\n # Returns\n\npointer to FuriEventFlag"]
@@ -1859,7 +1876,7 @@ extern "C" {
     pub fn furi_delay_tick(ticks: u32);
 }
 extern "C" {
-    #[doc = "Delay until tick\n\n This should never be called in interrupt request context.\n\n # Arguments\n\n* `tick` (direction in) - The tick until which kerel should delay task execution\n\n # Returns\n\nThe furi status."]
+    #[doc = "Delay until tick\n\n This should never be called in interrupt request context.\n\n # Arguments\n\n* `tick` (direction in) - The tick until which kernel should delay task execution\n\n # Returns\n\nThe furi status."]
     pub fn furi_delay_until_tick(tick: u32) -> FuriStatus;
 }
 extern "C" {
@@ -2001,23 +2018,25 @@ extern "C" {
     #[doc = "Freed space obtained through the aligned_malloc function\n # Arguments\n\n* `p` - pointer to result of aligned_malloc"]
     pub fn aligned_free(p: *mut core::ffi::c_void);
 }
-#[doc = "< Thread is stopped"]
+#[doc = "< Thread is stopped and is safe to release. Event delivered from system init thread(TCB cleanup routine). It is safe to release thread instance."]
 pub const FuriThreadState_FuriThreadStateStopped: FuriThreadState = 0;
-#[doc = "< Thread is starting"]
-pub const FuriThreadState_FuriThreadStateStarting: FuriThreadState = 1;
-#[doc = "< Thread is running"]
-pub const FuriThreadState_FuriThreadStateRunning: FuriThreadState = 2;
+#[doc = "< Thread is stopping. Event delivered from child thread."]
+pub const FuriThreadState_FuriThreadStateStopping: FuriThreadState = 1;
+#[doc = "< Thread is starting. Event delivered from parent(self) thread."]
+pub const FuriThreadState_FuriThreadStateStarting: FuriThreadState = 2;
+#[doc = "< Thread is running. Event delivered from child thread."]
+pub const FuriThreadState_FuriThreadStateRunning: FuriThreadState = 3;
 #[doc = "Enumeration of possible FuriThread states.\n\n Many of the FuriThread functions MUST ONLY be called when the thread is STOPPED."]
 pub type FuriThreadState = core::ffi::c_uchar;
-#[doc = "< Uninitialized, choose system default"]
-pub const FuriThreadPriority_FuriThreadPriorityNone: FuriThreadPriority = 0;
 #[doc = "< Idle priority"]
-pub const FuriThreadPriority_FuriThreadPriorityIdle: FuriThreadPriority = 1;
+pub const FuriThreadPriority_FuriThreadPriorityIdle: FuriThreadPriority = 0;
+#[doc = "< Init System Thread Priority"]
+pub const FuriThreadPriority_FuriThreadPriorityInit: FuriThreadPriority = 4;
 #[doc = "< Lowest"]
 pub const FuriThreadPriority_FuriThreadPriorityLowest: FuriThreadPriority = 14;
 #[doc = "< Low"]
 pub const FuriThreadPriority_FuriThreadPriorityLow: FuriThreadPriority = 15;
-#[doc = "< Normal"]
+#[doc = "< Normal, system default"]
 pub const FuriThreadPriority_FuriThreadPriorityNormal: FuriThreadPriority = 16;
 #[doc = "< High"]
 pub const FuriThreadPriority_FuriThreadPriorityHigh: FuriThreadPriority = 17;
@@ -2044,9 +2063,13 @@ pub type FuriThreadCallback =
 #[doc = "Standard output callback function pointer type.\n\n The function to be used as a standard output callback MUST follow this signature.\n\n The handler MUST process ALL of the provided data before returning.\n\n # Arguments\n\n* `data` (direction in) - pointer to the data to be written to the standard out\n * `size` (direction in) - size of the data in bytes"]
 pub type FuriThreadStdoutWriteCallback =
     ::core::option::Option<unsafe extern "C" fn(data: *const core::ffi::c_char, size: usize)>;
-#[doc = "State change callback function pointer type.\n\n The function to be used as a state callback MUST follow this signature.\n\n # Arguments\n\n* `state` (direction in) - identifier of the state the thread has transitioned to\n * `context` (direction in, out) - pointer to a user-specified object"]
+#[doc = "State change callback function pointer type.\n\n The function to be used as a state callback MUST follow this\n signature.\n\n # Arguments\n\n* `thread` (direction in) - to the FuriThread instance that changed the state\n * `state` (direction in) - identifier of the state the thread has transitioned\n to\n * `context` (direction in, out) - pointer to a user-specified object"]
 pub type FuriThreadStateCallback = ::core::option::Option<
-    unsafe extern "C" fn(state: FuriThreadState, context: *mut core::ffi::c_void),
+    unsafe extern "C" fn(
+        thread: *mut FuriThread,
+        state: FuriThreadState,
+        context: *mut core::ffi::c_void,
+    ),
 >;
 #[doc = "Signal handler callback function pointer type.\n\n The function to be used as a signal handler callback MUS follow this signature.\n\n # Arguments\n\n* `signal` (direction in) - value of the signal to be handled by the recipient\n * `arg` (direction in, out) - optional argument (can be of any value, including NULL)\n * `context` (direction in, out) - pointer to a user-specified object\n # Returns\n\ntrue if the signal was handled, false otherwise"]
 pub type FuriThreadSignalCallback = ::core::option::Option<
@@ -2614,10 +2637,6 @@ extern "C" {
     ) -> *mut FuriThreadListItem;
 }
 extern "C" {
-    #[doc = "Process items in the FuriThreadList instance\n\n # Arguments\n\n* `instance` - The instance\n * `runtime` (direction in) - The runtime of the system since start\n * `tick` (direction in) - The tick when processing happened"]
-    pub fn furi_thread_list_process(instance: *mut FuriThreadList, runtime: u32, tick: u32);
-}
-extern "C" {
     #[doc = "Get percent of time spent in ISR\n\n # Arguments\n\n* `instance` - The instance\n\n # Returns\n\npercent of time spent in ISR"]
     pub fn furi_thread_list_get_isr_time(instance: *mut FuriThreadList) -> f32;
 }
@@ -2646,6 +2665,10 @@ extern "C" {
     pub fn furi_timer_free(instance: *mut FuriTimer);
 }
 extern "C" {
+    #[doc = "Flush timer task control message queue\n\n Ensures that all commands before this point was processed."]
+    pub fn furi_timer_flush();
+}
+extern "C" {
     #[doc = "Start timer\n\n This is asynchronous call, real operation will happen as soon as\n timer service process this request.\n\n # Arguments\n\n* `instance` - The pointer to FuriTimer instance\n * `ticks` (direction in) - The interval in ticks\n\n # Returns\n\nThe furi status."]
     pub fn furi_timer_start(instance: *mut FuriTimer, ticks: u32) -> FuriStatus;
 }
@@ -2654,7 +2677,7 @@ extern "C" {
     pub fn furi_timer_restart(instance: *mut FuriTimer, ticks: u32) -> FuriStatus;
 }
 extern "C" {
-    #[doc = "Stop timer\n\n This is asynchronous call, real operation will happen as soon as\n timer service process this request.\n\n # Arguments\n\n* `instance` - The pointer to FuriTimer instance\n\n # Returns\n\nThe furi status."]
+    #[doc = "Stop timer\n\n This is synchronous call that will be blocked till timer queue processed.\n\n # Arguments\n\n* `instance` - The pointer to FuriTimer instance\n\n # Returns\n\nThe furi status."]
     pub fn furi_timer_stop(instance: *mut FuriTimer) -> FuriStatus;
 }
 extern "C" {
@@ -6609,6 +6632,14 @@ extern "C" {
     #[doc = "Get a corresponding external connector pin number for a gpio\n\n # Arguments\n\n* `gpio` - GpioPin\n\n # Returns\n\npin number or -1 if gpio is not on the external connector"]
     pub fn furi_hal_resources_get_ext_pin_number(gpio: *const GpioPin) -> i32;
 }
+extern "C" {
+    #[doc = "Finds a pin by its name\n\n # Arguments\n\n* `name` - case-insensitive pin name to look for (e.g. `\"Pc3\"`, `\"pA4\"`)\n\n # Returns\n\na pointer to the corresponding `GpioPinRecord` if such a pin exists,\n `NULL` otherwise."]
+    pub fn furi_hal_resources_pin_by_name(name: *const core::ffi::c_char) -> *const GpioPinRecord;
+}
+extern "C" {
+    #[doc = "Finds a pin by its number\n\n # Arguments\n\n* `name` - pin number to look for (e.g. `7`, `4`)\n\n # Returns\n\na pointer to the corresponding `GpioPinRecord` if such a pin exists,\n `NULL` otherwise."]
+    pub fn furi_hal_resources_pin_by_number(number: u8) -> *const GpioPinRecord;
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct DateTime {
@@ -7480,12 +7511,13 @@ pub const FuriHalInterruptId_FuriHalInterruptIdDma2Ch6: FuriHalInterruptId = 16;
 pub const FuriHalInterruptId_FuriHalInterruptIdDma2Ch7: FuriHalInterruptId = 17;
 pub const FuriHalInterruptId_FuriHalInterruptIdRcc: FuriHalInterruptId = 18;
 pub const FuriHalInterruptId_FuriHalInterruptIdCOMP: FuriHalInterruptId = 19;
-pub const FuriHalInterruptId_FuriHalInterruptIdHsem: FuriHalInterruptId = 20;
-pub const FuriHalInterruptId_FuriHalInterruptIdLpTim1: FuriHalInterruptId = 21;
-pub const FuriHalInterruptId_FuriHalInterruptIdLpTim2: FuriHalInterruptId = 22;
-pub const FuriHalInterruptId_FuriHalInterruptIdUart1: FuriHalInterruptId = 23;
-pub const FuriHalInterruptId_FuriHalInterruptIdLpUart1: FuriHalInterruptId = 24;
-pub const FuriHalInterruptId_FuriHalInterruptIdMax: FuriHalInterruptId = 25;
+pub const FuriHalInterruptId_FuriHalInterruptIdRtcAlarm: FuriHalInterruptId = 20;
+pub const FuriHalInterruptId_FuriHalInterruptIdHsem: FuriHalInterruptId = 21;
+pub const FuriHalInterruptId_FuriHalInterruptIdLpTim1: FuriHalInterruptId = 22;
+pub const FuriHalInterruptId_FuriHalInterruptIdLpTim2: FuriHalInterruptId = 23;
+pub const FuriHalInterruptId_FuriHalInterruptIdUart1: FuriHalInterruptId = 24;
+pub const FuriHalInterruptId_FuriHalInterruptIdLpUart1: FuriHalInterruptId = 25;
+pub const FuriHalInterruptId_FuriHalInterruptIdMax: FuriHalInterruptId = 26;
 pub type FuriHalInterruptId = core::ffi::c_uchar;
 pub const FuriHalInterruptPriority_FuriHalInterruptPriorityLowest: FuriHalInterruptPriority = -3;
 pub const FuriHalInterruptPriority_FuriHalInterruptPriorityLower: FuriHalInterruptPriority = -2;
@@ -11687,7 +11719,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Move the contents of source folder to destination one and rename all conflicting files.\n\n Source folder will be deleted if the migration was successful.\n\n # Arguments\n\n* `storage` - pointer to a storage API instance.\n * `source` - pointer to a zero-terminated string containing the source path.\n * `dest` - pointer to a zero-terminated string containing the destination path.\n # Returns\n\nFSE_OK if the migration was successfull completed, any other error code on failure."]
+    #[doc = "Move the contents of source folder to destination one and rename all conflicting files.\n\n Source folder will be deleted if the migration was successful.\n\n # Arguments\n\n* `storage` - pointer to a storage API instance.\n * `source` - pointer to a zero-terminated string containing the source path.\n * `dest` - pointer to a zero-terminated string containing the destination path.\n # Returns\n\nFSE_OK if the migration was successfully completed, any other error code on failure."]
     pub fn storage_common_migrate(
         storage: *mut Storage,
         source: *const core::ffi::c_char,
@@ -11699,16 +11731,23 @@ extern "C" {
     pub fn storage_common_exists(storage: *mut Storage, path: *const core::ffi::c_char) -> bool;
 }
 extern "C" {
-    #[doc = "Check whether two paths are equivalent.\n\n This function will resolve aliases and apply filesystem-specific\n rules to determine whether the two given paths are equivalent.\n\n Examples:\n - /int/text and /ext/test -> false (Different storages),\n - /int/Test and /int/test -> false (Case-sensitive storage),\n - /ext/Test and /ext/test -> true (Case-insensitive storage).\n\n If the truncate parameter is set to true, the second path will be\n truncated to be no longer than the first one. It is useful to determine\n whether path2 is a subdirectory of path1.\n\n # Arguments\n\n* `storage` - pointer to a storage API instance.\n * `path1` - pointer to a zero-terminated string containing the first path.\n * `path2` - pointer to a zero-terminated string containing the second path.\n * `truncate` - whether to truncate path2 to be no longer than path1.\n # Returns\n\ntrue if paths are equivalent, false otherwise."]
+    #[doc = "Check whether two paths are equivalent.\n\n This function will resolve aliases and apply filesystem-specific\n rules to determine whether the two given paths are equivalent.\n\n Examples:\n - /int/text and /ext/test -> false (Different storages),\n - /int/Test and /int/test -> false (Case-sensitive storage),\n - /ext/Test and /ext/test -> true (Case-insensitive storage).\n\n # Arguments\n\n* `storage` - pointer to a storage API instance.\n * `path1` - pointer to a zero-terminated string containing the first path.\n * `path2` - pointer to a zero-terminated string containing the second path.\n # Returns\n\ntrue if paths are equivalent, false otherwise."]
     pub fn storage_common_equivalent_path(
         storage: *mut Storage,
         path1: *const core::ffi::c_char,
         path2: *const core::ffi::c_char,
-        truncate: bool,
     ) -> bool;
 }
 extern "C" {
-    #[doc = "Get the textual description of a numeric error identifer.\n\n # Arguments\n\n* `error_id` - numeric identifier of the error in question.\n # Returns\n\npointer to a statically allocated zero-terminated string containing the respective error text."]
+    #[doc = "Check whether a path is a subpath of another path.\n\n This function respects storage-defined equivalence rules\n (see `storage_common_equivalent_path`).\n\n # Arguments\n\n* `storage` - pointer to a storage API instance.\n * `parent` - pointer to a zero-terminated string containing the parent path.\n * `child` - pointer to a zero-terminated string containing the child path.\n # Returns\n\ntrue if `child` is a subpath of `parent`, or if `child` is equivalent\n to `parent`; false otherwise."]
+    pub fn storage_common_is_subdir(
+        storage: *mut Storage,
+        parent: *const core::ffi::c_char,
+        child: *const core::ffi::c_char,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Get the textual description of a numeric error identifier.\n\n # Arguments\n\n* `error_id` - numeric identifier of the error in question.\n # Returns\n\npointer to a statically allocated zero-terminated string containing the respective error text."]
     pub fn storage_error_get_desc(error_id: FS_Error) -> *const core::ffi::c_char;
 }
 extern "C" {
@@ -12771,6 +12810,18 @@ extern "C" {
         width: usize,
         height: usize,
         bitmap: *const u8,
+    );
+}
+extern "C" {
+    #[doc = "Draw rotated XBM bitmap\n\n # Arguments\n\n* `canvas` - Canvas instance\n * `x` - x coordinate\n * `y` - y coordinate\n * `width` (direction in) - bitmap width\n * `height` (direction in) - bitmap height\n * `rotation` (direction in) - bitmap rotation\n * `bitmap_data` - pointer to XBM bitmap data"]
+    pub fn canvas_draw_xbm_ex(
+        canvas: *mut Canvas,
+        x: i32,
+        y: i32,
+        width: usize,
+        height: usize,
+        rotation: IconRotation,
+        bitmap_data: *const u8,
     );
 }
 extern "C" {
@@ -14630,6 +14681,10 @@ extern "C" {
     );
 }
 extern "C" {
+    #[doc = "Sets the minimum length of a TextInput\n # Arguments\n\n* `[in]` - text_input TextInput\n * `[in]` - minimum_length Minimum input length"]
+    pub fn text_input_set_minimum_length(text_input: *mut TextInput, minimum_length: usize);
+}
+extern "C" {
     pub fn text_input_set_validator(
         text_input: *mut TextInput,
         callback: TextInputValidatorCallback,
@@ -15068,6 +15123,10 @@ extern "C" {
     pub fn view_dispatcher_alloc() -> *mut ViewDispatcher;
 }
 extern "C" {
+    #[doc = "Allocate ViewDispatcher instance with an externally owned event loop. If\n this constructor is used instead of `view_dispatcher_alloc`, the burden of\n freeing the event loop is placed on the caller.\n\n # Arguments\n\n* `loop` - pointer to FuriEventLoop instance\n # Returns\n\npointer to ViewDispatcher instance"]
+    pub fn view_dispatcher_alloc_ex(loop_: *mut FuriEventLoop) -> *mut ViewDispatcher;
+}
+extern "C" {
     #[doc = "Free ViewDispatcher instance\n\n All added views MUST be removed using view_dispatcher_remove_view()\n before calling this function.\n\n # Arguments\n\n* `view_dispatcher` - pointer to ViewDispatcher"]
     pub fn view_dispatcher_free(view_dispatcher: *mut ViewDispatcher);
 }
@@ -15094,7 +15153,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Set tick event handler\n\n # Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n * `callback` - ViewDispatcherTickEventCallback\n * `tick_period` - callback call period"]
+    #[doc = "Set tick event handler\n\n Requires the event loop to be owned by the view dispatcher, i.e.\n it should have been instantiated with `view_dispatcher_alloc`, not\n `view_dispatcher_alloc_ex`.\n\n # Arguments\n\n* `view_dispatcher` - ViewDispatcher instance\n * `callback` - ViewDispatcherTickEventCallback\n * `tick_period` - callback call period"]
     pub fn view_dispatcher_set_tick_event_callback(
         view_dispatcher: *mut ViewDispatcher,
         callback: ViewDispatcherTickEventCallback,
@@ -16397,6 +16456,9 @@ extern "C" {
 }
 extern "C" {
     pub static sequence_lcd_contrast_update: NotificationSequence;
+}
+extern "C" {
+    pub static sequence_empty: NotificationSequence;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -20724,39 +20786,39 @@ pub struct BitBuffer {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = "Allocate a BitBuffer instance.\n\n # Arguments\n\n* `[in]` - capacity_bytes maximum buffer capacity, in bytes\n # Returns\n\npointer to the allocated BitBuffer instance"]
+    #[doc = "Allocate a BitBuffer instance.\n\n # Arguments\n\n* `capacity_bytes` (direction in) - maximum buffer capacity, in bytes\n\n # Returns\n\npointer to the allocated BitBuffer instance"]
     pub fn bit_buffer_alloc(capacity_bytes: usize) -> *mut BitBuffer;
 }
 extern "C" {
-    #[doc = "Delete a BitBuffer instance.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance"]
+    #[doc = "Delete a BitBuffer instance.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance"]
     pub fn bit_buffer_free(buf: *mut BitBuffer);
 }
 extern "C" {
-    #[doc = "Clear all data from a BitBuffer instance.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance"]
+    #[doc = "Clear all data from a BitBuffer instance.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance"]
     pub fn bit_buffer_reset(buf: *mut BitBuffer);
 }
 extern "C" {
-    #[doc = "Copy another BitBuffer instance's contents to this one, replacing\n all of the original data.\n The destination capacity must be no less than the source data size.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to copy into\n * `[in]` - other pointer to a BitBuffer instance to copy from\n > **Note:** "]
+    #[doc = "Copy another BitBuffer instance's contents to this one, replacing all of the\n original data.\n\n The destination capacity must be no less than the source data\n size.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance to copy into\n * `other` (direction in) - pointer to a BitBuffer instance to copy from"]
     pub fn bit_buffer_copy(buf: *mut BitBuffer, other: *const BitBuffer);
 }
 extern "C" {
-    #[doc = "Copy all BitBuffer instance's contents to this one, starting from start_index,\n replacing all of the original data.\n The destination capacity must be no less than the source data size\n counting from start_index.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to copy into\n * `[in]` - other pointer to a BitBuffer instance to copy from\n * `[in]` - start_index index to begin copying source data from"]
+    #[doc = "Copy all BitBuffer instance's contents to this one, starting from\n start_index, replacing all of the original data.\n\n The destination capacity must be no less than the source data\n size counting from start_index.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance to copy into\n * `other` (direction in) - pointer to a BitBuffer instance to copy from\n * `start_index` (direction in) - index to begin copying source data from"]
     pub fn bit_buffer_copy_right(buf: *mut BitBuffer, other: *const BitBuffer, start_index: usize);
 }
 extern "C" {
-    #[doc = "Copy all BitBuffer instance's contents to this one, ending with end_index,\n replacing all of the original data.\n The destination capacity must be no less than the source data size\n counting to end_index.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to copy into\n * `[in]` - other pointer to a BitBuffer instance to copy from\n * `[in]` - end_index index to end copying source data at"]
+    #[doc = "Copy all BitBuffer instance's contents to this one, ending with end_index,\n replacing all of the original data.\n\n The destination capacity must be no less than the source data\n size counting to end_index.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance to copy into\n * `other` (direction in) - pointer to a BitBuffer instance to copy from\n * `end_index` (direction in) - index to end copying source data at"]
     pub fn bit_buffer_copy_left(buf: *mut BitBuffer, other: *const BitBuffer, end_index: usize);
 }
 extern "C" {
-    #[doc = "Copy a byte array to a BitBuffer instance, replacing all of the original data.\n The destination capacity must be no less than the source data size.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to copy into\n * `[in]` - data pointer to the byte array to be copied\n * `[in]` - size_bytes size of the data to be copied, in bytes"]
+    #[doc = "Copy a byte array to a BitBuffer instance, replacing all of the original\n data.\n\n The destination capacity must be no less than the source data\n size.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance to copy into\n * `data` (direction in) - pointer to the byte array to be copied\n * `size_bytes` (direction in) - size of the data to be copied, in bytes"]
     pub fn bit_buffer_copy_bytes(buf: *mut BitBuffer, data: *const u8, size_bytes: usize);
 }
 extern "C" {
-    #[doc = "Copy a byte array to a BitBuffer instance, replacing all of the original data.\n The destination capacity must be no less than the source data size.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to copy into\n * `[in]` - data pointer to the byte array to be copied\n * `[in]` - size_bits size of the data to be copied, in bits"]
+    #[doc = "Copy a byte array to a BitBuffer instance, replacing all of the original\n data.\n\n The destination capacity must be no less than the source data\n size.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance to copy into\n * `data` (direction in) - pointer to the byte array to be copied\n * `size_bits` (direction in) - size of the data to be copied, in bits"]
     pub fn bit_buffer_copy_bits(buf: *mut BitBuffer, data: *const u8, size_bits: usize);
 }
 extern "C" {
-    #[doc = "Copy a byte with parity array to a BitBuffer instance, replacing all of the original data.\n The destination capacity must be no less than the source data size.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to copy into\n * `[in]` - data pointer to the byte array to be copied\n * `[in]` - size_bitss size of the data to be copied, in bits"]
+    #[doc = "Copy a byte with parity array to a BitBuffer instance, replacing all of the\n original data.\n\n The destination capacity must be no less than the source data\n size.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance to copy into\n * `data` (direction in) - pointer to the byte array to be copied\n * `size_bits` (direction in) - size of the data to be copied, in bits\n > **Note:** Parity bits are placed starting with the most significant bit\n of each byte and moving up.\n > **Note:** Example: DDDDDDDD PDDDDDDD DPDDDDDD DDP..."]
     pub fn bit_buffer_copy_bytes_with_parity(
         buf: *mut BitBuffer,
         data: *const u8,
@@ -20764,7 +20826,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Write a BitBuffer instance's entire contents to an arbitrary memory location.\n The destination memory must be allocated. Additionally, the destination\n capacity must be no less than the source data size.\n\n # Arguments\n\n* `[in]` - buf pointer to a BitBuffer instance to write from\n * `[out]` - dest pointer to the destination memory location\n * `[in]` - size_bytes maximum destination data size, in bytes"]
+    #[doc = "Write a BitBuffer instance's entire contents to an arbitrary memory location.\n\n The destination memory must be allocated. Additionally, the\n destination capacity must be no less than the source data size.\n\n # Arguments\n\n* `buf` (direction in) - pointer to a BitBuffer instance to write from\n * `dest` (direction out) - pointer to the destination memory location\n * `size_bytes` (direction in) - maximum destination data size, in bytes"]
     pub fn bit_buffer_write_bytes(
         buf: *const BitBuffer,
         dest: *mut core::ffi::c_void,
@@ -20772,7 +20834,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Write a BitBuffer instance's entire contents to an arbitrary memory location.\n Additionally, place a parity bit after each byte.\n The destination memory must be allocated. Additionally, the destination\n capacity must be no less than the source data size plus parity.\n\n # Arguments\n\n* `[in]` - buf pointer to a BitBuffer instance to write from\n * `[out]` - dest pointer to the destination memory location\n * `[in]` - size_bytes maximum destination data size, in bytes\n * `[out]` - bits_written actual number of bits writen, in bits"]
+    #[doc = "Write a BitBuffer instance's entire contents to an arbitrary memory location.\n\n Additionally, place a parity bit after each byte.\n\n The destination memory must be allocated. Additionally, the\n destination capacity must be no less than the source data size\n plus parity.\n\n # Arguments\n\n* `buf` (direction in) - pointer to a BitBuffer instance to write from\n * `dest` (direction out) - pointer to the destination memory location\n * `size_bytes` (direction in) - maximum destination data size, in bytes\n * `bits_written` (direction out) - actual number of bits written, in bits\n > **Note:** Parity bits are placed starting with the most significant bit of\n each byte and moving up.\n > **Note:** Example: DDDDDDDD PDDDDDDD DPDDDDDD DDP..."]
     pub fn bit_buffer_write_bytes_with_parity(
         buf: *const BitBuffer,
         dest: *mut core::ffi::c_void,
@@ -20781,7 +20843,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Write a slice of BitBuffer instance's contents to an arbitrary memory location.\n The destination memory must be allocated. Additionally, the destination\n capacity must be no less than the requested slice size.\n\n # Arguments\n\n* `[in]` - buf pointer to a BitBuffer instance to write from\n * `[out]` - dest pointer to the destination memory location\n * `[in]` - start_index index to begin copying source data from\n * `[in]` - size_bytes data slice size, in bytes"]
+    #[doc = "Write a slice of BitBuffer instance's contents to an arbitrary memory\n location.\n\n The destination memory must be allocated. Additionally, the\n destination capacity must be no less than the requested slice\n size.\n\n # Arguments\n\n* `buf` (direction in) - pointer to a BitBuffer instance to write from\n * `dest` (direction out) - pointer to the destination memory location\n * `start_index` (direction in) - index to begin copying source data from\n * `size_bytes` (direction in) - data slice size, in bytes"]
     pub fn bit_buffer_write_bytes_mid(
         buf: *const BitBuffer,
         dest: *mut core::ffi::c_void,
@@ -20790,47 +20852,47 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Check whether a BitBuffer instance contains a partial byte (i.e. the bit count\n is not divisible by 8).\n\n # Arguments\n\n* `[in]` - buf pointer to a BitBuffer instance to be checked\n # Returns\n\ntrue if the instance contains a partial byte, false otherwise"]
+    #[doc = "Check whether a BitBuffer instance contains a partial byte (i.e. the bit\n count is not divisible by 8).\n\n # Arguments\n\n* `buf` (direction in) - pointer to a BitBuffer instance to be checked\n\n # Returns\n\ntrue if the instance contains a partial byte, false otherwise"]
     pub fn bit_buffer_has_partial_byte(buf: *const BitBuffer) -> bool;
 }
 extern "C" {
-    #[doc = "Check whether a BitBuffer instance's contents start with the designated byte.\n\n # Arguments\n\n* `[in]` - buf pointer to a BitBuffer instance to be checked\n * `[in]` - byte byte value to be checked against\n # Returns\n\ntrue if data starts with designated byte, false otherwise"]
+    #[doc = "Check whether a BitBuffer instance's contents start with the designated byte.\n\n # Arguments\n\n* `buf` (direction in) - pointer to a BitBuffer instance to be checked\n * `byte` (direction in) - byte value to be checked against\n\n # Returns\n\ntrue if data starts with designated byte, false otherwise"]
     pub fn bit_buffer_starts_with_byte(buf: *const BitBuffer, byte: u8) -> bool;
 }
 extern "C" {
-    #[doc = "Get a BitBuffer instance's capacity (i.e. the maximum possible amount of data), in bytes.\n\n # Arguments\n\n* `[in]` - buf pointer to a BitBuffer instance to be queried\n # Returns\n\ncapacity, in bytes"]
+    #[doc = "Get a BitBuffer instance's capacity (i.e. the maximum possible amount of\n data), in bytes.\n\n # Arguments\n\n* `buf` (direction in) - pointer to a BitBuffer instance to be queried\n\n # Returns\n\ncapacity, in bytes"]
     pub fn bit_buffer_get_capacity_bytes(buf: *const BitBuffer) -> usize;
 }
 extern "C" {
-    #[doc = "Get a BitBuffer instance's data size (i.e. the amount of stored data), in bits.\n Might be not divisible by 8 (see bit_buffer_is_partial_byte).\n\n # Arguments\n\n* `[in]` - buf pointer to a BitBuffer instance to be queried\n # Returns\n\ndata size, in bits."]
+    #[doc = "Get a BitBuffer instance's data size (i.e. the amount of stored data), in\n bits.\n\n Might be not divisible by 8 (see bit_buffer_is_partial_byte).\n\n # Arguments\n\n* `buf` (direction in) - pointer to a BitBuffer instance to be queried\n\n # Returns\n\ndata size, in bits."]
     pub fn bit_buffer_get_size(buf: *const BitBuffer) -> usize;
 }
 extern "C" {
-    #[doc = "Get a BitBuffer instance's data size (i.e. the amount of stored data), in bytes.\n If a partial byte is present, it is also counted.\n\n # Arguments\n\n* `[in]` - buf pointer to a BitBuffer instance to be queried\n # Returns\n\ndata size, in bytes."]
+    #[doc = "Get a BitBuffer instance's data size (i.e. the amount of stored data), in\n bytes.\n\n If a partial byte is present, it is also counted.\n\n # Arguments\n\n* `buf` (direction in) - pointer to a BitBuffer instance to be queried\n\n # Returns\n\ndata size, in bytes."]
     pub fn bit_buffer_get_size_bytes(buf: *const BitBuffer) -> usize;
 }
 extern "C" {
-    #[doc = "Get a byte value at a specified index in a BitBuffer instance.\n The index must be valid (i.e. less than the instance's data size in bytes).\n\n # Arguments\n\n* `[in]` - buf pointer to a BitBuffer instance to be queried\n * `[in]` - index index of the byte in question"]
+    #[doc = "Get a byte value at a specified index in a BitBuffer instance.\n\n The index must be valid (i.e. less than the instance's data size\n in bytes).\n\n # Arguments\n\n* `buf` (direction in) - pointer to a BitBuffer instance to be queried\n * `index` (direction in) - index of the byte in question\n\n # Returns\n\nbyte value"]
     pub fn bit_buffer_get_byte(buf: *const BitBuffer, index: usize) -> u8;
 }
 extern "C" {
-    #[doc = "Get a byte value starting from the specified bit index in a BitBuffer instance.\n The resulting byte might correspond to a single byte (if the index is a multiple\n of 8), or two overlapping bytes combined.\n The index must be valid (i.e. less than the instance's data size in bits).\n\n # Arguments\n\n* `[in]` - buf pointer to a BitBuffer instance to be queried\n * `[in]` - index bit index of the byte in question"]
+    #[doc = "Get a byte value starting from the specified bit index in a BitBuffer\n instance.\n\n The resulting byte might correspond to a single byte (if the\n index is a multiple of 8), or two overlapping bytes combined. The\n index must be valid (i.e. less than the instance's data size in\n bits).\n\n # Arguments\n\n* `buf` (direction in) - pointer to a BitBuffer instance to be queried\n * `index_bits` (direction in) - bit index of the byte in question\n\n # Returns\n\nbyte value"]
     pub fn bit_buffer_get_byte_from_bit(buf: *const BitBuffer, index_bits: usize) -> u8;
 }
 extern "C" {
-    #[doc = "Get the pointer to a BitBuffer instance's underlying data.\n\n # Arguments\n\n* `[in]` - buf pointer to a BitBuffer instance to be queried\n # Returns\n\npointer to the underlying data"]
+    #[doc = "Get the pointer to a BitBuffer instance's underlying data.\n\n # Arguments\n\n* `buf` (direction in) - pointer to a BitBuffer instance to be queried\n\n # Returns\n\npointer to the underlying data"]
     pub fn bit_buffer_get_data(buf: *const BitBuffer) -> *const u8;
 }
 extern "C" {
-    #[doc = "Get the pointer to a BitBuffer instance's underlying data.\n\n # Arguments\n\n* `[in]` - buf pointer to a BitBuffer instance to be queried\n # Returns\n\npointer to the underlying data"]
+    #[doc = "Get the pointer to the parity data of a BitBuffer instance.\n\n # Arguments\n\n* `buf` (direction in) - pointer to a BitBuffer instance to be queried\n\n # Returns\n\npointer to the parity data"]
     pub fn bit_buffer_get_parity(buf: *const BitBuffer) -> *const u8;
 }
 extern "C" {
-    #[doc = "Set byte value at a specified index in a BitBuffer instance.\n The index must be valid (i.e. less than the instance's data size in bytes).\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to be modified\n * `[in]` - index index of the byte in question\n * `[in]` - byte byte value to be set at index"]
+    #[doc = "Set byte value at a specified index in a BitBuffer instance.\n\n The index must be valid (i.e. less than the instance's data\n size in bytes).\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance to be modified\n * `index` (direction in) - index of the byte in question\n * `byte` (direction in) - byte value to be set at index"]
     pub fn bit_buffer_set_byte(buf: *mut BitBuffer, index: usize, byte: u8);
 }
 extern "C" {
-    #[doc = "Set byte and parity bit value at a specified index in a BitBuffer instance.\n The index must be valid (i.e. less than the instance's data size in bytes).\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to be modified\n * `[in]` - index index of the byte in question\n * `[in]` - byte byte value to be set at index\n * `[in]` - parity parity bit value to be set at index"]
+    #[doc = "Set byte and parity bit value at a specified index in a BitBuffer instance.\n\n The index must be valid (i.e. less than the instance's data\n size in bytes).\n\n # Arguments\n\n* `buff` (direction in, out) - pointer to a BitBuffer instance to be modified\n * `index` (direction in) - index of the byte in question\n * `byte` (direction in) - byte value to be set at index\n * `parity` (direction in) - parity bit value to be set at index"]
     pub fn bit_buffer_set_byte_with_parity(
         buff: *mut BitBuffer,
         index: usize,
@@ -20839,19 +20901,19 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Resize a BitBuffer instance to a new size, in bits.\n May cause bugs. Use only if absolutely necessary.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to be resized\n * `[in]` - new_size the new size of the buffer, in bits"]
+    #[doc = "Resize a BitBuffer instance to a new size, in bits.\n\n May cause bugs. Use only if absolutely necessary.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance to be resized\n * `new_size` (direction in) - the new size of the buffer, in bits"]
     pub fn bit_buffer_set_size(buf: *mut BitBuffer, new_size: usize);
 }
 extern "C" {
-    #[doc = "Resize a BitBuffer instance to a new size, in bytes.\n May cause bugs. Use only if absolutely necessary.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to be resized\n * `[in]` - new_size_bytes the new size of the buffer, in bytes"]
+    #[doc = "Resize a BitBuffer instance to a new size, in bytes.\n\n May cause bugs. Use only if absolutely necessary.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance to be resized\n * `new_size_bytes` (direction in) - the new size of the buffer, in bytes"]
     pub fn bit_buffer_set_size_bytes(buf: *mut BitBuffer, new_size_bytes: usize);
 }
 extern "C" {
-    #[doc = "Append all BitBuffer's instance contents to this one. The destination capacity\n must be no less than its original data size plus source data size.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to be appended to\n * `[in]` - other pointer to a BitBuffer instance to be appended"]
+    #[doc = "Append all BitBuffer's instance contents to this one.\n\n The destination capacity must be no less than its original\n data size plus source data size.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance to be appended to\n * `other` (direction in) - pointer to a BitBuffer instance to be appended"]
     pub fn bit_buffer_append(buf: *mut BitBuffer, other: *const BitBuffer);
 }
 extern "C" {
-    #[doc = "Append a BitBuffer's instance contents to this one, starting from start_index.\n The destination capacity must be no less than the source data size\n counting from start_index.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to be appended to\n * `[in]` - other pointer to a BitBuffer instance to be appended\n * `[in]` - start_index index to begin copying source data from"]
+    #[doc = "Append a BitBuffer's instance contents to this one, starting from\n start_index.\n\n The destination capacity must be no less than the source data\n size counting from start_index.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance to be appended to\n * `other` (direction in) - pointer to a BitBuffer instance to be appended\n * `start_index` (direction in) - index to begin copying source data from"]
     pub fn bit_buffer_append_right(
         buf: *mut BitBuffer,
         other: *const BitBuffer,
@@ -20859,16 +20921,896 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Append a byte to a BitBuffer instance.\n The destination capacity must be no less its original data size plus one.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to be appended to\n * `[in]` - byte byte value to be appended"]
+    #[doc = "Append a byte to a BitBuffer instance.\n\n The destination capacity must be no less its original data\n size plus one.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance to be appended to\n * `byte` (direction in) - byte value to be appended"]
     pub fn bit_buffer_append_byte(buf: *mut BitBuffer, byte: u8);
 }
 extern "C" {
-    #[doc = "Append a byte array to a BitBuffer instance.\n The destination capacity must be no less its original data size plus source data size.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to be appended to\n * `[in]` - data pointer to the byte array to be appended\n * `[in]` - size_bytes size of the data to be appended, in bytes"]
+    #[doc = "Append a byte array to a BitBuffer instance.\n\n The destination capacity must be no less its original data\n size plus source data size.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance to be appended to\n * `data` (direction in) - pointer to the byte array to be appended\n * `size_bytes` (direction in) - size of the data to be appended, in bytes"]
     pub fn bit_buffer_append_bytes(buf: *mut BitBuffer, data: *const u8, size_bytes: usize);
 }
 extern "C" {
-    #[doc = "Append a bit to a BitBuffer instance.\n The destination capacity must be sufficient to accomodate the additional bit.\n\n # Arguments\n\n* `[in,out]` - buf pointer to a BitBuffer instance to be appended to\n * `[in]` - bit bit value to be appended"]
+    #[doc = "Append a bit to a BitBuffer instance.\n\n The destination capacity must be sufficient to accommodate the\n additional bit.\n\n # Arguments\n\n* `buf` (direction in, out) - pointer to a BitBuffer instance to be appended to\n * `bit` (direction in) - bit value to be appended"]
     pub fn bit_buffer_append_bit(buf: *mut BitBuffer, bit: bool);
+}
+#[doc = "< Display full(verbose) name."]
+pub const NfcDeviceNameType_NfcDeviceNameTypeFull: NfcDeviceNameType = 0;
+#[doc = "< Display shortened name."]
+pub const NfcDeviceNameType_NfcDeviceNameTypeShort: NfcDeviceNameType = 1;
+#[doc = "Verbosity level of the displayed NFC device name."]
+pub type NfcDeviceNameType = core::ffi::c_uchar;
+#[doc = "Generic opaque type for protocol-specific NFC device data."]
+pub type NfcDeviceData = core::ffi::c_void;
+pub const Iso14443_3aError_Iso14443_3aErrorNone: Iso14443_3aError = 0;
+pub const Iso14443_3aError_Iso14443_3aErrorNotPresent: Iso14443_3aError = 1;
+pub const Iso14443_3aError_Iso14443_3aErrorColResFailed: Iso14443_3aError = 2;
+pub const Iso14443_3aError_Iso14443_3aErrorBufferOverflow: Iso14443_3aError = 3;
+pub const Iso14443_3aError_Iso14443_3aErrorCommunication: Iso14443_3aError = 4;
+pub const Iso14443_3aError_Iso14443_3aErrorFieldOff: Iso14443_3aError = 5;
+pub const Iso14443_3aError_Iso14443_3aErrorWrongCrc: Iso14443_3aError = 6;
+pub const Iso14443_3aError_Iso14443_3aErrorTimeout: Iso14443_3aError = 7;
+pub type Iso14443_3aError = core::ffi::c_uchar;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Iso14443_3aData {
+    pub uid: [u8; 10usize],
+    pub uid_len: u8,
+    pub atqa: [u8; 2usize],
+    pub sak: u8,
+}
+#[test]
+fn bindgen_test_layout_Iso14443_3aData() {
+    const UNINIT: ::core::mem::MaybeUninit<Iso14443_3aData> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<Iso14443_3aData>(),
+        14usize,
+        concat!("Size of: ", stringify!(Iso14443_3aData))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<Iso14443_3aData>(),
+        1usize,
+        concat!("Alignment of ", stringify!(Iso14443_3aData))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).uid) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Iso14443_3aData),
+            "::",
+            stringify!(uid)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).uid_len) as usize - ptr as usize },
+        10usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Iso14443_3aData),
+            "::",
+            stringify!(uid_len)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).atqa) as usize - ptr as usize },
+        11usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Iso14443_3aData),
+            "::",
+            stringify!(atqa)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).sak) as usize - ptr as usize },
+        13usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Iso14443_3aData),
+            "::",
+            stringify!(sak)
+        )
+    );
+}
+extern "C" {
+    pub fn iso14443_3a_alloc() -> *mut Iso14443_3aData;
+}
+extern "C" {
+    pub fn iso14443_3a_free(data: *mut Iso14443_3aData);
+}
+extern "C" {
+    pub fn iso14443_3a_reset(data: *mut Iso14443_3aData);
+}
+extern "C" {
+    pub fn iso14443_3a_copy(data: *mut Iso14443_3aData, other: *const Iso14443_3aData);
+}
+extern "C" {
+    pub fn iso14443_3a_verify(data: *mut Iso14443_3aData, device_type: *const FuriString) -> bool;
+}
+extern "C" {
+    pub fn iso14443_3a_load(
+        data: *mut Iso14443_3aData,
+        ff: *mut FlipperFormat,
+        version: u32,
+    ) -> bool;
+}
+extern "C" {
+    pub fn iso14443_3a_save(data: *const Iso14443_3aData, ff: *mut FlipperFormat) -> bool;
+}
+extern "C" {
+    pub fn iso14443_3a_is_equal(
+        data: *const Iso14443_3aData,
+        other: *const Iso14443_3aData,
+    ) -> bool;
+}
+extern "C" {
+    pub fn iso14443_3a_get_device_name(
+        data: *const Iso14443_3aData,
+        name_type: NfcDeviceNameType,
+    ) -> *const core::ffi::c_char;
+}
+extern "C" {
+    pub fn iso14443_3a_get_uid(data: *const Iso14443_3aData, uid_len: *mut usize) -> *const u8;
+}
+extern "C" {
+    pub fn iso14443_3a_set_uid(data: *mut Iso14443_3aData, uid: *const u8, uid_len: usize) -> bool;
+}
+extern "C" {
+    pub fn iso14443_3a_get_base_data(data: *const Iso14443_3aData) -> *mut Iso14443_3aData;
+}
+extern "C" {
+    pub fn iso14443_3a_get_cuid(data: *const Iso14443_3aData) -> u32;
+}
+extern "C" {
+    pub fn iso14443_3a_supports_iso14443_4(data: *const Iso14443_3aData) -> bool;
+}
+extern "C" {
+    pub fn iso14443_3a_get_sak(data: *const Iso14443_3aData) -> u8;
+}
+extern "C" {
+    pub fn iso14443_3a_get_atqa(data: *const Iso14443_3aData, atqa: *mut u8);
+}
+extern "C" {
+    pub fn iso14443_3a_set_sak(data: *mut Iso14443_3aData, sak: u8);
+}
+extern "C" {
+    pub fn iso14443_3a_set_atqa(data: *mut Iso14443_3aData, atqa: *const u8);
+}
+pub const MfClassicError_MfClassicErrorNone: MfClassicError = 0;
+pub const MfClassicError_MfClassicErrorNotPresent: MfClassicError = 1;
+pub const MfClassicError_MfClassicErrorProtocol: MfClassicError = 2;
+pub const MfClassicError_MfClassicErrorAuth: MfClassicError = 3;
+pub const MfClassicError_MfClassicErrorPartialRead: MfClassicError = 4;
+pub const MfClassicError_MfClassicErrorTimeout: MfClassicError = 5;
+pub type MfClassicError = core::ffi::c_uchar;
+pub const MfClassicType_MfClassicTypeMini: MfClassicType = 0;
+pub const MfClassicType_MfClassicType1k: MfClassicType = 1;
+pub const MfClassicType_MfClassicType4k: MfClassicType = 2;
+pub const MfClassicType_MfClassicTypeNum: MfClassicType = 3;
+pub type MfClassicType = core::ffi::c_uchar;
+pub const MfClassicAction_MfClassicActionDataRead: MfClassicAction = 0;
+pub const MfClassicAction_MfClassicActionDataWrite: MfClassicAction = 1;
+pub const MfClassicAction_MfClassicActionDataInc: MfClassicAction = 2;
+pub const MfClassicAction_MfClassicActionDataDec: MfClassicAction = 3;
+pub const MfClassicAction_MfClassicActionKeyARead: MfClassicAction = 4;
+pub const MfClassicAction_MfClassicActionKeyAWrite: MfClassicAction = 5;
+pub const MfClassicAction_MfClassicActionKeyBRead: MfClassicAction = 6;
+pub const MfClassicAction_MfClassicActionKeyBWrite: MfClassicAction = 7;
+pub const MfClassicAction_MfClassicActionACRead: MfClassicAction = 8;
+pub const MfClassicAction_MfClassicActionACWrite: MfClassicAction = 9;
+pub type MfClassicAction = core::ffi::c_uchar;
+pub const MfClassicValueCommand_MfClassicValueCommandIncrement: MfClassicValueCommand = 0;
+pub const MfClassicValueCommand_MfClassicValueCommandDecrement: MfClassicValueCommand = 1;
+pub const MfClassicValueCommand_MfClassicValueCommandRestore: MfClassicValueCommand = 2;
+pub const MfClassicValueCommand_MfClassicValueCommandInvalid: MfClassicValueCommand = 3;
+pub type MfClassicValueCommand = core::ffi::c_uchar;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct MfClassicBlock {
+    pub data: [u8; 16usize],
+}
+#[test]
+fn bindgen_test_layout_MfClassicBlock() {
+    const UNINIT: ::core::mem::MaybeUninit<MfClassicBlock> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfClassicBlock>(),
+        16usize,
+        concat!("Size of: ", stringify!(MfClassicBlock))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfClassicBlock>(),
+        1usize,
+        concat!("Alignment of ", stringify!(MfClassicBlock))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicBlock),
+            "::",
+            stringify!(data)
+        )
+    );
+}
+pub const MfClassicKeyType_MfClassicKeyTypeA: MfClassicKeyType = 0;
+pub const MfClassicKeyType_MfClassicKeyTypeB: MfClassicKeyType = 1;
+pub type MfClassicKeyType = core::ffi::c_uchar;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct MfClassicKey {
+    pub data: [u8; 6usize],
+}
+#[test]
+fn bindgen_test_layout_MfClassicKey() {
+    const UNINIT: ::core::mem::MaybeUninit<MfClassicKey> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfClassicKey>(),
+        6usize,
+        concat!("Size of: ", stringify!(MfClassicKey))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfClassicKey>(),
+        1usize,
+        concat!("Alignment of ", stringify!(MfClassicKey))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicKey),
+            "::",
+            stringify!(data)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct MfClassicAccessBits {
+    pub data: [u8; 4usize],
+}
+#[test]
+fn bindgen_test_layout_MfClassicAccessBits() {
+    const UNINIT: ::core::mem::MaybeUninit<MfClassicAccessBits> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfClassicAccessBits>(),
+        4usize,
+        concat!("Size of: ", stringify!(MfClassicAccessBits))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfClassicAccessBits>(),
+        1usize,
+        concat!("Alignment of ", stringify!(MfClassicAccessBits))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicAccessBits),
+            "::",
+            stringify!(data)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct MfClassicNt {
+    pub data: [u8; 4usize],
+}
+#[test]
+fn bindgen_test_layout_MfClassicNt() {
+    const UNINIT: ::core::mem::MaybeUninit<MfClassicNt> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfClassicNt>(),
+        4usize,
+        concat!("Size of: ", stringify!(MfClassicNt))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfClassicNt>(),
+        1usize,
+        concat!("Alignment of ", stringify!(MfClassicNt))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicNt),
+            "::",
+            stringify!(data)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct MfClassicAt {
+    pub data: [u8; 4usize],
+}
+#[test]
+fn bindgen_test_layout_MfClassicAt() {
+    const UNINIT: ::core::mem::MaybeUninit<MfClassicAt> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfClassicAt>(),
+        4usize,
+        concat!("Size of: ", stringify!(MfClassicAt))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfClassicAt>(),
+        1usize,
+        concat!("Alignment of ", stringify!(MfClassicAt))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicAt),
+            "::",
+            stringify!(data)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct MfClassicNr {
+    pub data: [u8; 4usize],
+}
+#[test]
+fn bindgen_test_layout_MfClassicNr() {
+    const UNINIT: ::core::mem::MaybeUninit<MfClassicNr> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfClassicNr>(),
+        4usize,
+        concat!("Size of: ", stringify!(MfClassicNr))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfClassicNr>(),
+        1usize,
+        concat!("Alignment of ", stringify!(MfClassicNr))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicNr),
+            "::",
+            stringify!(data)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct MfClassicAr {
+    pub data: [u8; 4usize],
+}
+#[test]
+fn bindgen_test_layout_MfClassicAr() {
+    const UNINIT: ::core::mem::MaybeUninit<MfClassicAr> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfClassicAr>(),
+        4usize,
+        concat!("Size of: ", stringify!(MfClassicAr))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfClassicAr>(),
+        1usize,
+        concat!("Alignment of ", stringify!(MfClassicAr))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicAr),
+            "::",
+            stringify!(data)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct MfClassicAuthContext {
+    pub block_num: u8,
+    pub key: MfClassicKey,
+    pub key_type: MfClassicKeyType,
+    pub nt: MfClassicNt,
+    pub nr: MfClassicNr,
+    pub ar: MfClassicAr,
+    pub at: MfClassicAt,
+}
+#[test]
+fn bindgen_test_layout_MfClassicAuthContext() {
+    const UNINIT: ::core::mem::MaybeUninit<MfClassicAuthContext> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfClassicAuthContext>(),
+        24usize,
+        concat!("Size of: ", stringify!(MfClassicAuthContext))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfClassicAuthContext>(),
+        1usize,
+        concat!("Alignment of ", stringify!(MfClassicAuthContext))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).block_num) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicAuthContext),
+            "::",
+            stringify!(block_num)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        1usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicAuthContext),
+            "::",
+            stringify!(key)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_type) as usize - ptr as usize },
+        7usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicAuthContext),
+            "::",
+            stringify!(key_type)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).nt) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicAuthContext),
+            "::",
+            stringify!(nt)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).nr) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicAuthContext),
+            "::",
+            stringify!(nr)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).ar) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicAuthContext),
+            "::",
+            stringify!(ar)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).at) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicAuthContext),
+            "::",
+            stringify!(at)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union MfClassicSectorTrailer {
+    pub block: MfClassicBlock,
+    pub __bindgen_anon_1: MfClassicSectorTrailer__bindgen_ty_1,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct MfClassicSectorTrailer__bindgen_ty_1 {
+    pub key_a: MfClassicKey,
+    pub access_bits: MfClassicAccessBits,
+    pub key_b: MfClassicKey,
+}
+#[test]
+fn bindgen_test_layout_MfClassicSectorTrailer__bindgen_ty_1() {
+    const UNINIT: ::core::mem::MaybeUninit<MfClassicSectorTrailer__bindgen_ty_1> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfClassicSectorTrailer__bindgen_ty_1>(),
+        16usize,
+        concat!(
+            "Size of: ",
+            stringify!(MfClassicSectorTrailer__bindgen_ty_1)
+        )
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfClassicSectorTrailer__bindgen_ty_1>(),
+        1usize,
+        concat!(
+            "Alignment of ",
+            stringify!(MfClassicSectorTrailer__bindgen_ty_1)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_a) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicSectorTrailer__bindgen_ty_1),
+            "::",
+            stringify!(key_a)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).access_bits) as usize - ptr as usize },
+        6usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicSectorTrailer__bindgen_ty_1),
+            "::",
+            stringify!(access_bits)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_b) as usize - ptr as usize },
+        10usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicSectorTrailer__bindgen_ty_1),
+            "::",
+            stringify!(key_b)
+        )
+    );
+}
+#[test]
+fn bindgen_test_layout_MfClassicSectorTrailer() {
+    const UNINIT: ::core::mem::MaybeUninit<MfClassicSectorTrailer> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfClassicSectorTrailer>(),
+        16usize,
+        concat!("Size of: ", stringify!(MfClassicSectorTrailer))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfClassicSectorTrailer>(),
+        1usize,
+        concat!("Alignment of ", stringify!(MfClassicSectorTrailer))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).block) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicSectorTrailer),
+            "::",
+            stringify!(block)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct MfClassicDeviceKeys {
+    pub key_a_mask: u64,
+    pub key_a: [MfClassicKey; 40usize],
+    pub key_b_mask: u64,
+    pub key_b: [MfClassicKey; 40usize],
+}
+#[test]
+fn bindgen_test_layout_MfClassicDeviceKeys() {
+    const UNINIT: ::core::mem::MaybeUninit<MfClassicDeviceKeys> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfClassicDeviceKeys>(),
+        496usize,
+        concat!("Size of: ", stringify!(MfClassicDeviceKeys))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfClassicDeviceKeys>(),
+        8usize,
+        concat!("Alignment of ", stringify!(MfClassicDeviceKeys))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_a_mask) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicDeviceKeys),
+            "::",
+            stringify!(key_a_mask)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_a) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicDeviceKeys),
+            "::",
+            stringify!(key_a)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_b_mask) as usize - ptr as usize },
+        248usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicDeviceKeys),
+            "::",
+            stringify!(key_b_mask)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_b) as usize - ptr as usize },
+        256usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicDeviceKeys),
+            "::",
+            stringify!(key_b)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct MfClassicData {
+    pub iso14443_3a_data: *mut Iso14443_3aData,
+    pub type_: MfClassicType,
+    pub block_read_mask: [u32; 8usize],
+    pub key_a_mask: u64,
+    pub key_b_mask: u64,
+    pub block: [MfClassicBlock; 256usize],
+}
+#[test]
+fn bindgen_test_layout_MfClassicData() {
+    const UNINIT: ::core::mem::MaybeUninit<MfClassicData> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfClassicData>(),
+        4152usize,
+        concat!("Size of: ", stringify!(MfClassicData))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfClassicData>(),
+        8usize,
+        concat!("Alignment of ", stringify!(MfClassicData))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).iso14443_3a_data) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicData),
+            "::",
+            stringify!(iso14443_3a_data)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicData),
+            "::",
+            stringify!(type_)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).block_read_mask) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicData),
+            "::",
+            stringify!(block_read_mask)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_a_mask) as usize - ptr as usize },
+        40usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicData),
+            "::",
+            stringify!(key_a_mask)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_b_mask) as usize - ptr as usize },
+        48usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicData),
+            "::",
+            stringify!(key_b_mask)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).block) as usize - ptr as usize },
+        56usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfClassicData),
+            "::",
+            stringify!(block)
+        )
+    );
+}
+extern "C" {
+    pub fn mf_classic_alloc() -> *mut MfClassicData;
+}
+extern "C" {
+    pub fn mf_classic_free(data: *mut MfClassicData);
+}
+extern "C" {
+    pub fn mf_classic_reset(data: *mut MfClassicData);
+}
+extern "C" {
+    pub fn mf_classic_copy(data: *mut MfClassicData, other: *const MfClassicData);
+}
+extern "C" {
+    pub fn mf_classic_verify(data: *mut MfClassicData, device_type: *const FuriString) -> bool;
+}
+extern "C" {
+    pub fn mf_classic_load(data: *mut MfClassicData, ff: *mut FlipperFormat, version: u32) -> bool;
+}
+extern "C" {
+    pub fn mf_classic_save(data: *const MfClassicData, ff: *mut FlipperFormat) -> bool;
+}
+extern "C" {
+    pub fn mf_classic_is_equal(data: *const MfClassicData, other: *const MfClassicData) -> bool;
+}
+extern "C" {
+    pub fn mf_classic_get_device_name(
+        data: *const MfClassicData,
+        name_type: NfcDeviceNameType,
+    ) -> *const core::ffi::c_char;
+}
+extern "C" {
+    pub fn mf_classic_get_uid(data: *const MfClassicData, uid_len: *mut usize) -> *const u8;
+}
+extern "C" {
+    pub fn mf_classic_set_uid(data: *mut MfClassicData, uid: *const u8, uid_len: usize) -> bool;
+}
+extern "C" {
+    pub fn mf_classic_get_base_data(data: *const MfClassicData) -> *mut Iso14443_3aData;
+}
+extern "C" {
+    pub fn mf_classic_get_total_sectors_num(type_: MfClassicType) -> u8;
+}
+extern "C" {
+    pub fn mf_classic_get_total_block_num(type_: MfClassicType) -> u16;
+}
+extern "C" {
+    pub fn mf_classic_get_first_block_num_of_sector(sector: u8) -> u8;
+}
+extern "C" {
+    pub fn mf_classic_get_blocks_num_in_sector(sector: u8) -> u8;
+}
+extern "C" {
+    pub fn mf_classic_get_sector_trailer_num_by_sector(sector: u8) -> u8;
+}
+extern "C" {
+    pub fn mf_classic_get_sector_trailer_num_by_block(block: u8) -> u8;
+}
+extern "C" {
+    pub fn mf_classic_get_sector_trailer_by_sector(
+        data: *const MfClassicData,
+        sector_num: u8,
+    ) -> *mut MfClassicSectorTrailer;
+}
+extern "C" {
+    pub fn mf_classic_is_sector_trailer(block: u8) -> bool;
+}
+extern "C" {
+    pub fn mf_classic_set_sector_trailer_read(
+        data: *mut MfClassicData,
+        block_num: u8,
+        sec_tr: *mut MfClassicSectorTrailer,
+    );
+}
+extern "C" {
+    pub fn mf_classic_get_sector_by_block(block: u8) -> u8;
+}
+extern "C" {
+    pub fn mf_classic_block_to_value(
+        block: *const MfClassicBlock,
+        value: *mut i32,
+        addr: *mut u8,
+    ) -> bool;
+}
+extern "C" {
+    pub fn mf_classic_value_to_block(value: i32, addr: u8, block: *mut MfClassicBlock);
+}
+extern "C" {
+    pub fn mf_classic_is_key_found(
+        data: *const MfClassicData,
+        sector_num: u8,
+        key_type: MfClassicKeyType,
+    ) -> bool;
+}
+extern "C" {
+    pub fn mf_classic_set_key_found(
+        data: *mut MfClassicData,
+        sector_num: u8,
+        key_type: MfClassicKeyType,
+        key: u64,
+    );
+}
+extern "C" {
+    pub fn mf_classic_set_key_not_found(
+        data: *mut MfClassicData,
+        sector_num: u8,
+        key_type: MfClassicKeyType,
+    );
+}
+extern "C" {
+    pub fn mf_classic_get_key(
+        data: *const MfClassicData,
+        sector_num: u8,
+        key_type: MfClassicKeyType,
+    ) -> MfClassicKey;
+}
+extern "C" {
+    pub fn mf_classic_is_block_read(data: *const MfClassicData, block_num: u8) -> bool;
+}
+extern "C" {
+    pub fn mf_classic_set_block_read(
+        data: *mut MfClassicData,
+        block_num: u8,
+        block_data: *mut MfClassicBlock,
+    );
+}
+extern "C" {
+    pub fn mf_classic_is_sector_read(data: *const MfClassicData, sector_num: u8) -> bool;
+}
+extern "C" {
+    pub fn mf_classic_get_read_sectors_and_keys(
+        data: *const MfClassicData,
+        sectors_read: *mut u8,
+        keys_found: *mut u8,
+    );
+}
+extern "C" {
+    pub fn mf_classic_is_card_read(data: *const MfClassicData) -> bool;
+}
+extern "C" {
+    pub fn mf_classic_is_value_block(sec_tr: *mut MfClassicSectorTrailer, block_num: u8) -> bool;
+}
+extern "C" {
+    pub fn mf_classic_is_allowed_access_data_block(
+        sec_tr: *mut MfClassicSectorTrailer,
+        block_num: u8,
+        key_type: MfClassicKeyType,
+        action: MfClassicAction,
+    ) -> bool;
+}
+extern "C" {
+    pub fn mf_classic_is_allowed_access(
+        data: *mut MfClassicData,
+        block_num: u8,
+        key_type: MfClassicKeyType,
+        action: MfClassicAction,
+    ) -> bool;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -20955,7 +21897,20 @@ extern "C" {
     );
 }
 extern "C" {
-    pub fn prng_successor(x: u32, n: u32) -> u32;
+    pub fn crypto1_lfsr_rollback_word(crypto1: *mut Crypto1, in_: u32, fb: core::ffi::c_int)
+        -> u32;
+}
+extern "C" {
+    pub fn crypto1_nonce_matches_encrypted_parity_bits(nt: u32, ks: u32, nt_par_enc: u8) -> bool;
+}
+extern "C" {
+    pub fn crypto1_is_weak_prng_nonce(nonce: u32) -> bool;
+}
+extern "C" {
+    pub fn crypto1_decrypt_nt_enc(cuid: u32, nt_enc: u32, known_key: MfClassicKey) -> u32;
+}
+extern "C" {
+    pub fn crypto1_prng_successor(x: u32, n: u32) -> u32;
 }
 pub const Iso13239CrcType_Iso13239CrcTypeDefault: Iso13239CrcType = 0;
 pub const Iso13239CrcType_Iso13239CrcTypePicopass: Iso13239CrcType = 1;
@@ -20981,14 +21936,6 @@ extern "C" {
 extern "C" {
     pub fn iso14443_crc_trim(buf: *mut BitBuffer);
 }
-#[doc = "< Display full(verbose) name."]
-pub const NfcDeviceNameType_NfcDeviceNameTypeFull: NfcDeviceNameType = 0;
-#[doc = "< Display shortened name."]
-pub const NfcDeviceNameType_NfcDeviceNameTypeShort: NfcDeviceNameType = 1;
-#[doc = "Verbosity level of the displayed NFC device name."]
-pub type NfcDeviceNameType = core::ffi::c_uchar;
-#[doc = "Generic opaque type for protocol-specific NFC device data."]
-pub type NfcDeviceData = core::ffi::c_void;
 pub const NfcProtocol_NfcProtocolIso14443_3a: NfcProtocol = 0;
 pub const NfcProtocol_NfcProtocolIso14443_3b: NfcProtocol = 1;
 pub const NfcProtocol_NfcProtocolIso14443_4a: NfcProtocol = 2;
@@ -21138,6 +22085,9 @@ extern "C" {
 }
 extern "C" {
     pub fn nfc_data_generator_fill_data(type_: NfcDataGeneratorType, nfc_device: *mut NfcDevice);
+}
+extern "C" {
+    pub fn nfc_util_even_parity8(data: u8) -> u8;
 }
 extern "C" {
     pub fn nfc_util_even_parity32(data: u32) -> u8;
@@ -22293,142 +23243,6 @@ extern "C" {
         card_key: *const FelicaCardKey,
     ) -> FelicaError;
 }
-pub const Iso14443_3aError_Iso14443_3aErrorNone: Iso14443_3aError = 0;
-pub const Iso14443_3aError_Iso14443_3aErrorNotPresent: Iso14443_3aError = 1;
-pub const Iso14443_3aError_Iso14443_3aErrorColResFailed: Iso14443_3aError = 2;
-pub const Iso14443_3aError_Iso14443_3aErrorBufferOverflow: Iso14443_3aError = 3;
-pub const Iso14443_3aError_Iso14443_3aErrorCommunication: Iso14443_3aError = 4;
-pub const Iso14443_3aError_Iso14443_3aErrorFieldOff: Iso14443_3aError = 5;
-pub const Iso14443_3aError_Iso14443_3aErrorWrongCrc: Iso14443_3aError = 6;
-pub const Iso14443_3aError_Iso14443_3aErrorTimeout: Iso14443_3aError = 7;
-pub type Iso14443_3aError = core::ffi::c_uchar;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Iso14443_3aData {
-    pub uid: [u8; 10usize],
-    pub uid_len: u8,
-    pub atqa: [u8; 2usize],
-    pub sak: u8,
-}
-#[test]
-fn bindgen_test_layout_Iso14443_3aData() {
-    const UNINIT: ::core::mem::MaybeUninit<Iso14443_3aData> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<Iso14443_3aData>(),
-        14usize,
-        concat!("Size of: ", stringify!(Iso14443_3aData))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<Iso14443_3aData>(),
-        1usize,
-        concat!("Alignment of ", stringify!(Iso14443_3aData))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).uid) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(Iso14443_3aData),
-            "::",
-            stringify!(uid)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).uid_len) as usize - ptr as usize },
-        10usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(Iso14443_3aData),
-            "::",
-            stringify!(uid_len)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).atqa) as usize - ptr as usize },
-        11usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(Iso14443_3aData),
-            "::",
-            stringify!(atqa)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).sak) as usize - ptr as usize },
-        13usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(Iso14443_3aData),
-            "::",
-            stringify!(sak)
-        )
-    );
-}
-extern "C" {
-    pub fn iso14443_3a_alloc() -> *mut Iso14443_3aData;
-}
-extern "C" {
-    pub fn iso14443_3a_free(data: *mut Iso14443_3aData);
-}
-extern "C" {
-    pub fn iso14443_3a_reset(data: *mut Iso14443_3aData);
-}
-extern "C" {
-    pub fn iso14443_3a_copy(data: *mut Iso14443_3aData, other: *const Iso14443_3aData);
-}
-extern "C" {
-    pub fn iso14443_3a_verify(data: *mut Iso14443_3aData, device_type: *const FuriString) -> bool;
-}
-extern "C" {
-    pub fn iso14443_3a_load(
-        data: *mut Iso14443_3aData,
-        ff: *mut FlipperFormat,
-        version: u32,
-    ) -> bool;
-}
-extern "C" {
-    pub fn iso14443_3a_save(data: *const Iso14443_3aData, ff: *mut FlipperFormat) -> bool;
-}
-extern "C" {
-    pub fn iso14443_3a_is_equal(
-        data: *const Iso14443_3aData,
-        other: *const Iso14443_3aData,
-    ) -> bool;
-}
-extern "C" {
-    pub fn iso14443_3a_get_device_name(
-        data: *const Iso14443_3aData,
-        name_type: NfcDeviceNameType,
-    ) -> *const core::ffi::c_char;
-}
-extern "C" {
-    pub fn iso14443_3a_get_uid(data: *const Iso14443_3aData, uid_len: *mut usize) -> *const u8;
-}
-extern "C" {
-    pub fn iso14443_3a_set_uid(data: *mut Iso14443_3aData, uid: *const u8, uid_len: usize) -> bool;
-}
-extern "C" {
-    pub fn iso14443_3a_get_base_data(data: *const Iso14443_3aData) -> *mut Iso14443_3aData;
-}
-extern "C" {
-    pub fn iso14443_3a_get_cuid(data: *const Iso14443_3aData) -> u32;
-}
-extern "C" {
-    pub fn iso14443_3a_supports_iso14443_4(data: *const Iso14443_3aData) -> bool;
-}
-extern "C" {
-    pub fn iso14443_3a_get_sak(data: *const Iso14443_3aData) -> u8;
-}
-extern "C" {
-    pub fn iso14443_3a_get_atqa(data: *const Iso14443_3aData, atqa: *mut u8);
-}
-extern "C" {
-    pub fn iso14443_3a_set_sak(data: *mut Iso14443_3aData, sak: u8);
-}
-extern "C" {
-    pub fn iso14443_3a_set_atqa(data: *mut Iso14443_3aData, atqa: *const u8);
-}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct Iso14443_3aPoller {
@@ -22959,6 +23773,32 @@ extern "C" {
     ) -> Iso14443_4aError;
 }
 extern "C" {
+    #[doc = "Transmit and receive Iso14443_4a chained block in poller mode. Also it\n automatically modifies PCB packet byte with appropriate bits then resets them back\n\n Must ONLY be used inside the callback function.\n\n The rx_buffer will be filled with any data received as a response to data\n sent from tx_buffer. The fwt parameter is calculated during activation procedure.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `tx_buffer` (direction in) - pointer to the buffer containing the data to be transmitted.\n * `rx_buffer` (direction out) - pointer to the buffer to be filled with received data.\n # Returns\n\nIso14443_4aErrorNone on success, an error code on failure."]
+    pub fn iso14443_4a_poller_send_chain_block(
+        instance: *mut Iso14443_4aPoller,
+        tx_buffer: *const BitBuffer,
+        rx_buffer: *mut BitBuffer,
+    ) -> Iso14443_4aError;
+}
+extern "C" {
+    #[doc = "Transmit Iso14443_4a R-block in poller mode. This block never contains\n data, but can contain CID and NAD, therefore in tx_buffer only two bytes can be added.\n The first one will represent CID, the second one will represent NAD.\n\n Must ONLY be used inside the callback function.\n\n The rx_buffer will be filled with R-block repsonse\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `acknowledged` (direction in) - Sets appropriate bit in PCB byte. True - ACK, false - NAK\n * `tx_buffer` (direction in) - pointer to the buffer containing the data to be transmitted.\n * `rx_buffer` (direction out) - pointer to the buffer to be filled with received data.\n # Returns\n\nIso14443_4aErrorNone on success, an error code on failure."]
+    pub fn iso14443_4a_poller_send_receive_ready_block(
+        instance: *mut Iso14443_4aPoller,
+        acknowledged: bool,
+        tx_buffer: *const BitBuffer,
+        rx_buffer: *mut BitBuffer,
+    ) -> Iso14443_4aError;
+}
+extern "C" {
+    #[doc = "Transmit Iso14443_4a S-block in poller mode. S-block used to exchange control\n information between the card and the reader. Two different types of S-blocks\n are defined:\n - Waiting time extension containing a 1 byte long INF field and (deselect = false)\n - DESELECT containing no INF field (deselect = true)\n\n Must ONLY be used inside the callback function.\n\n The rx_buffer will be filled with R-block repsonse\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `deselect` (direction in) - Sets appropriate bit in PCB byte.\n * `tx_buffer` (direction in) - pointer to the buffer containing the data to be transmitted.\n * `rx_buffer` (direction out) - pointer to the buffer to be filled with received data.\n # Returns\n\nIso14443_4aErrorNone on success, an error code on failure."]
+    pub fn iso14443_4a_poller_send_supervisory_block(
+        instance: *mut Iso14443_4aPoller,
+        deselect: bool,
+        tx_buffer: *const BitBuffer,
+        rx_buffer: *mut BitBuffer,
+    ) -> Iso14443_4aError;
+}
+extern "C" {
     #[doc = "Send HALT command to the card.\n\n Must ONLY be used inside the callback function.\n\n Halts card and changes internal Iso14443_4aPoller state to Idle.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n # Returns\n\nIso14443_4aErrorNone on success, an error code on failure."]
     pub fn iso14443_4a_poller_halt(instance: *mut Iso14443_4aPoller) -> Iso14443_4aError;
 }
@@ -23042,776 +23882,52 @@ extern "C" {
     #[doc = "Send HALT command to the card.\n\n Must ONLY be used inside the callback function.\n\n Halts card and changes internal Iso14443_4aPoller state to Idle.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n # Returns\n\nIso14443_4bErrorNone on success, an error code on failure."]
     pub fn iso14443_4b_poller_halt(instance: *mut Iso14443_4bPoller) -> Iso14443_4bError;
 }
-pub const MfClassicError_MfClassicErrorNone: MfClassicError = 0;
-pub const MfClassicError_MfClassicErrorNotPresent: MfClassicError = 1;
-pub const MfClassicError_MfClassicErrorProtocol: MfClassicError = 2;
-pub const MfClassicError_MfClassicErrorAuth: MfClassicError = 3;
-pub const MfClassicError_MfClassicErrorPartialRead: MfClassicError = 4;
-pub const MfClassicError_MfClassicErrorTimeout: MfClassicError = 5;
-pub type MfClassicError = core::ffi::c_uchar;
-pub const MfClassicType_MfClassicTypeMini: MfClassicType = 0;
-pub const MfClassicType_MfClassicType1k: MfClassicType = 1;
-pub const MfClassicType_MfClassicType4k: MfClassicType = 2;
-pub const MfClassicType_MfClassicTypeNum: MfClassicType = 3;
-pub type MfClassicType = core::ffi::c_uchar;
-pub const MfClassicAction_MfClassicActionDataRead: MfClassicAction = 0;
-pub const MfClassicAction_MfClassicActionDataWrite: MfClassicAction = 1;
-pub const MfClassicAction_MfClassicActionDataInc: MfClassicAction = 2;
-pub const MfClassicAction_MfClassicActionDataDec: MfClassicAction = 3;
-pub const MfClassicAction_MfClassicActionKeyARead: MfClassicAction = 4;
-pub const MfClassicAction_MfClassicActionKeyAWrite: MfClassicAction = 5;
-pub const MfClassicAction_MfClassicActionKeyBRead: MfClassicAction = 6;
-pub const MfClassicAction_MfClassicActionKeyBWrite: MfClassicAction = 7;
-pub const MfClassicAction_MfClassicActionACRead: MfClassicAction = 8;
-pub const MfClassicAction_MfClassicActionACWrite: MfClassicAction = 9;
-pub type MfClassicAction = core::ffi::c_uchar;
-pub const MfClassicValueCommand_MfClassicValueCommandIncrement: MfClassicValueCommand = 0;
-pub const MfClassicValueCommand_MfClassicValueCommandDecrement: MfClassicValueCommand = 1;
-pub const MfClassicValueCommand_MfClassicValueCommandRestore: MfClassicValueCommand = 2;
-pub const MfClassicValueCommand_MfClassicValueCommandInvalid: MfClassicValueCommand = 3;
-pub type MfClassicValueCommand = core::ffi::c_uchar;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct MfClassicBlock {
-    pub data: [u8; 16usize],
-}
-#[test]
-fn bindgen_test_layout_MfClassicBlock() {
-    const UNINIT: ::core::mem::MaybeUninit<MfClassicBlock> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<MfClassicBlock>(),
-        16usize,
-        concat!("Size of: ", stringify!(MfClassicBlock))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<MfClassicBlock>(),
-        1usize,
-        concat!("Alignment of ", stringify!(MfClassicBlock))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicBlock),
-            "::",
-            stringify!(data)
-        )
-    );
-}
-pub const MfClassicKeyType_MfClassicKeyTypeA: MfClassicKeyType = 0;
-pub const MfClassicKeyType_MfClassicKeyTypeB: MfClassicKeyType = 1;
-pub type MfClassicKeyType = core::ffi::c_uchar;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct MfClassicKey {
-    pub data: [u8; 6usize],
-}
-#[test]
-fn bindgen_test_layout_MfClassicKey() {
-    const UNINIT: ::core::mem::MaybeUninit<MfClassicKey> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<MfClassicKey>(),
-        6usize,
-        concat!("Size of: ", stringify!(MfClassicKey))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<MfClassicKey>(),
-        1usize,
-        concat!("Alignment of ", stringify!(MfClassicKey))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicKey),
-            "::",
-            stringify!(data)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct MfClassicAccessBits {
-    pub data: [u8; 4usize],
-}
-#[test]
-fn bindgen_test_layout_MfClassicAccessBits() {
-    const UNINIT: ::core::mem::MaybeUninit<MfClassicAccessBits> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<MfClassicAccessBits>(),
-        4usize,
-        concat!("Size of: ", stringify!(MfClassicAccessBits))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<MfClassicAccessBits>(),
-        1usize,
-        concat!("Alignment of ", stringify!(MfClassicAccessBits))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicAccessBits),
-            "::",
-            stringify!(data)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct MfClassicNt {
-    pub data: [u8; 4usize],
-}
-#[test]
-fn bindgen_test_layout_MfClassicNt() {
-    const UNINIT: ::core::mem::MaybeUninit<MfClassicNt> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<MfClassicNt>(),
-        4usize,
-        concat!("Size of: ", stringify!(MfClassicNt))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<MfClassicNt>(),
-        1usize,
-        concat!("Alignment of ", stringify!(MfClassicNt))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicNt),
-            "::",
-            stringify!(data)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct MfClassicAt {
-    pub data: [u8; 4usize],
-}
-#[test]
-fn bindgen_test_layout_MfClassicAt() {
-    const UNINIT: ::core::mem::MaybeUninit<MfClassicAt> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<MfClassicAt>(),
-        4usize,
-        concat!("Size of: ", stringify!(MfClassicAt))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<MfClassicAt>(),
-        1usize,
-        concat!("Alignment of ", stringify!(MfClassicAt))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicAt),
-            "::",
-            stringify!(data)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct MfClassicNr {
-    pub data: [u8; 4usize],
-}
-#[test]
-fn bindgen_test_layout_MfClassicNr() {
-    const UNINIT: ::core::mem::MaybeUninit<MfClassicNr> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<MfClassicNr>(),
-        4usize,
-        concat!("Size of: ", stringify!(MfClassicNr))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<MfClassicNr>(),
-        1usize,
-        concat!("Alignment of ", stringify!(MfClassicNr))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicNr),
-            "::",
-            stringify!(data)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct MfClassicAr {
-    pub data: [u8; 4usize],
-}
-#[test]
-fn bindgen_test_layout_MfClassicAr() {
-    const UNINIT: ::core::mem::MaybeUninit<MfClassicAr> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<MfClassicAr>(),
-        4usize,
-        concat!("Size of: ", stringify!(MfClassicAr))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<MfClassicAr>(),
-        1usize,
-        concat!("Alignment of ", stringify!(MfClassicAr))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicAr),
-            "::",
-            stringify!(data)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct MfClassicAuthContext {
-    pub block_num: u8,
-    pub key: MfClassicKey,
-    pub key_type: MfClassicKeyType,
-    pub nt: MfClassicNt,
-    pub nr: MfClassicNr,
-    pub ar: MfClassicAr,
-    pub at: MfClassicAt,
-}
-#[test]
-fn bindgen_test_layout_MfClassicAuthContext() {
-    const UNINIT: ::core::mem::MaybeUninit<MfClassicAuthContext> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<MfClassicAuthContext>(),
-        24usize,
-        concat!("Size of: ", stringify!(MfClassicAuthContext))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<MfClassicAuthContext>(),
-        1usize,
-        concat!("Alignment of ", stringify!(MfClassicAuthContext))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).block_num) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicAuthContext),
-            "::",
-            stringify!(block_num)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
-        1usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicAuthContext),
-            "::",
-            stringify!(key)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).key_type) as usize - ptr as usize },
-        7usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicAuthContext),
-            "::",
-            stringify!(key_type)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).nt) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicAuthContext),
-            "::",
-            stringify!(nt)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).nr) as usize - ptr as usize },
-        12usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicAuthContext),
-            "::",
-            stringify!(nr)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).ar) as usize - ptr as usize },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicAuthContext),
-            "::",
-            stringify!(ar)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).at) as usize - ptr as usize },
-        20usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicAuthContext),
-            "::",
-            stringify!(at)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union MfClassicSectorTrailer {
-    pub block: MfClassicBlock,
-    pub __bindgen_anon_1: MfClassicSectorTrailer__bindgen_ty_1,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct MfClassicSectorTrailer__bindgen_ty_1 {
-    pub key_a: MfClassicKey,
-    pub access_bits: MfClassicAccessBits,
-    pub key_b: MfClassicKey,
-}
-#[test]
-fn bindgen_test_layout_MfClassicSectorTrailer__bindgen_ty_1() {
-    const UNINIT: ::core::mem::MaybeUninit<MfClassicSectorTrailer__bindgen_ty_1> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<MfClassicSectorTrailer__bindgen_ty_1>(),
-        16usize,
-        concat!(
-            "Size of: ",
-            stringify!(MfClassicSectorTrailer__bindgen_ty_1)
-        )
-    );
-    assert_eq!(
-        ::core::mem::align_of::<MfClassicSectorTrailer__bindgen_ty_1>(),
-        1usize,
-        concat!(
-            "Alignment of ",
-            stringify!(MfClassicSectorTrailer__bindgen_ty_1)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).key_a) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicSectorTrailer__bindgen_ty_1),
-            "::",
-            stringify!(key_a)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).access_bits) as usize - ptr as usize },
-        6usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicSectorTrailer__bindgen_ty_1),
-            "::",
-            stringify!(access_bits)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).key_b) as usize - ptr as usize },
-        10usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicSectorTrailer__bindgen_ty_1),
-            "::",
-            stringify!(key_b)
-        )
-    );
-}
-#[test]
-fn bindgen_test_layout_MfClassicSectorTrailer() {
-    const UNINIT: ::core::mem::MaybeUninit<MfClassicSectorTrailer> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<MfClassicSectorTrailer>(),
-        16usize,
-        concat!("Size of: ", stringify!(MfClassicSectorTrailer))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<MfClassicSectorTrailer>(),
-        1usize,
-        concat!("Alignment of ", stringify!(MfClassicSectorTrailer))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).block) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicSectorTrailer),
-            "::",
-            stringify!(block)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct MfClassicDeviceKeys {
-    pub key_a_mask: u64,
-    pub key_a: [MfClassicKey; 40usize],
-    pub key_b_mask: u64,
-    pub key_b: [MfClassicKey; 40usize],
-}
-#[test]
-fn bindgen_test_layout_MfClassicDeviceKeys() {
-    const UNINIT: ::core::mem::MaybeUninit<MfClassicDeviceKeys> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<MfClassicDeviceKeys>(),
-        496usize,
-        concat!("Size of: ", stringify!(MfClassicDeviceKeys))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<MfClassicDeviceKeys>(),
-        8usize,
-        concat!("Alignment of ", stringify!(MfClassicDeviceKeys))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).key_a_mask) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicDeviceKeys),
-            "::",
-            stringify!(key_a_mask)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).key_a) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicDeviceKeys),
-            "::",
-            stringify!(key_a)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).key_b_mask) as usize - ptr as usize },
-        248usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicDeviceKeys),
-            "::",
-            stringify!(key_b_mask)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).key_b) as usize - ptr as usize },
-        256usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicDeviceKeys),
-            "::",
-            stringify!(key_b)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct MfClassicData {
-    pub iso14443_3a_data: *mut Iso14443_3aData,
-    pub type_: MfClassicType,
-    pub block_read_mask: [u32; 8usize],
-    pub key_a_mask: u64,
-    pub key_b_mask: u64,
-    pub block: [MfClassicBlock; 256usize],
-}
-#[test]
-fn bindgen_test_layout_MfClassicData() {
-    const UNINIT: ::core::mem::MaybeUninit<MfClassicData> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<MfClassicData>(),
-        4152usize,
-        concat!("Size of: ", stringify!(MfClassicData))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<MfClassicData>(),
-        8usize,
-        concat!("Alignment of ", stringify!(MfClassicData))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).iso14443_3a_data) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicData),
-            "::",
-            stringify!(iso14443_3a_data)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicData),
-            "::",
-            stringify!(type_)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).block_read_mask) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicData),
-            "::",
-            stringify!(block_read_mask)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).key_a_mask) as usize - ptr as usize },
-        40usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicData),
-            "::",
-            stringify!(key_a_mask)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).key_b_mask) as usize - ptr as usize },
-        48usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicData),
-            "::",
-            stringify!(key_b_mask)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).block) as usize - ptr as usize },
-        56usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(MfClassicData),
-            "::",
-            stringify!(block)
-        )
-    );
-}
-extern "C" {
-    pub fn mf_classic_alloc() -> *mut MfClassicData;
-}
-extern "C" {
-    pub fn mf_classic_free(data: *mut MfClassicData);
-}
-extern "C" {
-    pub fn mf_classic_reset(data: *mut MfClassicData);
-}
-extern "C" {
-    pub fn mf_classic_copy(data: *mut MfClassicData, other: *const MfClassicData);
-}
-extern "C" {
-    pub fn mf_classic_verify(data: *mut MfClassicData, device_type: *const FuriString) -> bool;
-}
-extern "C" {
-    pub fn mf_classic_load(data: *mut MfClassicData, ff: *mut FlipperFormat, version: u32) -> bool;
-}
-extern "C" {
-    pub fn mf_classic_save(data: *const MfClassicData, ff: *mut FlipperFormat) -> bool;
-}
-extern "C" {
-    pub fn mf_classic_is_equal(data: *const MfClassicData, other: *const MfClassicData) -> bool;
-}
-extern "C" {
-    pub fn mf_classic_get_device_name(
-        data: *const MfClassicData,
-        name_type: NfcDeviceNameType,
-    ) -> *const core::ffi::c_char;
-}
-extern "C" {
-    pub fn mf_classic_get_uid(data: *const MfClassicData, uid_len: *mut usize) -> *const u8;
-}
-extern "C" {
-    pub fn mf_classic_set_uid(data: *mut MfClassicData, uid: *const u8, uid_len: usize) -> bool;
-}
-extern "C" {
-    pub fn mf_classic_get_base_data(data: *const MfClassicData) -> *mut Iso14443_3aData;
-}
-extern "C" {
-    pub fn mf_classic_get_total_sectors_num(type_: MfClassicType) -> u8;
-}
-extern "C" {
-    pub fn mf_classic_get_total_block_num(type_: MfClassicType) -> u16;
-}
-extern "C" {
-    pub fn mf_classic_get_first_block_num_of_sector(sector: u8) -> u8;
-}
-extern "C" {
-    pub fn mf_classic_get_blocks_num_in_sector(sector: u8) -> u8;
-}
-extern "C" {
-    pub fn mf_classic_get_sector_trailer_num_by_sector(sector: u8) -> u8;
-}
-extern "C" {
-    pub fn mf_classic_get_sector_trailer_num_by_block(block: u8) -> u8;
-}
-extern "C" {
-    pub fn mf_classic_get_sector_trailer_by_sector(
-        data: *const MfClassicData,
-        sector_num: u8,
-    ) -> *mut MfClassicSectorTrailer;
-}
-extern "C" {
-    pub fn mf_classic_is_sector_trailer(block: u8) -> bool;
-}
-extern "C" {
-    pub fn mf_classic_set_sector_trailer_read(
-        data: *mut MfClassicData,
-        block_num: u8,
-        sec_tr: *mut MfClassicSectorTrailer,
-    );
-}
-extern "C" {
-    pub fn mf_classic_get_sector_by_block(block: u8) -> u8;
-}
-extern "C" {
-    pub fn mf_classic_block_to_value(
-        block: *const MfClassicBlock,
-        value: *mut i32,
-        addr: *mut u8,
-    ) -> bool;
-}
-extern "C" {
-    pub fn mf_classic_value_to_block(value: i32, addr: u8, block: *mut MfClassicBlock);
-}
-extern "C" {
-    pub fn mf_classic_is_key_found(
-        data: *const MfClassicData,
-        sector_num: u8,
-        key_type: MfClassicKeyType,
-    ) -> bool;
-}
-extern "C" {
-    pub fn mf_classic_set_key_found(
-        data: *mut MfClassicData,
-        sector_num: u8,
-        key_type: MfClassicKeyType,
-        key: u64,
-    );
-}
-extern "C" {
-    pub fn mf_classic_set_key_not_found(
-        data: *mut MfClassicData,
-        sector_num: u8,
-        key_type: MfClassicKeyType,
-    );
-}
-extern "C" {
-    pub fn mf_classic_is_block_read(data: *const MfClassicData, block_num: u8) -> bool;
-}
-extern "C" {
-    pub fn mf_classic_set_block_read(
-        data: *mut MfClassicData,
-        block_num: u8,
-        block_data: *mut MfClassicBlock,
-    );
-}
-extern "C" {
-    pub fn mf_classic_is_sector_read(data: *const MfClassicData, sector_num: u8) -> bool;
-}
-extern "C" {
-    pub fn mf_classic_get_read_sectors_and_keys(
-        data: *const MfClassicData,
-        sectors_read: *mut u8,
-        keys_found: *mut u8,
-    );
-}
-extern "C" {
-    pub fn mf_classic_is_card_read(data: *const MfClassicData) -> bool;
-}
-extern "C" {
-    pub fn mf_classic_is_value_block(sec_tr: *mut MfClassicSectorTrailer, block_num: u8) -> bool;
-}
-extern "C" {
-    pub fn mf_classic_is_allowed_access_data_block(
-        sec_tr: *mut MfClassicSectorTrailer,
-        block_num: u8,
-        key_type: MfClassicKeyType,
-        action: MfClassicAction,
-    ) -> bool;
-}
-extern "C" {
-    pub fn mf_classic_is_allowed_access(
-        data: *mut MfClassicData,
-        block_num: u8,
-        key_type: MfClassicKeyType,
-        action: MfClassicAction,
-    ) -> bool;
-}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct MfClassicPoller {
     _unused: [u8; 0],
 }
 extern "C" {
-    #[doc = "Collect tag nonce during authentication.\n\n Must ONLY be used inside the callback function.\n\n Starts authentication procedure and collects tag nonce.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `block_num` (direction in) - block number for authentication.\n * `key_type` (direction in) - key type to be used for authentication.\n * `nt` (direction out) - pointer to the MfClassicNt structure to be filled with nonce data.\n # Returns\n\nMfClassicErrorNone on success, an error code on failure."]
+    #[doc = "Collect tag nonce during authentication.\n\n Must ONLY be used inside the callback function.\n\n Starts authentication procedure and collects tag nonce.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `block_num` (direction in) - block number for authentication.\n * `key_type` (direction in) - key type to be used for authentication.\n * `nt` (direction out) - pointer to the MfClassicNt structure to be filled with nonce data.\n * `backdoor_auth` (direction in) - flag indicating if backdoor authentication is used.\n # Returns\n\nMfClassicErrorNone on success, an error code on failure."]
     pub fn mf_classic_poller_get_nt(
         instance: *mut MfClassicPoller,
         block_num: u8,
         key_type: MfClassicKeyType,
         nt: *mut MfClassicNt,
+        backdoor_auth: bool,
     ) -> MfClassicError;
 }
 extern "C" {
-    #[doc = "Collect tag nonce during nested authentication.\n\n Must ONLY be used inside the callback function.\n\n Starts nested authentication procedure and collects tag nonce.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `block_num` (direction in) - block number for authentication.\n * `key_type` (direction in) - key type to be used for authentication.\n * `nt` (direction out) - pointer to the MfClassicNt structure to be filled with nonce data.\n # Returns\n\nMfClassicErrorNone on success, an error code on failure."]
+    #[doc = "Collect tag nonce during nested authentication.\n\n Must ONLY be used inside the callback function.\n\n Starts nested authentication procedure and collects tag nonce.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `block_num` (direction in) - block number for authentication.\n * `key_type` (direction in) - key type to be used for authentication.\n * `nt` (direction out) - pointer to the MfClassicNt structure to be filled with nonce data.\n * `backdoor_auth` (direction in) - flag indicating if backdoor authentication is used.\n # Returns\n\nMfClassicErrorNone on success, an error code on failure."]
     pub fn mf_classic_poller_get_nt_nested(
         instance: *mut MfClassicPoller,
         block_num: u8,
         key_type: MfClassicKeyType,
         nt: *mut MfClassicNt,
+        backdoor_auth: bool,
     ) -> MfClassicError;
 }
 extern "C" {
-    #[doc = "Perform authentication.\n\n Must ONLY be used inside the callback function.\n\n Perform authentication as specified in Mf Classic protocol. Initialize crypto state for futher\n communication with the tag.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `block_num` (direction in) - block number for authentication.\n * `key` (direction in) - key to be used for authentication.\n * `key_type` (direction in) - key type to be used for authentication.\n * `data` (direction out) - pointer to MfClassicAuthContext structure to be filled with authentication data.\n # Returns\n\nMfClassicErrorNone on success, an error code on failure."]
+    #[doc = "Perform authentication.\n\n Must ONLY be used inside the callback function.\n\n Perform authentication as specified in Mf Classic protocol. Initialize crypto state for futher\n communication with the tag.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `block_num` (direction in) - block number for authentication.\n * `key` (direction in) - key to be used for authentication.\n * `key_type` (direction in) - key type to be used for authentication.\n * `data` (direction out) - pointer to MfClassicAuthContext structure to be filled with authentication data.\n * `backdoor_auth` (direction in) - flag indicating if backdoor authentication is used.\n # Returns\n\nMfClassicErrorNone on success, an error code on failure."]
     pub fn mf_classic_poller_auth(
         instance: *mut MfClassicPoller,
         block_num: u8,
         key: *mut MfClassicKey,
         key_type: MfClassicKeyType,
         data: *mut MfClassicAuthContext,
+        backdoor_auth: bool,
     ) -> MfClassicError;
 }
 extern "C" {
-    #[doc = "Perform nested authentication.\n\n Must ONLY be used inside the callback function.\n\n Perform nested authentication as specified in Mf Classic protocol.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `block_num` (direction in) - block number for authentication.\n * `key` (direction in) - key to be used for authentication.\n * `key_type` (direction in) - key type to be used for authentication.\n * `data` (direction out) - pointer to MfClassicAuthContext structure to be filled with authentication data.\n # Returns\n\nMfClassicErrorNone on success, an error code on failure."]
+    #[doc = "Perform nested authentication.\n\n Must ONLY be used inside the callback function.\n\n Perform nested authentication as specified in Mf Classic protocol.\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `block_num` (direction in) - block number for authentication.\n * `key` (direction in) - key to be used for authentication.\n * `key_type` (direction in) - key type to be used for authentication.\n * `data` (direction out) - pointer to MfClassicAuthContext structure to be filled with authentication data.\n * `backdoor_auth` (direction in) - flag indicating if backdoor authentication is used.\n * `early_ret` (direction in) - return immediately after receiving encrypted nonce.\n # Returns\n\nMfClassicErrorNone on success, an error code on failure."]
     pub fn mf_classic_poller_auth_nested(
         instance: *mut MfClassicPoller,
         block_num: u8,
         key: *mut MfClassicKey,
         key_type: MfClassicKeyType,
         data: *mut MfClassicAuthContext,
+        backdoor_auth: bool,
+        early_ret: bool,
     ) -> MfClassicError;
 }
 extern "C" {
