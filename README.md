@@ -23,7 +23,7 @@ The crate major version number will be updated after a bump in [API version](htt
 
 | Crate version | API version |
 | ------------- | ----------- |
-| Unreleased    | 78.0        |
+| 0.13.x        | 78.0        |
 | 0.12.x        | 73.0        |
 | 0.11.x        | 35.0        |
 | 0.10.x        | 28.2        |
