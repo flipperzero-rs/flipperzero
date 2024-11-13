@@ -10,12 +10,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - `flipperzero::dialogs::DialogFileBrowserOptions`
+- `flipperzero::furi::kernel` module exposing most `furi_kernel_*` APIs
+- `as_ticks()` method to `flipperzero::furi::time::Duration`
+- `flipperzero::furi::thread::sleep_ticks` function to sleep for exact duration
+- `TryFrom<core::time::Duration>` for `flipperzero::furi::time::Duration`
+- `sys::furi::Error` as error type for Kernel operations.
 
 ### Changed
 
+- Updated to SDK 78 (firmware 1.1.2)
 - `flipperzero::dialogs::DialogFileBrowserOptions` now uses native initialization function.
+- `flipperzero::time::Duration::MAX` is now the maximum duration representable.
+- `sys::furi::Status::err_or_else` has been replaced by `sys::furi::Status::into_result`.
 
 ### Removed
+
+- `flipperzero::furi::duration_to_ticks` in favour of `TryFrom` traits
 
 ## [0.12.0]
 

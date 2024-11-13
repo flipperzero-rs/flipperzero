@@ -1,13 +1,16 @@
 use core::cmp::Ordering;
+use core::error;
+use core::fmt;
 use core::iter::Sum;
 use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
+use core::time;
 
-use flipperzero_sys as sys;
 use ufmt::derive::uDebug;
 
-/// The maximum number of ticks that a [`Duration`] can contain for it to be usable with
-/// [`Instant`].
-const MAX_DURATION_TICKS: u32 = u32::MAX / 2;
+use crate::furi;
+
+/// Maximum number of ticks a [`Duration`] can contain to be usable with [`Instant`].
+const MAX_INTERVAL_DURATION_TICKS: u32 = u32::MAX / 2;
 
 const NANOS_PER_SEC_F: f64 = 1_000_000_000_f64;
 const NANOS_PER_SEC: u64 = 1_000_000_000;
@@ -17,7 +20,7 @@ const MILLIS_PER_SEC: u32 = 1_000;
 
 /// Converts the given number of nanoseconds to ticks.
 fn ns_to_ticks(nanos: u64) -> u64 {
-    let rate = unsafe { sys::furi_kernel_get_tick_frequency() };
+    let rate = furi::kernel::get_tick_frequency();
     if rate == MILLIS_PER_SEC {
         // This can be up to around 2^45 ticks.
         nanos / NANOS_PER_MILLI
@@ -32,7 +35,7 @@ fn ns_to_ticks(nanos: u64) -> u64 {
 ///
 /// The upper 2 bits of the return value will always be zero.
 fn ticks_to_ns(ticks: u32) -> u64 {
-    let rate = unsafe { sys::furi_kernel_get_tick_frequency() };
+    let rate = furi::kernel::get_tick_frequency();
     if rate == MILLIS_PER_SEC {
         // This can be up to around 2^52 nanoseconds.
         (ticks as u64) * NANOS_PER_MILLI
@@ -50,7 +53,7 @@ impl Instant {
     /// Returns an instant corresponding to "now".
     #[must_use]
     pub fn now() -> Instant {
-        Instant(unsafe { sys::furi_get_tick() })
+        Instant(furi::kernel::get_tick())
     }
 
     /// Returns the amount of time elapsed from another instant to this one.
@@ -102,7 +105,7 @@ impl Instant {
     /// represented as `Instant` (which means it's inside the bounds of the underlying
     /// data structure), `None` otherwise.
     pub fn checked_add(&self, duration: Duration) -> Option<Instant> {
-        if duration.0 <= MAX_DURATION_TICKS {
+        if duration.0 <= MAX_INTERVAL_DURATION_TICKS {
             Some(Instant(self.0.wrapping_add(duration.0)))
         } else {
             None
@@ -113,7 +116,7 @@ impl Instant {
     /// represented as `Instant` (which means it's inside the bounds of the underlying
     /// data structure), `None` otherwise.
     pub fn checked_sub(&self, duration: Duration) -> Option<Instant> {
-        if duration.0 <= MAX_DURATION_TICKS {
+        if duration.0 <= MAX_INTERVAL_DURATION_TICKS {
             Some(Instant(self.0.wrapping_sub(duration.0)))
         } else {
             None
@@ -134,10 +137,10 @@ impl Ord for Instant {
             Ordering::Equal
         } else {
             // We use modular arithmetic to define ordering.
-            // This requires a maximum `Duration` value of `MAX_DURATION_TICKS`.
+            // This requires a maximum `Duration` value of `MAX_INTERVAL_DURATION_TICKS`.
             self.0
                 .wrapping_sub(other.0)
-                .cmp(&MAX_DURATION_TICKS)
+                .cmp(&MAX_INTERVAL_DURATION_TICKS)
                 .reverse()
         }
     }
@@ -195,7 +198,7 @@ impl Sub<Instant> for Instant {
 ///
 /// Each `Duration` is composed of a whole number of "ticks", the length of which depends
 /// on the firmware's tick frequency. While a `Duration` can contain any value that
-/// is at most [`u32::MAX`] ticks, only the range `[Duration::ZERO..=DURATION::MAX]` can
+/// is at most [`u32::MAX`] ticks, only the range `[Duration::ZERO..=DURATION::MAX/2]` can
 /// be used with [`Instant`].
 #[derive(Clone, Copy, Debug, uDebug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Duration(pub(super) u32);
@@ -209,7 +212,7 @@ impl Duration {
     /// May vary by platform as necessary. Must be able to contain the difference between
     /// two instances of [`Instant`]. This constraint gives it a value of about 24 days in
     /// practice on stock firmware.
-    pub const MAX: Duration = Duration(MAX_DURATION_TICKS);
+    pub const MAX: Duration = Duration(u32::MAX);
 
     /// Wait forever.
     ///
@@ -275,6 +278,12 @@ impl Duration {
     #[must_use]
     pub const fn is_zero(&self) -> bool {
         self.0 == 0
+    }
+
+    /// Duration as Furi Kernel ticks.
+    #[inline]
+    pub const fn as_ticks(&self) -> u32 {
+        self.0
     }
 
     /// Returns the total number of whole seconds contained by this `Duration`.
@@ -472,9 +481,36 @@ impl<'a> Sum<&'a Duration> for Duration {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, PartialOrd, uDebug)]
+pub struct TryFromDurationError;
+
+impl error::Error for TryFromDurationError {}
+
+impl fmt::Display for TryFromDurationError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str("duration exceeds supported representation")
+    }
+}
+
+impl TryFrom<time::Duration> for Duration {
+    type Error = TryFromDurationError;
+
+    fn try_from(value: time::Duration) -> Result<Self, Self::Error> {
+        let nanos: u64 = value
+            .as_nanos()
+            .try_into()
+            .map_err(|_| TryFromDurationError)?;
+        let ticks: u32 = ns_to_ticks(nanos)
+            .try_into()
+            .map_err(|_| TryFromDurationError)?;
+
+        Ok(Duration(ticks))
+    }
+}
+
 #[flipperzero_test::tests]
 mod tests {
-    use super::{ticks_to_ns, Duration, Instant, MAX_DURATION_TICKS};
+    use super::*;
     use crate::println;
 
     #[cfg(feature = "alloc")]
@@ -610,11 +646,12 @@ mod tests {
         // Check that the same result occurs when adding/subtracting each duration one at a time as when
         // adding/subtracting them all at once.
         #[track_caller]
-        fn check<T: Eq + Copy + core::fmt::Debug>(
+        fn check<T: Eq + Copy + fmt::Debug>(
             start: Option<T>,
             op: impl Fn(&T, Duration) -> Option<T>,
         ) {
-            const DURATIONS: [Duration; 2] = [Duration(MAX_DURATION_TICKS >> 1), Duration(50)];
+            const DURATIONS: [Duration; 2] =
+                [Duration(MAX_INTERVAL_DURATION_TICKS >> 1), Duration(50)];
             if let Some(start) = start {
                 assert_eq!(
                     op(&start, DURATIONS.into_iter().sum()),
@@ -628,5 +665,15 @@ mod tests {
         check(instant.checked_sub(Duration::MAX), Instant::checked_add);
         check(instant.checked_add(Duration(100)), Instant::checked_sub);
         check(instant.checked_add(Duration::MAX), Instant::checked_sub);
+    }
+
+    #[test]
+    fn duration_try_from() {
+        assert_eq!(Duration::try_from(time::Duration::ZERO), Ok(Duration(0)));
+
+        assert_eq!(
+            Duration::try_from(time::Duration::MAX),
+            Err(TryFromDurationError)
+        )
     }
 }
