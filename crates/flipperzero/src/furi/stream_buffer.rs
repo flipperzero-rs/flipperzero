@@ -195,7 +195,8 @@ impl StreamBuffer {
     pub fn reset(&self) -> furi::Result<()> {
         let status = unsafe { sys::furi_stream_buffer_reset(self.0.as_ptr()) };
         let status = Status(status);
-        status.err_or(())
+        let _ = status.into_result()?;
+        Ok(())
     }
 }
 
