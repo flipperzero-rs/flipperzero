@@ -81,5 +81,9 @@ name = "dialog"
 required-features = ["alloc"]
 
 [[example]]
+name = "stream_buffer"
+required-features = ["alloc"]
+
+[[example]]
 name = "threads"
 required-features = ["alloc"]
