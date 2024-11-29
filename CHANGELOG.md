@@ -31,6 +31,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `flipperzero::bluetooth`, providing APIs for interacting with Bluetooth:
+  - `beacon` module for operating the built-in Bluetooth LE beacon.
+  - `test_patterns` module with pattern generators and listeners.
 - `flipperzero::gpio::i2c`, providing a Rust interface to the external 3.3V I2C
   bus over GPIO pins C0 and C1, as well as the internal (power) I2C bus.
 - `flipperzero::furi::string::FuriString::into_raw`, allowing ownership
