@@ -34,8 +34,8 @@ mod bindings;
 
 /// Crash the system.
 ///
-/// The only argument is a message with which the system should crash
-/// which should contain no NULs. The following will not compile:
+/// May be provided with an optional message which should not contain NULs.
+/// The following will not compile:
 ///
 /// ```compile_fail
 /// flipperzero_sys::crash!("Has a \0 NUL");
@@ -48,24 +48,107 @@ mod bindings;
 /// ```
 /// flipperzero_sys::crash!("Hello world!");
 /// ```
+///
+/// Crash the system with default *"Fatal Error"* message:
+///
+/// ```
+/// flipperzero_sys::crash!();
+/// ```
 #[macro_export]
 macro_rules! crash {
+    () => {
+        $crate::__crash_implementation!(::core::ptr::null());
+    };
     ($msg:expr $(,)?) => {{
-        const MESSAGE: *const ::core::primitive::i8 =
-            match ::core::ffi::CStr::from_bytes_with_nul(
-                ::core::concat!($msg, "\0").as_bytes(),
-            ) {
-                Ok(cstr) => cstr.as_ptr(),
-                Err(error) => panic!("message contains NULs"),
-            };
+        let message = const {
+            match ::core::ffi::CStr::from_bytes_with_nul(::core::concat!($msg, "\0").as_bytes()) {
+                Err(_) => c"nul in crash message",
+                Ok(m) => m,
+            }
+        };
+
+        $crate::__crash_implementation!(message.as_ptr());
+    }};
+}
+
+/// Crash the system.
+///
+/// This is an internal implementation detail.
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __crash_implementation {
+    ($ptr:expr) => {
         unsafe {
             // Crash message is passed via r12
-            ::core::arch::asm!("", in("r12") MESSAGE, options(nomem, nostack));
+            ::core::arch::asm!(
+                "ldr pc,=__furi_crash_implementation",
+                in("r12") ($ptr),
+                options(nomem, nostack),
+            );
 
-            $crate::__furi_crash_implementation();
             ::core::hint::unreachable_unchecked();
         }
+    };
+}
+
+/// Halt the system.
+///
+/// May be provided with an optional message which should not contain NULs.
+/// The following will not compile:
+///
+/// ```compile_fail
+/// flipperzero_sys::halt!("Has a \0 NUL");
+/// ```
+///
+/// # Examples
+///
+/// Halt the system with a *"Hello world!"* message:
+///
+/// ```
+/// flipperzero_sys::crash!("Hello world!");
+/// ```
+///
+/// Halt the system with default *"System halt requested."* message:
+///
+/// ```
+/// flipperzero_sys::crash!();
+/// ```
+#[macro_export]
+macro_rules! halt {
+    () => {
+        $crate::__halt_implementation!(::core::ptr::null());
+    };
+    ($msg:expr $(,)?) => {{
+        // Optional message
+        let message = const {
+            match ::core::ffi::CStr::from_bytes_with_nul(::core::concat!($msg, "\0").as_bytes()) {
+                Err(_) => c"nul in halt message",
+                Ok(m) => m,
+            }
+        };
+
+        $crate::__halt_implementation!(message.as_ptr());
     }};
+}
+
+/// Halt the system.
+///
+/// This is an internal implementation detail.
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __halt_implementation {
+    ($ptr:expr) => {
+        unsafe {
+            // Halt message is passed via r12
+            ::core::arch::asm!(
+                "ldr pc,=__furi_halt_implementation",
+                in("r12") ($ptr),
+                options(nomem, nostack))
+            ;
+
+            ::core::hint::unreachable_unchecked();
+        }
+    };
 }
 
 // Re-export bindings

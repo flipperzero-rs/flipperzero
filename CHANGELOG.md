@@ -10,9 +10,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - `flipperzero_sys::furi::FuriBox` for low-level heap allocations
+- `flipperzero_sys::halt!` macro
 
 ### Changed
 
+- Fixed passing of crash message `__furi_crash_implementation`
+- Allow no argument calls to `flipperzero_sys::crash!` and `flipperzero_sys::halt!` macros
 - `flipperzero_sys::furi::UnsafeRecord::open` now takes a `&'static CStr`
 
 ### Removed
