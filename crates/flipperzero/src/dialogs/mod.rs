@@ -44,7 +44,7 @@ impl DialogsApp {
     /// Obtains a handle to the Dialogs app.
     pub fn open() -> Self {
         Self {
-            data: unsafe { UnsafeRecord::open(c"dialogs".as_ptr()) },
+            data: unsafe { UnsafeRecord::open(c"dialogs") },
         }
     }
 

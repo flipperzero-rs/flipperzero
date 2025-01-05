@@ -16,7 +16,7 @@ impl Dolphin {
     /// Obtains a handle to the dolphin.
     pub fn open() -> Self {
         Self {
-            data: unsafe { UnsafeRecord::open(c"dolphin".as_ptr()) },
+            data: unsafe { UnsafeRecord::open(c"dolphin") },
         }
     }
 
