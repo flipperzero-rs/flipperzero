@@ -24,6 +24,9 @@ pub use metadata::{Level, LevelFilter};
 #[macro_export]
 macro_rules! log {
     (target: $target:expr, $lvl:expr, $msg:expr $(, $arg:expr)*) => ({
+        // The `uwrite!` macro expects `ufmt` in scope
+        use $crate::__macro_support::ufmt;
+
         if $lvl <= $crate::furi::log::LevelFilter::current() {
             const TARGET: *const ::core::primitive::i8 =
                 match ::core::ffi::CStr::from_bytes_with_nul(
