@@ -5,6 +5,16 @@ file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+
+- `flipperzero_sys::furi::FuriBox` for low-level heap allocations
+
+### Changed
+
+### Removed
+
 ## [0.13.0]
 
 ### Added
