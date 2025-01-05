@@ -77,7 +77,7 @@ fn main(_args: Option<&CStr>) -> i32 {
         );
 
         // Register view port in GUI
-        let gui = UnsafeRecord::open(c"gui".as_ptr());
+        let gui = UnsafeRecord::open(c"gui");
         sys::gui_add_view_port(gui.as_ptr(), view_port, sys::GuiLayer_GuiLayerFullscreen);
 
         let mut event: MaybeUninit<sys::InputEvent> = MaybeUninit::uninit();

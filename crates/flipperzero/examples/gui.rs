@@ -43,7 +43,7 @@ fn main(_args: Option<&CStr>) -> i32 {
         sys::view_port_draw_callback_set(view_port, Some(draw_callback), ptr::null_mut());
 
         {
-            let gui = UnsafeRecord::open(c"gui".as_ptr());
+            let gui = UnsafeRecord::open(c"gui");
             sys::gui_add_view_port(gui.as_ptr(), view_port, FULLSCREEN);
 
             sleep(Duration::from_secs(1));

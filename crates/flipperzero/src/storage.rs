@@ -152,7 +152,7 @@ pub struct File(NonNull<sys::File>, UnsafeRecord<sys::Storage>);
 impl File {
     pub fn new() -> Self {
         unsafe {
-            let record = UnsafeRecord::open(c"storage".as_ptr());
+            let record = UnsafeRecord::open(c"storage");
             File(
                 NonNull::new_unchecked(sys::storage_file_alloc(record.as_ptr())),
                 record,

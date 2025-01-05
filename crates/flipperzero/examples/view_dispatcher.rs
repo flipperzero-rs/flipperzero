@@ -103,7 +103,7 @@ fn main(_args: Option<&CStr>) -> i32 {
     }
 
     unsafe {
-        let gui = UnsafeRecord::open(c"gui".as_ptr());
+        let gui = UnsafeRecord::open(c"gui");
         sys::view_dispatcher_attach_to_gui(
             app.view_dispatcher.as_ptr(),
             gui.as_ptr(),

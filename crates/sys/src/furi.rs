@@ -1,6 +1,6 @@
 //! Furi helpers.
 
-use core::ffi::c_char;
+use core::ffi::CStr;
 use core::fmt::Display;
 use core::ops::{Deref, DerefMut};
 use core::ptr::NonNull;
@@ -167,21 +167,16 @@ impl From<Status> for Result<i32, Error> {
 
 /// Low-level wrapper of a record handle.
 pub struct UnsafeRecord<T> {
-    name: *const c_char,
+    name: &'static CStr,
     data: *mut T,
 }
 
 impl<T> UnsafeRecord<T> {
     /// Opens a record.
-    ///
-    /// # Safety
-    ///
-    /// The caller must ensure that `name` is a valid C-string
-    /// and lives for the duration of the object lifetime.
-    pub unsafe fn open(name: *const c_char) -> Self {
+    pub unsafe fn open(name: &'static CStr) -> Self {
         Self {
             name,
-            data: crate::furi_record_open(name) as *mut T,
+            data: crate::furi_record_open(name.as_ptr()) as *mut T,
         }
     }
 
@@ -195,7 +190,7 @@ impl<T> Drop for UnsafeRecord<T> {
     fn drop(&mut self) {
         unsafe {
             // decrement the holders count
-            crate::furi_record_close(self.name);
+            crate::furi_record_close(self.name.as_ptr());
         }
     }
 }

@@ -160,8 +160,7 @@ pub mod __macro_support {
         tests: impl Iterator<Item = (&'static str, &'static str, TestFn)> + Clone,
         args: Args<'_>,
     ) -> Result<(), i32> {
-        let storage: UnsafeRecord<sys::Storage> =
-            unsafe { UnsafeRecord::open(c"storage".as_ptr()) };
+        let storage: UnsafeRecord<sys::Storage> = unsafe { UnsafeRecord::open(c"storage") };
         let mut output_file = OutputFile::new(&storage);
 
         #[inline]

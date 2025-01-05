@@ -27,7 +27,7 @@ impl NotificationService {
     /// Obtains a handle to the Notifications service.
     pub fn open() -> Self {
         Self {
-            data: unsafe { UnsafeRecord::open(c"notification".as_ptr()) },
+            data: unsafe { UnsafeRecord::open(c"notification") },
         }
     }
 
