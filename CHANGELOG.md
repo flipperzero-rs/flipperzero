@@ -19,6 +19,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Fixed passing of crash message `__furi_crash_implementation`
 - Allow no argument calls to `flipperzero_sys::crash!` and `flipperzero_sys::halt!` macros
 - `flipperzero_sys::furi::UnsafeRecord::open` now takes a `&'static CStr`
+- Fixed overread when printing panic message to console
+- Added short delay in panic handler so message can be seen on USB console before `furi_crash`
 
 ### Removed
 
