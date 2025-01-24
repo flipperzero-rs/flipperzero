@@ -1,7 +1,6 @@
 //! Panic handler for Furi applications.
 //! This will print the panic info to stdout and then trigger a crash.
 
-use core::ffi::c_char;
 use core::panic::PanicInfo;
 
 use flipperzero_sys as sys;
@@ -21,24 +20,21 @@ pub fn panic(panic_info: &PanicInfo<'_>) -> ! {
         sys::__wrap_printf(c"\x1b[0;31mthread: '%s' paniced".as_ptr(), thread_name);
 
         if let Some(s) = panic_info.message().as_str() {
-            sys::__wrap_printf(c" at '%*s'".as_ptr(), s.len(), s.as_ptr() as *const c_char);
+            sys::__wrap_printf(c" at '%.*s'".as_ptr(), s.len(), s.as_ptr());
         }
 
         if let Some(location) = panic_info.location() {
             let file = location.file();
             let line = location.line();
 
-            sys::__wrap_printf(
-                c", %*s:%u".as_ptr(),
-                file.len(),
-                file.as_ptr() as *const c_char,
-                line,
-            );
+            sys::__wrap_printf(c", %.*s:%u".as_ptr(), file.len(), file.as_ptr(), line);
         }
 
         sys::__wrap_printf(c"\x1b[0m\r\n".as_ptr());
         sys::furi_thread_stdout_flush();
-        sys::furi_thread_yield(); // Allow console to flush
+
+        // Ensure there's plenty of time to fully flush the console
+        sys::furi_delay_ms(500);
 
         sys::crash!("Rust panic")
     }
