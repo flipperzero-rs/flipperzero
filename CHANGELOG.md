@@ -14,11 +14,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Updated to SDK 79.2 (firmware 1.2.0)
+- Enums in sys bindings now are newtype-enums and no longer have a duplicate prefix
 - Fixed passing of crash message `__furi_crash_implementation`
 - Allow no argument calls to `flipperzero_sys::crash!` and `flipperzero_sys::halt!` macros
 - `flipperzero_sys::furi::UnsafeRecord::open` now takes a `&'static CStr`
 
 ### Removed
+
+- No features were removed
 
 ## [0.13.0]
 
@@ -253,7 +257,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Initial release!
 
-[Unreleased]: https://github.com/flipperzero-rs/flipperzero/compare/v0.13.0...HEAD
+[Unreleased]: https://github.com/flipperzero-rs/flipperzero/compare/v0.14.0...HEAD
 [0.13.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.13.0
 [0.12.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.12.0
 [0.11.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.11.0
