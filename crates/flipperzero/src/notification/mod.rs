@@ -67,7 +67,7 @@ bitflags! {
 
 impl Light {
     pub const fn to_sys(self) -> sys::Light {
-        self.bits() as sys::Light
+        sys::Light(self.bits())
     }
 }
 
@@ -78,7 +78,7 @@ pub struct NotificationMessage(pub(super) sys::NotificationMessage);
 impl NotificationMessage {
     pub const fn vibro(on: bool) -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeVibro,
+            type_: sys::NotificationMessageTypeVibro,
             data: sys::NotificationMessageData {
                 vibro: sys::NotificationMessageDataVibro { on },
             },
@@ -86,7 +86,7 @@ impl NotificationMessage {
     }
     pub const fn sound_on(frequency: f32, volume: f32) -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeSoundOn,
+            type_: sys::NotificationMessageTypeSoundOn,
             data: sys::NotificationMessageData {
                 sound: sys::NotificationMessageDataSound { frequency, volume },
             },
@@ -95,7 +95,7 @@ impl NotificationMessage {
 
     pub const fn sound_off() -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeSoundOff,
+            type_: sys::NotificationMessageTypeSoundOff,
             data: sys::NotificationMessageData {
                 sound: sys::NotificationMessageDataSound {
                     frequency: 0.0,
@@ -107,7 +107,7 @@ impl NotificationMessage {
 
     pub const fn led_red(value: u8) -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeLedRed,
+            type_: sys::NotificationMessageTypeLedRed,
             data: sys::NotificationMessageData {
                 led: sys::NotificationMessageDataLed { value },
             },
@@ -116,7 +116,7 @@ impl NotificationMessage {
 
     pub const fn led_green(value: u8) -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeLedGreen,
+            type_: sys::NotificationMessageTypeLedGreen,
             data: sys::NotificationMessageData {
                 led: sys::NotificationMessageDataLed { value },
             },
@@ -125,7 +125,7 @@ impl NotificationMessage {
 
     pub const fn led_blue(value: u8) -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeLedBlue,
+            type_: sys::NotificationMessageTypeLedBlue,
             data: sys::NotificationMessageData {
                 led: sys::NotificationMessageDataLed { value },
             },
@@ -134,7 +134,7 @@ impl NotificationMessage {
 
     pub const fn led_blink_start(on_time: u16, period: u16, color: Light) -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeLedBlinkStart,
+            type_: sys::NotificationMessageTypeLedBlinkStart,
             data: sys::NotificationMessageData {
                 led_blink: sys::NotificationMessageDataLedBlink {
                     on_time,
@@ -147,12 +147,12 @@ impl NotificationMessage {
 
     pub const fn led_blink_stop() -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeLedBlinkStop,
+            type_: sys::NotificationMessageTypeLedBlinkStop,
             data: sys::NotificationMessageData {
                 led_blink: sys::NotificationMessageDataLedBlink {
                     on_time: 0,
                     period: 0,
-                    color: 0,
+                    color: sys::Light(0),
                 },
             },
         })
@@ -160,7 +160,7 @@ impl NotificationMessage {
 
     pub const fn led_blink_color(color: Light) -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeLedBlinkColor,
+            type_: sys::NotificationMessageTypeLedBlinkColor,
             data: sys::NotificationMessageData {
                 led_blink: sys::NotificationMessageDataLedBlink {
                     on_time: 0,
@@ -173,7 +173,7 @@ impl NotificationMessage {
 
     pub const fn delay(length: u32) -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeDelay,
+            type_: sys::NotificationMessageTypeDelay,
             data: sys::NotificationMessageData {
                 delay: sys::NotificationMessageDataDelay { length },
             },
@@ -182,7 +182,7 @@ impl NotificationMessage {
 
     pub const fn display_backlight(brightness: u8) -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeLedDisplayBacklight,
+            type_: sys::NotificationMessageTypeLedDisplayBacklight,
             data: sys::NotificationMessageData {
                 led: sys::NotificationMessageDataLed { value: brightness },
             },
@@ -191,7 +191,7 @@ impl NotificationMessage {
 
     pub const fn display_backlight_enforce_on() -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeLedDisplayBacklightEnforceOn,
+            type_: sys::NotificationMessageTypeLedDisplayBacklightEnforceOn,
             data: sys::NotificationMessageData {
                 led: sys::NotificationMessageDataLed { value: 0xff },
             },
@@ -200,8 +200,7 @@ impl NotificationMessage {
 
     pub const fn display_backlight_enforce_auto() -> Self {
         Self(sys::NotificationMessage {
-            type_:
-                sys::NotificationMessageType_NotificationMessageTypeLedDisplayBacklightEnforceAuto,
+            type_: sys::NotificationMessageTypeLedDisplayBacklightEnforceAuto,
             data: sys::NotificationMessageData {
                 led: sys::NotificationMessageDataLed { value: 0x00 },
             },
@@ -210,7 +209,7 @@ impl NotificationMessage {
 
     pub const fn do_not_reset() -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeDoNotReset,
+            type_: sys::NotificationMessageTypeDoNotReset,
             data: sys::NotificationMessageData {
                 led: sys::NotificationMessageDataLed { value: 0x00 },
             },
@@ -219,7 +218,7 @@ impl NotificationMessage {
 
     pub const fn force_speaker_volume_setting(speaker_volume: f32) -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeForceSpeakerVolumeSetting,
+            type_: sys::NotificationMessageTypeForceSpeakerVolumeSetting,
             data: sys::NotificationMessageData {
                 forced_settings: sys::NotificationMessageDataForcedSettings {
                     //cant be clamped const due to restrictions on floats in const contexts
@@ -233,7 +232,7 @@ impl NotificationMessage {
 
     pub const fn force_vibro_setting(vibro: bool) -> Self {
         Self(sys::NotificationMessage {
-            type_: sys::NotificationMessageType_NotificationMessageTypeForceVibroSetting,
+            type_: sys::NotificationMessageTypeForceVibroSetting,
             data: sys::NotificationMessageData {
                 forced_settings: sys::NotificationMessageDataForcedSettings {
                     speaker_volume: 0.0,
@@ -246,8 +245,7 @@ impl NotificationMessage {
 
     pub const fn force_display_brightness_setting(display_brightness: f32) -> Self {
         Self(sys::NotificationMessage {
-            type_:
-                sys::NotificationMessageType_NotificationMessageTypeForceDisplayBrightnessSetting,
+            type_: sys::NotificationMessageTypeForceDisplayBrightnessSetting,
             data: sys::NotificationMessageData {
                 forced_settings: sys::NotificationMessageDataForcedSettings {
                     speaker_volume: 0.0,

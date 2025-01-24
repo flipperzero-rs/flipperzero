@@ -9,7 +9,7 @@ use flipperzero_sys::{self as sys, furi_thread_get_id, furi_thread_list_get_at};
 pub fn wait_for_completion() {
     unsafe {
         sys::furi_log_print_format(
-            sys::FuriLogLevel_FuriLogLevelDebug,
+            sys::FuriLogLevelDebug,
             c"flipperzero-rt".as_ptr(),
             c"Waiting for FAP threads to complete...".as_ptr(),
         );
@@ -64,7 +64,7 @@ pub fn wait_for_completion() {
 
     unsafe {
         sys::furi_log_print_format(
-            sys::FuriLogLevel_FuriLogLevelDebug,
+            sys::FuriLogLevelDebug,
             c"flipperzero-rt".as_ptr(),
             c"All FAP threads completed".as_ptr(),
         );

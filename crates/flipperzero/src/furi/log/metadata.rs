@@ -133,7 +133,13 @@ impl Level {
     }
 
     pub(crate) fn to_furi(self) -> sys::FuriLogLevel {
-        self.0 as u8
+        match self {
+            Level::TRACE => sys::FuriLogLevelTrace,
+            Level::DEBUG => sys::FuriLogLevelDebug,
+            Level::INFO => sys::FuriLogLevelInfo,
+            Level::WARN => sys::FuriLogLevelWarn,
+            Level::ERROR => sys::FuriLogLevelError,
+        }
     }
 }
 
@@ -180,23 +186,23 @@ enum LevelInner {
     /// The "trace" level.
     ///
     /// Designates very low priority, often extremely verbose, information.
-    Trace = sys::FuriLogLevel_FuriLogLevelTrace as usize,
+    Trace = sys::FuriLogLevelTrace.0 as usize,
     /// The "debug" level.
     ///
     /// Designates lower priority information.
-    Debug = sys::FuriLogLevel_FuriLogLevelDebug as usize,
+    Debug = sys::FuriLogLevelDebug.0 as usize,
     /// The "info" level.
     ///
     /// Designates useful information.
-    Info = sys::FuriLogLevel_FuriLogLevelInfo as usize,
+    Info = sys::FuriLogLevelInfo.0 as usize,
     /// The "warn" level.
     ///
     /// Designates hazardous situations.
-    Warn = sys::FuriLogLevel_FuriLogLevelWarn as usize,
+    Warn = sys::FuriLogLevelWarn.0 as usize,
     /// The "error" level.
     ///
     /// Designates very serious errors.
-    Error = sys::FuriLogLevel_FuriLogLevelError as usize,
+    Error = sys::FuriLogLevelError.0 as usize,
 }
 
 // === impl LevelFilter ===
@@ -295,13 +301,13 @@ impl LevelFilter {
     pub fn current() -> Self {
         match unsafe { sys::furi_log_get_level() } {
             // Default log level is defined in `furi/core/log.c` in the FlipperZero firmware.
-            sys::FuriLogLevel_FuriLogLevelDefault => Self::INFO,
-            sys::FuriLogLevel_FuriLogLevelNone => Self::OFF,
-            sys::FuriLogLevel_FuriLogLevelError => Self::ERROR,
-            sys::FuriLogLevel_FuriLogLevelWarn => Self::WARN,
-            sys::FuriLogLevel_FuriLogLevelInfo => Self::INFO,
-            sys::FuriLogLevel_FuriLogLevelDebug => Self::DEBUG,
-            sys::FuriLogLevel_FuriLogLevelTrace => Self::TRACE,
+            sys::FuriLogLevelDefault => Self::INFO,
+            sys::FuriLogLevelNone => Self::OFF,
+            sys::FuriLogLevelError => Self::ERROR,
+            sys::FuriLogLevelWarn => Self::WARN,
+            sys::FuriLogLevelInfo => Self::INFO,
+            sys::FuriLogLevelDebug => Self::DEBUG,
+            sys::FuriLogLevelTrace => Self::TRACE,
             #[cfg(debug_assertions)]
             unknown => unreachable!(
                 "/!\\ `LevelFilter` representation seems to have changed! /!\\ \n\
@@ -471,27 +477,27 @@ enum LevelFilterInner {
     /// The "trace" level.
     ///
     /// Designates very low priority, often extremely verbose, information.
-    Trace = sys::FuriLogLevel_FuriLogLevelTrace as usize,
+    Trace = sys::FuriLogLevelTrace.0 as usize,
     /// The "debug" level.
     ///
     /// Designates lower priority information.
-    Debug = sys::FuriLogLevel_FuriLogLevelDebug as usize,
+    Debug = sys::FuriLogLevelDebug.0 as usize,
     /// The "info" level.
     ///
     /// Designates useful information.
-    Info = sys::FuriLogLevel_FuriLogLevelInfo as usize,
+    Info = sys::FuriLogLevelInfo.0 as usize,
     /// The "warn" level.
     ///
     /// Designates hazardous situations.
-    Warn = sys::FuriLogLevel_FuriLogLevelWarn as usize,
+    Warn = sys::FuriLogLevelWarn.0 as usize,
     /// The "error" level.
     ///
     /// Designates very serious errors.
-    Error = sys::FuriLogLevel_FuriLogLevelError as usize,
+    Error = sys::FuriLogLevelError.0 as usize,
     /// The "off" level.
     ///
     /// Designates that trace instrumentation should be completely disabled.
-    Off = sys::FuriLogLevel_FuriLogLevelNone as usize,
+    Off = sys::FuriLogLevelNone.0 as usize,
 }
 
 // ==== Level and LevelFilter comparisons ====

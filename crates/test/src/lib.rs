@@ -128,8 +128,8 @@ pub mod __macro_support {
                 sys::storage_file_open(
                     output_file,
                     c"/ext/flipperzero-rs-stdout".as_ptr(),
-                    sys::FS_AccessMode_FSAM_WRITE,
-                    sys::FS_OpenMode_FSOM_CREATE_ALWAYS,
+                    sys::FSAM_READ_WRITE,
+                    sys::FSOM_CREATE_ALWAYS,
                 );
             }
             Self(output_file)

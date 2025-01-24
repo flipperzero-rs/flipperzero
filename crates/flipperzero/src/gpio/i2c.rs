@@ -400,8 +400,8 @@ impl BusHandle {
                 false,
                 write.as_ptr(),
                 write.len(),
-                sys::FuriHalI2cBegin_FuriHalI2cBeginStart,
-                sys::FuriHalI2cEnd_FuriHalI2cEndAwaitRestart,
+                sys::FuriHalI2cBeginStart,
+                sys::FuriHalI2cEndAwaitRestart,
                 timeout.as_millis() as u32,
             ) && sys::furi_hal_i2c_rx_ext(
                 self.handle,
@@ -409,8 +409,8 @@ impl BusHandle {
                 false,
                 read.as_mut_ptr(),
                 read.len(),
-                sys::FuriHalI2cBegin_FuriHalI2cBeginRestart,
-                sys::FuriHalI2cEnd_FuriHalI2cEndStop,
+                sys::FuriHalI2cBeginRestart,
+                sys::FuriHalI2cEndStop,
                 timeout.as_millis() as u32,
             )
         }
@@ -430,12 +430,9 @@ impl BusHandle {
         O: OperationLike + 'a,
     {
         use sys::{
-            FuriHalI2cBegin_FuriHalI2cBeginRestart as BeginRestart,
-            FuriHalI2cBegin_FuriHalI2cBeginResume as BeginResume,
-            FuriHalI2cBegin_FuriHalI2cBeginStart as BeginStart,
-            FuriHalI2cEnd_FuriHalI2cEndAwaitRestart as EndAwaitRestart,
-            FuriHalI2cEnd_FuriHalI2cEndPause as EndPause,
-            FuriHalI2cEnd_FuriHalI2cEndStop as EndStop,
+            FuriHalI2cBeginRestart as BeginRestart, FuriHalI2cBeginResume as BeginResume,
+            FuriHalI2cBeginStart as BeginStart, FuriHalI2cEndAwaitRestart as EndAwaitRestart,
+            FuriHalI2cEndPause as EndPause, FuriHalI2cEndStop as EndStop,
         };
 
         let mut operations = operations.iter_mut().peekable();

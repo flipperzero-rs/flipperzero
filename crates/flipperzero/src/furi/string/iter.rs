@@ -7,13 +7,13 @@ use flipperzero_sys as sys;
 
 pub unsafe fn next_code_point<'a, I: Iterator<Item = &'a u8>>(bytes: &mut I) -> Option<u32> {
     // Decode UTF-8
-    let mut state = sys::FuriStringUTF8State_FuriStringUTF8StateStarting;
+    let mut state = sys::FuriStringUTF8StateStarting;
     let mut unicode = 0u32;
     loop {
         sys::furi_string_utf8_decode(*bytes.next()? as c_char, &mut state, &mut unicode);
         match state {
-            sys::FuriStringUTF8State_FuriStringUTF8StateStarting => break Some(unicode),
-            sys::FuriStringUTF8State_FuriStringUTF8StateError => break Some(0xfffd), // �
+            sys::FuriStringUTF8StateStarting => break Some(unicode),
+            sys::FuriStringUTF8StateError => break Some(0xfffd), // �
             _ => (),
         }
     }

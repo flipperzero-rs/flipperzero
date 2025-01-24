@@ -31,7 +31,7 @@ entry!(main);
 fn main(_args: Option<&CStr>) -> i32 {
     unsafe {
         println!("Configuring pin C0 as output pin");
-        sys::furi_hal_gpio_init_simple(&sys::gpio_ext_pc0, sys::GpioMode_GpioModeOutputPushPull);
+        sys::furi_hal_gpio_init_simple(&sys::gpio_ext_pc0, sys::GpioModeOutputPushPull);
 
         println!("Pulling pin C0 high");
         sys::furi_hal_gpio_write(&sys::gpio_ext_pc0, true);

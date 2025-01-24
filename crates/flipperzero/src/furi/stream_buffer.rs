@@ -193,8 +193,7 @@ impl StreamBuffer {
     /// The reset can only succeed if no tasks are blocked waiting to send or receive data;
     /// otherwise, an [`Err`] is returned.
     pub fn reset(&self) -> furi::Result<()> {
-        let status = unsafe { sys::furi_stream_buffer_reset(self.0.as_ptr()) };
-        let status = Status(status);
+        let status = Status::from(unsafe { sys::furi_stream_buffer_reset(self.0.as_ptr()) });
         let _ = status.into_result()?;
         Ok(())
     }

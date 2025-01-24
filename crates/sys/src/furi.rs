@@ -40,13 +40,13 @@ impl TryFrom<FuriStatus> for Error {
 
     fn try_from(status: crate::FuriStatus) -> core::result::Result<Self, Self::Error> {
         match status {
-            crate::FuriStatus_FuriStatusError => Ok(Self::Unspecified),
-            crate::FuriStatus_FuriStatusErrorTimeout => Ok(Self::TimedOut),
-            crate::FuriStatus_FuriStatusErrorResource => Ok(Self::ResourceBusy),
-            crate::FuriStatus_FuriStatusErrorParameter => Ok(Self::InvalidParameter),
-            crate::FuriStatus_FuriStatusErrorNoMemory => Ok(Self::OutOfMemory),
-            crate::FuriStatus_FuriStatusErrorISR => Ok(Self::ForbiddenInISR),
-            x => {
+            crate::FuriStatusError => Ok(Self::Unspecified),
+            crate::FuriStatusErrorTimeout => Ok(Self::TimedOut),
+            crate::FuriStatusErrorResource => Ok(Self::ResourceBusy),
+            crate::FuriStatusErrorParameter => Ok(Self::InvalidParameter),
+            crate::FuriStatusErrorNoMemory => Ok(Self::OutOfMemory),
+            crate::FuriStatusErrorISR => Ok(Self::ForbiddenInISR),
+            crate::FuriStatus(x) => {
                 if x < 0 {
                     Ok(Self::Other(x))
                 } else {
@@ -61,20 +61,20 @@ impl TryFrom<FuriStatus> for Error {
 impl From<Error> for FuriStatus {
     fn from(error: Error) -> Self {
         match error {
-            Error::Unspecified => crate::FuriStatus_FuriStatusError,
-            Error::TimedOut => crate::FuriStatus_FuriStatusErrorTimeout,
-            Error::ResourceBusy => crate::FuriStatus_FuriStatusErrorResource,
-            Error::InvalidParameter => crate::FuriStatus_FuriStatusErrorParameter,
-            Error::OutOfMemory => crate::FuriStatus_FuriStatusErrorNoMemory,
-            Error::ForbiddenInISR => crate::FuriStatus_FuriStatusErrorISR,
-            Error::Other(x) => x as crate::FuriStatus,
+            Error::Unspecified => crate::FuriStatusError,
+            Error::TimedOut => crate::FuriStatusErrorTimeout,
+            Error::ResourceBusy => crate::FuriStatusErrorResource,
+            Error::InvalidParameter => crate::FuriStatusErrorParameter,
+            Error::OutOfMemory => crate::FuriStatusErrorNoMemory,
+            Error::ForbiddenInISR => crate::FuriStatusErrorISR,
+            Error::Other(x) => crate::FuriStatus(x),
         }
     }
 }
 
 impl Display for Error {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "{} ({})", self.description(), FuriStatus::from(*self))
+        write!(f, "{} ({})", self.description(), FuriStatus::from(*self).0)
     }
 }
 
@@ -83,7 +83,7 @@ impl ufmt::uDisplay for Error {
     where
         W: ufmt::uWrite + ?Sized,
     {
-        ufmt::uwrite!(f, "{} ({})", self.description(), FuriStatus::from(*self))
+        ufmt::uwrite!(f, "{} ({})", self.description(), FuriStatus::from(*self).0)
     }
 }
 
@@ -131,7 +131,7 @@ impl Status {
 
     /// Convert into [`Result`] type.
     pub fn into_result(self) -> Result<i32, Error> {
-        match Error::try_from(self.0) {
+        match Error::try_from(crate::FuriStatus(self.0)) {
             Err(x) => Ok(x),
             Ok(err) => Err(err),
         }
@@ -155,7 +155,13 @@ impl ufmt::uDisplay for Status {
 
 impl From<crate::FuriStatus> for Status {
     fn from(code: FuriStatus) -> Self {
-        Status(code)
+        Status(code.0)
+    }
+}
+
+impl From<i32> for Status {
+    fn from(value: i32) -> Self {
+        Status(value)
     }
 }
 
@@ -173,6 +179,10 @@ pub struct UnsafeRecord<T> {
 
 impl<T> UnsafeRecord<T> {
     /// Opens a record.
+    ///
+    /// # Safety
+    ///
+    /// `T` must be the correct C type for the record identified by `name`.
     pub unsafe fn open(name: &'static CStr) -> Self {
         Self {
             name,

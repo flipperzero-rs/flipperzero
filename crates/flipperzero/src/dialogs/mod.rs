@@ -163,8 +163,8 @@ impl<'a> DialogMessage<'a> {
                 ptr::null(),
                 0,
                 0,
-                sys::Align_AlignLeft,
-                sys::Align_AlignTop,
+                sys::AlignLeft,
+                sys::AlignTop,
             );
         }
     }
@@ -177,8 +177,8 @@ impl<'a> DialogMessage<'a> {
                 ptr::null(),
                 0,
                 0,
-                sys::Align_AlignLeft,
-                sys::Align_AlignTop,
+                sys::AlignLeft,
+                sys::AlignTop,
             );
         }
     }
@@ -201,10 +201,10 @@ impl<'a> Default for DialogMessage<'a> {
 impl DialogMessageButton {
     fn from_sys(sys: sys::DialogMessageButton) -> Option<Self> {
         match sys {
-            sys::DialogMessageButton_DialogMessageButtonBack => Some(Self::Back),
-            sys::DialogMessageButton_DialogMessageButtonLeft => Some(Self::Left),
-            sys::DialogMessageButton_DialogMessageButtonCenter => Some(Self::Center),
-            sys::DialogMessageButton_DialogMessageButtonRight => Some(Self::Right),
+            sys::DialogMessageButtonBack => Some(Self::Back),
+            sys::DialogMessageButtonLeft => Some(Self::Left),
+            sys::DialogMessageButtonCenter => Some(Self::Center),
+            sys::DialogMessageButtonRight => Some(Self::Right),
             _ => None,
         }
     }

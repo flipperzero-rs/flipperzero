@@ -23,7 +23,7 @@ use flipperzero_rt::{entry, manifest};
 use flipperzero_sys as sys;
 use flipperzero_sys::furi::UnsafeRecord;
 
-const FULLSCREEN: sys::GuiLayer = sys::GuiLayer_GuiLayerFullscreen;
+const FULLSCREEN: sys::GuiLayer = sys::GuiLayerFullscreen;
 
 manifest!(name = "Rust GUI example");
 entry!(main);
