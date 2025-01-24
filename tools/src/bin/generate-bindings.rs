@@ -6,6 +6,7 @@ use std::borrow::Cow;
 use std::{env, fs};
 
 use bindgen::callbacks::ParseCallbacks;
+use bindgen::EnumVariation;
 use camino::{Utf8Path, Utf8PathBuf};
 use clap::{crate_authors, crate_description, crate_version, value_parser};
 use once_cell::sync::Lazy;
@@ -26,7 +27,7 @@ const TOOLCHAIN: &str = "../../../toolchain/x86_64-linux/arm-none-eabi/include";
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
 const TOOLCHAIN: &str = "../../../toolchain/x86_64-darwin/arm-none-eabi/include";
 const VISIBILITY_PUBLIC: &str = "+";
-const ALLOWLIST_EXTRAS: &[&str] = &["FuriWait", "FuriFlag", "FuriStatus", "FuriSignal"];
+const ALLOWLIST_EXTRAS: &[&str] = &["Furi.*", "Gui.*"];
 
 #[derive(Debug)]
 struct ApiSymbols {
@@ -229,6 +230,11 @@ fn main() {
         .clang_arg("-fvisibility=default")
         .use_core()
         .parse_callbacks(Box::new(Cb))
+        .default_enum_style(EnumVariation::NewType {
+            is_bitfield: false,
+            is_global: false,
+        })
+        .prepend_enum_name(false)
         .ctypes_prefix("core::ffi")
         .allowlist_var("API_VERSION")
         .header_contents("header.h", &bindings_header);
