@@ -42,15 +42,15 @@ pub enum Error {
 impl Error {
     pub fn to_sys(&self) -> Option<sys::FS_Error> {
         match self {
-            Self::NotReady => Some(sys::FS_Error_FSE_NOT_READY),
-            Self::Exists => Some(sys::FS_Error_FSE_EXIST),
-            Self::NotExists => Some(sys::FS_Error_FSE_NOT_EXIST),
-            Self::InvalidParameter => Some(sys::FS_Error_FSE_INVALID_PARAMETER),
-            Self::Denied => Some(sys::FS_Error_FSE_DENIED),
-            Self::InvalidName => Some(sys::FS_Error_FSE_INVALID_NAME),
-            Self::Internal => Some(sys::FS_Error_FSE_INTERNAL),
-            Self::NotImplemented => Some(sys::FS_Error_FSE_NOT_IMPLEMENTED),
-            Self::AlreadyOpen => Some(sys::FS_Error_FSE_ALREADY_OPEN),
+            Self::NotReady => Some(sys::FSE_NOT_READY),
+            Self::Exists => Some(sys::FSE_EXIST),
+            Self::NotExists => Some(sys::FSE_NOT_EXIST),
+            Self::InvalidParameter => Some(sys::FSE_INVALID_PARAMETER),
+            Self::Denied => Some(sys::FSE_DENIED),
+            Self::InvalidName => Some(sys::FSE_INVALID_NAME),
+            Self::Internal => Some(sys::FSE_INTERNAL),
+            Self::NotImplemented => Some(sys::FSE_NOT_IMPLEMENTED),
+            Self::AlreadyOpen => Some(sys::FSE_ALREADY_OPEN),
             Self::Uncategorized(error_code) => Some(*error_code),
             _ => None,
         }
@@ -58,16 +58,16 @@ impl Error {
 
     pub fn from_sys(err: sys::FS_Error) -> Option<Self> {
         match err {
-            sys::FS_Error_FSE_OK => None,
-            sys::FS_Error_FSE_NOT_READY => Some(Self::NotReady),
-            sys::FS_Error_FSE_EXIST => Some(Self::Exists),
-            sys::FS_Error_FSE_NOT_EXIST => Some(Self::NotExists),
-            sys::FS_Error_FSE_INVALID_PARAMETER => Some(Self::InvalidParameter),
-            sys::FS_Error_FSE_DENIED => Some(Self::Denied),
-            sys::FS_Error_FSE_INVALID_NAME => Some(Self::InvalidName),
-            sys::FS_Error_FSE_INTERNAL => Some(Self::Internal),
-            sys::FS_Error_FSE_NOT_IMPLEMENTED => Some(Self::NotImplemented),
-            sys::FS_Error_FSE_ALREADY_OPEN => Some(Self::AlreadyOpen),
+            sys::FSE_OK => None,
+            sys::FSE_NOT_READY => Some(Self::NotReady),
+            sys::FSE_EXIST => Some(Self::Exists),
+            sys::FSE_NOT_EXIST => Some(Self::NotExists),
+            sys::FSE_INVALID_PARAMETER => Some(Self::InvalidParameter),
+            sys::FSE_DENIED => Some(Self::Denied),
+            sys::FSE_INVALID_NAME => Some(Self::InvalidName),
+            sys::FSE_INTERNAL => Some(Self::Internal),
+            sys::FSE_NOT_IMPLEMENTED => Some(Self::NotImplemented),
+            sys::FSE_ALREADY_OPEN => Some(Self::AlreadyOpen),
             error_code => Some(Self::Uncategorized(error_code)),
         }
     }

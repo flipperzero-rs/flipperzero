@@ -468,6 +468,8 @@ mod tests {
 
         #[cfg(feature = "alloc")]
         {
+            extern crate alloc;
+
             let mut d = String::from(t);
             d.extend(alloc::vec![u]);
             assert_eq!(s, d);

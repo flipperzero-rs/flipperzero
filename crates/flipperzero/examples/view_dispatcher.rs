@@ -61,9 +61,9 @@ pub unsafe extern "C" fn text_input_callback(context: *mut c_void) {
         (*app).widget.as_ptr(),
         128 / 2,
         64 / 2,
-        sys::Align_AlignCenter,
-        sys::Align_AlignCenter,
-        sys::Font_FontPrimary,
+        sys::AlignCenter,
+        sys::AlignCenter,
+        sys::FontPrimary,
         message.as_c_ptr(),
     );
     sys::view_dispatcher_switch_to_view((*app).view_dispatcher.as_ptr(), AppView::Widget as u32);
@@ -107,7 +107,7 @@ fn main(_args: Option<&CStr>) -> i32 {
         sys::view_dispatcher_attach_to_gui(
             app.view_dispatcher.as_ptr(),
             gui.as_ptr(),
-            sys::ViewDispatcherType_ViewDispatcherTypeFullscreen,
+            sys::ViewDispatcherTypeFullscreen,
         );
 
         sys::text_input_reset(app.text_input.as_ptr());

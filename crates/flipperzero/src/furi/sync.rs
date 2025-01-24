@@ -9,7 +9,7 @@ use sys::furi::Status;
 
 use super::time::{Duration, Instant};
 
-const MUTEX_TYPE: u8 = sys::FuriMutexType_FuriMutexTypeNormal;
+const MUTEX_TYPE: sys::FuriMutexType = sys::FuriMutexTypeNormal;
 
 /// A [`RawMutex`] implementation backed by Furi. You probably want to use [`Mutex`]
 /// instead.

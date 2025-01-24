@@ -78,24 +78,22 @@ fn main(_args: Option<&CStr>) -> i32 {
 
         // Register view port in GUI
         let gui = UnsafeRecord::open(c"gui");
-        sys::gui_add_view_port(gui.as_ptr(), view_port, sys::GuiLayer_GuiLayerFullscreen);
+        sys::gui_add_view_port(gui.as_ptr(), view_port, sys::GuiLayerFullscreen);
 
         let mut event: MaybeUninit<sys::InputEvent> = MaybeUninit::uninit();
 
         let mut running = true;
         while running {
             if sys::furi_message_queue_get(event_queue, event.as_mut_ptr() as *mut c_void, 100)
-                == sys::FuriStatus_FuriStatusOk
+                == sys::FuriStatusOk
             {
                 let event = event.assume_init();
-                if event.type_ == sys::InputType_InputTypePress
-                    || event.type_ == sys::InputType_InputTypeRepeat
-                {
+                if event.type_ == sys::InputTypePress || event.type_ == sys::InputTypeRepeat {
                     match event.key {
-                        sys::InputKey_InputKeyLeft => IMAGE_POSITION.x -= 2,
-                        sys::InputKey_InputKeyRight => IMAGE_POSITION.x += 2,
-                        sys::InputKey_InputKeyUp => IMAGE_POSITION.y -= 2,
-                        sys::InputKey_InputKeyDown => IMAGE_POSITION.y += 2,
+                        sys::InputKeyLeft => IMAGE_POSITION.x -= 2,
+                        sys::InputKeyRight => IMAGE_POSITION.x += 2,
+                        sys::InputKeyUp => IMAGE_POSITION.y -= 2,
+                        sys::InputKeyDown => IMAGE_POSITION.y += 2,
                         _ => running = false,
                     }
                 }

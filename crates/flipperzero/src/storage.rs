@@ -28,9 +28,9 @@ impl OpenOptions {
     pub fn read(self, set: bool) -> Self {
         OpenOptions::from_parts(
             if set {
-                self.access_mode | sys::FS_AccessMode_FSAM_READ
+                self.access_mode | sys::FSAM_READ.0
             } else {
-                self.access_mode & !sys::FS_AccessMode_FSAM_READ
+                self.access_mode & !sys::FSAM_READ.0
             },
             self.open_mode,
         )
@@ -40,9 +40,9 @@ impl OpenOptions {
     pub fn write(self, set: bool) -> Self {
         OpenOptions::from_parts(
             if set {
-                self.access_mode | sys::FS_AccessMode_FSAM_WRITE
+                self.access_mode | sys::FSAM_WRITE.0
             } else {
-                self.access_mode & !sys::FS_AccessMode_FSAM_WRITE
+                self.access_mode & !sys::FSAM_WRITE.0
             },
             self.open_mode,
         )
@@ -53,9 +53,9 @@ impl OpenOptions {
         OpenOptions::from_parts(
             self.access_mode,
             if set {
-                self.open_mode | sys::FS_OpenMode_FSOM_OPEN_EXISTING
+                self.open_mode | sys::FSOM_OPEN_EXISTING.0
             } else {
-                self.open_mode & !sys::FS_OpenMode_FSOM_OPEN_EXISTING
+                self.open_mode & !sys::FSOM_OPEN_EXISTING.0
             },
         )
     }
@@ -65,9 +65,9 @@ impl OpenOptions {
         OpenOptions::from_parts(
             self.access_mode,
             if set {
-                self.open_mode | sys::FS_OpenMode_FSOM_OPEN_ALWAYS
+                self.open_mode | sys::FSOM_OPEN_ALWAYS.0
             } else {
-                self.open_mode & !sys::FS_OpenMode_FSOM_OPEN_ALWAYS
+                self.open_mode & !sys::FSOM_OPEN_ALWAYS.0
             },
         )
     }
@@ -77,9 +77,9 @@ impl OpenOptions {
         OpenOptions::from_parts(
             self.access_mode,
             if set {
-                self.open_mode | sys::FS_OpenMode_FSOM_OPEN_APPEND
+                self.open_mode | sys::FSOM_OPEN_APPEND.0
             } else {
-                self.open_mode & !sys::FS_OpenMode_FSOM_OPEN_APPEND
+                self.open_mode & !sys::FSOM_OPEN_APPEND.0
             },
         )
     }
@@ -89,9 +89,9 @@ impl OpenOptions {
         OpenOptions::from_parts(
             self.access_mode,
             if set {
-                self.open_mode | sys::FS_OpenMode_FSOM_CREATE_NEW
+                self.open_mode | sys::FSOM_CREATE_NEW.0
             } else {
-                self.open_mode & !sys::FS_OpenMode_FSOM_CREATE_NEW
+                self.open_mode & !sys::FSOM_CREATE_NEW.0
             },
         )
     }
@@ -101,9 +101,9 @@ impl OpenOptions {
         OpenOptions::from_parts(
             self.access_mode,
             if set {
-                self.open_mode | sys::FS_OpenMode_FSOM_CREATE_ALWAYS
+                self.open_mode | sys::FSOM_CREATE_ALWAYS.0
             } else {
-                self.open_mode & !sys::FS_OpenMode_FSOM_CREATE_ALWAYS
+                self.open_mode & !sys::FSOM_CREATE_ALWAYS.0
             },
         )
     }
@@ -115,16 +115,16 @@ impl OpenOptions {
         // example, `create_new` is more specialized than `truncate`) so we
         // search for the first "on" bit in this sequence, and use that as the
         // open mode.
-        let canonicalized_open_mode = if self.open_mode & sys::FS_OpenMode_FSOM_CREATE_NEW != 0 {
-            sys::FS_OpenMode_FSOM_CREATE_NEW
-        } else if self.open_mode & sys::FS_OpenMode_FSOM_CREATE_ALWAYS != 0 {
-            sys::FS_OpenMode_FSOM_CREATE_ALWAYS
-        } else if self.open_mode & sys::FS_OpenMode_FSOM_OPEN_APPEND != 0 {
-            sys::FS_OpenMode_FSOM_OPEN_APPEND
-        } else if self.open_mode & sys::FS_OpenMode_FSOM_OPEN_ALWAYS != 0 {
-            sys::FS_OpenMode_FSOM_OPEN_ALWAYS
+        let canonicalized_open_mode = if self.open_mode & sys::FSOM_CREATE_NEW.0 != 0 {
+            sys::FSOM_CREATE_NEW
+        } else if self.open_mode & sys::FSOM_CREATE_ALWAYS.0 != 0 {
+            sys::FSOM_CREATE_ALWAYS
+        } else if self.open_mode & sys::FSOM_OPEN_APPEND.0 != 0 {
+            sys::FSOM_OPEN_APPEND
+        } else if self.open_mode & sys::FSOM_OPEN_ALWAYS.0 != 0 {
+            sys::FSOM_OPEN_ALWAYS
         } else {
-            sys::FS_OpenMode_FSOM_OPEN_EXISTING
+            sys::FSOM_OPEN_EXISTING
         };
 
         let f = File::new();
@@ -132,7 +132,7 @@ impl OpenOptions {
             sys::storage_file_open(
                 f.0.as_ptr(),
                 path.as_ptr() as *const c_char,
-                self.access_mode,
+                sys::FS_AccessMode(self.access_mode),
                 canonicalized_open_mode,
             )
         } {
@@ -178,7 +178,7 @@ impl Read for File {
         };
         let error = unsafe { sys::storage_file_get_error(self.0.as_ptr()) };
 
-        if error == sys::FS_Error_FSE_OK {
+        if error == sys::FSE_OK {
             Ok(bytes_read)
         } else {
             Err(Error::from_sys(error).unwrap())
@@ -245,7 +245,7 @@ impl Write for File {
         };
         let error = unsafe { sys::storage_file_get_error(self.0.as_ptr()) };
 
-        if error == sys::FS_Error_FSE_OK {
+        if error == sys::FSE_OK {
             Ok(bytes_written)
         } else {
             Err(Error::from_sys(error).unwrap())
