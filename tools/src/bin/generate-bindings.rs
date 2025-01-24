@@ -6,6 +6,7 @@ use std::borrow::Cow;
 use std::{env, fs};
 
 use bindgen::callbacks::ParseCallbacks;
+use bindgen::EnumVariation;
 use camino::{Utf8Path, Utf8PathBuf};
 use clap::{crate_authors, crate_description, crate_version, value_parser};
 use once_cell::sync::Lazy;
@@ -305,6 +306,11 @@ fn main() {
         .clang_arg("-fvisibility=default")
         .use_core()
         .parse_callbacks(Box::new(Cb))
+        .default_enum_style(EnumVariation::NewType {
+            is_bitfield: false,
+            is_global: true,
+        })
+        .prepend_enum_name(false)
         .ctypes_prefix("core::ffi")
         .allowlist_var("API_VERSION")
         .header_contents("header.h", &bindings_header);
