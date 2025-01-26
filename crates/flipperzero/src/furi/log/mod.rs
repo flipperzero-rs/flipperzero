@@ -28,7 +28,7 @@ macro_rules! log {
         use $crate::__macro_support::ufmt;
 
         if $lvl <= $crate::furi::log::LevelFilter::current() {
-            const TARGET: *const ::core::primitive::i8 =
+            const TARGET: *const ::core::ffi::c_char =
                 match ::core::ffi::CStr::from_bytes_with_nul(
                     ::core::concat!($target, "\0").as_bytes(),
                 ) {

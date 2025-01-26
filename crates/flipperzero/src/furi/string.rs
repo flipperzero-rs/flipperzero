@@ -145,7 +145,9 @@ impl FuriString {
     pub fn push(&mut self, ch: char) {
         match ch.len_utf8() {
             1 => unsafe { sys::furi_string_push_back(self.0.as_ptr(), ch as c_char) },
-            _ => unsafe { sys::furi_string_utf8_push(self.0.as_ptr(), ch as u32) },
+            _ => unsafe {
+                sys::furi_string_utf8_push(self.0.as_ptr(), ch as sys::FuriStringUnicodeValue)
+            },
         }
     }
 
@@ -869,9 +871,7 @@ impl ufmt::uWrite for FuriString {
 
 #[flipperzero_test::tests]
 mod tests {
-    use flipperzero_sys as sys;
-
-    use super::FuriString;
+    use super::*;
 
     #[test]
     fn invalid_utf8_is_replaced() {
@@ -881,7 +881,7 @@ mod tests {
         // Construct an invalid string using the Flipper Zero SDK.
         let s = FuriString::new();
         for b in d {
-            unsafe { sys::furi_string_push_back(s.0.as_ptr(), b as i8) };
+            unsafe { sys::furi_string_push_back(s.0.as_ptr(), b as c_char) };
         }
 
         for (l, r) in s.chars_lossy().zip("f�r".chars()) {
