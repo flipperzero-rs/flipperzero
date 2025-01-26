@@ -17,7 +17,7 @@ use alloc::{
     sync::Arc,
 };
 
-use flipperzero_sys::{self as sys, FuriFlagNoClear, FuriFlagWaitAll, FuriFlagWaitAny};
+use flipperzero_sys::{self as sys, FuriFlagNoClear, FuriFlagWaitAll, FuriFlagWaitAny, HasFlag};
 
 use crate::furi::time::Duration;
 
@@ -259,7 +259,7 @@ impl ThreadId {
 pub fn set_flags(thread_id: ThreadId, flags: u32) -> Result<u32, sys::furi::Status> {
     let result = unsafe { sys::furi_thread_flags_set(thread_id.0, flags) };
 
-    if result & sys::FuriFlagError.0 != 0 {
+    if sys::FuriFlag(result).has_flag(sys::FuriFlagError) {
         return Err((result as i32).into());
     }
 
@@ -272,7 +272,7 @@ pub fn set_flags(thread_id: ThreadId, flags: u32) -> Result<u32, sys::furi::Stat
 pub fn clear_flags(flags: u32) -> Result<u32, sys::furi::Status> {
     let result = unsafe { sys::furi_thread_flags_clear(flags) };
 
-    if result & sys::FuriFlagError.0 != 0 {
+    if sys::FuriFlag(result).has_flag(sys::FuriFlagError) {
         return Err((result as i32).into());
     }
 
@@ -283,7 +283,7 @@ pub fn clear_flags(flags: u32) -> Result<u32, sys::furi::Status> {
 pub fn get_flags() -> Result<u32, sys::furi::Status> {
     let result = unsafe { sys::furi_thread_flags_get() };
 
-    if result & sys::FuriFlagError.0 != 0 {
+    if sys::FuriFlag(result).has_flag(sys::FuriFlagError) {
         return Err((result as i32).into());
     }
 
@@ -301,7 +301,7 @@ pub fn wait_any_flags(
     let options = FuriFlagWaitAny.0 | (if clear { 0 } else { FuriFlagNoClear.0 });
     let result = unsafe { sys::furi_thread_flags_wait(flags, options, timeout.0) };
 
-    if result & sys::FuriFlagError.0 != 0 {
+    if sys::FuriFlag(result).has_flag(sys::FuriFlagError) {
         return Err((result as i32).into());
     }
 
@@ -319,7 +319,7 @@ pub fn wait_all_flags(
     let options = FuriFlagWaitAll.0 | (if clear { 0 } else { FuriFlagNoClear.0 });
     let result = unsafe { sys::furi_thread_flags_wait(flags, options, timeout.0) };
 
-    if result & sys::FuriFlagError.0 != 0 {
+    if sys::FuriFlag(result).has_flag(sys::FuriFlagError) {
         return Err((result as i32).into());
     }
 

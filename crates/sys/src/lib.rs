@@ -151,6 +151,79 @@ macro_rules! __halt_implementation {
     };
 }
 
+/// Check if flag is set.
+///
+/// Typically implemented as `(self & flag) == flag`.
+pub trait HasFlag {
+    fn has_flag(self, flag: Self) -> bool;
+}
+
+/// Implement bitfield operations for "bitfield" enums.
+#[doc(hidden)]
+macro_rules! impl_bitfield_enum {
+    ($t:ty) => {
+        impl ::core::default::Default for $t {
+            #[inline]
+            fn default() -> Self {
+                Self(0)
+            }
+        }
+        impl ::core::ops::BitOr<$t> for $t {
+            type Output = Self;
+
+            #[inline]
+            fn bitor(self, other: Self) -> Self {
+                Self(self.0 | other.0)
+            }
+        }
+        impl ::core::ops::BitOrAssign for $t {
+            #[inline]
+            fn bitor_assign(&mut self, rhs: $t) {
+                self.0 |= rhs.0;
+            }
+        }
+        impl ::core::ops::BitAnd<$t> for $t {
+            type Output = Self;
+            #[inline]
+            fn bitand(self, other: Self) -> Self {
+                Self(self.0 & other.0)
+            }
+        }
+        impl ::core::ops::BitAndAssign for $t {
+            #[inline]
+            fn bitand_assign(&mut self, rhs: $t) {
+                self.0 &= rhs.0;
+            }
+        }
+        impl ::core::ops::Not for $t {
+            type Output = Self;
+            #[inline]
+            fn not(self) -> Self::Output {
+                Self(!self.0)
+            }
+        }
+        impl HasFlag for $t {
+            #[inline]
+            fn has_flag(self, flag: Self) -> bool {
+                (self.0 & flag.0) == flag.0
+            }
+        }
+    };
+}
+
+impl_bitfield_enum!(CliCommandFlag);
+impl_bitfield_enum!(FS_AccessMode);
+impl_bitfield_enum!(FS_Flags);
+impl_bitfield_enum!(FS_OpenMode);
+impl_bitfield_enum!(FuriFlag);
+impl_bitfield_enum!(FuriHalNfcEvent);
+impl_bitfield_enum!(FuriHalRtcFlag);
+impl_bitfield_enum!(FuriHalSerialRxEvent);
+impl_bitfield_enum!(iButtonProtocolFeature);
+impl_bitfield_enum!(Light);
+impl_bitfield_enum!(MfUltralightFeatureSupport);
+impl_bitfield_enum!(SubGhzProtocolFlag);
+
 // Re-export bindings
 pub use bindings::*;
 
