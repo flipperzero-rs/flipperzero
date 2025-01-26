@@ -9,6 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+### Changed
+
+### Removed
+
+## [0.14.0]
+
+### Added
+
 - `flipperzero_sys::furi::FuriBox` for low-level heap allocations
 - `flipperzero_sys::halt!` macro
 
@@ -260,6 +268,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Initial release!
 
 [Unreleased]: https://github.com/flipperzero-rs/flipperzero/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.14.0
 [0.13.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.13.0
 [0.12.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.12.0
 [0.11.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.11.0
