@@ -19,3 +19,6 @@ ufmt.workspace = true
 [lib]
 bench = false
 test = false
+
+[lints.rust]
+rust_2024_compatibility = "warn"
