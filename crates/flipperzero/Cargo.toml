@@ -68,6 +68,9 @@ crc32fast = { version = "1", default-features = false }
 ## ```
 alloc = []
 
+[lints.rust]
+rust_2024_compatibility = "warn"
+
 [[test]]
 name = "dolphin"
 harness = false
