@@ -26,3 +26,4 @@ ufmt.workspace = true
 
 [lints.rust]
 rust_2024_compatibility = "warn"
+edition_2024_expr_fragment_specifier = "allow"
