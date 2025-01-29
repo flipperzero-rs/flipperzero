@@ -313,6 +313,7 @@ fn main() {
         .prepend_enum_name(false)
         .ctypes_prefix("core::ffi")
         .allowlist_var("API_VERSION")
+        .wrap_unsafe_ops(true)
         .header_contents("header.h", &bindings_header);
 
     for function in &symbols.functions {
