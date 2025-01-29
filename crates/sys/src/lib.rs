@@ -28,7 +28,8 @@ mod inlines;
     clippy::missing_safety_doc,
     clippy::transmute_int_to_bool,
     clippy::useless_transmute,
-    rustdoc::broken_intra_doc_links
+    rustdoc::broken_intra_doc_links,
+    rust_2024_compatibility // temporary until bindgen target version is updated
 )]
 mod bindings;
 
