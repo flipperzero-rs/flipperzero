@@ -25,7 +25,7 @@ impl FuriMutex {
         if !mutex.is_null() {
             mutex
         } else {
-            self.create()
+            unsafe { self.create() }
         }
     }
 

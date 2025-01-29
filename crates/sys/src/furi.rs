@@ -186,7 +186,7 @@ impl<T> UnsafeRecord<T> {
     pub unsafe fn open(name: &'static CStr) -> Self {
         Self {
             name,
-            data: crate::furi_record_open(name.as_ptr()) as *mut T,
+            data: unsafe { crate::furi_record_open(name.as_ptr()) } as *mut T,
         }
     }
 
@@ -244,7 +244,7 @@ impl<T> FuriBox<T> {
     /// The caller is responsible for ensuring the pointer is non-null, was allocated using `aligned_malloc`
     /// with the correct alignment for `T` and that the memory represents a valid `T`.
     pub unsafe fn from_raw(raw: *mut T) -> Self {
-        FuriBox(NonNull::new_unchecked(raw))
+        FuriBox(unsafe { NonNull::new_unchecked(raw) })
     }
 
     /// Returns a raw pointer to the Box’s contents.

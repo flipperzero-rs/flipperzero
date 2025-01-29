@@ -249,7 +249,7 @@ impl ThreadId {
     ///
     /// The thread pointer must be non-null and point to a valid `FuriThread`.
     pub unsafe fn from_furi_thread(thread: *mut sys::FuriThread) -> ThreadId {
-        ThreadId(sys::furi_thread_get_id(thread))
+        ThreadId(unsafe { sys::furi_thread_get_id(thread) })
     }
 }
 
