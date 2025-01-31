@@ -17,13 +17,13 @@ mod thread;
 /// # Safety
 ///
 /// This should never be called manually.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn _start(args: *mut u8) -> i32 {
-    extern "Rust" {
+    unsafe extern "Rust" {
         fn main(args: *mut u8) -> i32;
     }
 
-    main(args)
+    unsafe { main(args) }
 }
 
 /// Defines the entry point.
