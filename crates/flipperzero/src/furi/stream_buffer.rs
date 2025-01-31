@@ -104,8 +104,8 @@ impl StreamBuffer {
     /// The function copies the bytes into the buffer, returning the number of bytes successfully
     /// sent.
     /// It blocks if not enough space is available until the data is sent or the timeout expires.
-    /// Passing [`Duration::ZERO`](furi::time::Duration::ZERO) immediately returns with as many
-    /// bytes as can fit, while [`Duration::WAIT_FOREVER`](furi::time::Duration::WAIT_FOREVER) waits
+    /// Passing [`FuriDuration::ZERO`](furi::time::FuriDuration::ZERO) immediately returns with as many
+    /// bytes as can fit, while [`FuriDuration::WAIT_FOREVER`](furi::time::FuriDuration::WAIT_FOREVER) waits
     /// indefinitely.
     ///
     /// # Safety
@@ -122,7 +122,7 @@ impl StreamBuffer {
     /// # Interrupt Routines
     ///
     /// The `timeout` is ignored when called from an interrupt routine.
-    pub unsafe fn send(&self, data: &[u8], timeout: furi::time::Duration) -> usize {
+    pub unsafe fn send(&self, data: &[u8], timeout: furi::time::FuriDuration) -> usize {
         let self_ptr = self.0.as_ptr();
         let data_ptr = data.as_ptr().cast();
         let data_len = data.len();
@@ -136,8 +136,8 @@ impl StreamBuffer {
     /// received.
     /// The function blocks until the [trigger level](Self::set_trigger_level) is reached, the
     /// buffer is filled, or the timeout expires.
-    /// Passing [`Duration::ZERO`](furi::time::Duration::ZERO) returns immediately with as many
-    /// bytes as available, while [`Duration::WAIT_FOREVER`](furi::time::Duration::WAIT_FOREVER)
+    /// Passing [`FuriDuration::ZERO`](furi::time::FuriDuration::ZERO) returns immediately with as many
+    /// bytes as available, while [`FuriDuration::WAIT_FOREVER`](furi::time::FuriDuration::WAIT_FOREVER)
     /// waits indefinitely.
     ///
     /// # Safety
@@ -154,7 +154,7 @@ impl StreamBuffer {
     /// # Interrupt Routines
     ///
     /// The `timeout` is ignored when called from an interrupt routine.
-    pub unsafe fn receive(&self, data: &mut [u8], timeout: furi::time::Duration) -> usize {
+    pub unsafe fn receive(&self, data: &mut [u8], timeout: furi::time::FuriDuration) -> usize {
         let self_ptr = self.0.as_ptr();
         let data_ptr: *mut c_void = data.as_mut_ptr().cast();
         let data_len = data.len();
@@ -324,7 +324,7 @@ mod stream {
         /// If the underlying stream buffer does not have enough free space, it sends only the bytes
         /// that fit and returns immediately.
         pub fn send(&self, data: &[u8]) -> usize {
-            unsafe { self.buffer_ref.send(data, furi::time::Duration::ZERO) }
+            unsafe { self.buffer_ref.send(data, furi::time::FuriDuration::ZERO) }
         }
 
         /// Sends bytes in a blocking manner.
@@ -337,7 +337,7 @@ mod stream {
         pub fn send_blocking(&self, data: &[u8]) -> usize {
             unsafe {
                 self.buffer_ref
-                    .send(data, furi::time::Duration::WAIT_FOREVER)
+                    .send(data, furi::time::FuriDuration::WAIT_FOREVER)
             }
         }
 
@@ -350,7 +350,7 @@ mod stream {
         /// # Interrupt Routines
         ///
         /// In an interrupt routine, this method behaves like [`send`](Self::send).
-        pub fn send_with_timeout(&self, data: &[u8], timeout: furi::time::Duration) -> usize {
+        pub fn send_with_timeout(&self, data: &[u8], timeout: furi::time::FuriDuration) -> usize {
             unsafe { self.buffer_ref.send(data, timeout) }
         }
     }
@@ -434,7 +434,10 @@ mod stream {
         /// It will either receive all available bytes or fill the buffer, whichever happens first.
         /// Returns the number of bytes successfully received.
         pub fn recv(&self, data: &mut [u8]) -> usize {
-            unsafe { self.buffer_ref.receive(data, furi::time::Duration::ZERO) }
+            unsafe {
+                self.buffer_ref
+                    .receive(data, furi::time::FuriDuration::ZERO)
+            }
         }
 
         /// Receive bytes, blocking if necessary.
@@ -451,7 +454,7 @@ mod stream {
         pub fn recv_blocking(&self, data: &mut [u8]) -> usize {
             unsafe {
                 self.buffer_ref
-                    .receive(data, furi::time::Duration::WAIT_FOREVER)
+                    .receive(data, furi::time::FuriDuration::WAIT_FOREVER)
             }
         }
 
@@ -464,7 +467,11 @@ mod stream {
         /// # Interrupt Routines
         ///
         /// In an interrupt routine, this method behaves like [`recv`](Self::recv).
-        pub fn recv_with_timeout(&self, data: &mut [u8], timeout: furi::time::Duration) -> usize {
+        pub fn recv_with_timeout(
+            &self,
+            data: &mut [u8],
+            timeout: furi::time::FuriDuration,
+        ) -> usize {
             unsafe { self.buffer_ref.receive(data, timeout) }
         }
     }

@@ -9,7 +9,7 @@ use ufmt::derive::uDebug;
 
 use crate::furi;
 
-/// Maximum number of ticks a [`Duration`] can contain to be usable with [`Instant`].
+/// Maximum number of ticks a [`FuriDuration`] can contain to be usable with [`FuriInstant`].
 const MAX_INTERVAL_DURATION_TICKS: u32 = u32::MAX / 2;
 
 const NANOS_PER_SEC_F: f64 = 1_000_000_000_f64;
@@ -45,15 +45,15 @@ fn ticks_to_ns(ticks: u32) -> u64 {
     }
 }
 
-/// A measurement of a wrapping clock. Opaque and useful only with [`Duration`].
+/// A measurement of a wrapping clock. Opaque and useful only with [`FuriDuration`].
 #[derive(Copy, Clone, Debug, uDebug, PartialEq, Eq, Hash)]
-pub struct Instant(pub(super) u32);
+pub struct FuriInstant(pub(super) u32);
 
-impl Instant {
+impl FuriInstant {
     /// Returns an instant corresponding to "now".
     #[must_use]
-    pub fn now() -> Instant {
-        Instant(furi::kernel::get_tick())
+    pub fn now() -> FuriInstant {
+        FuriInstant(furi::kernel::get_tick())
     }
 
     /// Returns the amount of time elapsed from another instant to this one.
@@ -62,7 +62,7 @@ impl Instant {
     ///
     /// Panics if `earlier` is later than `self`.
     #[must_use]
-    pub fn duration_since(&self, earlier: Instant) -> Duration {
+    pub fn duration_since(&self, earlier: FuriInstant) -> FuriDuration {
         self.checked_duration_since(earlier)
             .expect("earlier is later than self")
     }
@@ -70,9 +70,9 @@ impl Instant {
     /// Returns the amount of time elapsed from another instant to this one, or `None` if
     /// that instant is later than this one.
     #[must_use]
-    pub fn checked_duration_since(&self, earlier: Instant) -> Option<Duration> {
+    pub fn checked_duration_since(&self, earlier: FuriInstant) -> Option<FuriDuration> {
         if self >= &earlier {
-            Some(Duration(self.0.wrapping_sub(earlier.0)))
+            Some(FuriDuration(self.0.wrapping_sub(earlier.0)))
         } else {
             None
         }
@@ -81,7 +81,7 @@ impl Instant {
     /// Returns the amount of time elapsed from another instant to this one, or zero
     /// duration if that instant is later than this one.
     #[must_use]
-    pub fn saturating_duration_since(&self, earlier: Instant) -> Duration {
+    pub fn saturating_duration_since(&self, earlier: FuriInstant) -> FuriDuration {
         self.checked_duration_since(earlier).unwrap_or_default()
     }
 
@@ -89,24 +89,24 @@ impl Instant {
     ///
     /// Due to the wrapping nature of the clock, there are several caveats on the value
     /// returned by this method:
-    /// - The longest duration this can return is [`Duration::MAX`]; durations above this
-    ///   length will saturate to it. Use [`Instant::checked_duration_since`] to detect
+    /// - The longest duration this can return is [`FuriDuration::MAX`]; durations above this
+    ///   length will saturate to it. Use [`FuriInstant::checked_duration_since`] to detect
     ///   this occurring.
     /// - The elapsed time is periodic, and jumps back to zero approximately every
     ///   `2 * Duration::MAX` time.
     #[must_use]
-    pub fn elapsed(&self) -> Duration {
-        Instant::now()
+    pub fn elapsed(&self) -> FuriDuration {
+        FuriInstant::now()
             .checked_duration_since(*self)
-            .unwrap_or(Duration::MAX)
+            .unwrap_or(FuriDuration::MAX)
     }
 
     /// Returns `Some(t)` where `t` is the time `self + duration` if `t` can be
     /// represented as `Instant` (which means it's inside the bounds of the underlying
     /// data structure), `None` otherwise.
-    pub fn checked_add(&self, duration: Duration) -> Option<Instant> {
+    pub fn checked_add(&self, duration: FuriDuration) -> Option<FuriInstant> {
         if duration.0 <= MAX_INTERVAL_DURATION_TICKS {
-            Some(Instant(self.0.wrapping_add(duration.0)))
+            Some(FuriInstant(self.0.wrapping_add(duration.0)))
         } else {
             None
         }
@@ -115,22 +115,22 @@ impl Instant {
     /// Returns `Some(t)` where `t` is the time `self - duration` if `t` can be
     /// represented as `Instant` (which means it's inside the bounds of the underlying
     /// data structure), `None` otherwise.
-    pub fn checked_sub(&self, duration: Duration) -> Option<Instant> {
+    pub fn checked_sub(&self, duration: FuriDuration) -> Option<FuriInstant> {
         if duration.0 <= MAX_INTERVAL_DURATION_TICKS {
-            Some(Instant(self.0.wrapping_sub(duration.0)))
+            Some(FuriInstant(self.0.wrapping_sub(duration.0)))
         } else {
             None
         }
     }
 }
 
-impl PartialOrd for Instant {
+impl PartialOrd for FuriInstant {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl Ord for Instant {
+impl Ord for FuriInstant {
     fn cmp(&self, other: &Self) -> Ordering {
         if self.0 == other.0 {
             // We cannot distinguish between equality and exact wraparound.
@@ -146,50 +146,50 @@ impl Ord for Instant {
     }
 }
 
-impl Add<Duration> for Instant {
-    type Output = Instant;
+impl Add<FuriDuration> for FuriInstant {
+    type Output = FuriInstant;
 
     /// # Panics
     ///
     /// This function may panic if the resulting point in time cannot be represented by
-    /// the underlying data structure. See [`Instant::checked_add`] for a version without
+    /// the underlying data structure. See [`FuriInstant::checked_add`] for a version without
     /// panic.
-    fn add(self, other: Duration) -> Instant {
+    fn add(self, other: FuriDuration) -> FuriInstant {
         self.checked_add(other)
             .expect("overflow when adding duration to instant")
     }
 }
 
-impl AddAssign<Duration> for Instant {
-    fn add_assign(&mut self, other: Duration) {
+impl AddAssign<FuriDuration> for FuriInstant {
+    fn add_assign(&mut self, other: FuriDuration) {
         *self = *self + other;
     }
 }
 
-impl Sub<Duration> for Instant {
-    type Output = Instant;
+impl Sub<FuriDuration> for FuriInstant {
+    type Output = FuriInstant;
 
-    fn sub(self, other: Duration) -> Instant {
+    fn sub(self, other: FuriDuration) -> FuriInstant {
         self.checked_sub(other)
             .expect("overflow when subtracting duration from instant")
     }
 }
 
-impl SubAssign<Duration> for Instant {
-    fn sub_assign(&mut self, other: Duration) {
+impl SubAssign<FuriDuration> for FuriInstant {
+    fn sub_assign(&mut self, other: FuriDuration) {
         *self = *self - other;
     }
 }
 
-impl Sub<Instant> for Instant {
-    type Output = Duration;
+impl Sub<FuriInstant> for FuriInstant {
+    type Output = FuriDuration;
 
     /// Returns the amount of time elapsed from another instant to this one.
     ///
     /// # Panics
     ///
     /// Panics if `other` is later than `self`.
-    fn sub(self, other: Instant) -> Duration {
+    fn sub(self, other: FuriInstant) -> FuriDuration {
         self.duration_since(other)
     }
 }
@@ -199,27 +199,27 @@ impl Sub<Instant> for Instant {
 /// Each `Duration` is composed of a whole number of "ticks", the length of which depends
 /// on the firmware's tick frequency. While a `Duration` can contain any value that
 /// is at most [`u32::MAX`] ticks, only the range `[Duration::ZERO..=DURATION::MAX/2]` can
-/// be used with [`Instant`].
+/// be used with [`FuriInstant`].
 #[derive(Clone, Copy, Debug, uDebug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Duration(pub(super) u32);
+pub struct FuriDuration(pub(super) u32);
 
-impl Duration {
+impl FuriDuration {
     /// A duration of zero time.
-    pub const ZERO: Duration = Duration(0);
+    pub const ZERO: FuriDuration = FuriDuration(0);
 
     /// The maximum duration.
     ///
     /// May vary by platform as necessary. Must be able to contain the difference between
-    /// two instances of [`Instant`]. This constraint gives it a value of about 24 days in
+    /// two instances of [`FuriInstant`]. This constraint gives it a value of about 24 days in
     /// practice on stock firmware.
-    pub const MAX: Duration = Duration(u32::MAX);
+    pub const MAX: FuriDuration = FuriDuration(u32::MAX);
 
     /// Wait forever.
     ///
     /// This constant may be used for all cases where a operation should block indefinitely.
     /// The value is originally defined in the
     /// [flipper zero firmware](https://github.com/flipperdevices/flipperzero-firmware/blob/b723d463afccf628712475e11a3d4579f0331f5c/furi/core/base.h#L13).
-    pub const WAIT_FOREVER: Duration = Duration(0xFFFFFFFF);
+    pub const WAIT_FOREVER: FuriDuration = FuriDuration(0xFFFFFFFF);
 
     /// Creates a new `Duration` from the specified number of whole seconds.
     ///
@@ -228,10 +228,10 @@ impl Duration {
     /// Panics if the duration would exceed [`u32::MAX`] ticks.
     #[inline]
     #[must_use]
-    pub fn from_secs(secs: u64) -> Duration {
+    pub fn from_secs(secs: u64) -> FuriDuration {
         let ticks = ns_to_ticks(secs * NANOS_PER_SEC);
         let ticks = u32::try_from(ticks).expect("Duration is too long");
-        Duration(ticks)
+        FuriDuration(ticks)
     }
 
     /// Creates a new `Duration` from the specified number of milliseconds.
@@ -241,10 +241,10 @@ impl Duration {
     /// Panics if the duration would exceed [`u32::MAX`] ticks.
     #[inline]
     #[must_use]
-    pub fn from_millis(millis: u64) -> Duration {
+    pub fn from_millis(millis: u64) -> FuriDuration {
         let ticks = ns_to_ticks(millis * NANOS_PER_MILLI);
         let ticks = u32::try_from(ticks).expect("Duration is too long");
-        Duration(ticks)
+        FuriDuration(ticks)
     }
 
     /// Creates a new `Duration` from the specified number of microseconds.
@@ -254,10 +254,10 @@ impl Duration {
     /// Panics if the duration would exceed [`u32::MAX`] ticks.
     #[inline]
     #[must_use]
-    pub fn from_micros(micros: u64) -> Duration {
+    pub fn from_micros(micros: u64) -> FuriDuration {
         let ticks = ns_to_ticks(micros * NANOS_PER_MICRO);
         let ticks = u32::try_from(ticks).expect("Duration is too long");
-        Duration(ticks)
+        FuriDuration(ticks)
     }
 
     /// Creates a new `Duration` from the specified number of nanoseconds.
@@ -267,10 +267,10 @@ impl Duration {
     /// Panics if the duration would exceed [`u32::MAX`] ticks.
     #[inline]
     #[must_use]
-    pub fn from_nanos(nanos: u64) -> Duration {
+    pub fn from_nanos(nanos: u64) -> FuriDuration {
         let ticks = ns_to_ticks(nanos);
         let ticks = u32::try_from(ticks).expect("Duration is too long");
-        Duration(ticks)
+        FuriDuration(ticks)
     }
 
     /// Returns true if this `Duration` spans no time.
@@ -322,22 +322,22 @@ impl Duration {
     /// overflow occurred.
     #[inline]
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    pub const fn checked_add(self, rhs: Duration) -> Option<Duration> {
+    pub const fn checked_add(self, rhs: FuriDuration) -> Option<FuriDuration> {
         if let Some(ticks) = self.0.checked_add(rhs.0) {
-            Some(Duration(ticks))
+            Some(FuriDuration(ticks))
         } else {
             None
         }
     }
 
     /// Saturating `Duration` addition. Computes `self + other`, returning
-    /// [`Duration::MAX`] if overflow occurred.
+    /// [`FuriDuration::MAX`] if overflow occurred.
     #[inline]
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    pub const fn saturating_add(self, rhs: Duration) -> Duration {
+    pub const fn saturating_add(self, rhs: FuriDuration) -> FuriDuration {
         match self.checked_add(rhs) {
             Some(res) => res,
-            None => Duration::MAX,
+            None => FuriDuration::MAX,
         }
     }
 
@@ -345,22 +345,22 @@ impl Duration {
     /// result would be negative or if overflow occurred.
     #[inline]
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    pub const fn checked_sub(self, rhs: Duration) -> Option<Duration> {
+    pub const fn checked_sub(self, rhs: FuriDuration) -> Option<FuriDuration> {
         if let Some(ticks) = self.0.checked_sub(rhs.0) {
-            Some(Duration(ticks))
+            Some(FuriDuration(ticks))
         } else {
             None
         }
     }
 
     /// Saturating `Duration` subtraction. Computes `self - other`, returning
-    /// [`Duration::ZERO`] if the result would be negative or if overflow occurred.
+    /// [`FuriDuration::ZERO`] if the result would be negative or if overflow occurred.
     #[inline]
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    pub const fn saturating_sub(self, rhs: Duration) -> Duration {
+    pub const fn saturating_sub(self, rhs: FuriDuration) -> FuriDuration {
         match self.checked_sub(rhs) {
             Some(res) => res,
-            None => Duration::ZERO,
+            None => FuriDuration::ZERO,
         }
     }
 
@@ -368,22 +368,22 @@ impl Duration {
     /// overflow occurred.
     #[inline]
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    pub const fn checked_mul(self, rhs: u32) -> Option<Duration> {
+    pub const fn checked_mul(self, rhs: u32) -> Option<FuriDuration> {
         if let Some(ticks) = self.0.checked_mul(rhs) {
-            Some(Duration(ticks))
+            Some(FuriDuration(ticks))
         } else {
             None
         }
     }
 
     /// Saturating `Duration` multiplication. Computes `self * other`, returning
-    /// [`Duration::MAX`] if overflow occurred.
+    /// [`FuriDuration::MAX`] if overflow occurred.
     #[inline]
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    pub const fn saturating_mul(self, rhs: u32) -> Duration {
+    pub const fn saturating_mul(self, rhs: u32) -> FuriDuration {
         match self.checked_mul(rhs) {
             Some(res) => res,
-            None => Duration::MAX,
+            None => FuriDuration::MAX,
         }
     }
 
@@ -391,93 +391,93 @@ impl Duration {
     /// `other == 0`.
     #[inline]
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    pub const fn checked_div(self, rhs: u32) -> Option<Duration> {
+    pub const fn checked_div(self, rhs: u32) -> Option<FuriDuration> {
         if rhs != 0 {
             let ticks = self.0 / rhs;
-            Some(Duration(ticks))
+            Some(FuriDuration(ticks))
         } else {
             None
         }
     }
 }
 
-impl Add for Duration {
-    type Output = Duration;
+impl Add for FuriDuration {
+    type Output = FuriDuration;
 
-    fn add(self, rhs: Duration) -> Duration {
+    fn add(self, rhs: FuriDuration) -> FuriDuration {
         self.checked_add(rhs)
             .expect("overflow when adding durations")
     }
 }
 
-impl AddAssign for Duration {
-    fn add_assign(&mut self, rhs: Duration) {
+impl AddAssign for FuriDuration {
+    fn add_assign(&mut self, rhs: FuriDuration) {
         *self = *self + rhs;
     }
 }
 
-impl Sub for Duration {
-    type Output = Duration;
+impl Sub for FuriDuration {
+    type Output = FuriDuration;
 
-    fn sub(self, rhs: Duration) -> Duration {
+    fn sub(self, rhs: FuriDuration) -> FuriDuration {
         self.checked_sub(rhs)
             .expect("overflow when subtracting durations")
     }
 }
 
-impl SubAssign for Duration {
-    fn sub_assign(&mut self, rhs: Duration) {
+impl SubAssign for FuriDuration {
+    fn sub_assign(&mut self, rhs: FuriDuration) {
         *self = *self - rhs;
     }
 }
 
-impl Mul<u32> for Duration {
-    type Output = Duration;
+impl Mul<u32> for FuriDuration {
+    type Output = FuriDuration;
 
-    fn mul(self, rhs: u32) -> Duration {
+    fn mul(self, rhs: u32) -> FuriDuration {
         self.checked_mul(rhs)
             .expect("overflow when multiplying duration by scalar")
     }
 }
 
-impl Mul<Duration> for u32 {
-    type Output = Duration;
+impl Mul<FuriDuration> for u32 {
+    type Output = FuriDuration;
 
-    fn mul(self, rhs: Duration) -> Duration {
+    fn mul(self, rhs: FuriDuration) -> FuriDuration {
         rhs * self
     }
 }
 
-impl MulAssign<u32> for Duration {
+impl MulAssign<u32> for FuriDuration {
     fn mul_assign(&mut self, rhs: u32) {
         *self = *self * rhs;
     }
 }
 
-impl Div<u32> for Duration {
-    type Output = Duration;
+impl Div<u32> for FuriDuration {
+    type Output = FuriDuration;
 
-    fn div(self, rhs: u32) -> Duration {
+    fn div(self, rhs: u32) -> FuriDuration {
         self.checked_div(rhs)
             .expect("divide by zero error when dividing duration by scalar")
     }
 }
 
-impl DivAssign<u32> for Duration {
+impl DivAssign<u32> for FuriDuration {
     fn div_assign(&mut self, rhs: u32) {
         *self = *self / rhs;
     }
 }
 
-impl Sum for Duration {
-    fn sum<I: Iterator<Item = Duration>>(iter: I) -> Duration {
-        Duration(iter.map(|d| d.0).sum())
+impl Sum for FuriDuration {
+    fn sum<I: Iterator<Item = FuriDuration>>(iter: I) -> FuriDuration {
+        FuriDuration(iter.map(|d| d.0).sum())
     }
 }
 
-impl<'a> Sum<&'a Duration> for Duration {
-    fn sum<I: Iterator<Item = &'a Duration>>(iter: I) -> Duration {
-        Duration(iter.map(|d| d.0).sum())
+impl<'a> Sum<&'a FuriDuration> for FuriDuration {
+    fn sum<I: Iterator<Item = &'a FuriDuration>>(iter: I) -> FuriDuration {
+        FuriDuration(iter.map(|d| d.0).sum())
     }
 }
 
@@ -492,7 +492,7 @@ impl fmt::Display for TryFromDurationError {
     }
 }
 
-impl TryFrom<time::Duration> for Duration {
+impl TryFrom<time::Duration> for FuriDuration {
     type Error = TryFromDurationError;
 
     fn try_from(value: time::Duration) -> Result<Self, Self::Error> {
@@ -504,7 +504,7 @@ impl TryFrom<time::Duration> for Duration {
             .try_into()
             .map_err(|_| TryFromDurationError)?;
 
-        Ok(Duration(ticks))
+        Ok(FuriDuration(ticks))
     }
 }
 
@@ -522,7 +522,7 @@ mod tests {
             if a != b {
                 let (a, b) = if a > b { (a, b) } else { (b, a) };
                 assert!(
-                    a - Duration::from_micros(1) <= b,
+                    a - FuriDuration::from_micros(1) <= b,
                     "{:?} is not almost equal to {:?}",
                     a,
                     b
@@ -533,9 +533,9 @@ mod tests {
 
     #[test]
     fn instant_increases() {
-        let a = Instant::now();
+        let a = FuriInstant::now();
         loop {
-            let b = Instant::now();
+            let b = FuriInstant::now();
             assert!(b >= a);
             if b > a {
                 break;
@@ -549,10 +549,10 @@ mod tests {
         let threads: Vec<_> = (0..8)
             .map(|_| {
                 thread::spawn(|| {
-                    let mut old = Instant::now();
+                    let mut old = FuriInstant::now();
                     let count = 1_000; // TODO 5_000_000 hangs; figure out why.
                     for _ in 0..count {
-                        let new = Instant::now();
+                        let new = FuriInstant::now();
                         assert!(new >= old);
                         old = new;
                     }
@@ -567,14 +567,14 @@ mod tests {
 
     #[test]
     fn instant_elapsed() {
-        let a = Instant::now();
+        let a = FuriInstant::now();
         let _ = a.elapsed();
     }
 
     #[test]
     fn instant_math() {
-        let a = Instant::now();
-        let b = Instant::now();
+        let a = FuriInstant::now();
+        let b = FuriInstant::now();
         println!("a: {:?}", a);
         println!("b: {:?}", b);
         let dur = b.duration_since(a);
@@ -582,7 +582,7 @@ mod tests {
         assert_almost_eq!(b - dur, a);
         assert_almost_eq!(a + dur, b);
 
-        let second = Duration::from_secs(1);
+        let second = FuriDuration::from_secs(1);
         assert_almost_eq!(a - second + second, a);
         assert_almost_eq!(
             a.checked_sub(second).unwrap().checked_add(second).unwrap(),
@@ -590,8 +590,8 @@ mod tests {
         );
 
         // checked_add_duration will not panic on overflow
-        let mut maybe_t = Some(Instant::now());
-        let max_duration = Duration::from_nanos(ticks_to_ns(u32::MAX));
+        let mut maybe_t = Some(FuriInstant::now());
+        let max_duration = FuriDuration::from_nanos(ticks_to_ns(u32::MAX));
         // in case `Instant` can store `>= now + max_duration`.
         for _ in 0..2 {
             maybe_t = maybe_t.and_then(|t| t.checked_add(max_duration));
@@ -599,14 +599,14 @@ mod tests {
         assert_eq!(maybe_t, None);
 
         // checked_add_duration calculates the right time and will work for another week
-        let week = Duration::from_secs(60 * 60 * 24 * 7);
+        let week = FuriDuration::from_secs(60 * 60 * 24 * 7);
         assert_eq!(a + week, a.checked_add(week).unwrap());
     }
 
     #[test]
     fn instant_math_is_associative() {
-        let now = Instant::now();
-        let offset = Duration::from_millis(5);
+        let now = FuriInstant::now();
+        let offset = FuriDuration::from_millis(5);
         // Changing the order of instant math shouldn't change the results,
         // especially when the expression reduces to X + identity.
         assert_eq!((now + offset) - now, (now - now) + offset);
@@ -614,8 +614,8 @@ mod tests {
         // On any platform, `Instant` should have the same resolution as `Duration`
         // (i.e. 1 tick) or better. Otherwise, math will be non-associative.
         let tick_nanos = ticks_to_ns(1);
-        let now = Instant::now();
-        let provided_offset = Duration::from_nanos(tick_nanos);
+        let now = FuriInstant::now();
+        let provided_offset = FuriDuration::from_nanos(tick_nanos);
         let later = now + provided_offset;
         let measured_offset = later - now;
         assert_eq!(measured_offset, provided_offset);
@@ -623,22 +623,22 @@ mod tests {
 
     #[test]
     fn instant_checked_duration_since_nopanic() {
-        let now = Instant::now();
-        let earlier = now - Duration::from_secs(1);
-        let later = now + Duration::from_secs(1);
+        let now = FuriInstant::now();
+        let earlier = now - FuriDuration::from_secs(1);
+        let later = now + FuriDuration::from_secs(1);
         assert_eq!(earlier.checked_duration_since(now), None);
         assert_eq!(
             later.checked_duration_since(now),
-            Some(Duration::from_secs(1))
+            Some(FuriDuration::from_secs(1))
         );
-        assert_eq!(now.checked_duration_since(now), Some(Duration::ZERO));
+        assert_eq!(now.checked_duration_since(now), Some(FuriDuration::ZERO));
     }
 
     #[test]
     fn instant_saturating_duration_since_nopanic() {
-        let a = Instant::now();
-        let ret = (a - Duration::from_secs(1)).saturating_duration_since(a);
-        assert_eq!(ret, Duration::ZERO);
+        let a = FuriInstant::now();
+        let ret = (a - FuriDuration::from_secs(1)).saturating_duration_since(a);
+        assert_eq!(ret, FuriDuration::ZERO);
     }
 
     #[test]
@@ -648,10 +648,12 @@ mod tests {
         #[track_caller]
         fn check<T: Eq + Copy + fmt::Debug>(
             start: Option<T>,
-            op: impl Fn(&T, Duration) -> Option<T>,
+            op: impl Fn(&T, FuriDuration) -> Option<T>,
         ) {
-            const DURATIONS: [Duration; 2] =
-                [Duration(MAX_INTERVAL_DURATION_TICKS >> 1), Duration(50)];
+            const DURATIONS: [FuriDuration; 2] = [
+                FuriDuration(MAX_INTERVAL_DURATION_TICKS >> 1),
+                FuriDuration(50),
+            ];
             if let Some(start) = start {
                 assert_eq!(
                     op(&start, DURATIONS.into_iter().sum()),
@@ -660,19 +662,34 @@ mod tests {
             }
         }
 
-        let instant = Instant::now();
-        check(instant.checked_sub(Duration(100)), Instant::checked_add);
-        check(instant.checked_sub(Duration::MAX), Instant::checked_add);
-        check(instant.checked_add(Duration(100)), Instant::checked_sub);
-        check(instant.checked_add(Duration::MAX), Instant::checked_sub);
+        let instant = FuriInstant::now();
+        check(
+            instant.checked_sub(FuriDuration(100)),
+            FuriInstant::checked_add,
+        );
+        check(
+            instant.checked_sub(FuriDuration::MAX),
+            FuriInstant::checked_add,
+        );
+        check(
+            instant.checked_add(FuriDuration(100)),
+            FuriInstant::checked_sub,
+        );
+        check(
+            instant.checked_add(FuriDuration::MAX),
+            FuriInstant::checked_sub,
+        );
     }
 
     #[test]
     fn duration_try_from() {
-        assert_eq!(Duration::try_from(time::Duration::ZERO), Ok(Duration(0)));
+        assert_eq!(
+            FuriDuration::try_from(time::Duration::ZERO),
+            Ok(FuriDuration(0))
+        );
 
         assert_eq!(
-            Duration::try_from(time::Duration::MAX),
+            FuriDuration::try_from(time::Duration::MAX),
             Err(TryFromDurationError)
         )
     }

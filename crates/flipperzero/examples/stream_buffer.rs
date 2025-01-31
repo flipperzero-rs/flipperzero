@@ -17,7 +17,7 @@ use flipperzero::{furi, println};
 use flipperzero_rt::{entry, manifest};
 
 use core::time::Duration as CoreDuration;
-use furi::time::Duration as FuriDuration;
+use furi::time::FuriDuration;
 
 // Define the FAP Manifest for this application
 manifest!(name = "Stream buffer example");

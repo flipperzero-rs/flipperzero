@@ -5,7 +5,7 @@ use flipperzero_sys as sys;
 use flipperzero_sys::furi::Status;
 
 use crate::furi;
-use crate::furi::time::Duration;
+use crate::furi::time::FuriDuration;
 
 /// MessageQueue provides a safe wrapper around the furi message queue primitive.
 pub struct MessageQueue<M: Sized> {
@@ -28,7 +28,7 @@ impl<M: Sized> MessageQueue<M> {
     }
 
     // Attempts to add the message to the end of the queue, waiting up to timeout ticks.
-    pub fn put(&self, msg: M, timeout: Duration) -> furi::Result<()> {
+    pub fn put(&self, msg: M, timeout: FuriDuration) -> furi::Result<()> {
         let mut msg = core::mem::ManuallyDrop::new(msg);
 
         let status: Status = unsafe {
@@ -46,7 +46,7 @@ impl<M: Sized> MessageQueue<M> {
     }
 
     // Attempts to read a message from the front of the queue within timeout ticks.
-    pub fn get(&self, timeout: Duration) -> furi::Result<M> {
+    pub fn get(&self, timeout: FuriDuration) -> furi::Result<M> {
         let mut out = core::mem::MaybeUninit::<M>::uninit();
         let status: Status = unsafe {
             sys::furi_message_queue_get(
@@ -88,7 +88,7 @@ impl<M: Sized> Drop for MessageQueue<M> {
         // Drain any elements from the message queue, so any
         // drop handlers on the message element get called.
         while !self.is_empty() {
-            match self.get(Duration::MAX) {
+            match self.get(FuriDuration::MAX) {
                 Ok(msg) => drop(msg),
                 Err(_) => break, // we tried
             }
@@ -112,26 +112,26 @@ mod tests {
         assert_eq!(queue.capacity(), 3);
 
         // Adding a message to the queue should consume capacity.
-        queue.put(2, Duration::from_millis(1)).unwrap();
+        queue.put(2, FuriDuration::from_millis(1)).unwrap();
         assert_eq!(queue.len(), 1);
         assert_eq!(queue.space(), 2);
         assert_eq!(queue.capacity(), 3);
 
         // We should be able to fill the queue to capacity.
-        queue.put(4, Duration::from_millis(1)).unwrap();
-        queue.put(6, Duration::from_millis(1)).unwrap();
+        queue.put(4, FuriDuration::from_millis(1)).unwrap();
+        queue.put(6, FuriDuration::from_millis(1)).unwrap();
         assert_eq!(queue.len(), 3);
         assert_eq!(queue.space(), 0);
         assert_eq!(queue.capacity(), 3);
 
         // Attempting to add another message should time out.
         assert_eq!(
-            queue.put(7, Duration::from_millis(1)),
+            queue.put(7, FuriDuration::from_millis(1)),
             Err(furi::Error::TimedOut),
         );
 
         // Removing a message from the queue frees up capacity.
-        assert_eq!(queue.get(Duration::from_millis(1)), Ok(2));
+        assert_eq!(queue.get(FuriDuration::from_millis(1)), Ok(2));
         assert_eq!(queue.len(), 2);
         assert_eq!(queue.space(), 1);
         assert_eq!(queue.capacity(), 3);
