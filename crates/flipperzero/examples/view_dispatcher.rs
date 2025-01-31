@@ -56,24 +56,32 @@ impl Drop for App {
 pub unsafe extern "C" fn text_input_callback(context: *mut c_void) {
     let app = context as *mut App;
     let mut message = FuriString::from("Hello ");
-    message.push_c_str(CStr::from_ptr((*app).name.as_ptr()));
-    sys::widget_add_string_element(
-        (*app).widget.as_ptr(),
-        128 / 2,
-        64 / 2,
-        sys::AlignCenter,
-        sys::AlignCenter,
-        sys::FontPrimary,
-        message.as_c_ptr(),
-    );
-    sys::view_dispatcher_switch_to_view((*app).view_dispatcher.as_ptr(), AppView::Widget as u32);
+    unsafe {
+        message.push_c_str(CStr::from_ptr((*app).name.as_ptr()));
+        sys::widget_add_string_element(
+            (*app).widget.as_ptr(),
+            128 / 2,
+            64 / 2,
+            sys::AlignCenter,
+            sys::AlignCenter,
+            sys::FontPrimary,
+            message.as_c_ptr(),
+        );
+        sys::view_dispatcher_switch_to_view(
+            (*app).view_dispatcher.as_ptr(),
+            AppView::Widget as u32,
+        );
+    }
 }
 
 pub unsafe extern "C" fn navigation_event_callback(context: *mut c_void) -> bool {
     let view_dispatcher = context as *mut sys::ViewDispatcher;
-    sys::view_dispatcher_stop(view_dispatcher);
-    sys::view_dispatcher_remove_view(view_dispatcher, AppView::Widget as u32);
-    sys::view_dispatcher_remove_view(view_dispatcher, AppView::TextInput as u32);
+    unsafe {
+        sys::view_dispatcher_stop(view_dispatcher);
+        sys::view_dispatcher_remove_view(view_dispatcher, AppView::Widget as u32);
+        sys::view_dispatcher_remove_view(view_dispatcher, AppView::TextInput as u32);
+    }
+
     true
 }
 

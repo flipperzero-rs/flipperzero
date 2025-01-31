@@ -10,7 +10,8 @@ pub unsafe fn next_code_point<'a, I: Iterator<Item = &'a u8>>(bytes: &mut I) -> 
     let mut state = sys::FuriStringUTF8StateStarting;
     let mut unicode = 0u32;
     loop {
-        sys::furi_string_utf8_decode(*bytes.next()? as c_char, &mut state, &mut unicode);
+        unsafe { sys::furi_string_utf8_decode(*bytes.next()? as c_char, &mut state, &mut unicode) };
+
         match state {
             sys::FuriStringUTF8StateStarting => break Some(unicode),
             sys::FuriStringUTF8StateError => break Some(0xfffd), // �
