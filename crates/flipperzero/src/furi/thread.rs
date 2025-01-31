@@ -19,7 +19,7 @@ use alloc::{
 
 use flipperzero_sys::{self as sys, FuriFlagNoClear, FuriFlagWaitAll, FuriFlagWaitAny, HasFlag};
 
-use crate::furi::time::Duration;
+use crate::furi::time::FuriDuration;
 
 #[cfg(feature = "alloc")]
 const MIN_STACK_SIZE: usize = 1024;
@@ -226,7 +226,7 @@ pub fn sleep(duration: core::time::Duration) {
 /// The maximum supported duration is `2^32` ticks (system timer dependent).
 ///
 /// See [`sleep`] to sleep based on arbitary duration.
-pub fn sleep_ticks(duration: Duration) {
+pub fn sleep_ticks(duration: FuriDuration) {
     unsafe {
         sys::furi_delay_tick(duration.as_ticks());
     }
@@ -296,7 +296,7 @@ pub fn get_flags() -> Result<u32, sys::furi::Status> {
 pub fn wait_any_flags(
     flags: u32,
     clear: bool,
-    timeout: Duration,
+    timeout: FuriDuration,
 ) -> Result<u32, sys::furi::Status> {
     let options = FuriFlagWaitAny.0 | (if clear { 0 } else { FuriFlagNoClear.0 });
     let result = unsafe { sys::furi_thread_flags_wait(flags, options, timeout.0) };
@@ -314,7 +314,7 @@ pub fn wait_any_flags(
 pub fn wait_all_flags(
     flags: u32,
     clear: bool,
-    timeout: Duration,
+    timeout: FuriDuration,
 ) -> Result<u32, sys::furi::Status> {
     let options = FuriFlagWaitAll.0 | (if clear { 0 } else { FuriFlagNoClear.0 });
     let result = unsafe { sys::furi_thread_flags_wait(flags, options, timeout.0) };

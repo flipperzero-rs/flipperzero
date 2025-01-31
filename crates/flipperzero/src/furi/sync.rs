@@ -7,7 +7,7 @@ use flipperzero_sys as sys;
 use lock_api::{GuardNoSend, RawMutex, RawMutexTimed};
 use sys::furi::Status;
 
-use super::time::{Duration, Instant};
+use super::time::{FuriDuration, FuriInstant};
 
 const MUTEX_TYPE: sys::FuriMutexType = sys::FuriMutexTypeNormal;
 
@@ -88,15 +88,15 @@ unsafe impl RawMutex for FuriMutex {
 }
 
 unsafe impl RawMutexTimed for FuriMutex {
-    type Duration = Duration;
-    type Instant = Instant;
+    type Duration = FuriDuration;
+    type Instant = FuriInstant;
 
     fn try_lock_for(&self, timeout: Self::Duration) -> bool {
         self.try_acquire(timeout.0)
     }
 
     fn try_lock_until(&self, timeout: Self::Instant) -> bool {
-        let now = Instant::now();
+        let now = FuriInstant::now();
         self.try_lock_for(timeout - now)
     }
 }

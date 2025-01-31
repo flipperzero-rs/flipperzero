@@ -5,7 +5,7 @@ use core::ptr::addr_of_mut;
 
 use flipperzero_sys as sys;
 
-use crate::furi::time::Duration;
+use crate::furi::time::FuriDuration;
 
 /// The address of the internal LED controller.
 ///
@@ -140,7 +140,7 @@ impl BusHandle {
     /// Enumerates the devices that are present and ready on this bus.
     pub fn enumerate_devices(
         &mut self,
-        per_device_timeout: Duration,
+        per_device_timeout: FuriDuration,
     ) -> impl Iterator<Item = DeviceAddress> + '_ {
         (0x00..0x80).filter_map(move |addr| {
             let device = DeviceAddress::new(addr);
@@ -152,7 +152,7 @@ impl BusHandle {
     /// Checks if the device with address `i2c_addr` is present and ready on the bus.
     ///
     /// Returns `true` if the device is present and ready, false otherwise.
-    pub fn is_device_ready(&mut self, device: DeviceAddress, timeout: Duration) -> bool {
+    pub fn is_device_ready(&mut self, device: DeviceAddress, timeout: FuriDuration) -> bool {
         unsafe {
             sys::furi_hal_i2c_is_device_ready(self.handle, device.0, timeout.as_millis() as u32)
         }
@@ -163,7 +163,7 @@ impl BusHandle {
         &mut self,
         device: DeviceAddress,
         reg_addr: u8,
-        timeout: Duration,
+        timeout: FuriDuration,
     ) -> Result<u8, Error> {
         let mut data = 0;
         if unsafe {
@@ -186,7 +186,7 @@ impl BusHandle {
         &mut self,
         device: DeviceAddress,
         reg_addr: u8,
-        timeout: Duration,
+        timeout: FuriDuration,
     ) -> Result<u16, Error> {
         let mut data = 0;
         if unsafe {
@@ -210,7 +210,7 @@ impl BusHandle {
         device: DeviceAddress,
         mem_addr: u8,
         buf: &mut [u8],
-        timeout: Duration,
+        timeout: FuriDuration,
     ) -> Result<(), Error> {
         if unsafe {
             sys::furi_hal_i2c_read_mem(
@@ -234,7 +234,7 @@ impl BusHandle {
         device: DeviceAddress,
         reg_addr: u8,
         data: u8,
-        timeout: Duration,
+        timeout: FuriDuration,
     ) -> Result<(), Error> {
         if unsafe {
             sys::furi_hal_i2c_write_reg_8(
@@ -257,7 +257,7 @@ impl BusHandle {
         device: DeviceAddress,
         reg_addr: u8,
         data: u16,
-        timeout: Duration,
+        timeout: FuriDuration,
     ) -> Result<(), Error> {
         if unsafe {
             sys::furi_hal_i2c_write_reg_16(
@@ -280,7 +280,7 @@ impl BusHandle {
         device: DeviceAddress,
         mem_addr: u8,
         data: &[u8],
-        timeout: Duration,
+        timeout: FuriDuration,
     ) -> Result<(), Error> {
         if unsafe {
             sys::furi_hal_i2c_write_mem(
@@ -303,7 +303,7 @@ impl BusHandle {
         &mut self,
         device: DeviceAddress,
         data: &[u8],
-        timeout: Duration,
+        timeout: FuriDuration,
     ) -> Result<(), Error> {
         unsafe {
             sys::furi_hal_i2c_tx(
@@ -323,7 +323,7 @@ impl BusHandle {
         &mut self,
         device: DeviceAddress,
         data: &mut [u8],
-        timeout: Duration,
+        timeout: FuriDuration,
     ) -> Result<(), Error> {
         unsafe {
             sys::furi_hal_i2c_rx(
@@ -344,7 +344,7 @@ impl BusHandle {
         device: DeviceAddress,
         write: &[u8],
         read: &mut [u8],
-        timeout: Duration,
+        timeout: FuriDuration,
     ) -> Result<(), Error> {
         unsafe {
             sys::furi_hal_i2c_trx(
@@ -378,7 +378,7 @@ impl BusHandle {
         &mut self,
         device: DeviceAddress,
         operations: &mut [Operation],
-        timeout: Duration,
+        timeout: FuriDuration,
     ) -> Result<(), Error> {
         self.transaction_impl(device, operations, timeout)
     }
@@ -391,7 +391,7 @@ impl BusHandle {
         device: DeviceAddress,
         write: &[u8],
         read: &mut [u8],
-        timeout: Duration,
+        timeout: FuriDuration,
     ) -> Result<(), Error> {
         unsafe {
             sys::furi_hal_i2c_tx_ext(
@@ -424,7 +424,7 @@ impl BusHandle {
         &mut self,
         device: DeviceAddress,
         operations: &mut [O],
-        timeout: Duration,
+        timeout: FuriDuration,
     ) -> Result<(), Error>
     where
         O: OperationLike + 'a,
@@ -540,16 +540,16 @@ impl OperationLike for Operation<'_> {
 pub struct EmbeddedHalBus {
     bus: Bus,
     /// The timeout used for each operation
-    timeout: Duration,
+    timeout: FuriDuration,
 }
 
 #[cfg(any(feature = "embedded-hal", feature = "embedded-hal-0"))]
 impl EmbeddedHalBus {
-    pub fn new(bus: Bus, timeout: Duration) -> Self {
+    pub fn new(bus: Bus, timeout: FuriDuration) -> Self {
         Self { bus, timeout }
     }
 
-    pub fn set_timeout(&mut self, timeout: Duration) {
+    pub fn set_timeout(&mut self, timeout: FuriDuration) {
         self.timeout = timeout
     }
 }
@@ -699,7 +699,7 @@ mod tests {
         Bus, DeviceAddress, INTERNAL_BATTERY_CHARGER, INTERNAL_BATTERY_FUEL_GAUGE,
         INTERNAL_LED_CONTROLLER,
     };
-    use crate::furi::time::Duration;
+    use crate::furi::time::FuriDuration;
 
     #[test]
     fn enumerate_devices() {
@@ -710,7 +710,10 @@ mod tests {
         ];
 
         let mut bus = Bus::INTERNAL.acquire();
-        for (i, device) in bus.enumerate_devices(Duration::from_millis(50)).enumerate() {
+        for (i, device) in bus
+            .enumerate_devices(FuriDuration::from_millis(50))
+            .enumerate()
+        {
             if let Some(&expected) = INTERNAL_DEVICES.get(i) {
                 assert_eq!(expected, device);
             }

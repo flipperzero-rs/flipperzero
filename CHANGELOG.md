@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- `flipperzero::furi::time::Duration` has been renamed to `FuriDuration`
+- `flipperzero::furi::time::Instant` has been renamed to `FuriInstant`
+
 ### Removed
 
 ## [0.14.0]
