@@ -9,10 +9,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `flipperzero::furi::hal::power::Power` handle to Power service
+
 ### Changed
 
 - `flipperzero::furi::time::Duration` has been renamed to `FuriDuration`
 - `flipperzero::furi::time::Instant` has been renamed to `FuriInstant`
+- `flipperzero_sys::furi::UnsafeRecord` now implements `Clone` to support reference-count use
+- `flipperzero::notification::NotificationService` has been renamed `NotificationApp`
+  to match the underlying C API
 
 ### Removed
 
@@ -22,6 +27,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `flipperzero_sys::furi::FuriBox` for low-level heap allocations
 - `flipperzero_sys::halt!` macro
+- `flipperzero::storage::Storage` handle to Storage service
 
 ### Changed
 
