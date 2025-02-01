@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `flipperzero_sys::furi::FuriBox` for low-level heap allocations
 - `flipperzero_sys::halt!` macro
+- `flipperzero::storage::Storage` handle to Storage service
 
 ### Changed
 
