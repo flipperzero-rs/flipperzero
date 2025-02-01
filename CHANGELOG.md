@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `flipperzero::furi::hal::power::Power` handle to Power service
+
 ### Changed
 
 - `flipperzero::furi::time::Duration` has been renamed to `FuriDuration`
