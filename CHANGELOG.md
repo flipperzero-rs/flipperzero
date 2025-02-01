@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `flipperzero::furi::hal::power::Power` handle to Power service
 - High-level serial API (#216)
+- Add `gui::Gui` record and basic support for using `gui::Canvas` in monopoly mode
+- Add [`embedded-graphics`](https://crates.io/crates/embedded-graphics) support allowing `gui::Canvas`
+  to be used as a [`DrawTarget`](https://docs.rs/embedded-graphics/latest/embedded_graphics/draw_target/trait.DrawTarget.html) (#214)
 
 ### Changed
 

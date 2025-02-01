@@ -22,7 +22,7 @@ impl EventFlag {
     /// Get pointer to raw [`sys::FuriEventFlag`].
     ///
     /// This pointer must not be `free`d or otherwise invalidated.
-    /// It must not be referenced after [`FuriEventFlag`] has been dropped.
+    /// It must not be referenced after [`EventFlag`] has been dropped.
     pub fn as_ptr(&self) -> *mut sys::FuriEventFlag {
         self.raw.as_ptr()
     }
