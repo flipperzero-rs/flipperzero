@@ -1,5 +1,7 @@
 //! Furi notifications.
 
+use core::ffi::CStr;
+
 use bitflags::bitflags;
 
 use flipperzero_sys as sys;
@@ -19,16 +21,28 @@ pub mod sounds;
 pub mod vibro;
 
 /// A handle to the Notification service.
-pub struct NotificationService {
-    data: UnsafeRecord<sys::NotificationApp>,
+#[derive(Clone)]
+pub struct NotificationApp {
+    record: UnsafeRecord<sys::NotificationApp>,
 }
 
-impl NotificationService {
+impl NotificationApp {
+    pub const NAME: &CStr = c"notification";
+
     /// Obtains a handle to the Notifications service.
     pub fn open() -> Self {
         Self {
-            data: unsafe { UnsafeRecord::open(c"notification") },
+            record: unsafe { UnsafeRecord::open(Self::NAME) },
         }
+    }
+
+    /// Get raw [`sys::NotificationApp`] pointer.
+    ///
+    /// It should not be `free`d or otherwise invalidated.
+    /// It should not be referenced after [`NotificationApp`] has been dropped.
+    #[inline]
+    pub fn as_ptr(&self) -> *mut sys::NotificationApp {
+        self.record.as_ptr()
     }
 
     /// Runs a notification sequence.
@@ -39,12 +53,12 @@ impl NotificationService {
     /// sequence before the firmware has finished reading it. At any time where this is an issue
     /// `notify_blocking` should be used instead..
     pub fn notify(&mut self, sequence: &'static NotificationSequence) {
-        unsafe { sys::notification_message(self.data.as_ptr(), sequence.to_sys()) };
+        unsafe { sys::notification_message(self.as_ptr(), sequence.to_sys()) };
     }
 
     /// Runs a notification sequence and blocks the thread.
     pub fn notify_blocking(&mut self, sequence: &'static NotificationSequence) {
-        unsafe { sys::notification_message_block(self.data.as_ptr(), sequence.to_sys()) };
+        unsafe { sys::notification_message_block(self.as_ptr(), sequence.to_sys()) };
     }
 }
 
