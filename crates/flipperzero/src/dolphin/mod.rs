@@ -1,5 +1,7 @@
 //! Interact with your Dolphin!
 
+use core::ffi::CStr;
+
 use flipperzero_sys::{self as sys, furi::UnsafeRecord};
 
 pub use sys::DolphinStats as Stats;
@@ -8,16 +10,28 @@ mod deed;
 pub use deed::{App, Deed};
 
 /// The dolphin in your FlipperZero!
+#[derive(Clone)]
 pub struct Dolphin {
-    data: UnsafeRecord<sys::Dolphin>,
+    record: UnsafeRecord<sys::Dolphin>,
 }
 
 impl Dolphin {
+    pub const NAME: &CStr = c"dolphin";
+
     /// Obtains a handle to the dolphin.
     pub fn open() -> Self {
         Self {
-            data: unsafe { UnsafeRecord::open(c"dolphin") },
+            record: unsafe { UnsafeRecord::open(Self::NAME) },
         }
+    }
+
+    /// Get pointer to raw [`sys::Dolphin`] record.
+    ///
+    /// This must not be `freed` or otherwise invalidated.
+    /// It must not be referenced after [`Dolphin`] has been dropped.
+    #[inline]
+    pub fn as_ptr(&self) -> *mut sys::Dolphin {
+        self.record.as_ptr()
     }
 
     /// Notifies the dolphin of deed completion.
@@ -29,7 +43,7 @@ impl Dolphin {
 
     /// Retrieves the dolphin's current stats.
     pub fn stats(&mut self) -> Stats {
-        unsafe { sys::dolphin_stats(self.data.as_ptr()) }
+        unsafe { sys::dolphin_stats(self.as_ptr()) }
     }
 
     /// Upgrades the level of the dolphin, if it is ready.
@@ -38,8 +52,9 @@ impl Dolphin {
     pub fn upgrade_level(&mut self) -> bool {
         let ready = self.stats().level_up_is_pending;
         if ready {
-            unsafe { sys::dolphin_upgrade_level(self.data.as_ptr()) };
+            unsafe { sys::dolphin_upgrade_level(self.as_ptr()) };
         }
+
         ready
     }
 
@@ -47,6 +62,6 @@ impl Dolphin {
     ///
     /// Thread safe, blocking.
     pub fn flush(&mut self) {
-        unsafe { sys::dolphin_flush(self.data.as_ptr()) };
+        unsafe { sys::dolphin_flush(self.as_ptr()) };
     }
 }
