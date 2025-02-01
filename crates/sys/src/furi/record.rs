@@ -1,11 +1,14 @@
 //! Low-level wrappers around Furi Record API.
 
 use core::ffi::CStr;
+use core::ptr::NonNull;
 
 /// Low-level wrapper of a record handle.
+///
+/// This effectively acts as a reference count for the open underlying Record.
 pub struct UnsafeRecord<T> {
     name: &'static CStr,
-    data: *mut T,
+    raw: NonNull<T>,
 }
 
 impl<T> UnsafeRecord<T> {
@@ -17,13 +20,21 @@ impl<T> UnsafeRecord<T> {
     pub unsafe fn open(name: &'static CStr) -> Self {
         Self {
             name,
-            data: unsafe { crate::furi_record_open(name.as_ptr()) } as *mut T,
+            // SAFETY: `furi_record_open` blocks until the record is initialized with a valid value.
+            raw: unsafe { NonNull::new_unchecked(crate::furi_record_open(name.as_ptr()).cast()) },
         }
     }
 
     /// Returns the record data as a raw pointer.
     pub fn as_ptr(&self) -> *mut T {
-        self.data
+        self.raw.as_ptr()
+    }
+}
+
+impl<T> Clone for UnsafeRecord<T> {
+    fn clone(&self) -> Self {
+        // SAFETY: Opening a record multiple times just increases its reference count.
+        unsafe { Self::open(self.name) }
     }
 }
 
