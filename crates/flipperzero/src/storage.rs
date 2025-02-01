@@ -1,10 +1,33 @@
-use core::ffi::{c_char, c_void, CStr};
+use core::ffi::{c_void, CStr};
 use core::ptr::NonNull;
 
 use flipperzero_sys::furi::UnsafeRecord;
 use flipperzero_sys::{self as sys, HasFlag};
 
 use crate::io::*;
+
+/// Storage service handle.
+#[derive(Clone)]
+pub struct Storage {
+    record: UnsafeRecord<sys::Storage>,
+}
+
+impl Storage {
+    pub const NAME: &CStr = c"storage";
+
+    /// Open handle to Storage service.
+    pub fn open() -> Self {
+        Self {
+            record: unsafe { UnsafeRecord::open(Self::NAME) },
+        }
+    }
+
+    /// Access raw Furi Storage record.
+    #[inline]
+    pub fn as_ptr(&self) -> *mut sys::Storage {
+        self.record.as_ptr()
+    }
+}
 
 #[derive(Debug, Default, Clone, Copy)]
 pub struct OpenOptions {
@@ -130,8 +153,8 @@ impl OpenOptions {
         let f = File::new();
         if unsafe {
             sys::storage_file_open(
-                f.0.as_ptr(),
-                path.as_ptr() as *const c_char,
+                f.as_ptr(),
+                path.as_ptr().cast(),
                 self.access_mode,
                 canonicalized_open_mode,
             )
@@ -140,24 +163,40 @@ impl OpenOptions {
         } else {
             // Per docs, "you need to close the file even if the open operation
             // failed," but this is handled by `Drop`.
-            Err(Error::from_sys(unsafe { sys::storage_file_get_error(f.0.as_ptr()) }).unwrap())
+            Err(Error::from_sys(f.get_raw_error()).unwrap())
         }
     }
 }
 
 /// Basic, unbuffered file handle
 #[allow(dead_code)]
-pub struct File(NonNull<sys::File>, UnsafeRecord<sys::Storage>);
+pub struct File {
+    raw: NonNull<sys::File>,
+    storage: Storage,
+}
 
 impl File {
     pub fn new() -> Self {
-        unsafe {
-            let record = UnsafeRecord::open(c"storage");
-            File(
-                NonNull::new_unchecked(sys::storage_file_alloc(record.as_ptr())),
-                record,
-            )
+        let storage = Storage::open();
+        Self {
+            // SAFETY: Alloc always returns a valid non-null pointer or `furi_panic`s.
+            raw: unsafe { NonNull::new_unchecked(sys::storage_file_alloc(storage.as_ptr())) },
+            storage,
         }
+    }
+
+    /// Obtain raw Furi file handle.
+    ///
+    /// This pointer must not be `free`d or otherwise invalidated.
+    /// It must not be referenced after `File` as been dropped.
+    pub fn as_ptr(&self) -> *mut sys::File {
+        self.raw.as_ptr()
+    }
+
+    /// Get last error.
+    fn get_raw_error(&self) -> sys::FS_Error {
+        // SAFETY: Pointer is always non-null and valid `sys::File`
+        unsafe { sys::storage_file_get_error(self.as_ptr()) }
     }
 }
 
@@ -166,7 +205,7 @@ impl Drop for File {
         unsafe {
             // `storage_file_close` calls `storage_file_sync`
             // internally, so it's not necesssary to call it here.
-            sys::storage_file_close(self.0.as_ptr());
+            sys::storage_file_close(self.as_ptr());
         }
     }
 }
@@ -174,14 +213,12 @@ impl Drop for File {
 impl Read for File {
     fn read(&mut self, buf: &mut [u8]) -> Result<usize, Error> {
         let bytes_read = unsafe {
-            sys::storage_file_read(self.0.as_ptr(), buf.as_mut_ptr() as *mut c_void, buf.len())
+            sys::storage_file_read(self.as_ptr(), buf.as_mut_ptr() as *mut c_void, buf.len())
         };
-        let error = unsafe { sys::storage_file_get_error(self.0.as_ptr()) };
 
-        if error == sys::FSE_OK {
-            Ok(bytes_read)
-        } else {
-            Err(Error::from_sys(error).unwrap())
+        match Error::from_sys(self.get_raw_error()) {
+            Some(err) => Err(err),
+            None => Ok(bytes_read),
         }
     }
 }
@@ -207,12 +244,12 @@ impl Seek for File {
             }
         };
         unsafe {
-            if sys::storage_file_seek(self.0.as_ptr(), offset, from_start) {
-                Ok(sys::storage_file_tell(self.0.as_ptr())
+            if sys::storage_file_seek(self.as_ptr(), offset, from_start) {
+                Ok(sys::storage_file_tell(self.as_ptr())
                     .try_into()
                     .map_err(|_| Error::InvalidParameter)?)
             } else {
-                Err(Error::from_sys(sys::storage_file_get_error(self.0.as_ptr())).unwrap())
+                Err(Error::from_sys(self.get_raw_error()).unwrap())
             }
         }
     }
@@ -223,7 +260,7 @@ impl Seek for File {
 
     fn stream_len(&mut self) -> Result<usize, Error> {
         Ok(unsafe {
-            sys::storage_file_size(self.0.as_ptr())
+            sys::storage_file_size(self.as_ptr())
                 .try_into()
                 .map_err(|_| Error::InvalidParameter)?
         })
@@ -231,7 +268,7 @@ impl Seek for File {
 
     fn stream_position(&mut self) -> Result<usize, Error> {
         Ok(unsafe {
-            sys::storage_file_tell(self.0.as_ptr())
+            sys::storage_file_tell(self.as_ptr())
                 .try_into()
                 .map_err(|_| Error::InvalidParameter)?
         })
@@ -241,14 +278,12 @@ impl Seek for File {
 impl Write for File {
     fn write(&mut self, buf: &[u8]) -> Result<usize, Error> {
         let bytes_written = unsafe {
-            sys::storage_file_write(self.0.as_ptr(), buf.as_ptr() as *mut c_void, buf.len())
+            sys::storage_file_write(self.as_ptr(), buf.as_ptr() as *mut c_void, buf.len())
         };
-        let error = unsafe { sys::storage_file_get_error(self.0.as_ptr()) };
 
-        if error == sys::FSE_OK {
-            Ok(bytes_written)
-        } else {
-            Err(Error::from_sys(error).unwrap())
+        match Error::from_sys(self.get_raw_error()) {
+            Some(err) => Err(err),
+            None => Ok(bytes_written),
         }
     }
 
