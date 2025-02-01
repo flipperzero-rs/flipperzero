@@ -15,8 +15,9 @@ use crate::furi::string::FuriString;
 use crate::gui::canvas::Align;
 
 /// A handle to the Dialogs app.
+#[derive(Clone)]
 pub struct DialogsApp {
-    data: UnsafeRecord<sys::DialogsApp>,
+    record: UnsafeRecord<sys::DialogsApp>,
 }
 
 /// A dialog message.
@@ -41,17 +42,27 @@ pub enum DialogMessageButton {
 }
 
 impl DialogsApp {
+    pub const NAME: &CStr = c"dialogs";
+
     /// Obtains a handle to the Dialogs app.
     pub fn open() -> Self {
         Self {
-            data: unsafe { UnsafeRecord::open(c"dialogs") },
+            record: unsafe { UnsafeRecord::open(Self::NAME) },
         }
+    }
+
+    /// Get pointer to raw [`sys::DialogsApp`] record.
+    ///
+    /// This pointer must not be `free`d or otherwise invalidated.
+    /// It should not be referenced after [`DialogsApp`] has been dropped.
+    #[inline]
+    pub fn as_ptr(&self) -> *mut sys::DialogsApp {
+        self.record.as_ptr()
     }
 
     /// Displays a message.
     pub fn show_message(&mut self, message: &DialogMessage) -> DialogMessageButton {
-        let button_sys =
-            unsafe { sys::dialog_message_show(self.data.as_ptr(), message.data.as_ptr()) };
+        let button_sys = unsafe { sys::dialog_message_show(self.as_ptr(), message.data.as_ptr()) };
 
         DialogMessageButton::from_sys(button_sys).expect("Invalid button")
     }
@@ -72,12 +83,7 @@ impl DialogsApp {
             .map(|opts| &opts.data as *const sys::DialogsFileBrowserOptions)
             .unwrap_or(ptr::null());
         unsafe {
-            sys::dialog_file_browser_show(
-                self.data.as_ptr(),
-                result_path.as_mut_ptr(),
-                path,
-                options,
-            )
+            sys::dialog_file_browser_show(self.as_ptr(), result_path.as_mut_ptr(), path, options)
         }
         .then_some(result_path)
     }
