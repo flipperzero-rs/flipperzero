@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Add `gui::Gui` record and basic support for using `gui::Canvas` in monopoly mode.
+- Add [`embedded-graphics`](https://crates.io/crates/embedded-graphics) support allowing `gui::Canvas`
+  to be used as a [`DrawTarget`](https://docs.rs/embedded-graphics/latest/embedded_graphics/draw_target/trait.DrawTarget.html).
+
 ### Changed
 
 - `flipperzero::furi::time::Duration` has been renamed to `FuriDuration`
