@@ -10,7 +10,7 @@ from subprocess import run
 PYTHON = 'python'
 TOOLS_PATH = '../tools'
 INSTALL_PATH = PurePosixPath('/ext/apps/Examples')
-EXAMPLES = ["dialog", "example_images", "gpio", "gui", "hello-rust", "notification", "storage"]
+EXAMPLES = ["dialog", "embedded-graphics", "example_images", "gpio", "gui", "hello-rust", "notification", "storage"]
 
 
 def parse_args():
@@ -30,7 +30,7 @@ def main():
         run(['cargo', 'build', '--package', 'flipperzero', '--example', example, '--all-features', '--release'], check=True)
 
         if args.install:
-            # Assume that the binary has the name as the 
+            # Assume that the binary has the name as the target
             binary = Path.cwd() / 'target' / 'thumbv7em-none-eabihf' / 'release' / 'examples' / example
             target = INSTALL_PATH / f'{example}.fap'
 
