@@ -1,5 +1,6 @@
 //! Furi API.
 
+pub mod event_flag;
 pub mod io;
 pub mod kernel;
 pub mod log;
