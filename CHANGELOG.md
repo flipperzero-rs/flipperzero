@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - `flipperzero::furi::hal::power::Power` handle to Power service
+- High-level serial API (#216)
 
 ### Changed
 
