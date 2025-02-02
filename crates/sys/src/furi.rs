@@ -165,6 +165,12 @@ impl From<i32> for Status {
     }
 }
 
+impl From<u32> for Status {
+    fn from(value: u32) -> Self {
+        Status(value as i32)
+    }
+}
+
 impl From<Status> for Result<i32, Error> {
     fn from(status: Status) -> Self {
         status.into_result()
