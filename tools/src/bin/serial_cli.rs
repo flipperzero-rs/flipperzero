@@ -1,10 +1,12 @@
 //! Serial client tool for Flipper Zero.
 
 use std::io::{self, Write};
+use std::process::ExitCode;
 use std::time::Duration;
 
 use clap::Parser;
 use crossterm::event::{Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
+use crossterm::style::Stylize;
 use flipperzero_tools::serial;
 
 const ETXT: char = '\x03'; // ^C
@@ -19,15 +21,21 @@ struct Cli {
     port: Option<String>,
 }
 
-fn main() -> io::Result<()> {
+fn main() -> ExitCode {
     // Enable ANSI support on Windows
     #[cfg(windows)]
     let _ = crossterm::ansi_support::supports_ansi();
 
     let cli = Cli::parse();
 
-    let port_info =
-        serial::find_flipperzero(cli.port.as_deref()).expect("unable to find Flipper Zero");
+    let port_info = match serial::find_flipperzero(cli.port.as_deref()) {
+        Some(p) => p,
+        None => {
+            eprintln!("{}: unable to find Flipper Zero", "error".red());
+            return ExitCode::FAILURE;
+        }
+    };
+
     let mut port = serialport::new(port_info.port_name, serial::BAUD_115200)
         .timeout(Duration::from_millis(10))
         .open()
@@ -35,19 +43,22 @@ fn main() -> io::Result<()> {
 
     port.clear(serialport::ClearBuffer::All).unwrap();
 
-    eprintln!("⭐ Press `Ctrl+]` to exit");
+    eprintln!("🐬 {}", "Press `Ctrl+]` to exit".cyan());
 
-    crossterm::terminal::enable_raw_mode()?;
-    port.write_data_terminal_ready(true)?;
+    crossterm::terminal::enable_raw_mode().unwrap();
+    port.write_data_terminal_ready(true).unwrap();
 
+    let mut exit_code = ExitCode::SUCCESS;
     if let Err(err) = run(port.as_mut()) {
-        eprintln!("ERROR: {}", err);
+        eprintln!();
+        eprintln!("{}: {err}", "error".red());
+        exit_code = ExitCode::FAILURE;
     }
 
-    crossterm::terminal::disable_raw_mode()?;
-    port.write_data_terminal_ready(false)?;
+    crossterm::terminal::disable_raw_mode().unwrap();
+    port.write_data_terminal_ready(false).ok();
 
-    Ok(())
+    exit_code
 }
 
 fn run(port: &mut dyn serialport::SerialPort) -> io::Result<()> {
@@ -83,7 +94,8 @@ fn run(port: &mut dyn serialport::SerialPort) -> io::Result<()> {
                 match (modifiers, code) {
                     // MacOS converts Ctrl+] to Ctrl+5
                     (KeyModifiers::CONTROL, KeyCode::Char(']') | KeyCode::Char('5')) => {
-                        eprintln!("Exiting...");
+                        eprintln!();
+                        eprintln!("--- exit ---");
                         return Ok(());
                     }
                     (KeyModifiers::CONTROL, KeyCode::Char('c')) => write!(port, "{ETXT}")?,
