@@ -81,7 +81,7 @@ struct FastRel<'data> {
     name: &'data str,
 }
 
-impl<'data> FastRel<'data> {
+impl FastRel<'_> {
     fn gnu_sym_hash(&self) -> u32 {
         self.name
             .as_bytes()
