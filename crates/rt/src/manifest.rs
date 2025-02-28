@@ -26,7 +26,7 @@ const DEFAULT_STACK_SIZE: u16 = 2048; // 2 KiB
 macro_rules! manifest {
     ($($field:ident = $value:expr),* $(,)?) => {
         #[unsafe(no_mangle)]
-        #[link_section = ".fapmeta"]
+        #[unsafe(link_section = ".fapmeta")]
         static FAP_MANIFEST: $crate::manifest::ApplicationManifestV1 = $crate::manifest::ApplicationManifestV1 {
             $( $field: $crate::_manifest_field!($field = $value), )*
             .. $crate::manifest::ApplicationManifestV1::default()

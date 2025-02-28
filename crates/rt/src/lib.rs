@@ -35,7 +35,7 @@ macro_rules! entry {
         // Force the section to `.text` instead of `.text.main`.
         // lld seems not to automatically rename `.rel.text.main` properly.
         #[cfg(not(miri))]
-        #[export_name = "main"]
+        #[unsafe(export_name = "main")]
         pub unsafe fn __main(args: *mut u8) -> i32 {
             // type check the entry function
             let f: fn(Option<&::core::ffi::CStr>) -> i32 = $path;

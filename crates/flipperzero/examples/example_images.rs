@@ -7,7 +7,7 @@
 // Required for allocator
 extern crate flipperzero_alloc;
 
-use core::ffi::{c_void, CStr};
+use core::ffi::{CStr, c_void};
 use core::mem::{self, MaybeUninit};
 use core::ptr::addr_of;
 
@@ -26,7 +26,7 @@ static mut TARGET_ICON: Icon = Icon {
     height: 32,
     frame_count: 1,
     frame_rate: 0,
-    frames: unsafe { TARGET_FRAMES.as_ptr() },
+    frames: unsafe { &raw const TARGET_FRAMES[0] },
 };
 static mut TARGET_FRAMES: [*const u8; 1] = [include_bytes!("icons/rustacean-48x32.icon").as_ptr()];
 
