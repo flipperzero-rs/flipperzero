@@ -3,10 +3,11 @@ name = "flipperzero-tools"
 description = "Rust for Flipper Zero (tools)"
 license = "MIT"
 version = "0.14.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-bindgen = "0.69.1"
+# FIXME: Use new bindgen version once available
+bindgen = { git = "https://github.com/rust-lang/rust-bindgen.git" }
 bytes = "1.5"
 camino = "1.1"
 clap = { version = "4.4", features = ["cargo", "derive"] }
