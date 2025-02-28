@@ -5,7 +5,7 @@
 //!
 //! For more details, see the [`Pattern`] trait.
 
-use core::ffi::{c_char, CStr};
+use core::ffi::{CStr, c_char};
 
 use flipperzero_sys as sys;
 
@@ -122,6 +122,8 @@ impl Pattern for &FuriString {
 impl Pattern for c_char {
     #[inline]
     fn is_contained_in(self, haystack: &FuriString) -> bool {
+        // `c_char` may `i8` in certain configurations
+        #[allow(clippy::unnecessary_cast)]
         haystack.to_bytes().contains(&(self as u8))
     }
 

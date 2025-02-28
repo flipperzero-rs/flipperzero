@@ -3,7 +3,7 @@
 #[cfg(feature = "alloc")]
 use alloc::ffi::CString;
 
-use core::ffi::{c_void, CStr};
+use core::ffi::{CStr, c_void};
 use core::marker::PhantomData;
 use core::mem::MaybeUninit;
 use core::ptr::{self, NonNull};
@@ -190,7 +190,7 @@ impl<'a> DialogMessage<'a> {
     }
 }
 
-impl<'a> Drop for DialogMessage<'a> {
+impl Drop for DialogMessage<'_> {
     fn drop(&mut self) {
         unsafe {
             sys::dialog_message_free(self.data.as_ptr());
@@ -198,7 +198,7 @@ impl<'a> Drop for DialogMessage<'a> {
     }
 }
 
-impl<'a> Default for DialogMessage<'a> {
+impl Default for DialogMessage<'_> {
     fn default() -> Self {
         Self::new()
     }
@@ -216,7 +216,7 @@ impl DialogMessageButton {
     }
 }
 
-impl<'a> Default for DialogFileBrowserOptions<'a> {
+impl Default for DialogFileBrowserOptions<'_> {
     fn default() -> Self {
         Self::new()
     }

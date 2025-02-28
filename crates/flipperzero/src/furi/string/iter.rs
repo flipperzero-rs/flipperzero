@@ -34,7 +34,7 @@ pub struct Chars<'a> {
     pub(super) iter: slice::Iter<'a, u8>,
 }
 
-impl<'a> Iterator for Chars<'a> {
+impl Iterator for Chars<'_> {
     type Item = char;
 
     #[inline]
@@ -47,10 +47,8 @@ impl<'a> Iterator for Chars<'a> {
     #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         let len = self.iter.len();
-        // `(len + 3)` can't overflow, because we know that the `slice::Iter` belongs to a
-        // slice in memory which has a maximum length of `isize::MAX` (that's well below
-        // `usize::MAX`).
-        ((len + 3) / 4, Some(len))
+
+        (len.div_ceil(4), Some(len))
     }
 }
 
@@ -80,7 +78,7 @@ pub struct CharIndices<'a> {
     pub(super) iter: Chars<'a>,
 }
 
-impl<'a> Iterator for CharIndices<'a> {
+impl Iterator for CharIndices<'_> {
     type Item = (usize, char);
 
     #[inline]

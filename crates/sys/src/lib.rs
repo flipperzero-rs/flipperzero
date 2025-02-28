@@ -84,7 +84,7 @@ macro_rules! __crash_implementation {
             ::core::arch::asm!(
                 "ldr pc,=__furi_crash_implementation",
                 in("r12") ($ptr),
-                options(nomem, nostack),
+                options(nostack),
             );
 
             ::core::hint::unreachable_unchecked();
