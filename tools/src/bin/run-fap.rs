@@ -98,6 +98,12 @@ fn main() -> Result<(), Error> {
     let mut store = storage::FlipperStorage::new(port);
     store.start().map_err(Error::FailedToStartSerialInterface)?;
 
+    // Remove any stale output file
+    let output_file = storage::FlipperPath::from("/ext/flipperzero-rs-stdout");
+    if store.exist_file(&output_file)? {
+        store.remove(&output_file)?;
+    }
+
     // Upload the FAP to a temporary directory.
     let dest_dir =
         storage::FlipperPath::from(format!("/ext/.tmp/rs-{:08x}", thread_rng().gen::<u32>()));
@@ -121,7 +127,6 @@ fn main() -> Result<(), Error> {
     wait_for_idle(serial_cli)?;
 
     // Download and print the output file, if present.
-    let output_file = storage::FlipperPath::from("/ext/flipperzero-rs-stdout");
     if store.exist_file(&output_file)? {
         let output = store.read_file(&output_file)?;
         io::stdout().write_all(output.as_ref())?;
