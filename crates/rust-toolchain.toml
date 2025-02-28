@@ -1,4 +1,4 @@
 [toolchain]
-channel = "nightly-2024-09-10"
+channel = "nightly-2025-02-20"
 targets = ["thumbv7em-none-eabihf"]
 components = ["clippy", "rustfmt"]
