@@ -209,7 +209,7 @@ impl Cb {
     fn preprocess_doxygen_comments(comment: &str) -> Cow<str> {
         //
         static PARAM_IN_OUT: Lazy<Regex> = Lazy::new(|| {
-            Regex::new(r"(\n\s*[@\\])param\[(?:\s*(in)\s*,\s*(out)\s*|\s*(out)\s*,\s*(in)\s*)]")
+            Regex::new(r"(\n\s*[@\\])param\[(?:\s*(in)\s*,?\s*(out)\s*|\s*(out)\s*,\s*(in)\s*)]")
                 .unwrap()
         });
 
@@ -353,7 +353,19 @@ mod tests {
 
     #[test]
     fn doxygen_comments_simple_adhoc_fix() {
-        let unsupported_comment = "Foo bar baz\n@param[in, out] foo bar baz";
+        let unsupported_comment = "Foo bar baz\n@param[in,out] foo bar baz";
+
+        let processed_comment = Cb::preprocess_doxygen_comments(unsupported_comment);
+
+        assert_eq!(processed_comment, "Foo bar baz\n@param[in,out] foo bar baz");
+
+        Cb.process_comment(unsupported_comment)
+            .expect("The comment should get parsed normally");
+    }
+
+    #[test]
+    fn doxygen_comments_simple_2_adhoc_fix() {
+        let unsupported_comment = "Foo bar baz\n@param[inout] foo bar baz";
 
         let processed_comment = Cb::preprocess_doxygen_comments(unsupported_comment);
 
