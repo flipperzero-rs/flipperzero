@@ -98,11 +98,11 @@ impl<T> __IncompleteArrayField<T> {
     }
     #[inline]
     pub unsafe fn as_slice(&self, len: usize) -> &[T] {
-        ::core::slice::from_raw_parts(self.as_ptr(), len)
+        unsafe { ::core::slice::from_raw_parts(self.as_ptr(), len) }
     }
     #[inline]
     pub unsafe fn as_mut_slice(&mut self, len: usize) -> &mut [T] {
-        ::core::slice::from_raw_parts_mut(self.as_mut_ptr(), len)
+        unsafe { ::core::slice::from_raw_parts_mut(self.as_mut_ptr(), len) }
     }
 }
 impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
@@ -110,7 +110,7 @@ impl<T> ::core::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
-pub const API_VERSION: u32 = 5177346;
+pub const API_VERSION: u32 = 5636096;
 pub const LFRFID_T5577_BLOCK_COUNT: u32 = 8;
 pub const LFRFID_T5577_POR_DELAY: u32 = 1;
 pub const LFRFID_T5577_ST_TERMINATOR: u32 = 8;
@@ -1720,6 +1720,9 @@ pub type FuriEventLoopObject = core::ffi::c_void;
 pub type FuriEventLoopEventCallback = ::core::option::Option<
     unsafe extern "C" fn(object: *mut FuriEventLoopObject, context: *mut core::ffi::c_void),
 >;
+#[doc = "Callback type for event loop thread flag events\n\n # Arguments\n\n* `context` - The context that was provided upon subscription"]
+pub type FuriEventLoopThreadFlagsCallback =
+    ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FuriEventFlag {
@@ -1794,6 +1797,18 @@ extern "C" {
         callback: FuriEventLoopEventCallback,
         context: *mut core::ffi::c_void,
     );
+}
+extern "C" {
+    #[doc = "Subscribe to thread flag events of the current thread\n\n # Arguments\n\n* `instance` - The Event Loop instance\n * `callback` - The callback to call when a flag has been set\n * `context` - The context for callback"]
+    pub fn furi_event_loop_subscribe_thread_flags(
+        instance: *mut FuriEventLoop,
+        callback: FuriEventLoopThreadFlagsCallback,
+        context: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = "Unsubscribe from thread flag events of the current thread\n\n # Arguments\n\n* `instance` - The Event Loop instance"]
+    pub fn furi_event_loop_unsubscribe_thread_flags(instance: *mut FuriEventLoop);
 }
 extern "C" {
     #[doc = "Unsubscribe from events (common)\n\n # Arguments\n\n* `instance` - The Event Loop instance\n * `object` - The object to unsubscribe from"]
@@ -2300,12 +2315,18 @@ extern "C" {
     pub fn furi_thread_get_stack_space(thread_id: FuriThreadId) -> u32;
 }
 extern "C" {
-    #[doc = "Get the standard output callback for the current thead.\n\n # Returns\n\npointer to the standard out callback function"]
-    pub fn furi_thread_get_stdout_callback() -> FuriThreadStdoutWriteCallback;
+    #[doc = "Get the standard output callback for the current thead.\n\n # Arguments\n\n* `callback` (direction out) - where to store the stdout callback\n * `context` (direction out) - where to store the context"]
+    pub fn furi_thread_get_stdout_callback(
+        callback: *mut FuriThreadStdoutWriteCallback,
+        context: *mut *mut core::ffi::c_void,
+    );
 }
 extern "C" {
-    #[doc = "Get the standard input callback for the current thead.\n\n # Returns\n\npointer to the standard in callback function"]
-    pub fn furi_thread_get_stdin_callback() -> FuriThreadStdinReadCallback;
+    #[doc = "Get the standard input callback for the current thead.\n\n # Arguments\n\n* `callback` (direction out) - where to store the stdin callback\n * `context` (direction out) - where to store the context"]
+    pub fn furi_thread_get_stdin_callback(
+        callback: *mut FuriThreadStdinReadCallback,
+        context: *mut *mut core::ffi::c_void,
+    );
 }
 extern "C" {
     #[doc = "Set standard output callback for the current thread.\n\n # Arguments\n\n* `callback` (direction in) - pointer to the callback function or NULL to clear\n * `context` (direction in) - context to be passed to the callback"]
@@ -2488,7 +2509,7 @@ extern "C" {
     pub fn furi_record_exists(name: *const core::ffi::c_char) -> bool;
 }
 extern "C" {
-    #[doc = "Create record\n\n # Arguments\n\n* `name` - record name\n * `data` - data pointer\n > **Note:** Thread safe. Create and destroy must be executed from the same\n thread."]
+    #[doc = "Create record\n\n # Arguments\n\n* `name` - record name\n * `data` - data pointer (not NULL)\n > **Note:** Thread safe. Create and destroy must be executed from the same\n thread."]
     pub fn furi_record_create(name: *const core::ffi::c_char, data: *mut core::ffi::c_void);
 }
 extern "C" {
@@ -6100,7 +6121,7 @@ pub type FuriHalI2cBusEventCallback = ::core::option::Option<
 #[derive(Debug, Copy, Clone)]
 pub struct FuriHalI2cBus {
     pub i2c: *mut I2C_TypeDef,
-    pub current_handle: *mut FuriHalI2cBusHandle,
+    pub current_handle: *const FuriHalI2cBusHandle,
     pub callback: FuriHalI2cBusEventCallback,
 }
 #[test]
@@ -6159,7 +6180,7 @@ pub const FuriHalI2cBusHandleEventDeactivate: FuriHalI2cBusHandleEvent =
 pub struct FuriHalI2cBusHandleEvent(pub core::ffi::c_uchar);
 #[doc = "FuriHal i2c handle event callback"]
 pub type FuriHalI2cBusHandleEventCallback = ::core::option::Option<
-    unsafe extern "C" fn(handle: *mut FuriHalI2cBusHandle, event: FuriHalI2cBusHandleEvent),
+    unsafe extern "C" fn(handle: *const FuriHalI2cBusHandle, event: FuriHalI2cBusHandleEvent),
 >;
 #[doc = "FuriHal i2c handle"]
 #[repr(C)]
@@ -6214,11 +6235,11 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Handle for internal(power) i2c bus\n Bus: furi_hal_i2c_bus_external\n Pins: PA9(SCL) / PA10(SDA), float on release\n Params: 400khz"]
-    pub static mut furi_hal_i2c_handle_power: FuriHalI2cBusHandle;
+    pub static furi_hal_i2c_handle_power: FuriHalI2cBusHandle;
 }
 extern "C" {
     #[doc = "Handle for external i2c bus\n Bus: furi_hal_i2c_bus_external\n Pins: PC0(SCL) / PC1(SDA), float on release\n Params: 100khz"]
-    pub static mut furi_hal_i2c_handle_external: FuriHalI2cBusHandle;
+    pub static furi_hal_i2c_handle_external: FuriHalI2cBusHandle;
 }
 #[doc = "Begin the transaction by sending a START condition followed by the\n address"]
 pub const FuriHalI2cBeginStart: FuriHalI2cBegin = FuriHalI2cBegin(0);
@@ -6242,16 +6263,16 @@ pub const FuriHalI2cEndPause: FuriHalI2cEnd = FuriHalI2cEnd(2);
 pub struct FuriHalI2cEnd(pub core::ffi::c_uchar);
 extern "C" {
     #[doc = "Acquire I2C bus handle\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance"]
-    pub fn furi_hal_i2c_acquire(handle: *mut FuriHalI2cBusHandle);
+    pub fn furi_hal_i2c_acquire(handle: *const FuriHalI2cBusHandle);
 }
 extern "C" {
     #[doc = "Release I2C bus handle\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance acquired in\n `furi_hal_i2c_acquire`"]
-    pub fn furi_hal_i2c_release(handle: *mut FuriHalI2cBusHandle);
+    pub fn furi_hal_i2c_release(handle: *const FuriHalI2cBusHandle);
 }
 extern "C" {
     #[doc = "Perform I2C TX transfer\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `address` - I2C slave address\n * `data` - Pointer to data buffer\n * `size` - Size of data buffer\n * `timeout` - Timeout in milliseconds\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
     pub fn furi_hal_i2c_tx(
-        handle: *mut FuriHalI2cBusHandle,
+        handle: *const FuriHalI2cBusHandle,
         address: u8,
         data: *const u8,
         size: usize,
@@ -6261,7 +6282,7 @@ extern "C" {
 extern "C" {
     #[doc = "Perform I2C TX transfer, with additional settings.\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `address` - I2C slave address\n * `ten_bit` - Whether the address is 10 bits wide\n * `data` - Pointer to data buffer\n * `size` - Size of data buffer\n * `begin` - How to begin the transaction\n * `end` - How to end the transaction\n * `timeout` - Timeout in milliseconds\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
     pub fn furi_hal_i2c_tx_ext(
-        handle: *mut FuriHalI2cBusHandle,
+        handle: *const FuriHalI2cBusHandle,
         address: u16,
         ten_bit: bool,
         data: *const u8,
@@ -6274,7 +6295,7 @@ extern "C" {
 extern "C" {
     #[doc = "Perform I2C RX transfer\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `address` - I2C slave address\n * `data` - Pointer to data buffer\n * `size` - Size of data buffer\n * `timeout` - Timeout in milliseconds\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
     pub fn furi_hal_i2c_rx(
-        handle: *mut FuriHalI2cBusHandle,
+        handle: *const FuriHalI2cBusHandle,
         address: u8,
         data: *mut u8,
         size: usize,
@@ -6284,7 +6305,7 @@ extern "C" {
 extern "C" {
     #[doc = "Perform I2C RX transfer, with additional settings.\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `address` - I2C slave address\n * `ten_bit` - Whether the address is 10 bits wide\n * `data` - Pointer to data buffer\n * `size` - Size of data buffer\n * `begin` - How to begin the transaction\n * `end` - How to end the transaction\n * `timeout` - Timeout in milliseconds\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
     pub fn furi_hal_i2c_rx_ext(
-        handle: *mut FuriHalI2cBusHandle,
+        handle: *const FuriHalI2cBusHandle,
         address: u16,
         ten_bit: bool,
         data: *mut u8,
@@ -6297,7 +6318,7 @@ extern "C" {
 extern "C" {
     #[doc = "Perform I2C TX and RX transfers\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `address` - I2C slave address\n * `tx_data` - Pointer to TX data buffer\n * `tx_size` - Size of TX data buffer\n * `rx_data` - Pointer to RX data buffer\n * `rx_size` - Size of RX data buffer\n * `timeout` - Timeout in milliseconds\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
     pub fn furi_hal_i2c_trx(
-        handle: *mut FuriHalI2cBusHandle,
+        handle: *const FuriHalI2cBusHandle,
         address: u8,
         tx_data: *const u8,
         tx_size: usize,
@@ -6309,7 +6330,7 @@ extern "C" {
 extern "C" {
     #[doc = "Check if I2C device presents on bus\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `i2c_addr` - I2C slave address\n * `timeout` - Timeout in milliseconds\n\n # Returns\n\ntrue if device present and is ready, false otherwise"]
     pub fn furi_hal_i2c_is_device_ready(
-        handle: *mut FuriHalI2cBusHandle,
+        handle: *const FuriHalI2cBusHandle,
         i2c_addr: u8,
         timeout: u32,
     ) -> bool;
@@ -6317,7 +6338,7 @@ extern "C" {
 extern "C" {
     #[doc = "Perform I2C device register read (8-bit)\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `i2c_addr` - I2C slave address\n * `reg_addr` - Register address\n * `data` - Pointer to register value\n * `timeout` - Timeout in milliseconds\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
     pub fn furi_hal_i2c_read_reg_8(
-        handle: *mut FuriHalI2cBusHandle,
+        handle: *const FuriHalI2cBusHandle,
         i2c_addr: u8,
         reg_addr: u8,
         data: *mut u8,
@@ -6327,7 +6348,7 @@ extern "C" {
 extern "C" {
     #[doc = "Perform I2C device register read (16-bit)\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `i2c_addr` - I2C slave address\n * `reg_addr` - Register address\n * `data` - Pointer to register value\n * `timeout` - Timeout in milliseconds\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
     pub fn furi_hal_i2c_read_reg_16(
-        handle: *mut FuriHalI2cBusHandle,
+        handle: *const FuriHalI2cBusHandle,
         i2c_addr: u8,
         reg_addr: u8,
         data: *mut u16,
@@ -6337,7 +6358,7 @@ extern "C" {
 extern "C" {
     #[doc = "Perform I2C device memory read\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `i2c_addr` - I2C slave address\n * `mem_addr` - Memory start address\n * `data` - Pointer to data buffer\n * `len` - Size of data buffer\n * `timeout` - Timeout in milliseconds\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
     pub fn furi_hal_i2c_read_mem(
-        handle: *mut FuriHalI2cBusHandle,
+        handle: *const FuriHalI2cBusHandle,
         i2c_addr: u8,
         mem_addr: u8,
         data: *mut u8,
@@ -6348,7 +6369,7 @@ extern "C" {
 extern "C" {
     #[doc = "Perform I2C device register write (8-bit)\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `i2c_addr` - I2C slave address\n * `reg_addr` - Register address\n * `data` - Register value\n * `timeout` - Timeout in milliseconds\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
     pub fn furi_hal_i2c_write_reg_8(
-        handle: *mut FuriHalI2cBusHandle,
+        handle: *const FuriHalI2cBusHandle,
         i2c_addr: u8,
         reg_addr: u8,
         data: u8,
@@ -6358,7 +6379,7 @@ extern "C" {
 extern "C" {
     #[doc = "Perform I2C device register write (16-bit)\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `i2c_addr` - I2C slave address\n * `reg_addr` - Register address\n * `data` - Register value\n * `timeout` - Timeout in milliseconds\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
     pub fn furi_hal_i2c_write_reg_16(
-        handle: *mut FuriHalI2cBusHandle,
+        handle: *const FuriHalI2cBusHandle,
         i2c_addr: u8,
         reg_addr: u8,
         data: u16,
@@ -6368,7 +6389,7 @@ extern "C" {
 extern "C" {
     #[doc = "Perform I2C device memory\n\n # Arguments\n\n* `handle` - Pointer to FuriHalI2cBusHandle instance\n * `i2c_addr` - I2C slave address\n * `mem_addr` - Memory start address\n * `data` - Pointer to data buffer\n * `len` - Size of data buffer\n * `timeout` - Timeout in milliseconds\n\n # Returns\n\ntrue on successful transfer, false otherwise"]
     pub fn furi_hal_i2c_write_mem(
-        handle: *mut FuriHalI2cBusHandle,
+        handle: *const FuriHalI2cBusHandle,
         i2c_addr: u8,
         mem_addr: u8,
         data: *const u8,
@@ -6515,6 +6536,28 @@ extern "C" {
     #[doc = "Get band data for frequency\n\n\n\n # Arguments\n\n* `frequency` (direction in) - The frequency\n\n # Returns\n\n{ description_of_the_return_value }"]
     pub fn furi_hal_region_get_band(frequency: u32) -> *const FuriHalRegionBand;
 }
+pub const FuriHalPwmOutputIdNone: FuriHalPwmOutputId = FuriHalPwmOutputId(0);
+pub const FuriHalPwmOutputIdTim1PA7: FuriHalPwmOutputId = FuriHalPwmOutputId(1);
+pub const FuriHalPwmOutputIdLptim2PA4: FuriHalPwmOutputId = FuriHalPwmOutputId(2);
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct FuriHalPwmOutputId(pub core::ffi::c_uchar);
+extern "C" {
+    #[doc = "Enable PWM channel and set parameters\n\n # Arguments\n\n* `channel` (direction in) - PWM channel (FuriHalPwmOutputId)\n * `freq` (direction in) - Frequency in Hz\n * `duty` (direction in) - Duty cycle value in %"]
+    pub fn furi_hal_pwm_start(channel: FuriHalPwmOutputId, freq: u32, duty: u8);
+}
+extern "C" {
+    #[doc = "Disable PWM channel\n\n # Arguments\n\n* `channel` (direction in) - PWM channel (FuriHalPwmOutputId)"]
+    pub fn furi_hal_pwm_stop(channel: FuriHalPwmOutputId);
+}
+extern "C" {
+    #[doc = "Set PWM channel parameters\n\n # Arguments\n\n* `channel` (direction in) - PWM channel (FuriHalPwmOutputId)\n * `freq` (direction in) - Frequency in Hz\n * `duty` (direction in) - Duty cycle value in %"]
+    pub fn furi_hal_pwm_set_params(channel: FuriHalPwmOutputId, freq: u32, duty: u8);
+}
+extern "C" {
+    #[doc = "Is PWM channel running?\n\n # Arguments\n\n* `channel` (direction in) - PWM channel (FuriHalPwmOutputId)\n # Returns\n\nbool - true if running"]
+    pub fn furi_hal_pwm_is_running(channel: FuriHalPwmOutputId) -> bool;
+}
 pub const InputKeyUp: InputKey = InputKey(0);
 pub const InputKeyDown: InputKey = InputKey(1);
 pub const InputKeyRight: InputKey = InputKey(2);
@@ -6602,6 +6645,7 @@ pub struct GpioPinRecord {
     pub pin: *const GpioPin,
     pub name: *const core::ffi::c_char,
     pub channel: FuriHalAdcChannel,
+    pub pwm_output: FuriHalPwmOutputId,
     pub number: u8,
     pub debug: bool,
 }
@@ -6650,8 +6694,18 @@ fn bindgen_test_layout_GpioPinRecord() {
         )
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).number) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).pwm_output) as usize - ptr as usize },
         9usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GpioPinRecord),
+            "::",
+            stringify!(pwm_output)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).number) as usize - ptr as usize },
+        10usize,
         concat!(
             "Offset of field: ",
             stringify!(GpioPinRecord),
@@ -6661,7 +6715,7 @@ fn bindgen_test_layout_GpioPinRecord() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).debug) as usize - ptr as usize },
-        10usize,
+        11usize,
         concat!(
             "Offset of field: ",
             stringify!(GpioPinRecord),
@@ -7406,11 +7460,11 @@ extern "C" {
     pub fn furi_hal_power_reset();
 }
 extern "C" {
-    #[doc = "OTG enable"]
+    #[doc = "OTG enable\n\n this is low level control, use power service instead"]
     pub fn furi_hal_power_enable_otg() -> bool;
 }
 extern "C" {
-    #[doc = "OTG disable"]
+    #[doc = "OTG disable\n\n this is low level control, use power service instead"]
     pub fn furi_hal_power_disable_otg();
 }
 extern "C" {
@@ -8125,7 +8179,9 @@ fn bindgen_test_layout_GapConnectionParamsRequest() {
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct GapConfig {
-    pub adv_service_uuid: u16,
+    pub adv_service: GapConfig__bindgen_ty_1,
+    pub mfg_data: [u8; 23usize],
+    pub mfg_data_len: u8,
     pub appearance_char: u16,
     pub bonding_mode: bool,
     pub pairing_method: GapPairing,
@@ -8133,13 +8189,66 @@ pub struct GapConfig {
     pub adv_name: [core::ffi::c_char; 18usize],
     pub conn_param: GapConnectionParamsRequest,
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct GapConfig__bindgen_ty_1 {
+    pub UUID_Type: u8,
+    pub Service_UUID_16: u16,
+    pub Service_UUID_128: [u8; 16usize],
+}
+#[test]
+fn bindgen_test_layout_GapConfig__bindgen_ty_1() {
+    const UNINIT: ::core::mem::MaybeUninit<GapConfig__bindgen_ty_1> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<GapConfig__bindgen_ty_1>(),
+        20usize,
+        concat!("Size of: ", stringify!(GapConfig__bindgen_ty_1))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<GapConfig__bindgen_ty_1>(),
+        2usize,
+        concat!("Alignment of ", stringify!(GapConfig__bindgen_ty_1))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).UUID_Type) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapConfig__bindgen_ty_1),
+            "::",
+            stringify!(UUID_Type)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Service_UUID_16) as usize - ptr as usize },
+        2usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapConfig__bindgen_ty_1),
+            "::",
+            stringify!(Service_UUID_16)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).Service_UUID_128) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapConfig__bindgen_ty_1),
+            "::",
+            stringify!(Service_UUID_128)
+        )
+    );
+}
 #[test]
 fn bindgen_test_layout_GapConfig() {
     const UNINIT: ::core::mem::MaybeUninit<GapConfig> = ::core::mem::MaybeUninit::uninit();
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<GapConfig>(),
-        38usize,
+        80usize,
         concat!("Size of: ", stringify!(GapConfig))
     );
     assert_eq!(
@@ -8148,18 +8257,38 @@ fn bindgen_test_layout_GapConfig() {
         concat!("Alignment of ", stringify!(GapConfig))
     );
     assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).adv_service_uuid) as usize - ptr as usize },
+        unsafe { ::core::ptr::addr_of!((*ptr).adv_service) as usize - ptr as usize },
         0usize,
         concat!(
             "Offset of field: ",
             stringify!(GapConfig),
             "::",
-            stringify!(adv_service_uuid)
+            stringify!(adv_service)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).mfg_data) as usize - ptr as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapConfig),
+            "::",
+            stringify!(mfg_data)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).mfg_data_len) as usize - ptr as usize },
+        43usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(GapConfig),
+            "::",
+            stringify!(mfg_data_len)
         )
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).appearance_char) as usize - ptr as usize },
-        2usize,
+        44usize,
         concat!(
             "Offset of field: ",
             stringify!(GapConfig),
@@ -8169,7 +8298,7 @@ fn bindgen_test_layout_GapConfig() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).bonding_mode) as usize - ptr as usize },
-        4usize,
+        46usize,
         concat!(
             "Offset of field: ",
             stringify!(GapConfig),
@@ -8179,7 +8308,7 @@ fn bindgen_test_layout_GapConfig() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).pairing_method) as usize - ptr as usize },
-        5usize,
+        47usize,
         concat!(
             "Offset of field: ",
             stringify!(GapConfig),
@@ -8189,7 +8318,7 @@ fn bindgen_test_layout_GapConfig() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).mac_address) as usize - ptr as usize },
-        6usize,
+        48usize,
         concat!(
             "Offset of field: ",
             stringify!(GapConfig),
@@ -8199,7 +8328,7 @@ fn bindgen_test_layout_GapConfig() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).adv_name) as usize - ptr as usize },
-        12usize,
+        54usize,
         concat!(
             "Offset of field: ",
             stringify!(GapConfig),
@@ -8209,7 +8338,7 @@ fn bindgen_test_layout_GapConfig() {
     );
     assert_eq!(
         unsafe { ::core::ptr::addr_of!((*ptr).conn_param) as usize - ptr as usize },
-        30usize,
+        72usize,
         concat!(
             "Offset of field: ",
             stringify!(GapConfig),
@@ -9135,7 +9264,7 @@ pub type FuriHalSpiBusEventCallback = ::core::option::Option<
 pub struct FuriHalSpiBus {
     pub spi: *mut SPI_TypeDef,
     pub callback: FuriHalSpiBusEventCallback,
-    pub current_handle: *mut FuriHalSpiBusHandle,
+    pub current_handle: *const FuriHalSpiBusHandle,
 }
 #[test]
 fn bindgen_test_layout_FuriHalSpiBus() {
@@ -9197,7 +9326,7 @@ pub const FuriHalSpiBusHandleEventDeactivate: FuriHalSpiBusHandleEvent =
 pub struct FuriHalSpiBusHandleEvent(pub core::ffi::c_uchar);
 #[doc = "FuriHal spi handle event callback"]
 pub type FuriHalSpiBusHandleEventCallback = ::core::option::Option<
-    unsafe extern "C" fn(handle: *mut FuriHalSpiBusHandle, event: FuriHalSpiBusHandleEvent),
+    unsafe extern "C" fn(handle: *const FuriHalSpiBusHandle, event: FuriHalSpiBusHandleEvent),
 >;
 #[doc = "FuriHal spi handle"]
 #[repr(C)]
@@ -9316,27 +9445,27 @@ extern "C" {
 }
 extern "C" {
     #[doc = "CC1101 on `furi_hal_spi_bus_r`"]
-    pub static mut furi_hal_spi_bus_handle_subghz: FuriHalSpiBusHandle;
+    pub static furi_hal_spi_bus_handle_subghz: FuriHalSpiBusHandle;
 }
 extern "C" {
     #[doc = "ST25R3916 on `furi_hal_spi_bus_r`"]
-    pub static mut furi_hal_spi_bus_handle_nfc: FuriHalSpiBusHandle;
+    pub static furi_hal_spi_bus_handle_nfc: FuriHalSpiBusHandle;
 }
 extern "C" {
     #[doc = "External on `furi_hal_spi_bus_r`\n Preset: `furi_hal_spi_preset_1edge_low_2m`\n\n miso: pa6\n mosi: pa7\n sck: pb3\n cs: pa4 (software controlled)\n\n not initialized by default, call `furi_hal_spi_bus_handle_init` to initialize\n Bus pins are floating on inactive state, CS high after initialization\n"]
-    pub static mut furi_hal_spi_bus_handle_external: FuriHalSpiBusHandle;
+    pub static furi_hal_spi_bus_handle_external: FuriHalSpiBusHandle;
 }
 extern "C" {
     #[doc = "ST7567(Display) on `furi_hal_spi_bus_d`"]
-    pub static mut furi_hal_spi_bus_handle_display: FuriHalSpiBusHandle;
+    pub static furi_hal_spi_bus_handle_display: FuriHalSpiBusHandle;
 }
 extern "C" {
     #[doc = "SdCard in fast mode on `furi_hal_spi_bus_d`"]
-    pub static mut furi_hal_spi_bus_handle_sd_fast: FuriHalSpiBusHandle;
+    pub static furi_hal_spi_bus_handle_sd_fast: FuriHalSpiBusHandle;
 }
 extern "C" {
     #[doc = "SdCard in slow mode on `furi_hal_spi_bus_d`"]
-    pub static mut furi_hal_spi_bus_handle_sd_slow: FuriHalSpiBusHandle;
+    pub static furi_hal_spi_bus_handle_sd_slow: FuriHalSpiBusHandle;
 }
 extern "C" {
     #[doc = "Initialize SPI Bus\n\n # Arguments\n\n* `handle` - pointer to FuriHalSpiBus instance"]
@@ -9348,24 +9477,24 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Initialize SPI Bus Handle\n\n # Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance"]
-    pub fn furi_hal_spi_bus_handle_init(handle: *mut FuriHalSpiBusHandle);
+    pub fn furi_hal_spi_bus_handle_init(handle: *const FuriHalSpiBusHandle);
 }
 extern "C" {
     #[doc = "Deinitialize SPI Bus Handle\n\n # Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance"]
-    pub fn furi_hal_spi_bus_handle_deinit(handle: *mut FuriHalSpiBusHandle);
+    pub fn furi_hal_spi_bus_handle_deinit(handle: *const FuriHalSpiBusHandle);
 }
 extern "C" {
     #[doc = "Acquire SPI bus\n\n blocking, calls `furi_crash` on programming error, CS transition is up to handler event routine\n\n # Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance"]
-    pub fn furi_hal_spi_acquire(handle: *mut FuriHalSpiBusHandle);
+    pub fn furi_hal_spi_acquire(handle: *const FuriHalSpiBusHandle);
 }
 extern "C" {
     #[doc = "Release SPI bus\n\n calls `furi_crash` on programming error, CS transition is up to handler event routine\n\n # Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance"]
-    pub fn furi_hal_spi_release(handle: *mut FuriHalSpiBusHandle);
+    pub fn furi_hal_spi_release(handle: *const FuriHalSpiBusHandle);
 }
 extern "C" {
     #[doc = "SPI Receive\n\n # Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance\n * `buffer` - receive buffer\n * `size` - transaction size (buffer size)\n * `timeout` - operation timeout in ms\n\n # Returns\n\ntrue on sucess"]
     pub fn furi_hal_spi_bus_rx(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         buffer: *mut u8,
         size: usize,
         timeout: u32,
@@ -9374,7 +9503,7 @@ extern "C" {
 extern "C" {
     #[doc = "SPI Transmit\n\n # Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance\n * `buffer` - transmit buffer\n * `size` - transaction size (buffer size)\n * `timeout` - operation timeout in ms\n\n # Returns\n\ntrue on success"]
     pub fn furi_hal_spi_bus_tx(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         buffer: *const u8,
         size: usize,
         timeout: u32,
@@ -9383,7 +9512,7 @@ extern "C" {
 extern "C" {
     #[doc = "SPI Transmit and Receive\n\n # Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance\n * `tx_buffer` - pointer to tx buffer\n * `rx_buffer` - pointer to rx buffer\n * `size` - transaction size (buffer size)\n * `timeout` - operation timeout in ms\n\n # Returns\n\ntrue on success"]
     pub fn furi_hal_spi_bus_trx(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         tx_buffer: *const u8,
         rx_buffer: *mut u8,
         size: usize,
@@ -9393,7 +9522,7 @@ extern "C" {
 extern "C" {
     #[doc = "SPI Transmit and Receive with DMA\n\n # Arguments\n\n* `handle` - pointer to FuriHalSpiBusHandle instance\n * `tx_buffer` - pointer to tx buffer\n * `rx_buffer` - pointer to rx buffer\n * `size` - transaction size (buffer size)\n * `timeout_ms` - operation timeout in ms\n\n # Returns\n\ntrue on success"]
     pub fn furi_hal_spi_bus_trx_dma(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         tx_buffer: *mut u8,
         rx_buffer: *mut u8,
         size: usize,
@@ -10491,6 +10620,13 @@ extern "C" {
     pub fn furi_hal_usb_enable();
 }
 extern "C" {
+    #[doc = "Set USB state callback"]
+    pub fn furi_hal_usb_set_state_callback(
+        cb: FuriHalUsbStateCallback,
+        ctx: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
     #[doc = "Restart USB device"]
     pub fn furi_hal_usb_reinit();
 }
@@ -10756,6 +10892,31 @@ pub const FuriHalSerialDirectionMax: FuriHalSerialDirection = FuriHalSerialDirec
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct FuriHalSerialDirection(pub core::ffi::c_uchar);
+pub const FuriHalSerialDataBits6: FuriHalSerialDataBits = FuriHalSerialDataBits(0);
+pub const FuriHalSerialDataBits7: FuriHalSerialDataBits = FuriHalSerialDataBits(1);
+pub const FuriHalSerialDataBits8: FuriHalSerialDataBits = FuriHalSerialDataBits(2);
+pub const FuriHalSerialDataBits9: FuriHalSerialDataBits = FuriHalSerialDataBits(3);
+pub const FuriHalSerialDataBitsMax: FuriHalSerialDataBits = FuriHalSerialDataBits(4);
+#[repr(transparent)]
+#[doc = "Actual data bits, i.e. not including start/stop and parity bits\n > **Note:** 6 data bits are only permitted when parity is enabled\n > **Note:** 9 data bits are only permitted when parity is disabled"]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct FuriHalSerialDataBits(pub core::ffi::c_uchar);
+pub const FuriHalSerialParityNone: FuriHalSerialParity = FuriHalSerialParity(0);
+pub const FuriHalSerialParityEven: FuriHalSerialParity = FuriHalSerialParity(1);
+pub const FuriHalSerialParityOdd: FuriHalSerialParity = FuriHalSerialParity(2);
+pub const FuriHalSerialParityMax: FuriHalSerialParity = FuriHalSerialParity(3);
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct FuriHalSerialParity(pub core::ffi::c_uchar);
+pub const FuriHalSerialStopBits0_5: FuriHalSerialStopBits = FuriHalSerialStopBits(0);
+pub const FuriHalSerialStopBits1: FuriHalSerialStopBits = FuriHalSerialStopBits(1);
+pub const FuriHalSerialStopBits1_5: FuriHalSerialStopBits = FuriHalSerialStopBits(2);
+pub const FuriHalSerialStopBits2: FuriHalSerialStopBits = FuriHalSerialStopBits(3);
+pub const FuriHalSerialStopBits2Max: FuriHalSerialStopBits = FuriHalSerialStopBits(4);
+#[repr(transparent)]
+#[doc = "Stop bit length\n > **Note:** LPUART only supports whole stop bit lengths (i.e. 1 and 2, but not 0.5 and 1.5)"]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct FuriHalSerialStopBits(pub core::ffi::c_uchar);
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FuriHalSerialHandle {
@@ -10797,7 +10958,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = "Initialize Serial\n\n Configures GPIO, configures and enables transceiver.\n\n # Arguments\n\n* `handle` - Serial handle\n * `baud` - baud rate"]
+    #[doc = "Initialize Serial\n\n Configures GPIO, configures and enables transceiver. Default framing settings\n are used: 8 data bits, no parity, 1 stop bit. Override them with\n `furi_hal_serial_configure_framing`.\n\n # Arguments\n\n* `handle` - Serial handle\n * `baud` - baud rate"]
     pub fn furi_hal_serial_init(handle: *mut FuriHalSerialHandle, baud: u32);
 }
 extern "C" {
@@ -10824,6 +10985,15 @@ extern "C" {
     pub fn furi_hal_serial_set_br(handle: *mut FuriHalSerialHandle, baud: u32);
 }
 extern "C" {
+    #[doc = "Configures framing of a serial interface\n\n # Arguments\n\n* `handle` - Serial handle\n * `data_bits` - Data bits\n * `parity` - Parity\n * `stop_bits` - Stop bits"]
+    pub fn furi_hal_serial_configure_framing(
+        handle: *mut FuriHalSerialHandle,
+        data_bits: FuriHalSerialDataBits,
+        parity: FuriHalSerialParity,
+        stop_bits: FuriHalSerialStopBits,
+    );
+}
+extern "C" {
     #[doc = "Transmits data in semi-blocking mode\n\n Fills transmission pipe with data, returns as soon as all bytes from buffer\n are in the pipe.\n\n Real transmission will be completed later. Use\n `furi_hal_serial_tx_wait_complete` to wait for completion if you need it.\n\n # Arguments\n\n* `handle` - Serial handle\n * `buffer` - data\n * `buffer_size` - data size (in bytes)"]
     pub fn furi_hal_serial_tx(
         handle: *mut FuriHalSerialHandle,
@@ -10845,6 +11015,8 @@ pub const FuriHalSerialRxEventFrameError: FuriHalSerialRxEvent = FuriHalSerialRx
 pub const FuriHalSerialRxEventNoiseError: FuriHalSerialRxEvent = FuriHalSerialRxEvent(8);
 #[doc = "< Overrun Error: no space for received data"]
 pub const FuriHalSerialRxEventOverrunError: FuriHalSerialRxEvent = FuriHalSerialRxEvent(16);
+#[doc = "< Parity Error: incorrect parity bit received"]
+pub const FuriHalSerialRxEventParityError: FuriHalSerialRxEvent = FuriHalSerialRxEvent(32);
 #[repr(transparent)]
 #[doc = "Serial RX events"]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
@@ -10888,14 +11060,14 @@ pub type FuriHalSerialDmaRxCallback = ::core::option::Option<
     ),
 >;
 extern "C" {
-    #[doc = "Enable an input/output directon\n\n Takes over the respective pin by reconfiguring it to\n the appropriate alternative function.\n\n # Arguments\n\n* `handle` - Serial handle\n * `direction` - Direction to enable"]
+    #[doc = "Enable an input/output direction\n\n Takes over the respective pin by reconfiguring it to\n the appropriate alternative function.\n\n # Arguments\n\n* `handle` - Serial handle\n * `direction` - Direction to enable"]
     pub fn furi_hal_serial_enable_direction(
         handle: *mut FuriHalSerialHandle,
         direction: FuriHalSerialDirection,
     );
 }
 extern "C" {
-    #[doc = "Disable an input/output directon\n\n Releases the respective pin by reconfiguring it to\n initial state, making possible its use for other purposes.\n\n # Arguments\n\n* `handle` - Serial handle\n * `direction` - Direction to disable"]
+    #[doc = "Disable an input/output direction\n\n Releases the respective pin by reconfiguring it to\n initial state, making possible its use for other purposes.\n\n # Arguments\n\n* `handle` - Serial handle\n * `direction` - Direction to disable"]
     pub fn furi_hal_serial_disable_direction(
         handle: *mut FuriHalSerialHandle,
         direction: FuriHalSerialDirection,
@@ -16349,47 +16521,344 @@ extern "C" {
 extern "C" {
     pub fn bt_keys_storage_delete(instance: *mut BtKeysStorage) -> bool;
 }
-pub const CliSymbolAsciiSOH: CliSymbols = CliSymbols(1);
-pub const CliSymbolAsciiETX: CliSymbols = CliSymbols(3);
-pub const CliSymbolAsciiEOT: CliSymbols = CliSymbols(4);
-pub const CliSymbolAsciiBell: CliSymbols = CliSymbols(7);
-pub const CliSymbolAsciiBackspace: CliSymbols = CliSymbols(8);
-pub const CliSymbolAsciiTab: CliSymbols = CliSymbols(9);
-pub const CliSymbolAsciiLF: CliSymbols = CliSymbols(10);
-pub const CliSymbolAsciiCR: CliSymbols = CliSymbols(13);
-pub const CliSymbolAsciiEsc: CliSymbols = CliSymbols(27);
-pub const CliSymbolAsciiUS: CliSymbols = CliSymbols(31);
-pub const CliSymbolAsciiSpace: CliSymbols = CliSymbols(32);
-pub const CliSymbolAsciiDel: CliSymbols = CliSymbols(127);
+pub const PipeRoleAlice: PipeRole = PipeRole(0);
+pub const PipeRoleBob: PipeRole = PipeRole(1);
 #[repr(transparent)]
+#[doc = "The role of a pipe side\n\n Both roles are equal, as they can both read and write the data. This status\n might be helpful in determining the role of a thread w.r.t. another thread in\n an application that builds on the pipe."]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct CliSymbols(pub core::ffi::c_uchar);
-#[doc = "< Default, loader lock is used"]
+pub struct PipeRole(pub core::ffi::c_uchar);
+pub const PipeStateOpen: PipeState = PipeState(0);
+pub const PipeStateBroken: PipeState = PipeState(1);
+#[repr(transparent)]
+#[doc = "The state of a pipe\n\n - `PipeStateOpen`: Both pipe sides are in place, meaning data that is sent\n down the pipe _might_ be read by the peer, and new data sent by the peer\n _might_ arrive.\n - `PipeStateBroken`: The other side of the pipe has been freed, meaning\n data that is written will never reach its destination, and no new data\n will appear in the buffer.\n\n A broken pipe can never become open again, because there's no way to connect\n a side of a pipe to another side of a pipe."]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct PipeState(pub core::ffi::c_uchar);
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct PipeSide {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct PipeSideBundle {
+    pub alices_side: *mut PipeSide,
+    pub bobs_side: *mut PipeSide,
+}
+#[test]
+fn bindgen_test_layout_PipeSideBundle() {
+    const UNINIT: ::core::mem::MaybeUninit<PipeSideBundle> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<PipeSideBundle>(),
+        8usize,
+        concat!("Size of: ", stringify!(PipeSideBundle))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<PipeSideBundle>(),
+        4usize,
+        concat!("Alignment of ", stringify!(PipeSideBundle))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).alices_side) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(PipeSideBundle),
+            "::",
+            stringify!(alices_side)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).bobs_side) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(PipeSideBundle),
+            "::",
+            stringify!(bobs_side)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct PipeSideReceiveSettings {
+    pub capacity: usize,
+    pub trigger_level: usize,
+}
+#[test]
+fn bindgen_test_layout_PipeSideReceiveSettings() {
+    const UNINIT: ::core::mem::MaybeUninit<PipeSideReceiveSettings> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<PipeSideReceiveSettings>(),
+        8usize,
+        concat!("Size of: ", stringify!(PipeSideReceiveSettings))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<PipeSideReceiveSettings>(),
+        4usize,
+        concat!("Alignment of ", stringify!(PipeSideReceiveSettings))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).capacity) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(PipeSideReceiveSettings),
+            "::",
+            stringify!(capacity)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).trigger_level) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(PipeSideReceiveSettings),
+            "::",
+            stringify!(trigger_level)
+        )
+    );
+}
+extern "C" {
+    #[doc = "Allocates two connected sides of one pipe.\n\n Creating a pair of sides using this function is the only way to connect two\n pipe sides together. Two unrelated orphaned sides may never be connected back\n together.\n\n The capacity and trigger level for both directions are the same when the pipe\n is created using this function. Use `pipe_alloc_ex` if you want more\n control.\n\n # Arguments\n\n* `capacity` - Maximum number of bytes buffered in one direction\n * `trigger_level` - Number of bytes that need to be available in the buffer\n in order for a blocked thread to unblock\n # Returns\n\nBundle with both sides of the pipe"]
+    pub fn pipe_alloc(capacity: usize, trigger_level: usize) -> PipeSideBundle;
+}
+extern "C" {
+    #[doc = "Allocates two connected sides of one pipe.\n\n Creating a pair of sides using this function is the only way to connect two\n pipe sides together. Two unrelated orphaned sides may never be connected back\n together.\n\n The capacity and trigger level may be different for the two directions when\n the pipe is created using this function. Use `pipe_alloc` if you don't\n need control this fine.\n\n # Arguments\n\n* `alice` - `capacity` and `trigger_level` settings for Alice's receiving\n buffer\n * `bob` - `capacity` and `trigger_level` settings for Bob's receiving buffer\n # Returns\n\nBundle with both sides of the pipe"]
+    pub fn pipe_alloc_ex(
+        alice: PipeSideReceiveSettings,
+        bob: PipeSideReceiveSettings,
+    ) -> PipeSideBundle;
+}
+extern "C" {
+    #[doc = "Gets the role of a pipe side.\n\n The roles (Alice and Bob) are equal, as both can send and receive data. This\n status might be helpful in determining the role of a thread w.r.t. another\n thread.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to query\n # Returns\n\nRole of provided pipe side"]
+    pub fn pipe_role(pipe: *mut PipeSide) -> PipeRole;
+}
+extern "C" {
+    #[doc = "Gets the state of a pipe.\n\n When the state is `PipeStateOpen`, both sides are active and may send or\n receive data. When the state is `PipeStateBroken`, only one side is active\n (the one that this method has been called on). If you find yourself in that\n state, the data that you send will never be heard by anyone, and the data you\n receive are leftovers in the buffer.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to query\n # Returns\n\nState of the pipe"]
+    pub fn pipe_state(pipe: *mut PipeSide) -> PipeState;
+}
+extern "C" {
+    #[doc = "Frees a side of a pipe.\n\n When only one of the sides is freed, the pipe is transitioned from the \"Open\"\n state into the \"Broken\" state. When both sides are freed, the underlying data\n structures are freed too.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to free"]
+    pub fn pipe_free(pipe: *mut PipeSide);
+}
+extern "C" {
+    #[doc = "Connects the pipe to the `stdin` and `stdout` of the current thread.\n\n After performing this operation, you can use `getc`, `puts`, etc. to send and\n receive data to and from the pipe. If the pipe becomes broken, C stdlib calls\n will return `EOF` wherever possible.\n\n You can disconnect the pipe by manually calling\n `furi_thread_set_stdout_callback` and `furi_thread_set_stdin_callback` with\n `NULL`.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to connect to the stdio"]
+    pub fn pipe_install_as_stdio(pipe: *mut PipeSide);
+}
+extern "C" {
+    #[doc = "Sets the state check period for `send` and `receive` operations\n\n > **Note:** This value is set to 100 ms when the pipe is created\n\n `send` and `receive` will check the state of the pipe if exactly 0 bytes were\n sent or received during any given `check_period`. Read the documentation for\n `pipe_send` and `pipe_receive` for more info.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to set the check period of\n * `[in]` - check_period Period in ticks"]
+    pub fn pipe_set_state_check_period(pipe: *mut PipeSide, check_period: FuriWait);
+}
+extern "C" {
+    #[doc = "Receives data from the pipe.\n\n This function will try to receive all of the requested bytes from the pipe.\n If at some point during the operation the pipe becomes broken, this function\n will return prematurely, in which case the return value will be less than the\n requested `length`.\n\n # Arguments\n\n* `[in]` - pipe The pipe side to read data out of\n * `[out]` - data The buffer to fill with data\n * `length` - Maximum length of data to read\n # Returns\n\nThe number of bytes actually written into the provided buffer"]
+    pub fn pipe_receive(pipe: *mut PipeSide, data: *mut core::ffi::c_void, length: usize) -> usize;
+}
+extern "C" {
+    #[doc = "Sends data into the pipe.\n\n This function will try to send all of the requested bytes to the pipe.\n If at some point during the operation the pipe becomes broken, this function\n will return prematurely, in which case the return value will be less than the\n requested `length`.\n\n # Arguments\n\n* `[in]` - pipe The pipe side to send data into\n * `[out]` - data The buffer to get data from\n * `length` - Maximum length of data to send\n # Returns\n\nThe number of bytes actually read from the provided buffer"]
+    pub fn pipe_send(pipe: *mut PipeSide, data: *const core::ffi::c_void, length: usize) -> usize;
+}
+extern "C" {
+    #[doc = "Determines how many bytes there are in the pipe available to be read.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to query\n # Returns\n\nNumber of bytes available to be read out from that side of the pipe"]
+    pub fn pipe_bytes_available(pipe: *mut PipeSide) -> usize;
+}
+extern "C" {
+    #[doc = "Determines how many space there is in the pipe for data to be written\n into.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to query\n # Returns\n\nNumber of bytes available to be written into that side of the pipe"]
+    pub fn pipe_spaces_available(pipe: *mut PipeSide) -> usize;
+}
+extern "C" {
+    #[doc = "Attaches a `PipeSide` to a `FuriEventLoop`, allowing to attach\n callbacks to the PipeSide.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to attach to the event loop\n * `[in]` - event_loop Event loop to attach the pipe side to"]
+    pub fn pipe_attach_to_event_loop(pipe: *mut PipeSide, event_loop: *mut FuriEventLoop);
+}
+extern "C" {
+    #[doc = "Detaches a `PipeSide` from the `FuriEventLoop` that it was previously\n attached to.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to detach to the event loop"]
+    pub fn pipe_detach_from_event_loop(pipe: *mut PipeSide);
+}
+#[doc = "Callback for when data arrives to a `PipeSide`.\n\n # Arguments\n\n* `[in]` - pipe Pipe side that called the callback\n * `[inout]` - context Custom context"]
+pub type PipeSideDataArrivedCallback = ::core::option::Option<
+    unsafe extern "C" fn(pipe: *mut PipeSide, context: *mut core::ffi::c_void),
+>;
+#[doc = "Callback for when data is read out of the opposite `PipeSide`.\n\n # Arguments\n\n* `[in]` - pipe Pipe side that called the callback\n * `[inout]` - context Custom context"]
+pub type PipeSideSpaceFreedCallback = ::core::option::Option<
+    unsafe extern "C" fn(pipe: *mut PipeSide, context: *mut core::ffi::c_void),
+>;
+#[doc = "Callback for when the opposite `PipeSide` is freed, making the pipe\n broken.\n\n # Arguments\n\n* `[in]` - pipe Pipe side that called the callback\n * `[inout]` - context Custom context"]
+pub type PipeSideBrokenCallback = ::core::option::Option<
+    unsafe extern "C" fn(pipe: *mut PipeSide, context: *mut core::ffi::c_void),
+>;
+extern "C" {
+    #[doc = "Sets the custom context for all callbacks.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to set the context of\n * `[inout]` - context Custom context that will be passed to callbacks"]
+    pub fn pipe_set_callback_context(pipe: *mut PipeSide, context: *mut core::ffi::c_void);
+}
+extern "C" {
+    #[doc = "Sets the callback for when data arrives.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to assign the callback to\n * `[in]` - callback Callback to assign to the pipe side. Set to NULL to\n unsubscribe.\n * `[in]` - event Additional event loop flags (e.g. `Edge`, `Once`, etc.).\n Non-flag values of the enum are not allowed.\n\n Attach the pipe side to an event loop first using\n `pipe_attach_to_event_loop`."]
+    pub fn pipe_set_data_arrived_callback(
+        pipe: *mut PipeSide,
+        callback: PipeSideDataArrivedCallback,
+        event: FuriEventLoopEvent,
+    );
+}
+extern "C" {
+    #[doc = "Sets the callback for when data is read out of the opposite `PipeSide`.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to assign the callback to\n * `[in]` - callback Callback to assign to the pipe side. Set to NULL to\n unsubscribe.\n * `[in]` - event Additional event loop flags (e.g. `Edge`, `Once`, etc.).\n Non-flag values of the enum are not allowed.\n\n Attach the pipe side to an event loop first using\n `pipe_attach_to_event_loop`."]
+    pub fn pipe_set_space_freed_callback(
+        pipe: *mut PipeSide,
+        callback: PipeSideSpaceFreedCallback,
+        event: FuriEventLoopEvent,
+    );
+}
+extern "C" {
+    #[doc = "Sets the callback for when the opposite `PipeSide` is freed, making\n the pipe broken.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to assign the callback to\n * `[in]` - callback Callback to assign to the pipe side. Set to NULL to\n unsubscribe.\n * `[in]` - event Additional event loop flags (e.g. `Edge`, `Once`, etc.).\n Non-flag values of the enum are not allowed.\n\n Attach the pipe side to an event loop first using\n `pipe_attach_to_event_loop`."]
+    pub fn pipe_set_broken_callback(
+        pipe: *mut PipeSide,
+        callback: PipeSideBrokenCallback,
+        event: FuriEventLoopEvent,
+    );
+}
+#[doc = "< Default"]
 pub const CliCommandFlagDefault: CliCommandFlag = CliCommandFlag(0);
+#[doc = "< Safe to run in parallel with other apps"]
 pub const CliCommandFlagParallelSafe: CliCommandFlag = CliCommandFlag(1);
 #[doc = "< Safe to run with insomnia mode on"]
 pub const CliCommandFlagInsomniaSafe: CliCommandFlag = CliCommandFlag(2);
+#[doc = "< Do no attach I/O pipe to thread stdio"]
+pub const CliCommandFlagDontAttachStdio: CliCommandFlag = CliCommandFlag(4);
+pub const CliCommandFlagUseShellThread: CliCommandFlag = CliCommandFlag(8);
+#[doc = "< The command comes from a .fal file"]
+pub const CliCommandFlagExternal: CliCommandFlag = CliCommandFlag(16);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct CliCommandFlag(pub core::ffi::c_uchar);
+#[doc = "CLI command execution callback pointer\n\n This callback will be called from a separate thread spawned just for your\n command. The pipe will be installed as the thread's stdio, so you can use\n `printf`, `getchar` and other standard functions to communicate with the\n user.\n\n # Arguments\n\n* `[in]` - pipe Pipe that can be used to send and receive data. If\n `CliCommandFlagDontAttachStdio` was not set, you can\n also use standard C functions (printf, getc, etc.) to\n access this pipe.\n * `[in]` - args String with what was passed after the command\n * `[in]` - context Whatever you provided to `cli_add_command`"]
+pub type CliCommandExecuteCallback = ::core::option::Option<
+    unsafe extern "C" fn(
+        pipe: *mut PipeSide,
+        args: *mut FuriString,
+        context: *mut core::ffi::c_void,
+    ),
+>;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct Cli {
-    _unused: [u8; 0],
+pub struct CliCommandDescriptor {
+    pub name: *mut core::ffi::c_char,
+    pub execute_callback: CliCommandExecuteCallback,
+    pub flags: CliCommandFlag,
+    pub stack_depth: usize,
 }
-#[doc = "Cli callback function pointer. Implement this interface and use\n add_cli_command\n # Arguments\n\n* `args` - string with what was passed after command\n * `context` - pointer to whatever you gave us on cli_add_command"]
-pub type CliCallback = ::core::option::Option<
-    unsafe extern "C" fn(cli: *mut Cli, args: *mut FuriString, context: *mut core::ffi::c_void),
->;
-extern "C" {
-    #[doc = "Add cli command Registers you command callback\n\n # Arguments\n\n* `cli` - pointer to cli instance\n * `name` - command name\n * `flags` - CliCommandFlag\n * `callback` - callback function\n * `context` - pointer to whatever we need to pass to callback"]
-    pub fn cli_add_command(
-        cli: *mut Cli,
-        name: *const core::ffi::c_char,
-        flags: CliCommandFlag,
-        callback: CliCallback,
-        context: *mut core::ffi::c_void,
+#[test]
+fn bindgen_test_layout_CliCommandDescriptor() {
+    const UNINIT: ::core::mem::MaybeUninit<CliCommandDescriptor> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<CliCommandDescriptor>(),
+        16usize,
+        concat!("Size of: ", stringify!(CliCommandDescriptor))
     );
+    assert_eq!(
+        ::core::mem::align_of::<CliCommandDescriptor>(),
+        4usize,
+        concat!("Alignment of ", stringify!(CliCommandDescriptor))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CliCommandDescriptor),
+            "::",
+            stringify!(name)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).execute_callback) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CliCommandDescriptor),
+            "::",
+            stringify!(execute_callback)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).flags) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CliCommandDescriptor),
+            "::",
+            stringify!(flags)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).stack_depth) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CliCommandDescriptor),
+            "::",
+            stringify!(stack_depth)
+        )
+    );
+}
+#[doc = "Configuration for locating external commands"]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct CliCommandExternalConfig {
+    pub search_directory: *const core::ffi::c_char,
+    pub fal_prefix: *const core::ffi::c_char,
+    pub appid: *const core::ffi::c_char,
+}
+#[test]
+fn bindgen_test_layout_CliCommandExternalConfig() {
+    const UNINIT: ::core::mem::MaybeUninit<CliCommandExternalConfig> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<CliCommandExternalConfig>(),
+        12usize,
+        concat!("Size of: ", stringify!(CliCommandExternalConfig))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<CliCommandExternalConfig>(),
+        4usize,
+        concat!("Alignment of ", stringify!(CliCommandExternalConfig))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).search_directory) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CliCommandExternalConfig),
+            "::",
+            stringify!(search_directory)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).fal_prefix) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CliCommandExternalConfig),
+            "::",
+            stringify!(fal_prefix)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).appid) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CliCommandExternalConfig),
+            "::",
+            stringify!(appid)
+        )
+    );
+}
+extern "C" {
+    #[doc = "Detects if Ctrl+C has been pressed or session has been terminated\n\n # Arguments\n\n* `[in]` - side Pointer to pipe side given to the command thread\n This function also assumes that the pipe is installed as the\n thread's stdio\n This function will consume 0 or 1 bytes from the pipe"]
+    pub fn cli_is_pipe_broken_or_is_etx_next_char(side: *mut PipeSide) -> bool;
 }
 extern "C" {
     #[doc = "Print unified cmd usage tip\n\n # Arguments\n\n* `cmd` - cmd name\n * `usage` - usage tip\n * `arg` - arg passed by user"]
@@ -16399,50 +16868,65 @@ extern "C" {
         arg: *const core::ffi::c_char,
     );
 }
-extern "C" {
-    #[doc = "Delete cli command\n\n # Arguments\n\n* `cli` - pointer to cli instance\n * `name` - command name"]
-    pub fn cli_delete_command(cli: *mut Cli, name: *const core::ffi::c_char);
-}
-extern "C" {
-    #[doc = "Read from terminal\n\n # Arguments\n\n* `cli` - Cli instance\n * `buffer` - pointer to buffer\n * `size` - size of buffer in bytes\n\n # Returns\n\nbytes read"]
-    pub fn cli_read(cli: *mut Cli, buffer: *mut u8, size: usize) -> usize;
-}
-extern "C" {
-    #[doc = "Non-blocking read from terminal\n\n # Arguments\n\n* `cli` - Cli instance\n * `buffer` - pointer to buffer\n * `size` - size of buffer in bytes\n * `timeout` - timeout value in ms\n\n # Returns\n\nbytes read"]
-    pub fn cli_read_timeout(cli: *mut Cli, buffer: *mut u8, size: usize, timeout: u32) -> usize;
-}
-extern "C" {
-    #[doc = "Non-blocking check for interrupt command received\n\n # Arguments\n\n* `cli` - Cli instance\n\n # Returns\n\ntrue if received"]
-    pub fn cli_cmd_interrupt_received(cli: *mut Cli) -> bool;
-}
-extern "C" {
-    #[doc = "Write to terminal Do it only from inside of cli call.\n\n # Arguments\n\n* `cli` - Cli instance\n * `buffer` - pointer to buffer\n * `size` - size of buffer in bytes"]
-    pub fn cli_write(cli: *mut Cli, buffer: *const u8, size: usize);
-}
-extern "C" {
-    #[doc = "Read character\n\n # Arguments\n\n* `cli` - Cli instance\n\n # Returns\n\nchar"]
-    pub fn cli_getc(cli: *mut Cli) -> core::ffi::c_char;
-}
-extern "C" {
-    #[doc = "New line Send new ine sequence"]
-    pub fn cli_nl(cli: *mut Cli);
-}
-extern "C" {
-    pub fn cli_session_open(cli: *mut Cli, session: *mut core::ffi::c_void);
-}
-extern "C" {
-    pub fn cli_session_close(cli: *mut Cli);
-}
-extern "C" {
-    pub fn cli_is_connected(cli: *mut Cli) -> bool;
-}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct CliSession {
+pub struct CliRegistry {
     _unused: [u8; 0],
 }
 extern "C" {
-    pub static mut cli_vcp: CliSession;
+    #[doc = "Allocates a `CliRegistry`."]
+    pub fn cli_registry_alloc() -> *mut CliRegistry;
+}
+extern "C" {
+    #[doc = "Frees a `CliRegistry`."]
+    pub fn cli_registry_free(registry: *mut CliRegistry);
+}
+extern "C" {
+    #[doc = "Registers a command with the registry. Provides less options than the\n `_ex` counterpart.\n\n # Arguments\n\n* `[in]` - registry Pointer to registry instance\n * `[in]` - name Command name\n * `[in]` - flags see CliCommandFlag\n * `[in]` - callback Callback function\n * `[in]` - context Custom context"]
+    pub fn cli_registry_add_command(
+        registry: *mut CliRegistry,
+        name: *const core::ffi::c_char,
+        flags: CliCommandFlag,
+        callback: CliCommandExecuteCallback,
+        context: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = "Registers a command with the registry. Provides more options than the\n non-`_ex` counterpart.\n\n # Arguments\n\n* `[in]` - registry Pointer to registry instance\n * `[in]` - name Command name\n * `[in]` - flags see CliCommandFlag\n * `[in]` - callback Callback function\n * `[in]` - context Custom context\n * `[in]` - stack_size Thread stack size"]
+    pub fn cli_registry_add_command_ex(
+        registry: *mut CliRegistry,
+        name: *const core::ffi::c_char,
+        flags: CliCommandFlag,
+        callback: CliCommandExecuteCallback,
+        context: *mut core::ffi::c_void,
+        stack_size: usize,
+    );
+}
+extern "C" {
+    #[doc = "Deletes a cli command\n\n # Arguments\n\n* `[in]` - registry Pointer to registry instance\n * `[in]` - name Command name"]
+    pub fn cli_registry_delete_command(registry: *mut CliRegistry, name: *const core::ffi::c_char);
+}
+extern "C" {
+    #[doc = "Unregisters all external commands\n\n # Arguments\n\n* `[in]` - registry Pointer to registry instance"]
+    pub fn cli_registry_remove_external_commands(registry: *mut CliRegistry);
+}
+extern "C" {
+    #[doc = "Reloads the list of externally available commands\n\n # Arguments\n\n* `[in]` - registry Pointer to registry instance\n * `[in]` - config See `CliCommandExternalConfig`"]
+    pub fn cli_registry_reload_external_commands(
+        registry: *mut CliRegistry,
+        config: *const CliCommandExternalConfig,
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct CliVcp {
+    _unused: [u8; 0],
+}
+extern "C" {
+    pub fn cli_vcp_enable(cli_vcp: *mut CliVcp);
+}
+extern "C" {
+    pub fn cli_vcp_disable(cli_vcp: *mut CliVcp);
 }
 extern "C" {
     #[doc = "Get icon width\n\n # Arguments\n\n* `instance` (direction in) - pointer to Icon data\n\n # Returns\n\nwidth in pixels"]
@@ -18100,8 +18584,9 @@ pub struct ButtonPanel {
     _unused: [u8; 0],
 }
 #[doc = "Callback type to call for handling selecting button_panel items"]
-pub type ButtonItemCallback =
-    ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void, index: u32)>;
+pub type ButtonItemCallback = ::core::option::Option<
+    unsafe extern "C" fn(context: *mut core::ffi::c_void, index: u32, type_: InputType),
+>;
 extern "C" {
     #[doc = "Allocate new button_panel module.\n\n # Returns\n\nButtonPanel instance"]
     pub fn button_panel_alloc() -> *mut ButtonPanel;
@@ -18579,6 +19064,9 @@ pub struct Submenu {
 }
 pub type SubmenuItemCallback =
     ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void, index: u32)>;
+pub type SubmenuItemCallbackEx = ::core::option::Option<
+    unsafe extern "C" fn(context: *mut core::ffi::c_void, input_type: InputType, index: u32),
+>;
 extern "C" {
     #[doc = "Allocate and initialize submenu\n\n This submenu is used to select one option\n\n # Returns\n\nSubmenu instance"]
     pub fn submenu_alloc() -> *mut Submenu;
@@ -18598,6 +19086,16 @@ extern "C" {
         label: *const core::ffi::c_char,
         index: u32,
         callback: SubmenuItemCallback,
+        callback_context: *mut core::ffi::c_void,
+    );
+}
+extern "C" {
+    #[doc = "Add item to submenu with extended press events\n\n # Arguments\n\n* `submenu` - Submenu instance\n * `label` - menu item label\n * `index` - menu item index, used for callback, may be\n the same with other items\n * `callback` - menu item extended callback\n * `callback_context` - menu item callback context"]
+    pub fn submenu_add_item_ex(
+        submenu: *mut Submenu,
+        label: *const core::ffi::c_char,
+        index: u32,
+        callback: SubmenuItemCallbackEx,
         callback_context: *mut core::ffi::c_void,
     );
 }
@@ -18937,15 +19435,24 @@ extern "C" {
     pub fn widget_add_icon_element(widget: *mut Widget, x: u8, y: u8, icon: *const Icon);
 }
 extern "C" {
-    #[doc = "Add Frame Element\n\n # Arguments\n\n* `widget` - Widget instance\n * `x` - top left x coordinate\n * `y` - top left y coordinate\n * `width` - frame width\n * `height` - frame height\n * `radius` - frame radius"]
-    pub fn widget_add_frame_element(
+    #[doc = "Add Rect Element\n\n # Arguments\n\n* `widget` - Widget instance\n * `x` - top left x coordinate\n * `y` - top left y coordinate\n * `width` - rect width\n * `height` - rect height\n * `radius` - corner radius\n * `fill` - whether to fill the box or not"]
+    pub fn widget_add_rect_element(
         widget: *mut Widget,
         x: u8,
         y: u8,
         width: u8,
         height: u8,
         radius: u8,
+        fill: bool,
     );
+}
+extern "C" {
+    #[doc = "Add Circle Element\n\n # Arguments\n\n* `widget` - Widget instance\n * `x` - center x coordinate\n * `y` - center y coordinate\n * `radius` - circle radius\n * `fill` - whether to fill the circle or not"]
+    pub fn widget_add_circle_element(widget: *mut Widget, x: u8, y: u8, radius: u8, fill: bool);
+}
+extern "C" {
+    #[doc = "Add Line Element\n\n # Arguments\n\n* `widget` - Widget instance\n * `x1` - first x coordinate\n * `y1` - first y coordinate\n * `x2` - second x coordinate\n * `y2` - second y coordinate"]
+    pub fn widget_add_line_element(widget: *mut Widget, x1: u8, y1: u8, x2: u8, y2: u8);
 }
 pub const SceneManagerEventTypeCustom: SceneManagerEventType = SceneManagerEventType(0);
 pub const SceneManagerEventTypeBack: SceneManagerEventType = SceneManagerEventType(1);
@@ -19150,6 +19657,10 @@ extern "C" {
         scene_manager: *mut SceneManager,
         scene_id: u32,
     ) -> bool;
+}
+extern "C" {
+    #[doc = "Get id of current scene\n\n # Arguments\n\n* `scene_manager` - SceneManager instance\n\n # Returns\n\nScene ID"]
+    pub fn scene_manager_get_current_scene(scene_manager: *mut SceneManager) -> u32;
 }
 extern "C" {
     #[doc = "Exit from current scene\n\n # Arguments\n\n* `scene_manager` - SceneManager instance"]
@@ -19377,6 +19888,7 @@ pub struct LoaderStatus(pub core::ffi::c_uchar);
 pub const LoaderEventTypeApplicationBeforeLoad: LoaderEventType = LoaderEventType(0);
 pub const LoaderEventTypeApplicationLoadFailed: LoaderEventType = LoaderEventType(1);
 pub const LoaderEventTypeApplicationStopped: LoaderEventType = LoaderEventType(2);
+pub const LoaderEventTypeNoMoreAppsInQueue: LoaderEventType = LoaderEventType(3);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct LoaderEventType(pub core::ffi::c_uchar);
@@ -19410,6 +19922,11 @@ fn bindgen_test_layout_LoaderEvent() {
         )
     );
 }
+pub const LoaderDeferredLaunchFlagNone: LoaderDeferredLaunchFlag = LoaderDeferredLaunchFlag(0);
+pub const LoaderDeferredLaunchFlagGui: LoaderDeferredLaunchFlag = LoaderDeferredLaunchFlag(2);
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct LoaderDeferredLaunchFlag(pub core::ffi::c_uchar);
 extern "C" {
     #[doc = "Start application\n # Arguments\n\n* `instance` (direction in) - loader instance\n * `name` (direction in) - application name or id\n * `args` (direction in) - application arguments\n * `error_message` (direction out) - detailed error message, can be NULL\n # Returns\n\nLoaderStatus"]
     pub fn loader_start(
@@ -19462,6 +19979,24 @@ extern "C" {
 extern "C" {
     #[doc = "Get the name of the currently running application\n\n # Arguments\n\n* `instance` (direction in) - pointer to the loader instance\n * `name` (direction in, out) - pointer to the string to contain the name (must be allocated)\n # Returns\n\ntrue if it was possible to get an application name, false otherwise"]
     pub fn loader_get_application_name(instance: *mut Loader, name: *mut FuriString) -> bool;
+}
+extern "C" {
+    #[doc = "Get the launch path or name of the currently running application\n\n This is the string that was supplied to `loader_start` such that the current\n app is running now. It might be a name (in the case of internal apps) or a\n path (in the case of external apps). This value can be used to launch the\n same app again.\n\n # Arguments\n\n* `instance` (direction in) - pointer to the loader instance\n * `name` (direction in, out) - pointer to the string to contain the path or name\n (must be allocated)\n # Returns\n\ntrue if it was possible to get an application path, false otherwise"]
+    pub fn loader_get_application_launch_path(instance: *mut Loader, name: *mut FuriString)
+        -> bool;
+}
+extern "C" {
+    #[doc = "Enqueues a request to launch an application after the current one\n\n # Arguments\n\n* `instance` (direction in) - pointer to the loader instance\n * `name` (direction in) - pointer to the name or path of the application, or NULL to\n cancel a previous request\n * `args` (direction in) - pointer to argument to provide to the next app\n * `flags` (direction in) - additional flags. see enum documentation for more info"]
+    pub fn loader_enqueue_launch(
+        instance: *mut Loader,
+        name: *const core::ffi::c_char,
+        args: *const core::ffi::c_char,
+        flags: LoaderDeferredLaunchFlag,
+    );
+}
+extern "C" {
+    #[doc = "Removes all requests to launch applications after the current one\n exits\n\n # Arguments\n\n* `instance` (direction in) - pointer to the loader instance"]
+    pub fn loader_clear_launch_queue(instance: *mut Loader);
 }
 #[doc = "< Metric measurement units"]
 pub const LocaleMeasurementUnitsMetric: LocaleMeasurementUnits = LocaleMeasurementUnits(0);
@@ -20665,6 +21200,7 @@ pub struct PowerInfo {
     pub gauge_is_ok: bool,
     pub is_charging: bool,
     pub is_shutdown_requested: bool,
+    pub is_otg_enabled: bool,
     pub current_charger: f32,
     pub current_gauge: f32,
     pub voltage_battery_charge_limit: f32,
@@ -20720,6 +21256,16 @@ fn bindgen_test_layout_PowerInfo() {
             stringify!(PowerInfo),
             "::",
             stringify!(is_shutdown_requested)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).is_otg_enabled) as usize - ptr as usize },
+        3usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(PowerInfo),
+            "::",
+            stringify!(is_otg_enabled)
         )
     );
     assert_eq!(
@@ -20868,6 +21414,14 @@ extern "C" {
 extern "C" {
     #[doc = "Enable or disable battery low level notification message\n\n # Arguments\n\n* `power` - Power instance\n * `enable` - true - enable, false - disable"]
     pub fn power_enable_low_battery_level_notification(power: *mut Power, enable: bool);
+}
+extern "C" {
+    #[doc = "Enable or disable OTG\n\n # Arguments\n\n* `power` - Power instance\n * `enable` - true - enable, false - disable"]
+    pub fn power_enable_otg(power: *mut Power, enable: bool);
+}
+extern "C" {
+    #[doc = "Check OTG status\n\n # Returns\n\ntrue if OTG is requested"]
+    pub fn power_is_otg_enabled(power: *mut Power) -> bool;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -21547,12 +22101,12 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Read register\n\n # Arguments\n\n* `handle` - - pointer t FuriHalSpiBusHandle instance\n * `reg` - - register address\n * `val` - - pointer to the variable to store the read value"]
-    pub fn st25r3916_read_reg(handle: *mut FuriHalSpiBusHandle, reg: u8, val: *mut u8);
+    pub fn st25r3916_read_reg(handle: *const FuriHalSpiBusHandle, reg: u8, val: *mut u8);
 }
 extern "C" {
     #[doc = "Read multiple registers\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `reg_start` - - start register address\n * `values` - - pointer to the buffer to store the read values\n * `length` - - number of registers to read"]
     pub fn st25r3916_read_burst_regs(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         reg_start: u8,
         values: *mut u8,
         length: u8,
@@ -21560,12 +22114,12 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Write register\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `reg` - - register address\n * `val` - - value to write"]
-    pub fn st25r3916_write_reg(handle: *mut FuriHalSpiBusHandle, reg: u8, val: u8);
+    pub fn st25r3916_write_reg(handle: *const FuriHalSpiBusHandle, reg: u8, val: u8);
 }
 extern "C" {
     #[doc = "Write multiple registers\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `reg_start` - - start register address\n * `values` - - pointer to buffer to write\n * `length` - - number of registers to write"]
     pub fn st25r3916_write_burst_regs(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         reg_start: u8,
         values: *const u8,
         length: u8,
@@ -21574,31 +22128,39 @@ extern "C" {
 extern "C" {
     #[doc = "Write fifo register\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `buff` - - buffer to write to FIFO\n * `length` - - number of bytes to write"]
     pub fn st25r3916_reg_write_fifo(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         buff: *const u8,
         length: usize,
     );
 }
 extern "C" {
     #[doc = "Read fifo register\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `buff` - - buffer to store the read values\n * `length` - - number of bytes to read"]
-    pub fn st25r3916_reg_read_fifo(handle: *mut FuriHalSpiBusHandle, buff: *mut u8, length: usize);
+    pub fn st25r3916_reg_read_fifo(
+        handle: *const FuriHalSpiBusHandle,
+        buff: *mut u8,
+        length: usize,
+    );
 }
 extern "C" {
     #[doc = "Write PTA memory register\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `values` - - pointer to buffer to write\n * `length` - - number of bytes to write"]
     pub fn st25r3916_write_pta_mem(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         values: *const u8,
         length: usize,
     );
 }
 extern "C" {
     #[doc = "Read PTA memory register\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `values` - - buffer to store the read values\n * `length` - - number of bytes to read"]
-    pub fn st25r3916_read_pta_mem(handle: *mut FuriHalSpiBusHandle, values: *mut u8, length: usize);
+    pub fn st25r3916_read_pta_mem(
+        handle: *const FuriHalSpiBusHandle,
+        values: *mut u8,
+        length: usize,
+    );
 }
 extern "C" {
     #[doc = "Write PTF memory register\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `values` - - pointer to buffer to write\n * `length` - - number of bytes to write"]
     pub fn st25r3916_write_ptf_mem(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         values: *const u8,
         length: usize,
     );
@@ -21606,35 +22168,35 @@ extern "C" {
 extern "C" {
     #[doc = "Read PTTSN memory register\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `values` - - pointer to buffer to write\n * `length` - - number of bytes to write"]
     pub fn st25r3916_write_pttsn_mem(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         values: *mut u8,
         length: usize,
     );
 }
 extern "C" {
     #[doc = "Send Direct command\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `cmd` - - direct command"]
-    pub fn st25r3916_direct_cmd(handle: *mut FuriHalSpiBusHandle, cmd: u8);
+    pub fn st25r3916_direct_cmd(handle: *const FuriHalSpiBusHandle, cmd: u8);
 }
 extern "C" {
     #[doc = "Read test register\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `reg` - - register address\n * `val` - - pointer to the variable to store the read value"]
-    pub fn st25r3916_read_test_reg(handle: *mut FuriHalSpiBusHandle, reg: u8, val: *mut u8);
+    pub fn st25r3916_read_test_reg(handle: *const FuriHalSpiBusHandle, reg: u8, val: *mut u8);
 }
 extern "C" {
     #[doc = "Write test register\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `reg` - - register address\n * `val` - - value to write"]
-    pub fn st25r3916_write_test_reg(handle: *mut FuriHalSpiBusHandle, reg: u8, val: u8);
+    pub fn st25r3916_write_test_reg(handle: *const FuriHalSpiBusHandle, reg: u8, val: u8);
 }
 extern "C" {
     #[doc = "Clear register bits\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `reg` - - register address\n * `clr_mask` - - bit mask to clear"]
-    pub fn st25r3916_clear_reg_bits(handle: *mut FuriHalSpiBusHandle, reg: u8, clr_mask: u8);
+    pub fn st25r3916_clear_reg_bits(handle: *const FuriHalSpiBusHandle, reg: u8, clr_mask: u8);
 }
 extern "C" {
     #[doc = "Set register bits\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `reg` - - register address\n * `set_mask` - - bit mask to set"]
-    pub fn st25r3916_set_reg_bits(handle: *mut FuriHalSpiBusHandle, reg: u8, set_mask: u8);
+    pub fn st25r3916_set_reg_bits(handle: *const FuriHalSpiBusHandle, reg: u8, set_mask: u8);
 }
 extern "C" {
     #[doc = "Change register bits\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `reg` - - register address\n * `mask` - - bit mask to change\n * `value` - - new register value to write"]
     pub fn st25r3916_change_reg_bits(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         reg: u8,
         mask: u8,
         value: u8,
@@ -21643,7 +22205,7 @@ extern "C" {
 extern "C" {
     #[doc = "Modify register\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `reg` - - register address\n * `clr_mask` - - bit mask to clear\n * `set_mask` - - bit mask to set"]
     pub fn st25r3916_modify_reg(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         reg: u8,
         clr_mask: u8,
         set_mask: u8,
@@ -21652,7 +22214,7 @@ extern "C" {
 extern "C" {
     #[doc = "Change test register bits\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `reg` - - register address\n * `mask` - - bit mask to change\n * `value` - - new register value to write"]
     pub fn st25r3916_change_test_reg_bits(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         reg: u8,
         mask: u8,
         value: u8,
@@ -21661,7 +22223,7 @@ extern "C" {
 extern "C" {
     #[doc = "Check register\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `reg` - - register address\n * `mask` - - bit mask to check\n * `val` - - expected register value\n\n # Returns\n\ntrue if register value matches the expected value, false otherwise"]
     pub fn st25r3916_check_reg(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         reg: u8,
         mask: u8,
         val: u8,
@@ -21669,20 +22231,20 @@ extern "C" {
 }
 extern "C" {
     #[doc = "Mask st25r3916 interrupts\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `mask` - - mask of interrupts to be disabled"]
-    pub fn st25r3916_mask_irq(handle: *mut FuriHalSpiBusHandle, mask: u32);
+    pub fn st25r3916_mask_irq(handle: *const FuriHalSpiBusHandle, mask: u32);
 }
 extern "C" {
     #[doc = "Get st25r3916 interrupts\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n\n # Returns\n\nreceived interrupts"]
-    pub fn st25r3916_get_irq(handle: *mut FuriHalSpiBusHandle) -> u32;
+    pub fn st25r3916_get_irq(handle: *const FuriHalSpiBusHandle) -> u32;
 }
 extern "C" {
     #[doc = "Write FIFO\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `buff` - - buffer to write to FIFO\n * `bits` - - number of bits to write"]
-    pub fn st25r3916_write_fifo(handle: *mut FuriHalSpiBusHandle, buff: *const u8, bits: usize);
+    pub fn st25r3916_write_fifo(handle: *const FuriHalSpiBusHandle, buff: *const u8, bits: usize);
 }
 extern "C" {
     #[doc = "Read FIFO\n\n # Arguments\n\n* `handle` - - pointer to FuriHalSpiBusHandle instance\n * `buff` - - buffer to read from FIFO\n * `buff_size` - - buffer size n bytes\n * `buff_bits` - - pointer to number of bits read\n\n # Returns\n\ntrue if read success, false otherwise"]
     pub fn st25r3916_read_fifo(
-        handle: *mut FuriHalSpiBusHandle,
+        handle: *const FuriHalSpiBusHandle,
         buff: *mut u8,
         buff_size: usize,
         buff_bits: *mut usize,
@@ -21786,6 +22348,12 @@ extern "C" {
 pub struct FlipperFormat {
     _unused: [u8; 0],
 }
+pub const FlipperFormatOffsetFromCurrent: FlipperFormatOffset = FlipperFormatOffset(0);
+pub const FlipperFormatOffsetFromStart: FlipperFormatOffset = FlipperFormatOffset(1);
+pub const FlipperFormatOffsetFromEnd: FlipperFormatOffset = FlipperFormatOffset(2);
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct FlipperFormatOffset(pub core::ffi::c_uchar);
 extern "C" {
     #[doc = "Allocate FlipperFormat as string.\n\n # Returns\n\nFlipperFormat* pointer to a FlipperFormat instance"]
     pub fn flipper_format_string_alloc() -> *mut FlipperFormat;
@@ -21859,6 +22427,18 @@ extern "C" {
 extern "C" {
     #[doc = "Rewind the RW pointer.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n # Returns\n\nTrue on success"]
     pub fn flipper_format_rewind(flipper_format: *mut FlipperFormat) -> bool;
+}
+extern "C" {
+    #[doc = "Get the RW pointer position\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n # Returns\n\nRW pointer position"]
+    pub fn flipper_format_tell(flipper_format: *mut FlipperFormat) -> usize;
+}
+extern "C" {
+    #[doc = "Set the RW pointer position to an arbitrary value\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n * `offset` - Offset relative to the anchor point\n * `anchor` - Anchor point (e.g. start of file)\n\n # Returns\n\nTrue on success"]
+    pub fn flipper_format_seek(
+        flipper_format: *mut FlipperFormat,
+        offset: i32,
+        anchor: FlipperFormatOffset,
+    ) -> bool;
 }
 extern "C" {
     #[doc = "Move the RW pointer at the end. Can be useful if you want to add some data\n after reading.\n\n # Arguments\n\n* `flipper_format` - Pointer to a FlipperFormat instance\n\n # Returns\n\nTrue on success"]
@@ -22811,6 +23391,12 @@ extern "C" {
     #[doc = "Stop all modes\n # Arguments\n\n* `worker` -"]
     pub fn ibutton_worker_stop(worker: *mut iButtonWorker);
 }
+extern "C" {
+    pub fn __wrap_strtof(in_: *const core::ffi::c_char, tail: *mut *mut core::ffi::c_char) -> f32;
+}
+extern "C" {
+    pub fn __wrap_strtod(in_: *const core::ffi::c_char, tail: *mut *mut core::ffi::c_char) -> f64;
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct InfraredDecoderHandler {
@@ -23533,7 +24119,7 @@ pub struct ProtocolDict {
 pub type ProtocolId = i32;
 extern "C" {
     pub fn protocol_dict_alloc(
-        protocols: *mut *const ProtocolBase,
+        protocols: *const *const ProtocolBase,
         protocol_count: usize,
     ) -> *mut ProtocolDict;
 }
@@ -23711,6 +24297,53 @@ extern "C" {
 extern "C" {
     pub fn t5577_write_with_mask(data: *mut LFRFIDT5577, page: u8, with_pass: bool, password: u32);
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct LFRFIDEM4305 {
+    #[doc = "< Word data to write"]
+    pub word: [u32; 16usize],
+    #[doc = "< Word mask"]
+    pub mask: u16,
+}
+#[test]
+fn bindgen_test_layout_LFRFIDEM4305() {
+    const UNINIT: ::core::mem::MaybeUninit<LFRFIDEM4305> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<LFRFIDEM4305>(),
+        68usize,
+        concat!("Size of: ", stringify!(LFRFIDEM4305))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<LFRFIDEM4305>(),
+        4usize,
+        concat!("Alignment of ", stringify!(LFRFIDEM4305))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).word) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LFRFIDEM4305),
+            "::",
+            stringify!(word)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).mask) as usize - ptr as usize },
+        64usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LFRFIDEM4305),
+            "::",
+            stringify!(mask)
+        )
+    );
+}
+extern "C" {
+    #[doc = "Write EM4305 tag data to tag\n\n # Arguments\n\n* `data` - The data to write (mask is taken from that data)"]
+    pub fn em4305_write(data: *mut LFRFIDEM4305);
+}
 pub const LFRFIDFeatureASK: LFRFIDFeature = LFRFIDFeature(1);
 #[doc = "ASK Demodulation"]
 pub const LFRFIDFeaturePSK: LFRFIDFeature = LFRFIDFeature(2);
@@ -23740,14 +24373,17 @@ pub const LFRFIDProtocolGallagher: LFRFIDProtocol = LFRFIDProtocol(19);
 pub const LFRFIDProtocolNexwatch: LFRFIDProtocol = LFRFIDProtocol(20);
 pub const LFRFIDProtocolSecurakey: LFRFIDProtocol = LFRFIDProtocol(21);
 pub const LFRFIDProtocolGProxII: LFRFIDProtocol = LFRFIDProtocol(22);
-pub const LFRFIDProtocolMax: LFRFIDProtocol = LFRFIDProtocol(23);
+pub const LFRFIDProtocolNoralsy: LFRFIDProtocol = LFRFIDProtocol(23);
+pub const LFRFIDProtocolMax: LFRFIDProtocol = LFRFIDProtocol(24);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct LFRFIDProtocol(pub core::ffi::c_uchar);
 extern "C" {
-    pub static mut lfrfid_protocols: [*const ProtocolBase; 0usize];
+    pub static lfrfid_protocols: [*const ProtocolBase; 0usize];
 }
 pub const LFRFIDWriteTypeT5577: LFRFIDWriteType = LFRFIDWriteType(0);
+pub const LFRFIDWriteTypeEM4305: LFRFIDWriteType = LFRFIDWriteType(1);
+pub const LFRFIDWriteTypeMax: LFRFIDWriteType = LFRFIDWriteType(2);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct LFRFIDWriteType(pub core::ffi::c_uchar);
@@ -23761,6 +24397,7 @@ pub struct LFRFIDWriteRequest {
 #[derive(Copy, Clone)]
 pub union LFRFIDWriteRequest__bindgen_ty_1 {
     pub t5577: LFRFIDT5577,
+    pub em4305: LFRFIDEM4305,
 }
 #[test]
 fn bindgen_test_layout_LFRFIDWriteRequest__bindgen_ty_1() {
@@ -23769,7 +24406,7 @@ fn bindgen_test_layout_LFRFIDWriteRequest__bindgen_ty_1() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<LFRFIDWriteRequest__bindgen_ty_1>(),
-        40usize,
+        68usize,
         concat!("Size of: ", stringify!(LFRFIDWriteRequest__bindgen_ty_1))
     );
     assert_eq!(
@@ -23790,6 +24427,16 @@ fn bindgen_test_layout_LFRFIDWriteRequest__bindgen_ty_1() {
             stringify!(t5577)
         )
     );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).em4305) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(LFRFIDWriteRequest__bindgen_ty_1),
+            "::",
+            stringify!(em4305)
+        )
+    );
 }
 #[test]
 fn bindgen_test_layout_LFRFIDWriteRequest() {
@@ -23797,7 +24444,7 @@ fn bindgen_test_layout_LFRFIDWriteRequest() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<LFRFIDWriteRequest>(),
-        44usize,
+        72usize,
         concat!("Size of: ", stringify!(LFRFIDWriteRequest))
     );
     assert_eq!(
@@ -29173,6 +29820,16 @@ extern "C" {
     ) -> FelicaError;
 }
 extern "C" {
+    #[doc = "Performs felica read operation for blocks provided as parameters\n\n # Arguments\n\n* `instance` (direction in, out) - pointer to the instance to be used in the transaction.\n * `block_count` (direction in) - Amount of blocks involved in reading procedure\n * `block_numbers` (direction in) - Array with block indexes according to felica docs\n * `service_code` (direction in) - Service code for the read operation\n * `response_ptr` (direction out) - Pointer to the response structure\n # Returns\n\nFelicaErrorNone on success, an error code on failure."]
+    pub fn felica_poller_read_blocks(
+        instance: *mut FelicaPoller,
+        block_count: u8,
+        block_numbers: *const u8,
+        service_code: u16,
+        response_ptr: *mut *mut FelicaPollerReadCommandResponse,
+    ) -> FelicaError;
+}
+extern "C" {
     pub fn felica_poller_sync_read(
         nfc: *mut Nfc,
         data: *mut FelicaData,
@@ -31393,6 +32050,26 @@ extern "C" {
         data: *mut MfClassicData,
     ) -> MfClassicError;
 }
+pub const MfDesfireTypeMF3ICD40: MfDesfireType = MfDesfireType(0);
+pub const MfDesfireTypeEV1: MfDesfireType = MfDesfireType(1);
+pub const MfDesfireTypeEV2: MfDesfireType = MfDesfireType(2);
+pub const MfDesfireTypeEV2XL: MfDesfireType = MfDesfireType(3);
+pub const MfDesfireTypeEV3: MfDesfireType = MfDesfireType(4);
+pub const MfDesfireTypeUnknown: MfDesfireType = MfDesfireType(5);
+pub const MfDesfireTypeNum: MfDesfireType = MfDesfireType(6);
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct MfDesfireType(pub core::ffi::c_uchar);
+pub const MfDesfireSize2k: MfDesfireSize = MfDesfireSize(0);
+pub const MfDesfireSize4k: MfDesfireSize = MfDesfireSize(1);
+pub const MfDesfireSize8k: MfDesfireSize = MfDesfireSize(2);
+pub const MfDesfireSize16k: MfDesfireSize = MfDesfireSize(3);
+pub const MfDesfireSize32k: MfDesfireSize = MfDesfireSize(4);
+pub const MfDesfireSizeUnknown: MfDesfireSize = MfDesfireSize(5);
+pub const MfDesfireSizeNum: MfDesfireSize = MfDesfireSize(6);
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct MfDesfireSize(pub core::ffi::c_uchar);
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct MfDesfireVersion {
@@ -31755,6 +32432,7 @@ pub const MfDesfireFileTypeBackup: MfDesfireFileType = MfDesfireFileType(1);
 pub const MfDesfireFileTypeValue: MfDesfireFileType = MfDesfireFileType(2);
 pub const MfDesfireFileTypeLinearRecord: MfDesfireFileType = MfDesfireFileType(3);
 pub const MfDesfireFileTypeCyclicRecord: MfDesfireFileType = MfDesfireFileType(4);
+pub const MfDesfireFileTypeTransactionMac: MfDesfireFileType = MfDesfireFileType(5);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct MfDesfireFileType(pub core::ffi::c_uchar);
@@ -31784,6 +32462,7 @@ pub union MfDesfireFileSettings__bindgen_ty_1 {
     pub data: MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_1,
     pub value: MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_2,
     pub record: MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_3,
+    pub transaction_mac: MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_4,
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -31951,6 +32630,65 @@ fn bindgen_test_layout_MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_3() {
         )
     );
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_4 {
+    pub key_option: u8,
+    pub key_version: u8,
+    pub counter_limit: u32,
+}
+#[test]
+fn bindgen_test_layout_MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_4() {
+    const UNINIT: ::core::mem::MaybeUninit<MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_4> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_4>(),
+        8usize,
+        concat!(
+            "Size of: ",
+            stringify!(MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_4)
+        )
+    );
+    assert_eq!(
+        ::core::mem::align_of::<MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_4>(),
+        4usize,
+        concat!(
+            "Alignment of ",
+            stringify!(MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_4)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_option) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_4),
+            "::",
+            stringify!(key_option)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key_version) as usize - ptr as usize },
+        1usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_4),
+            "::",
+            stringify!(key_version)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).counter_limit) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfDesfireFileSettings__bindgen_ty_1__bindgen_ty_4),
+            "::",
+            stringify!(counter_limit)
+        )
+    );
+}
 #[test]
 fn bindgen_test_layout_MfDesfireFileSettings__bindgen_ty_1() {
     const UNINIT: ::core::mem::MaybeUninit<MfDesfireFileSettings__bindgen_ty_1> =
@@ -31997,6 +32735,16 @@ fn bindgen_test_layout_MfDesfireFileSettings__bindgen_ty_1() {
             stringify!(MfDesfireFileSettings__bindgen_ty_1),
             "::",
             stringify!(record)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).transaction_mac) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfDesfireFileSettings__bindgen_ty_1),
+            "::",
+            stringify!(transaction_mac)
         )
     );
 }
@@ -32197,6 +32945,7 @@ pub const MfDesfireErrorNotPresent: MfDesfireError = MfDesfireError(1);
 pub const MfDesfireErrorProtocol: MfDesfireError = MfDesfireError(2);
 pub const MfDesfireErrorTimeout: MfDesfireError = MfDesfireError(3);
 pub const MfDesfireErrorAuthentication: MfDesfireError = MfDesfireError(4);
+pub const MfDesfireErrorCommandNotSupported: MfDesfireError = MfDesfireError(5);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct MfDesfireError(pub core::ffi::c_uchar);
@@ -32210,6 +32959,7 @@ pub struct MfDesfireData {
     pub master_key_versions: *mut SimpleArray,
     pub application_ids: *mut SimpleArray,
     pub applications: *mut SimpleArray,
+    pub device_name: *mut FuriString,
 }
 #[test]
 fn bindgen_test_layout_MfDesfireData() {
@@ -32217,7 +32967,7 @@ fn bindgen_test_layout_MfDesfireData() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::core::mem::size_of::<MfDesfireData>(),
-        60usize,
+        64usize,
         concat!("Size of: ", stringify!(MfDesfireData))
     );
     assert_eq!(
@@ -32293,6 +33043,16 @@ fn bindgen_test_layout_MfDesfireData() {
             stringify!(MfDesfireData),
             "::",
             stringify!(applications)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).device_name) as usize - ptr as usize },
+        60usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(MfDesfireData),
+            "::",
+            stringify!(device_name)
         )
     );
 }
@@ -34659,6 +35419,7 @@ extern "C" {
     pub fn mf_ultralight_poller_sync_read_card(
         nfc: *mut Nfc,
         data: *mut MfUltralightData,
+        auth_context: *const MfUltralightPollerAuthContext,
     ) -> MfUltralightError;
 }
 pub const Iso15693_3ErrorNone: Iso15693_3Error = Iso15693_3Error(0);
@@ -37201,7 +37962,7 @@ pub struct SubGhzEnvironment {
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct SubGhzProtocolRegistry {
-    pub items: *mut *const SubGhzProtocol,
+    pub items: *const *const SubGhzProtocol,
     pub size: usize,
 }
 #[test]
@@ -37417,6 +38178,50 @@ pub type SubGhzKeyArray_subtype_ct = SubGhzKey;
 #[derive(Debug, Copy, Clone)]
 pub struct SubGhzKeystore {
     _unused: [u8; 0],
+}
+extern "C" {
+    #[doc = "Allocate SubGhzKeystore.\n # Returns\n\nSubGhzKeystore* pointer to a SubGhzKeystore instance"]
+    pub fn subghz_keystore_alloc() -> *mut SubGhzKeystore;
+}
+extern "C" {
+    #[doc = "Free SubGhzKeystore.\n # Arguments\n\n* `instance` - Pointer to a SubGhzKeystore instance"]
+    pub fn subghz_keystore_free(instance: *mut SubGhzKeystore);
+}
+extern "C" {
+    #[doc = "Loading manufacture key from file\n # Arguments\n\n* `instance` - Pointer to a SubGhzKeystore instance\n * `filename` - Full path to the file"]
+    pub fn subghz_keystore_load(
+        instance: *mut SubGhzKeystore,
+        filename: *const core::ffi::c_char,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Save manufacture key to file\n # Arguments\n\n* `instance` - Pointer to a SubGhzKeystore instance\n * `filename` - Full path to the file\n # Returns\n\ntrue On success"]
+    pub fn subghz_keystore_save(
+        instance: *mut SubGhzKeystore,
+        filename: *const core::ffi::c_char,
+        iv: *mut u8,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Get array of keys and names manufacture\n # Arguments\n\n* `instance` - Pointer to a SubGhzKeystore instance\n # Returns\n\nSubGhzKeyArray_t*"]
+    pub fn subghz_keystore_get_data(instance: *mut SubGhzKeystore) -> *mut SubGhzKeyArray_t;
+}
+extern "C" {
+    #[doc = "Save RAW encrypted to file\n # Arguments\n\n* `input_file_name` - Full path to the input file\n * `output_file_name` - Full path to the output file\n * `iv` - IV, 16 bytes in hex"]
+    pub fn subghz_keystore_raw_encrypted_save(
+        input_file_name: *const core::ffi::c_char,
+        output_file_name: *const core::ffi::c_char,
+        iv: *mut u8,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = "Get decrypt RAW data to file\n # Arguments\n\n* `file_name` - Full path to the input file\n * `offset` - Offset from the start of the RAW data\n * `data` - Returned array\n * `len` - Required data length\n # Returns\n\ntrue On success"]
+    pub fn subghz_keystore_raw_get_data(
+        file_name: *const core::ffi::c_char,
+        offset: usize,
+        data: *mut u8,
+        len: usize,
+    ) -> bool;
 }
 extern "C" {
     #[doc = "Allocate SubGhzEnvironment.\n # Returns\n\nSubGhzEnvironment* pointer to a SubGhzEnvironment instance"]
@@ -38890,6 +39695,179 @@ extern "C" {
         byte: *mut u8,
     ) -> bool;
 }
+pub const CliKeyUnrecognized: CliKey = CliKey(0);
+pub const CliKeySOH: CliKey = CliKey(1);
+pub const CliKeyETX: CliKey = CliKey(3);
+pub const CliKeyEOT: CliKey = CliKey(4);
+pub const CliKeyBell: CliKey = CliKey(7);
+pub const CliKeyBackspace: CliKey = CliKey(8);
+pub const CliKeyTab: CliKey = CliKey(9);
+pub const CliKeyLF: CliKey = CliKey(10);
+pub const CliKeyFF: CliKey = CliKey(12);
+pub const CliKeyCR: CliKey = CliKey(13);
+pub const CliKeyETB: CliKey = CliKey(23);
+pub const CliKeyEsc: CliKey = CliKey(27);
+pub const CliKeyUS: CliKey = CliKey(31);
+pub const CliKeySpace: CliKey = CliKey(32);
+pub const CliKeyDEL: CliKey = CliKey(127);
+pub const CliKeySpecial: CliKey = CliKey(128);
+pub const CliKeyLeft: CliKey = CliKey(129);
+pub const CliKeyRight: CliKey = CliKey(130);
+pub const CliKeyUp: CliKey = CliKey(131);
+pub const CliKeyDown: CliKey = CliKey(132);
+pub const CliKeyHome: CliKey = CliKey(133);
+pub const CliKeyEnd: CliKey = CliKey(134);
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct CliKey(pub core::ffi::c_uchar);
+pub const CliModKeyNo: CliModKey = CliModKey(0);
+pub const CliModKeyAlt: CliModKey = CliModKey(2);
+pub const CliModKeyCtrl: CliModKey = CliModKey(4);
+pub const CliModKeyMeta: CliModKey = CliModKey(8);
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct CliModKey(pub core::ffi::c_uchar);
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct CliKeyCombo {
+    pub modifiers: CliModKey,
+    pub key: CliKey,
+}
+#[test]
+fn bindgen_test_layout_CliKeyCombo() {
+    const UNINIT: ::core::mem::MaybeUninit<CliKeyCombo> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<CliKeyCombo>(),
+        2usize,
+        concat!("Size of: ", stringify!(CliKeyCombo))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<CliKeyCombo>(),
+        1usize,
+        concat!("Alignment of ", stringify!(CliKeyCombo))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).modifiers) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CliKeyCombo),
+            "::",
+            stringify!(modifiers)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        1usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CliKeyCombo),
+            "::",
+            stringify!(key)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct CliAnsiParser {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct CliAnsiParserResult {
+    pub is_done: bool,
+    pub result: CliKeyCombo,
+}
+#[test]
+fn bindgen_test_layout_CliAnsiParserResult() {
+    const UNINIT: ::core::mem::MaybeUninit<CliAnsiParserResult> =
+        ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<CliAnsiParserResult>(),
+        3usize,
+        concat!("Size of: ", stringify!(CliAnsiParserResult))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<CliAnsiParserResult>(),
+        1usize,
+        concat!("Alignment of ", stringify!(CliAnsiParserResult))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).is_done) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CliAnsiParserResult),
+            "::",
+            stringify!(is_done)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).result) as usize - ptr as usize },
+        1usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(CliAnsiParserResult),
+            "::",
+            stringify!(result)
+        )
+    );
+}
+extern "C" {
+    #[doc = "Allocates an ANSI parser"]
+    pub fn cli_ansi_parser_alloc() -> *mut CliAnsiParser;
+}
+extern "C" {
+    #[doc = "Frees an ANSI parser"]
+    pub fn cli_ansi_parser_free(parser: *mut CliAnsiParser);
+}
+extern "C" {
+    #[doc = "Feeds an ANSI parser a character"]
+    pub fn cli_ansi_parser_feed(
+        parser: *mut CliAnsiParser,
+        c: core::ffi::c_char,
+    ) -> CliAnsiParserResult;
+}
+extern "C" {
+    #[doc = "Feeds an ANSI parser a timeout event\n\n As a user of the ANSI parser API, you are responsible for calling this\n function some time after the last character was fed into the parser. The\n recommended timeout is about 10 ms. The exact value does not matter as long\n as it is small enough for the user not notice a delay, but big enough that\n when a terminal is sending an escape sequence, this function does not get\n called in between the characters of the sequence."]
+    pub fn cli_ansi_parser_feed_timeout(parser: *mut CliAnsiParser) -> CliAnsiParserResult;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct CliShell {
+    _unused: [u8; 0],
+}
+#[doc = "Called from the shell thread to print the Message of the Day when the shell\n is started."]
+pub type CliShellMotd =
+    ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>;
+extern "C" {
+    #[doc = "Allocates a shell\n\n # Arguments\n\n* `[in]` - motd Message of the Day callback\n * `[in]` - context Callback context\n * `[in]` - pipe Pipe side to be used by the shell\n * `[in]` - registry Command registry\n * `[in]` - ext_config External command configuration. See\n `CliCommandExternalConfig`. May be NULL if support for\n external commands is not required.\n\n # Returns\n\nShell instance"]
+    pub fn cli_shell_alloc(
+        motd: CliShellMotd,
+        context: *mut core::ffi::c_void,
+        pipe: *mut PipeSide,
+        registry: *mut CliRegistry,
+        ext_config: *const CliCommandExternalConfig,
+    ) -> *mut CliShell;
+}
+extern "C" {
+    #[doc = "Frees a shell\n\n # Arguments\n\n* `[in]` - shell Shell instance"]
+    pub fn cli_shell_free(shell: *mut CliShell);
+}
+extern "C" {
+    #[doc = "Starts a shell\n\n The shell runs in a separate thread. This call is non-blocking.\n\n # Arguments\n\n* `[in]` - shell Shell instance"]
+    pub fn cli_shell_start(shell: *mut CliShell);
+}
+extern "C" {
+    #[doc = "Joins the shell thread\n\n This call is blocking.\n\n # Arguments\n\n* `[in]` - shell Shell instance"]
+    pub fn cli_shell_join(shell: *mut CliShell);
+}
+extern "C" {
+    #[doc = "Sets optional text before prompt (`>:`)\n\n # Arguments\n\n* `[in]` - shell Shell instance"]
+    pub fn cli_shell_set_prompt(shell: *mut CliShell, prompt: *const core::ffi::c_char);
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct CompressIcon {
@@ -39377,207 +40355,6 @@ extern "C" {
 extern "C" {
     #[doc = "Check that path contains only ascii characters\n\n # Arguments\n\n* `path` -\n # Returns\n\ntrue\n false"]
     pub fn path_contains_only_ascii(path: *const core::ffi::c_char) -> bool;
-}
-pub const PipeRoleAlice: PipeRole = PipeRole(0);
-pub const PipeRoleBob: PipeRole = PipeRole(1);
-#[repr(transparent)]
-#[doc = "The role of a pipe side\n\n Both roles are equal, as they can both read and write the data. This status\n might be helpful in determining the role of a thread w.r.t. another thread in\n an application that builds on the pipe."]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct PipeRole(pub core::ffi::c_uchar);
-pub const PipeStateOpen: PipeState = PipeState(0);
-pub const PipeStateBroken: PipeState = PipeState(1);
-#[repr(transparent)]
-#[doc = "The state of a pipe\n\n - `PipeStateOpen`: Both pipe sides are in place, meaning data that is sent\n down the pipe _might_ be read by the peer, and new data sent by the peer\n _might_ arrive.\n - `PipeStateBroken`: The other side of the pipe has been freed, meaning\n data that is written will never reach its destination, and no new data\n will appear in the buffer.\n\n A broken pipe can never become open again, because there's no way to connect\n a side of a pipe to another side of a pipe."]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct PipeState(pub core::ffi::c_uchar);
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct PipeSide {
-    _unused: [u8; 0],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct PipeSideBundle {
-    pub alices_side: *mut PipeSide,
-    pub bobs_side: *mut PipeSide,
-}
-#[test]
-fn bindgen_test_layout_PipeSideBundle() {
-    const UNINIT: ::core::mem::MaybeUninit<PipeSideBundle> = ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<PipeSideBundle>(),
-        8usize,
-        concat!("Size of: ", stringify!(PipeSideBundle))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<PipeSideBundle>(),
-        4usize,
-        concat!("Alignment of ", stringify!(PipeSideBundle))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).alices_side) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(PipeSideBundle),
-            "::",
-            stringify!(alices_side)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).bobs_side) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(PipeSideBundle),
-            "::",
-            stringify!(bobs_side)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct PipeSideReceiveSettings {
-    pub capacity: usize,
-    pub trigger_level: usize,
-}
-#[test]
-fn bindgen_test_layout_PipeSideReceiveSettings() {
-    const UNINIT: ::core::mem::MaybeUninit<PipeSideReceiveSettings> =
-        ::core::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
-    assert_eq!(
-        ::core::mem::size_of::<PipeSideReceiveSettings>(),
-        8usize,
-        concat!("Size of: ", stringify!(PipeSideReceiveSettings))
-    );
-    assert_eq!(
-        ::core::mem::align_of::<PipeSideReceiveSettings>(),
-        4usize,
-        concat!("Alignment of ", stringify!(PipeSideReceiveSettings))
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).capacity) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(PipeSideReceiveSettings),
-            "::",
-            stringify!(capacity)
-        )
-    );
-    assert_eq!(
-        unsafe { ::core::ptr::addr_of!((*ptr).trigger_level) as usize - ptr as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(PipeSideReceiveSettings),
-            "::",
-            stringify!(trigger_level)
-        )
-    );
-}
-extern "C" {
-    #[doc = "Allocates two connected sides of one pipe.\n\n Creating a pair of sides using this function is the only way to connect two\n pipe sides together. Two unrelated orphaned sides may never be connected back\n together.\n\n The capacity and trigger level for both directions are the same when the pipe\n is created using this function. Use `pipe_alloc_ex` if you want more\n control.\n\n # Arguments\n\n* `capacity` - Maximum number of bytes buffered in one direction\n * `trigger_level` - Number of bytes that need to be available in the buffer\n in order for a blocked thread to unblock\n # Returns\n\nBundle with both sides of the pipe"]
-    pub fn pipe_alloc(capacity: usize, trigger_level: usize) -> PipeSideBundle;
-}
-extern "C" {
-    #[doc = "Allocates two connected sides of one pipe.\n\n Creating a pair of sides using this function is the only way to connect two\n pipe sides together. Two unrelated orphaned sides may never be connected back\n together.\n\n The capacity and trigger level may be different for the two directions when\n the pipe is created using this function. Use `pipe_alloc` if you don't\n need control this fine.\n\n # Arguments\n\n* `alice` - `capacity` and `trigger_level` settings for Alice's receiving\n buffer\n * `bob` - `capacity` and `trigger_level` settings for Bob's receiving buffer\n # Returns\n\nBundle with both sides of the pipe"]
-    pub fn pipe_alloc_ex(
-        alice: PipeSideReceiveSettings,
-        bob: PipeSideReceiveSettings,
-    ) -> PipeSideBundle;
-}
-extern "C" {
-    #[doc = "Gets the role of a pipe side.\n\n The roles (Alice and Bob) are equal, as both can send and receive data. This\n status might be helpful in determining the role of a thread w.r.t. another\n thread.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to query\n # Returns\n\nRole of provided pipe side"]
-    pub fn pipe_role(pipe: *mut PipeSide) -> PipeRole;
-}
-extern "C" {
-    #[doc = "Gets the state of a pipe.\n\n When the state is `PipeStateOpen`, both sides are active and may send or\n receive data. When the state is `PipeStateBroken`, only one side is active\n (the one that this method has been called on). If you find yourself in that\n state, the data that you send will never be heard by anyone, and the data you\n receive are leftovers in the buffer.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to query\n # Returns\n\nState of the pipe"]
-    pub fn pipe_state(pipe: *mut PipeSide) -> PipeState;
-}
-extern "C" {
-    #[doc = "Frees a side of a pipe.\n\n When only one of the sides is freed, the pipe is transitioned from the \"Open\"\n state into the \"Broken\" state. When both sides are freed, the underlying data\n structures are freed too.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to free"]
-    pub fn pipe_free(pipe: *mut PipeSide);
-}
-extern "C" {
-    #[doc = "Connects the pipe to the `stdin` and `stdout` of the current thread.\n\n After performing this operation, you can use `getc`, `puts`, etc. to send and\n receive data to and from the pipe. If the pipe becomes broken, C stdlib calls\n will return `EOF` wherever possible.\n\n You can disconnect the pipe by manually calling\n `furi_thread_set_stdout_callback` and `furi_thread_set_stdin_callback` with\n `NULL`.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to connect to the stdio"]
-    pub fn pipe_install_as_stdio(pipe: *mut PipeSide);
-}
-extern "C" {
-    #[doc = "Receives data from the pipe.\n\n # Arguments\n\n* `[in]` - pipe The pipe side to read data out of\n * `[out]` - data The buffer to fill with data\n * `length` - Maximum length of data to read\n * `timeout` - The timeout (in ticks) after which the read operation is\n interrupted\n # Returns\n\nThe number of bytes actually written into the provided buffer"]
-    pub fn pipe_receive(
-        pipe: *mut PipeSide,
-        data: *mut core::ffi::c_void,
-        length: usize,
-        timeout: FuriWait,
-    ) -> usize;
-}
-extern "C" {
-    #[doc = "Sends data into the pipe.\n\n # Arguments\n\n* `[in]` - pipe The pipe side to send data into\n * `[out]` - data The buffer to get data from\n * `length` - Maximum length of data to send\n * `timeout` - The timeout (in ticks) after which the write operation is\n interrupted\n # Returns\n\nThe number of bytes actually read from the provided buffer"]
-    pub fn pipe_send(
-        pipe: *mut PipeSide,
-        data: *const core::ffi::c_void,
-        length: usize,
-        timeout: FuriWait,
-    ) -> usize;
-}
-extern "C" {
-    #[doc = "Determines how many bytes there are in the pipe available to be read.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to query\n # Returns\n\nNumber of bytes available to be read out from that side of the pipe"]
-    pub fn pipe_bytes_available(pipe: *mut PipeSide) -> usize;
-}
-extern "C" {
-    #[doc = "Determines how many space there is in the pipe for data to be written\n into.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to query\n # Returns\n\nNumber of bytes available to be written into that side of the pipe"]
-    pub fn pipe_spaces_available(pipe: *mut PipeSide) -> usize;
-}
-extern "C" {
-    #[doc = "Attaches a `PipeSide` to a `FuriEventLoop`, allowing to attach\n callbacks to the PipeSide.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to attach to the event loop\n * `[in]` - event_loop Event loop to attach the pipe side to"]
-    pub fn pipe_attach_to_event_loop(pipe: *mut PipeSide, event_loop: *mut FuriEventLoop);
-}
-extern "C" {
-    #[doc = "Detaches a `PipeSide` from the `FuriEventLoop` that it was previously\n attached to.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to detach to the event loop"]
-    pub fn pipe_detach_from_event_loop(pipe: *mut PipeSide);
-}
-#[doc = "Callback for when data arrives to a `PipeSide`.\n\n # Arguments\n\n* `[in]` - pipe Pipe side that called the callback\n * `[inout]` - context Custom context"]
-pub type PipeSideDataArrivedCallback = ::core::option::Option<
-    unsafe extern "C" fn(pipe: *mut PipeSide, context: *mut core::ffi::c_void),
->;
-#[doc = "Callback for when data is read out of the opposite `PipeSide`.\n\n # Arguments\n\n* `[in]` - pipe Pipe side that called the callback\n * `[inout]` - context Custom context"]
-pub type PipeSideSpaceFreedCallback = ::core::option::Option<
-    unsafe extern "C" fn(pipe: *mut PipeSide, context: *mut core::ffi::c_void),
->;
-#[doc = "Callback for when the opposite `PipeSide` is freed, making the pipe\n broken.\n\n # Arguments\n\n* `[in]` - pipe Pipe side that called the callback\n * `[inout]` - context Custom context"]
-pub type PipeSideBrokenCallback = ::core::option::Option<
-    unsafe extern "C" fn(pipe: *mut PipeSide, context: *mut core::ffi::c_void),
->;
-extern "C" {
-    #[doc = "Sets the custom context for all callbacks.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to set the context of\n * `[inout]` - context Custom context that will be passed to callbacks"]
-    pub fn pipe_set_callback_context(pipe: *mut PipeSide, context: *mut core::ffi::c_void);
-}
-extern "C" {
-    #[doc = "Sets the callback for when data arrives.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to assign the callback to\n * `[in]` - callback Callback to assign to the pipe side. Set to NULL to\n unsubscribe.\n * `[in]` - event Additional event loop flags (e.g. `Edge`, `Once`, etc.).\n Non-flag values of the enum are not allowed.\n\n Attach the pipe side to an event loop first using\n `pipe_attach_to_event_loop`."]
-    pub fn pipe_set_data_arrived_callback(
-        pipe: *mut PipeSide,
-        callback: PipeSideDataArrivedCallback,
-        event: FuriEventLoopEvent,
-    );
-}
-extern "C" {
-    #[doc = "Sets the callback for when data is read out of the opposite `PipeSide`.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to assign the callback to\n * `[in]` - callback Callback to assign to the pipe side. Set to NULL to\n unsubscribe.\n * `[in]` - event Additional event loop flags (e.g. `Edge`, `Once`, etc.).\n Non-flag values of the enum are not allowed.\n\n Attach the pipe side to an event loop first using\n `pipe_attach_to_event_loop`."]
-    pub fn pipe_set_space_freed_callback(
-        pipe: *mut PipeSide,
-        callback: PipeSideSpaceFreedCallback,
-        event: FuriEventLoopEvent,
-    );
-}
-extern "C" {
-    #[doc = "Sets the callback for when the opposite `PipeSide` is freed, making\n the pipe broken.\n\n # Arguments\n\n* `[in]` - pipe Pipe side to assign the callback to\n * `[in]` - callback Callback to assign to the pipe side. Set to NULL to\n unsubscribe.\n * `[in]` - event Additional event loop flags (e.g. `Edge`, `Once`, etc.).\n Non-flag values of the enum are not allowed.\n\n Attach the pipe side to an event loop first using\n `pipe_attach_to_event_loop`."]
-    pub fn pipe_set_broken_callback(
-        pipe: *mut PipeSide,
-        callback: PipeSideBrokenCallback,
-        event: FuriEventLoopEvent,
-    );
 }
 extern "C" {
     #[doc = "Format a data buffer as a canonical HEX dump\n # Arguments\n\n* `[out]` - result pointer to the output string (must be initialised)\n * `[in]` - num_places the number of bytes on one line (both as HEX and ASCII)\n * `[in]` - line_prefix if not NULL, prepend this string to each line\n * `[in]` - data pointer to the input data buffer\n * `[in]` - data_size input data size"]
@@ -40780,6 +41557,10 @@ pub struct FuriHalBtSerialRpcStatus(pub core::ffi::c_uchar);
 #[doc = "Serial service callback type"]
 pub type FuriHalBtSerialCallback = SerialServiceEventCallback;
 extern "C" {
+    #[doc = "Serial profile descriptor"]
+    pub static ble_profile_serial: *const FuriHalBleProfileTemplate;
+}
+extern "C" {
     #[doc = "Send data through BLE\n\n # Arguments\n\n* `profile` - Profile instance\n * `data` - data buffer\n * `size` - data buffer size\n\n # Returns\n\ntrue on success"]
     pub fn ble_profile_serial_tx(
         profile: *mut FuriHalBleProfileBase,
@@ -40839,27 +41620,16 @@ extern "C" {
 extern "C" {
     pub fn ble_svc_dev_info_stop(service: *mut BleServiceDevInfo);
 }
-pub const FuriHalPwmOutputIdTim1PA7: FuriHalPwmOutputId = FuriHalPwmOutputId(0);
-pub const FuriHalPwmOutputIdLptim2PA4: FuriHalPwmOutputId = FuriHalPwmOutputId(1);
+pub const CdcStateDisconnected: CdcState = CdcState(0);
+pub const CdcStateConnected: CdcState = CdcState(1);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct FuriHalPwmOutputId(pub core::ffi::c_uchar);
-extern "C" {
-    #[doc = "Enable PWM channel and set parameters\n\n # Arguments\n\n* `channel` (direction in) - PWM channel (FuriHalPwmOutputId)\n * `freq` (direction in) - Frequency in Hz\n * `duty` (direction in) - Duty cycle value in %"]
-    pub fn furi_hal_pwm_start(channel: FuriHalPwmOutputId, freq: u32, duty: u8);
-}
-extern "C" {
-    #[doc = "Disable PWM channel\n\n # Arguments\n\n* `channel` (direction in) - PWM channel (FuriHalPwmOutputId)"]
-    pub fn furi_hal_pwm_stop(channel: FuriHalPwmOutputId);
-}
-extern "C" {
-    #[doc = "Set PWM channel parameters\n\n # Arguments\n\n* `channel` (direction in) - PWM channel (FuriHalPwmOutputId)\n * `freq` (direction in) - Frequency in Hz\n * `duty` (direction in) - Duty cycle value in %"]
-    pub fn furi_hal_pwm_set_params(channel: FuriHalPwmOutputId, freq: u32, duty: u8);
-}
-extern "C" {
-    #[doc = "Is PWM channel running?\n\n # Arguments\n\n* `channel` (direction in) - PWM channel (FuriHalPwmOutputId)\n # Returns\n\nbool - true if running"]
-    pub fn furi_hal_pwm_is_running(channel: FuriHalPwmOutputId) -> bool;
-}
+pub struct CdcState(pub core::ffi::c_uchar);
+pub const CdcCtrlLineDTR: CdcCtrlLine = CdcCtrlLine(1);
+pub const CdcCtrlLineRTS: CdcCtrlLine = CdcCtrlLine(2);
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct CdcCtrlLine(pub core::ffi::c_uchar);
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct CdcCallbacks {
@@ -40867,10 +41637,12 @@ pub struct CdcCallbacks {
         ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>,
     pub rx_ep_callback:
         ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void)>,
-    pub state_callback:
-        ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void, state: u8)>,
-    pub ctrl_line_callback:
-        ::core::option::Option<unsafe extern "C" fn(context: *mut core::ffi::c_void, state: u8)>,
+    pub state_callback: ::core::option::Option<
+        unsafe extern "C" fn(context: *mut core::ffi::c_void, state: CdcState),
+    >,
+    pub ctrl_line_callback: ::core::option::Option<
+        unsafe extern "C" fn(context: *mut core::ffi::c_void, ctrl_lines: CdcCtrlLine),
+    >,
     pub config_callback: ::core::option::Option<
         unsafe extern "C" fn(context: *mut core::ffi::c_void, config: *mut usb_cdc_line_coding),
     >,
