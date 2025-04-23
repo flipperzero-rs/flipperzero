@@ -5,7 +5,7 @@
 //!
 //! For more details, see the [`Pattern`] trait.
 
-use core::ffi::{CStr, c_char};
+use core::ffi::{c_char, CStr};
 
 use flipperzero_sys as sys;
 
