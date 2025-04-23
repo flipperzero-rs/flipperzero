@@ -222,7 +222,11 @@ pub mod __macro_support {
             filtered,
             time_taken,
         )?;
-        ufmt::uwriteln!(output_file, "leaked: {} bytes", heap_before - heap_after)?;
+        ufmt::uwriteln!(
+            output_file,
+            "leaked: {} bytes",
+            heap_before.saturating_sub(heap_after)
+        )?;
         ufmt::uwriteln!(output_file, "")?;
 
         if failed == 0 {
