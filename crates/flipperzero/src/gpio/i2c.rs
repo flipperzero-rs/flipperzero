@@ -1,7 +1,6 @@
 //! I2C interface for the Flipper Zero.
 
 use core::fmt;
-use core::ptr::addr_of_mut;
 
 use flipperzero_sys as sys;
 
@@ -104,8 +103,8 @@ impl Bus {
         // will be using it while we have a raw pointer to it. We don't convert this to a
         // `&'static mut` reference because this will be disallowed in Rust 2024 edition.
         BusHandle::acquire(match self.0 {
-            BusKind::Internal => addr_of_mut!(sys::furi_hal_i2c_handle_power),
-            BusKind::External => addr_of_mut!(sys::furi_hal_i2c_handle_external),
+            BusKind::Internal => &raw const sys::furi_hal_i2c_handle_power,
+            BusKind::External => &raw const sys::furi_hal_i2c_handle_external,
         })
     }
 
@@ -119,7 +118,7 @@ impl Bus {
 
 /// A handle to an I2C bus on the Flipper Zero.
 pub struct BusHandle {
-    handle: *mut sys::FuriHalI2cBusHandle,
+    handle: *const sys::FuriHalI2cBusHandle,
 }
 
 impl Drop for BusHandle {
@@ -132,7 +131,7 @@ impl BusHandle {
     /// Acquires a handle to the given I2C bus.
     ///
     /// Blocks indefinitely until the Flipper Zero bus is locally available.
-    fn acquire(handle: *mut sys::FuriHalI2cBusHandle) -> Self {
+    fn acquire(handle: *const sys::FuriHalI2cBusHandle) -> Self {
         unsafe { sys::furi_hal_i2c_acquire(handle) };
         Self { handle }
     }
