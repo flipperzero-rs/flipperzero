@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Updated to SDK 86.0 (firmware 1.3.4)
 - `flipperzero::furi::time::Duration` has been renamed to `FuriDuration`
 - `flipperzero::furi::time::Instant` has been renamed to `FuriInstant`
 - `flipperzero_sys::furi::UnsafeRecord` now implements `Clone` to support reference-count use
