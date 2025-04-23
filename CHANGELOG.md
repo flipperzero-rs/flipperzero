@@ -9,6 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+### Changed
+
+### Removed
+
+## [0.15.0]
+
+### Added
+
 - `flipperzero::furi::hal::power::Power` handle to Power service
 - High-level serial API (#216)
 - Add `gui::Gui` record and basic support for using `gui::Canvas` in monopoly mode
@@ -281,7 +289,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Initial release!
 
-[Unreleased]: https://github.com/flipperzero-rs/flipperzero/compare/v0.14.0...HEAD
+[Unreleased]: https://github.com/flipperzero-rs/flipperzero/compare/v0.15.0...HEAD
+[0.15.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.15.0
 [0.14.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.14.0
 [0.13.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.13.0
 [0.12.0]: https://github.com/flipperzero-rs/flipperzero/releases/tag/v0.12.0
