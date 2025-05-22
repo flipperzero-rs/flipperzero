@@ -11,7 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `flipperzero::bluetooth`, providing APIs for interacting with Bluetooth:
   - `beacon` module for operating with the built-in Bluetooth LE beacon.
-  - `test_patterns` module fwith pattern generators and listeners.
+  - `test_patterns` module with pattern generators and listeners.
 
 ### Changed
 
