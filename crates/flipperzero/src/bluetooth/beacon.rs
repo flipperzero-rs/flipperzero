@@ -36,7 +36,7 @@ impl Beacon {
             // No existing config, generate a new one with a random static address.
             let mut address = [0; 6];
             HwRng.fill_bytes(&mut address);
-            address[5] &= 0b1100_0000;
+            address[5] |= 0b1100_0000;
 
             let config = sys::GapExtraBeaconConfig {
                 min_adv_interval_ms: 50,
@@ -88,8 +88,8 @@ impl Beacon {
 
     /// Configures the beacon address.
     ///
-    /// If a random static address is provided, the two most significant bits of the last
-    /// byte will be set to 1 (random static addresses are only 46 bits).
+    /// If a random static address is provided, the two most significant bits of the 48-bit
+    /// address will be set to 1 (random static addresses are only 46 bits).
     pub fn set_address(&mut self, address: Address) -> Result<(), Error> {
         match address {
             Address::Public(address) => {
@@ -97,7 +97,7 @@ impl Beacon {
                 self.config.address = address;
             }
             Address::RandomStatic(mut address) => {
-                address[5] &= 0b1100_0000;
+                address[5] |= 0b1100_0000;
                 self.config.address_type = sys::GapAddressTypeRandom;
                 self.config.address = address;
             }
